@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>com.github.emailtohl.integration</groupId>
 		<artifactId>integration-parent</artifactId>
-		<version>${project.version}</version>
+		<version>1.0.0-RELEASE</version>
 		<!-- 父配置在上级目录可省略 -->
 		<relativePath>../pom.xml</relativePath>
 	</parent>
@@ -19,7 +19,7 @@
 		<dependency>
 			<groupId>com.github.emailtohl.integration</groupId>
 			<artifactId>integration-common</artifactId>
-			<version>${project.version}</version>
+			<version>1.0.0-RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>

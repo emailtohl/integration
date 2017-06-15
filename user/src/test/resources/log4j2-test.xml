@@ -11,7 +11,7 @@
         <root level="info">
             <appender-ref ref="Console"/>
         </root>
-        <logger name="com.github.emailtohl.integration.common" level="debug" />
+        <logger name="com.github.emailtohl.integration.user" level="debug" />
         <!-- <logger name="org.hibernate.type.descriptor.sql" level="TRACE" /> -->
     </loggers>
 </configuration>

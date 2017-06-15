@@ -4,11 +4,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -25,9 +27,11 @@ import com.github.emailtohl.integration.user.userTestConfig.DataSourceConfigurat
  * @author HeLei
  * @date 2017.06.15
  */
+@Transactional
+@Rollback(false)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = CacheConfiguration.class)
-@ActiveProfiles(DataSourceConfiguration.H2_RAM_DB)
+@ActiveProfiles(DataSourceConfiguration.POSTGRESQL_DB)
 public class UserServiceCacheTest {
 	@Inject
 	UserService userService;

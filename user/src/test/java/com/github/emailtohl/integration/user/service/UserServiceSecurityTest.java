@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -30,9 +31,10 @@ import com.github.emailtohl.integration.user.userTestConfig.SecurityConfiguratio
  * @date 2017.06.15
  */
 @Transactional
+@Rollback(false)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SecurityConfiguration.class)
-@ActiveProfiles(DataSourceConfiguration.H2_RAM_DB)
+@ActiveProfiles(DataSourceConfiguration.POSTGRESQL_DB)
 public class UserServiceSecurityTest {
 	@Inject
 	SecurityContextManager securityContextManager;
@@ -195,7 +197,6 @@ public class UserServiceSecurityTest {
 		try {
 			userService.getUserByEmail(customer.getEmail());
 		} catch (ResourceNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

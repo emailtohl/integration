@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.emailtohl.integration</groupId>
 	<artifactId>integration-parent</artifactId>
-	<version>${project.version}</version>
+	<version>1.0.0-RELEASE</version>
 	<packaging>pom</packaging>
 	<name>Integration Parent</name>
 	<description>java项目的集成</description>
