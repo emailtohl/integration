@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- http://logging.apache.org/log4j/2.x/manual/configuration.html -->
+<configuration status="INFO">
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+    </appenders>
+    <loggers>
+        <root level="info">
+            <appender-ref ref="Console"/>
+        </root>
+        <logger name="com.github.emailtohl.integration.common" level="debug" />
+        <!-- <logger name="org.hibernate.type.descriptor.sql" level="TRACE" /> -->
+    </loggers>
+</configuration>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- http://logging.apache.org/log4j/2.x/manual/configuration.html -->
+<!-- 这是对log4j2的元配置，如果日志过程中出现了异常，如写入网络日志中断，log4j2会自动记录 -->
+<configuration status="WARN">
+	<appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+<!-- 
+		<RollingFile name="BuildingFileAppender" fileName="../logs/application.log"
+			filePattern="../logs/application-%d{MM-dd-yyyy}-%i.log">
+			<PatternLayout>
+				<pattern>%d{HH:mm:ss.SSS} [%t] %X{id} %X{username} %-5level %c{36}
+					%l: %msg%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="10 MB" />
+			</Policies>
+			<DefaultRolloverStrategy min="1" max="4" />
+		</RollingFile>
+		 -->
+	</appenders>
+	<loggers>
+		<root level="warn">
+			<appender-ref ref="Console" />
+		</root>
+		<logger name="org.apache" level="info" />
+		<logger name="org.springframework" level="info" />
+		<!-- <logger name="org.springframework.security" level="debug" /> -->
+		<logger name="org.springframework.security.web.csrf" level="debug"/>
+		<!-- <logger name="org.hibernate.type.descriptor.sql" level="TRACE" /> -->
+		<logger name="com.github.emailtohl.integration.common" level="info" />
+	</loggers>
+</configuration>  
