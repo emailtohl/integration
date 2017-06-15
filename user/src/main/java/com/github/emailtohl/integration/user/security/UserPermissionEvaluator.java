@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.user.service;
+package com.github.emailtohl.integration.user.security;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.user.service;
+package com.github.emailtohl.integration.user.security;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,11 +13,16 @@ import org.springframework.stereotype.Service;
 import com.github.emailtohl.integration.common.Constant;
 import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
 import com.github.emailtohl.integration.user.entities.User;
+import com.github.emailtohl.integration.user.service.UserService;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-	@Inject
 	UserService userService;
+	
+	@Inject
+	public UserDetailsServiceImpl(UserService userService) {
+		this.userService = userService;
+	}
 	
 	private transient Pattern p = Pattern.compile(Constant.PATTERN_EMAIL);
 	

@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.user.service;
+package com.github.emailtohl.integration.user.security;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -10,6 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
+import com.github.emailtohl.integration.user.service.UserService;
+
 /**
  * 本类实现了AuthenticationManager
  * @author HeLei
@@ -17,9 +19,14 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AuthenticationManagerImpl implements AuthenticationManager, AuthenticationProvider {
-	@Inject
-	UserService userService;
+	private UserService userService;
 	
+	@Inject
+	public AuthenticationManagerImpl(UserService userService) {
+		super();
+		this.userService = userService;
+	}
+
 	/**
 	 * 下面是实现AuthenticationProvider，可以供Spring Security框架使用
 	 */
