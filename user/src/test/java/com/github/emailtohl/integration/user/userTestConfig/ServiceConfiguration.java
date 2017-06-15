@@ -11,8 +11,6 @@ import org.springframework.stereotype.Controller;
  * @date 2017.06.15
  */
 @Configuration
-//扫描包下的注解，将Bean纳入spring容器管理
-//扫描包下的注解，将Bean纳入spring容器管理
 @ComponentScan(basePackages = "com.github.emailtohl.integration.user", excludeFilters = @ComponentScan.Filter({
 	Controller.class, Configuration.class }))
 @Import(JpaConfiguration.class)

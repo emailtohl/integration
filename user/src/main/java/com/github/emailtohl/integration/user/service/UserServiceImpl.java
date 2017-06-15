@@ -27,6 +27,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
+import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
 import com.github.emailtohl.integration.common.jpa.Pager;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.common.utils.BeanUtil;
@@ -39,8 +40,6 @@ import com.github.emailtohl.integration.user.entities.Employee;
 import com.github.emailtohl.integration.user.entities.Role;
 import com.github.emailtohl.integration.user.entities.User;
 import com.github.emailtohl.integration.user.entities.User.AuthenticationImpl;
-
-import javassist.NotFoundException;
 /**
  * 管理用户的相关服务，实现类中只提供功能
  * 安全，校验等功能在切面中完成
@@ -197,10 +196,10 @@ public class UserServiceImpl implements UserService, Serializable {
 	}
 
 	@Override
-	public User getUserByEmail(String email) throws NotFoundException {
+	public User getUserByEmail(String email) throws ResourceNotFoundException {
 		User u = userRepository.findByEmail(email);
 		if (u == null)
-			throw new NotFoundException("未找到该用户：" + email);
+			throw new ResourceNotFoundException("未找到该用户：" + email);
 		return convert(u);
 	}
 	
@@ -434,23 +433,5 @@ public class UserServiceImpl implements UserService, Serializable {
 		BeanUtils.copyProperties(user, result, "password", "icon", BaseEntity.VERSION_PROPERTY_NAME);
 		return result;
 	}
-
-	/**
-	 * 实现UserDetailsService
-	 */
-	/*private transient Pattern p = Pattern.compile(Constant.PATTERN_EMAIL);
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Matcher m = p.matcher(username);
-		if (!m.find()) {
-			throw new UsernameNotFoundException("请使用正确邮箱");
-		}
-		String email = m.group(1);
-		User u = userRepository.findByEmail(email);
-		if (u == null) {
-			throw new UsernameNotFoundException("没有此用户");
-		}
-		return u.getUserDetails();
-	}*/
 
 }

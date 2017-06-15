@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +28,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
 import com.github.emailtohl.integration.common.jpa.Pager;
 import com.github.emailtohl.integration.user.UserTestData;
 import com.github.emailtohl.integration.user.dao.CleanAuditData;
@@ -146,7 +148,7 @@ public class UserServiceImplTest {
 			assertTrue(qu.getRoles().contains(roleRepository.findByName(Role.USER)));
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw e;
+			fail("不能出现异常");
 		} finally {
 			userService.deleteUser(id);
 			cleanAuditData.cleanUserAudit(id);
@@ -189,7 +191,7 @@ public class UserServiceImplTest {
 			assertFalse(qu.getRoles().contains(roleRepository.findByName(Role.USER)));
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw e;
+			fail("不能出现异常");
 		} finally {
 			userService.deleteUser(id);
 			cleanAuditData.cleanUserAudit(id);
@@ -219,8 +221,9 @@ public class UserServiceImplTest {
 			long id = userService.getUserByEmail(td.foo.getEmail()).getId();
 			userService.updateIconSrc(id, iconSrc);
 			userService.updateIcon(id, icon);
-		} catch (IOException e) {
+		} catch (IOException | ResourceNotFoundException e) {
 			e.printStackTrace();
+			fail("不能出现异常");
 		}
 	}
 	
@@ -261,18 +264,15 @@ public class UserServiceImplTest {
 	public void testPublicKey() throws NotFoundException {
 		UserTestData td = new UserTestData();
 		userService.setPublicKey(td.foo.getEmail(), "eyJtb2R1bGUiOiI5MTIxMzkwMjU2NDM1ODA1MjM4NDg4MDI5NDE3MjgxMzIxNjk4NTYxMDk2NTcwNTE5NDc2OTM4NDQ4NDA1NzgxMjAyMDM4NzM1NzQwNDg0OTczODQ5NzU2MTIzNjE3MjQ1MzI1MzMzMTEzNDMwMzAwMjc4NjIyNjc2NjkwMDEzMzkxOTgxMjAyMTk2NzY5Mjg2MDc3NzMwODkwOTkxODIyMDMzNTk4NjQ1NjkwMzU1NzYxNTU3NjUwNjkwMzI1MTE2NTUzODQ3OTI0NTc5OTk1MTQwNDM0NDkyOTk3NDg0MDg1NjM5ODI2NjU4NzY1NDM4NTE3ODk0Mzg5NTc4NDg1ODYxNDMxMjY3Mzg0OTM3MDE1MzgyMjg2MzAzODYxOTU5NzcyOTA1OTQwNDUzNjMxNjA2OSIsInB1YmxpY0tleSI6IjY1NTM3In0=");
-		User u = userService.getUserByEmail(td.foo.getEmail());
-		assertNotNull(u.getPublicKey());
-		userService.clearPublicKey(td.foo.getEmail());
+		User u;
+		try {
+			u = userService.getUserByEmail(td.foo.getEmail());
+			assertNotNull(u.getPublicKey());
+			userService.clearPublicKey(td.foo.getEmail());
+		} catch (ResourceNotFoundException e) {
+			e.printStackTrace();
+			fail("不能出现异常");
+		}
 	}
-/*
-	@Test
-	public void testCache() {
-		UserTestData td = new UserTestData();
-		User u = userService.getUser(Long.MAX_VALUE);// 不存在的id
-		assertNull(u);
-		// 打断点可以看见返回为null可以被缓存，且在第二次调用时直接返回了缓存结果
-		u = userService.getUser(Long.MAX_VALUE);// 不存在的id
-		assertNull(u);
-	}*/
+
 }

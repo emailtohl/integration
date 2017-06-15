@@ -31,13 +31,12 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.annotation.Validated;
 
 import com.github.emailtohl.integration.common.Constant;
+import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
 import com.github.emailtohl.integration.common.jpa.Pager;
 import com.github.emailtohl.integration.user.entities.Customer;
 import com.github.emailtohl.integration.user.entities.Employee;
 import com.github.emailtohl.integration.user.entities.Role;
 import com.github.emailtohl.integration.user.entities.User;
-
-import javassist.NotFoundException;
 /**
  * 用户管理的服务
  * @author HeLei
@@ -45,7 +44,7 @@ import javassist.NotFoundException;
  */
 @Transactional
 @Validated
-public interface UserService /*extends AuthenticationProvider, UserDetailsService*/ {
+public interface UserService {
 	// 该缓存map的key是用户的email而非id，这是因为getUserByEmail方法在上下文访问较多，而通过id访问的场景主要在于用户管理里面，无需缓存
 	String CACHE_NAME_USER = "userCache";
 	String CACHE_NAME_USER_PAGER = "userPagerCache";
@@ -142,7 +141,7 @@ public interface UserService /*extends AuthenticationProvider, UserDetailsServic
 	 * 查询用户，通过认证的均可调用
 	 * returnObject和principal是spring security内置对象
 	 * @param id
-	 * @return
+	 * @return 若未查找到用户，返回null
 	 */
 	@PostAuthorize("hasAuthority('" + USER_READ_ALL + "') || (hasAuthority('" + USER_READ_SELF + "') && returnObject.username == principal.username)")
 	User getUser(@Min(value = 1L) Long id);
@@ -151,11 +150,11 @@ public interface UserService /*extends AuthenticationProvider, UserDetailsServic
 	 * 通过邮箱名查询用户，通过认证的均可调用
 	 * @param email
 	 * @return
-	 * @throws NotFoundException 由于应用了缓存策略，返回结果不能为null，所以若未找到资源，则抛此异常
+	 * @throws ResourceNotFoundException 由于应用了缓存策略，返回结果不能为null，所以若未找到资源，则抛此异常
 	 */
 	@Cacheable(value = CACHE_NAME_USER, key = "#root.args[0]")
 	@PostAuthorize("hasAuthority('" + USER_READ_ALL + "') || (hasAuthority('" + USER_READ_SELF + "') && #email == principal.username)")
-	User getUserByEmail(@NotNull @P("email") String email) throws NotFoundException;
+	User getUserByEmail(@NotNull @P("email") String email) throws ResourceNotFoundException;
 	
 	/**
 	 * 修改用户的头像地址
