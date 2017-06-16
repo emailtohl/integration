@@ -11,7 +11,6 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.validation.constraints.NotNull;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,14 +18,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
 import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
 import com.github.emailtohl.integration.common.jpa.Pager;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
@@ -39,7 +33,6 @@ import com.github.emailtohl.integration.user.entities.Department;
 import com.github.emailtohl.integration.user.entities.Employee;
 import com.github.emailtohl.integration.user.entities.Role;
 import com.github.emailtohl.integration.user.entities.User;
-import com.github.emailtohl.integration.user.entities.User.AuthenticationImpl;
 /**
  * 管理用户的相关服务，实现类中只提供功能
  * 安全，校验等功能在切面中完成
@@ -59,6 +52,7 @@ public class UserServiceImpl implements UserService, Serializable {
 	
 	@PostConstruct
 	public void setRoles() {
+		logger.debug("UserServiceImpl init");
 		admin = roleRepository.findByName(ADMIN);
 	}
 	
@@ -313,84 +307,6 @@ public class UserServiceImpl implements UserService, Serializable {
 		}
 		return convert(u);
 	}
-
-	Encipher encipher = new Encipher();
-	@Override
-	public Authentication authenticate(@NotNull String email, @NotNull String password, @NotNull String privateKey) throws AuthenticationException {
-		try {
-			String userPassword = encipher.decrypt(password, privateKey);
-			return authenticate(email, userPassword);
-		} catch (Exception e) {
-			logger.warn("前端使用的加密密码不正确：{}", password);
-			throw new BadCredentialsException("前端使用的加密密码不正确", e);
-		}
-	}
-	
-	@Override
-	public Authentication authenticate(String email, String password) throws AuthenticationException {
-		User u = userRepository.findByEmail(email);
-		if (u == null) {
-			logger.warn("Authentication failed for non-existent user {}.", email);
-			throw new UsernameNotFoundException("没有此用户");
-		}
-		if (!BCrypt.checkpw(password, u.getPassword())) {
-			logger.warn("Authentication failed for user {}.", email);
-			throw new BadCredentialsException("密码错误");
-		}
-		logger.debug("User {} successfully authenticated.", email);
-		AuthenticationImpl a = u.getAuthentication();
-		a.setAuthenticated(true);
-		a.eraseCredentials();
-		Details d = new Details();
-		// ...
-		a.setDetails(d);
-		return a;
-	}
-	
-	public class Details implements Serializable {
-		private static final long serialVersionUID = -7461854984848054398L;
-		String remoteAddress;
-		String sessionId;
-		String certificateSerialNumber;
-		public String getRemoteAddress() {
-			return remoteAddress;
-		}
-		public void setRemoteAddress(String remoteAddress) {
-			this.remoteAddress = remoteAddress;
-		}
-		public String getSessionId() {
-			return sessionId;
-		}
-		public void setSessionId(String sessionId) {
-			this.sessionId = sessionId;
-		}
-		public String getCertificateSerialNumber() {
-			return certificateSerialNumber;
-		}
-		public void setCertificateSerialNumber(String certificateSerialNumber) {
-			this.certificateSerialNumber = certificateSerialNumber;
-		}
-	}
-	
-	/**
-	 * 下面是实现AuthenticationProvider，可以供Spring Security框架使用
-	 */
-	/*@Transactional
-	@Override
-	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-		UsernamePasswordAuthenticationToken credentials = (UsernamePasswordAuthenticationToken) authentication;
-		String email = credentials.getPrincipal().toString();
-		String password = credentials.getCredentials().toString();
-		// 用户名和密码用完后，记得擦除
-		credentials.eraseCredentials();
-		return authenticate(email, password);
-	}*/
-
-	/*@Override
-	public boolean supports(Class<?> authentication) {
-		return authentication == UsernamePasswordAuthenticationToken.class;
-	}*/
-
 	
 	/**
 	 * JPA提供者能根据用户的类型确定到底是User、Employ还是Manager

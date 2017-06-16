@@ -26,8 +26,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.annotation.Validated;
 
 import com.github.emailtohl.integration.common.Constant;
@@ -252,24 +250,6 @@ public interface UserService {
 	 */
 	@PreAuthorize("isAuthenticated()")
 	List<Role> getRoles();
-	
-	/**
-	 * 认证（登录）
-	 * @param email
-	 * @param password 明文密码
-	 * @return
-	 * @throws AuthenticationException 认证失败抛出异常
-	 */
-	Authentication authenticate(@NotNull String email, @NotNull String password) throws AuthenticationException;
-	/**
-	 * 认证（登录）
-	 * @param email
-	 * @param password 被RSA算法加密过的密码
-	 * @param privateKey 这个私钥是容器中缓存的RSA私钥，用于解密用户传来加密的password
-	 * @return
-	 * @throws AuthenticationException 认证失败抛出异常
-	 */
-	Authentication authenticate(@NotNull String email, @NotNull String password, @NotNull String privateKey) throws AuthenticationException;
 	
 	/**
 	 * 上传用户的公钥

@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.Authentication;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -202,18 +201,6 @@ public class UserServiceImplTest {
 		}
 	}
 
-//	@Test
-	public void testChangePassword() {
-		UserTestData td = new UserTestData();
-		String old = "123456";
-		String pw = "987654321";
-		userService.changePassword(td.bar.getEmail(), pw);
-		Authentication a = userService.authenticate(td.bar.getEmail(), pw);
-		assertNotNull(a);
-		assertEquals(td.bar.getName(), a.getName());
-		userService.changePassword(td.bar.getEmail(), old);
-	}
-	
 	public void testUpdateIcon() throws NotFoundException {
 		UserTestData td = new UserTestData();
 		String iconSrc = "img/icon-head-foo.jpg";
@@ -253,15 +240,6 @@ public class UserServiceImplTest {
 		u.setEmail(td.foo.getEmail());
 		Page<User> p = userService.getUserPage(u, new PageRequest(0, 20));
 		assertTrue(p.getContent().size() > 0);
-	}
-	
-	@Test
-	public void testAuthenticate() {
-		UserTestData td = new UserTestData();
-		Authentication a = userService.authenticate(td.foo.getEmail(), "123456");
-		assertNotNull(a);
-		// 查看认证结果
-		logger.debug(gson.toJson(a));
 	}
 	
 	@Test

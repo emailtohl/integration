@@ -39,7 +39,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		} catch (ResourceNotFoundException e) {
 			throw new UsernameNotFoundException("没有此用户");
 		}
-		return u.getUserDetails();
+		UserDetails d = new UserDetailsImpl(u);
+		return d;
 	}
 
 }

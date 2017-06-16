@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZoneId;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
@@ -33,7 +32,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -41,11 +39,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import com.github.emailtohl.integration.common.Constant;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
@@ -310,16 +303,6 @@ public class User extends BaseEntity {
 		return set.stream().map(a -> a.getName()).collect(Collectors.toSet());
 	}
 	
-	@Transient
-	public AuthenticationImpl getAuthentication() {
-		return new AuthenticationImpl();
-	}
-	
-	@Transient
-	public Principal getUserDetails() {
-		return new Principal();
-	}
-	
 	/**
 	 * 基于唯一标识email的equals和hashCode方法
 	 */
@@ -347,163 +330,6 @@ public class User extends BaseEntity {
 				+ ", credentialsNonExpired=" + credentialsNonExpired + ", accountNonLocked=" + accountNonLocked
 				+ ", birthday=" + birthday + ", age=" + age + ", gender=" + gender + ", subsidiary=" + subsidiary
 				+ ", iconSrc=" + iconSrc + ", description=" + description + ", roles=" + roles + "]";
-	}
-
-	/**
-	 * 下面是获取Authentication和UserDetails的方法
-	 * 本类并没有直接实现Authentication和UserDetails的原因是考虑传输到前台的认证信息不需要过多携带User类中的信息
-	 */
-	public class Principal implements UserDetails {
-		private static final long serialVersionUID = -2808344559121367648L;
-		/**
-		 * Gson序列化对象是根据对象的Field字段而不是根据JavaBean属性，所以这里还需有Field字段
-		 */
-		Long id;
-		String username;
-		String email;
-		Set<String> authorities;
-		String password;
-		String iconSrc;// 额外携带用户图片信息
-		
-		public Principal() {
-			this.id = User.this.id == null ? null : new Long(User.this.id);
-			this.username = User.this.username == null ? null : new String(User.this.username);
-			this.email = User.this.email == null ? null : new String(User.this.email);
-			this.password = User.this.password == null ? null : new String(User.this.password);
-			this.authorities = User.this.authorities();
-			this.iconSrc = User.this.iconSrc;
-		}
-		
-		@Override
-		public Collection<? extends GrantedAuthority> getAuthorities() {
-			return AuthorityUtils.createAuthorityList(this.authorities.toArray(new String[this.authorities.size()]));
-		}
-
-		@Override
-		public String getPassword() {
-			return this.password;
-		}
-
-		@Override
-		public String getUsername() {
-			return this.username;
-		}
-		
-		public Long getId() {
-			return this.id;
-		}
-
-		public String getIconSrc() {
-			return this.iconSrc;
-		}
-		
-		public String getEmail() {
-			return this.email;
-		}
-		
-		@Override
-		public boolean isAccountNonExpired() {
-			return accountNonExpired == null ? false : accountNonExpired;
-		}
-
-		@Override
-		public boolean isAccountNonLocked() {
-			return accountNonLocked == null ? false : accountNonLocked;
-		}
-
-		@Override
-		public boolean isCredentialsNonExpired() {
-			return credentialsNonExpired == null ? false : credentialsNonExpired;
-		}
-
-		@Override
-		public boolean isEnabled() {
-			return enabled == null ? false : enabled;
-		}
-
-		@Override
-		public String toString() {
-			return "Principal [id=" + id + ", username=" + username + ", email=" + email + ", authorities="
-					+ authorities + "]";
-		}
-	}
-	
-	public class AuthenticationImpl implements Authentication {
-		private static final long serialVersionUID = -1446199832307837361L;
-		/**
-		 * Gson序列化对象是根据对象的Field字段而不是根据JavaBean属性，所以这里还需有Field字段
-		 */
-		String name;
-		String password;
-		Set<String> authorities;
-		Object details;
-		Principal principal;
-		boolean authenticated;
-		
-		public AuthenticationImpl() {
-			this.principal = new Principal();
-			this.name = principal.username;
-			this.password = principal.password;
-			this.authorities = principal.authorities;
-		}
-		
-		@Override
-		public String getName() {
-			return this.name;
-		}
-
-		@Override
-		public Collection<? extends GrantedAuthority> getAuthorities() {
-			return principal.getAuthorities();
-		}
-
-		@Override
-		public Object getCredentials() {
-			return this.password;
-		}
-		
-		// 认证的时候存储密码，用过之后会擦除
-		public void eraseCredentials() {
-			this.password = null;
-			this.principal.password = null;
-		}
-
-		@Override
-		public Object getDetails() {
-			/*
-			 * Stores additional details about the authentication request.
-			 * These might be an IP address, certificate serial number etc.
-			 */
-			return this.details;
-		}
-		public void setDetails(Object details) {
-			this.details = details;
-		}
-
-		@Override
-		public Object getPrincipal() {
-			/*
-			 * The identity of the principal being authenticated. In the
-			 * case of an authentication request with username and password,
-			 * this would be the username. Callers are expected to populate
-			 * the principal for an authentication request.
-			 * 按照描述，getPrincipal()返回的应该是某种形式的用户名
-			 * 但是spring security需要在这个返回中获取更多的用户信息，结构是
-			 * org.springframework.security.core.userdetails.UserDetails
-			 */
-			return this.principal;
-		}
-
-		@Override
-		public boolean isAuthenticated() {
-			return authenticated;
-		}
-
-		@Override
-		public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-			this.authenticated = isAuthenticated;
-		}
-		
 	}
 
 }
