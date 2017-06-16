@@ -1,6 +1,7 @@
 package com.github.emailtohl.integration.user.service;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,7 +30,7 @@ public class SecurityContextManager {
 	 * com.github.emailtohl.integration.user.service.AuthenticationManagerImpl
 	 */
 	@Inject
-	public SecurityContextManager(AuthenticationManager authenticationManager) {
+	public SecurityContextManager(@Named("authenticationManagerImpl") AuthenticationManager authenticationManager) {
 		super();
 		this.authenticationManager = authenticationManager;
 	}

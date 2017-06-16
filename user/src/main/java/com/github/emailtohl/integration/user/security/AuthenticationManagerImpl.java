@@ -18,9 +18,8 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
-import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
+import com.github.emailtohl.integration.user.dao.UserRepository;
 import com.github.emailtohl.integration.user.entities.User;
-import com.github.emailtohl.integration.user.service.UserService;
 
 /**
  * 本类实现了AuthenticationManager
@@ -30,14 +29,14 @@ import com.github.emailtohl.integration.user.service.UserService;
 @Service
 public class AuthenticationManagerImpl implements AuthenticationManager {
 	private static final transient Logger logger = LogManager.getLogger();
-	private UserService userService;
+	private UserRepository userRepository;
 	private Encipher encipher = new Encipher();
 	private String privateKey;
 	
 	@Inject
-	public AuthenticationManagerImpl(UserService userService) {
+	public AuthenticationManagerImpl(UserRepository userRepository) {
 		super();
-		this.userService = userService;
+		this.userRepository = userRepository;
 	}
 
 	/**
@@ -55,10 +54,8 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 	}
 	
 	public Authentication authenticate(String email, String password) throws AuthenticationException {
-		User u = null;
-		try {
-			u = userService.getUserByEmail(email);
-		} catch (ResourceNotFoundException e) {
+		User u = userRepository.findByEmail(email);
+		if (u == null) {
 			logger.warn("Authentication failed for non-existent user {}.", email);
 			throw new UsernameNotFoundException("没有此用户");
 		}

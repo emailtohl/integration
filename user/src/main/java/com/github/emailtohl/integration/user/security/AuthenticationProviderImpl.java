@@ -6,7 +6,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.integration.user.service.UserService;
+import com.github.emailtohl.integration.user.dao.UserRepository;
 
 /**
  * 本类实现了AuthenticationManager
@@ -17,8 +17,8 @@ import com.github.emailtohl.integration.user.service.UserService;
 public class AuthenticationProviderImpl extends AuthenticationManagerImpl implements AuthenticationProvider {
 
 	@Inject
-	public AuthenticationProviderImpl(UserService userService) {
-		super(userService);
+	public AuthenticationProviderImpl(UserRepository userRepository) {
+		super(userRepository);
 	}
 
 	@Override

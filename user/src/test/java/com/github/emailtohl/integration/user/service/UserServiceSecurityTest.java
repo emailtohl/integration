@@ -31,7 +31,7 @@ import com.github.emailtohl.integration.user.userTestConfig.SecurityConfiguratio
  * @date 2017.06.15
  */
 @Transactional
-@Rollback(false)
+@Rollback(true)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SecurityConfiguration.class)
 @ActiveProfiles(DataSourceConfiguration.POSTGRESQL_DB)
