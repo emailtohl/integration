@@ -1,7 +1,6 @@
 package com.github.emailtohl.integration.user.service;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,8 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -22,7 +19,6 @@ import com.github.emailtohl.integration.user.UserTestData;
 import com.github.emailtohl.integration.user.entities.Customer;
 import com.github.emailtohl.integration.user.entities.Employee;
 import com.github.emailtohl.integration.user.entities.User;
-import com.github.emailtohl.integration.user.userTestConfig.DataSourceConfiguration;
 import com.github.emailtohl.integration.user.userTestConfig.SecurityConfiguration;
 
 /**
@@ -30,11 +26,8 @@ import com.github.emailtohl.integration.user.userTestConfig.SecurityConfiguratio
  * @author HeLei
  * @date 2017.06.15
  */
-@Transactional
-@Rollback(true)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SecurityConfiguration.class)
-@ActiveProfiles(DataSourceConfiguration.POSTGRESQL_DB)
 public class UserServiceSecurityTest {
 	@Inject
 	SecurityContextManager securityContextManager;
@@ -53,9 +46,13 @@ public class UserServiceSecurityTest {
 		securityContextManager.setEmailtohl();
 		td = new UserTestData();
 		employee = (Employee) userService.getUserByEmail(td.foo.getEmail());
-		employeeId = employee.getId();
+//		employeeId = employee.getId();
+		employeeId = 1L;
+		td.foo.setId(employeeId);
 		customer = (Customer) userService.getUserByEmail(td.baz.getEmail());
-		customerId = customer.getId();
+//		customerId = customer.getId();
+		customerId = 2L;
+		td.baz.setId(customerId);
 	}
 
 	@Test(expected = AuthenticationCredentialsNotFoundException.class)

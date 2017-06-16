@@ -11,17 +11,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.Constant;
-import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
+import com.github.emailtohl.integration.user.dao.UserRepository;
 import com.github.emailtohl.integration.user.entities.User;
-import com.github.emailtohl.integration.user.service.UserService;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-	UserService userService;
+	private UserRepository userRepository;
 	
 	@Inject
-	public UserDetailsServiceImpl(UserService userService) {
-		this.userService = userService;
+	public UserDetailsServiceImpl(UserRepository userRepository) {
+		this.userRepository = userRepository;
 	}
 	
 	private transient Pattern p = Pattern.compile(Constant.PATTERN_EMAIL);
@@ -33,10 +32,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			throw new UsernameNotFoundException("请使用正确邮箱");
 		}
 		String email = m.group(1);
-		User u;
-		try {
-			u = userService.getUserByEmail(email);
-		} catch (ResourceNotFoundException e) {
+		User u = userRepository.findByEmail(email);
+		if (u == null) {
 			throw new UsernameNotFoundException("没有此用户");
 		}
 		UserDetails d = new UserDetailsImpl(u);

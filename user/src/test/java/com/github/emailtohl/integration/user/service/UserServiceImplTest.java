@@ -22,9 +22,10 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -51,15 +52,15 @@ import javassist.NotFoundException;
  * @date 2017.02.04
  */
 @Transactional
-@Rollback(false)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceConfiguration.class)
-@ActiveProfiles(DataSourceConfiguration.POSTGRESQL_DB)
+@ActiveProfiles(DataSourceConfiguration.H2_RAM_DB)
 public class UserServiceImplTest {
 	static final Logger logger = LogManager.getLogger();
 	@Inject @Named("userServiceImpl") UserService userService;
 	@Inject RoleRepository roleRepository;
 	@Inject CleanAuditData cleanAuditData;
+	@Inject CacheManager cacheManager;
 	Gson gson = new Gson();
 	Employee emp;
 	Customer cus;
@@ -256,5 +257,34 @@ public class UserServiceImplTest {
 			fail("不能出现异常");
 		}
 	}
-
+	
+	@Test
+	public void testCache() throws ResourceNotFoundException {
+		UserTestData td = new UserTestData();
+		String email = td.foo.getEmail();
+		User u = userService.getUserByEmail(email);
+		assertNotNull(u);
+		// 打断点可以看见返回为null可以被缓存，且在第二次调用时直接返回了缓存结果
+		u = userService.getUserByEmail(email);
+		assertNotNull(u);
+		
+		Cache c = cacheManager.getCache(UserService.CACHE_NAME_USER);
+		Object v = c.get(email).get();
+		assertTrue(v instanceof Employee);
+		Employee e = (Employee) v;
+		assertEquals(email, e.getEmail());
+		
+		UserTestData td1 = new UserTestData();
+		td1.foo.setDescription("update");
+		
+		userService.mergeEmployee(email, td1.foo);
+		v = c.get(email).get();
+		e = (Employee) v;
+		assertEquals(td1.foo.getDescription(), e.getDescription());
+		
+		userService.mergeEmployee(email, td.foo);
+		v = c.get(email).get();
+		e = (Employee) v;
+		assertEquals(td.foo.getDescription(), e.getDescription());
+	}
 }
