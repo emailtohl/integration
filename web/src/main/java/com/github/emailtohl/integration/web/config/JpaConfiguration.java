@@ -1,9 +1,11 @@
-package com.github.emailtohl.integration.cms.cmsTestConfig;
+package com.github.emailtohl.integration.web.config;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.sql.DataSource;
 
 import org.hibernate.dialect.PostgreSQL9Dialect;
@@ -23,11 +25,14 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
- * 测试的spring上下文配置
+ * JPA Hibernate配置
  * @author HeLei
  * @date 2017.06.12
  */
@@ -36,14 +41,14 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 //这是SpringData的注解，启动后，它将扫描指定包中继承了Repository（实际业务代码中的接口是间接继承它）的接口，并为其提供代理
 //repositoryImplementationPostfix = "Impl" 扫描实现类的名字，若该类的名字为接口名+"Impl"，则认为该实现类将提供SpringData以外的功能
-@EnableJpaRepositories(basePackages = {"com.github.emailtohl.integration.user.dao", "com.github.emailtohl.integration.cms.dao"}, 
+@EnableJpaRepositories(basePackages = {"com.github.emailtohl.integration.user.dao", "com.github.emailtohl.integration.flow.dao"}, 
 		repositoryImplementationPostfix = "Impl", 
 		transactionManagerRef = "annotationDrivenTransactionManager", 
 		entityManagerFactoryRef = "entityManagerFactory")
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @Import(DataSourceConfiguration.class)
 class JpaConfiguration {
-	public static final String[] ENTITIES_PACKAGE = {"com.github.emailtohl.integration.user.entities", "com.github.emailtohl.integration.cms.entities"};
+	public static final String[] ENTITIES_PACKAGE = {"com.github.emailtohl.integration.user.entities", "com.github.emailtohl.integration.flow.entities"};
 	
 	/*
 	hibernate.hbm2ddl.auto参数的作用主要用于：自动创建|更新|验证数据库表结构。如果不是此方面的需求建议set value="none"。
@@ -56,22 +61,15 @@ class JpaConfiguration {
 	validate ：
 	每次加载hibernate时，验证创建数据库表结构，只会和数据库中的表进行比较，不会创建新表，但是会插入新值。
 	*/
-	public static final String hibernate_hbm2ddl_auto = "create-drop";
+	public static final String hibernate_hbm2ddl_auto = "update";
 	
 	@Inject
 	DataSource dataSource;
 	@Inject
 	Environment env;
-	
-	
-	/**
-	 * 初始化内存数据库
-	 * @return
-	 */
-	@Bean
-	public InitDataSource initEmbeddedDataSource() {
-		return new InitDataSource(entityManagerFactory().getObject());
-	}
+	@Inject
+	@Named("indexBase")
+	File indexBase;
 	
 	@Bean
 	public JdbcTemplate jdbcTemplate() {
@@ -105,7 +103,7 @@ class JpaConfiguration {
 		properties.put("hibernate.format_sql", "true");
 		// hibernate.search.default.directory_provider默认是filesystem
 		// 设置hibernate.search.default.indexBase可指定索引目录
-		properties.put("hibernate.search.default.directory_provider", "ram");
+		properties.put("hibernate.search.default.indexBase", indexBase.getAbsolutePath());
 		emfb.setJpaPropertyMap(properties);
 		return emfb;
 	}
@@ -130,7 +128,18 @@ class JpaConfiguration {
 		return new AuditorAware<String>() {
 			@Override
 			public String getCurrentAuditor() {
-				return "tester";
+				if (contains(DataSourceConfiguration.ENV_TEST_PATH)) {
+					return "tester";
+				}
+				String s = "";
+				SecurityContext c = SecurityContextHolder.getContext();
+				if (c != null) {
+					Authentication a = c.getAuthentication();
+					if (a != null) {
+						s = a.getName();
+					}
+				}
+				return s;
 			}
 		};
 	}

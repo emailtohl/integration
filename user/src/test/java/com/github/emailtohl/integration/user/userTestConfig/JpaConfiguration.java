@@ -81,19 +81,12 @@ class JpaConfiguration {
 	@Bean
 	public JpaVendorAdapter jpaVendorAdapter() {
 		HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
-		boolean b = false;
-		for (String apf : env.getActiveProfiles()) {
-			if (DataSourceConfiguration.POSTGRESQL_DB.equals(apf)) {
-				b = true;
-				break;
-			}
-		}
-		if (b) {
-			adapter.setDatabase(Database.POSTGRESQL);
-			adapter.setDatabasePlatform("org.hibernate.dialect.PostgreSQL94Dialect");
-		} else {
+		if (contains(DataSourceConfiguration.H2_RAM_DB)) {
 			adapter.setDatabase(Database.H2);
 			adapter.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
+		} else {
+			adapter.setDatabase(Database.POSTGRESQL);
+			adapter.setDatabasePlatform("org.hibernate.dialect.PostgreSQL94Dialect");
 		}
 		adapter.setShowSql(true);
 		adapter.setGenerateDdl(true);
@@ -162,17 +155,10 @@ class JpaConfiguration {
 	public LocalSessionFactoryBuilder sessionFactory() {
 		LocalSessionFactoryBuilder builder = new LocalSessionFactoryBuilder(dataSource);
 		builder.scanPackages("com.github.emailtohl.integration.common.testData");
-		boolean b = false;
-		for (String apf : env.getActiveProfiles()) {
-			if (DataSourceConfiguration.POSTGRESQL_DB.equals(apf)) {
-				b = true;
-				break;
-			}
-		}
-		if (b) {
-			builder.setProperty("hibernate.dialect", PostgreSQL9Dialect.class.getCanonicalName());
-		} else {
+		if (contains(DataSourceConfiguration.H2_RAM_DB)) {
 			builder.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+		} else {
+			builder.setProperty("hibernate.dialect", PostgreSQL9Dialect.class.getCanonicalName());
 		}
 		builder.setProperty("hibernate.dialect", PostgreSQL9Dialect.class.getCanonicalName());
 		builder.setProperty("hibernate.hbm2ddl.auto", hibernate_hbm2ddl_auto);
@@ -181,5 +167,19 @@ class JpaConfiguration {
 		// 设置hibernate.search.default.indexBase可指定索引目录
 		builder.setProperty("hibernate.search.default.directory_provider", "ram");
 		return builder;
+	}
+	
+	/**
+	 * 测试当前环境是否含有此名字
+	 * @param envName
+	 * @return
+	 */
+	public boolean contains(String envName) {
+		for (String s : env.getActiveProfiles()) {
+			if (envName.equals(s)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
