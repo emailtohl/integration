@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- http://logging.apache.org/log4j/2.x/manual/configuration.html -->
+<configuration status="INFO">
+	<appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+		<RollingFile name="cmsFileAppender" fileName="../logs/cms.log"
+			filePattern="../logs/cms-%d{MM-dd-yyyy}-%i.log">
+			<PatternLayout>
+				<pattern>%d{HH:mm:ss.SSS} [%t] %X{id} %X{username} %-5level
+					%c{36} %l: %msg%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="10 MB" />
+			</Policies>
+			<DefaultRolloverStrategy min="1" max="4" />
+		</RollingFile>
+	</appenders>
+	<loggers>
+		<root level="info">
+			<appender-ref ref="Console" />
+		</root>
+		<logger name="com.github.emailtohl.integration.cms" level="debug">
+			<appender-ref ref="Console" />
+		</logger>
+		<logger name="org.springframework.test" level="info">
+			<appender-ref ref="Console" />
+			<!-- <appender-ref ref="cmsFileAppender" /> -->
+		</logger>
+		<logger name="org.springframework.security" level="info">
+			<appender-ref ref="Console" />
+			<!-- <appender-ref ref="cmsFileAppender" /> -->
+		</logger>
+		<logger name="org.hibernate" level="info">
+			<appender-ref ref="Console" />
+			<!-- <appender-ref ref="cmsFileAppender" /> -->
+		</logger>
+		<logger name="org.apache" level="info">
+			<appender-ref ref="Console" />
+			<!-- <appender-ref ref="cmsFileAppender" /> -->
+		</logger>
+		<!-- <logger name="org.hibernate.type.descriptor.sql" level="TRACE" /> -->
+	</loggers>
+</configuration>

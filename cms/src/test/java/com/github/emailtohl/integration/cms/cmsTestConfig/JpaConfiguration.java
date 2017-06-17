@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.user.userTestConfig;
+package com.github.emailtohl.integration.cms.cmsTestConfig;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,14 +36,14 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 //这是SpringData的注解，启动后，它将扫描指定包中继承了Repository（实际业务代码中的接口是间接继承它）的接口，并为其提供代理
 //repositoryImplementationPostfix = "Impl" 扫描实现类的名字，若该类的名字为接口名+"Impl"，则认为该实现类将提供SpringData以外的功能
-@EnableJpaRepositories(basePackages = "com.github.emailtohl.integration.user.dao", 
+@EnableJpaRepositories(basePackages = "com.github.emailtohl.integration.cms.dao", 
 		repositoryImplementationPostfix = "Impl", 
 		transactionManagerRef = "annotationDrivenTransactionManager", 
 		entityManagerFactoryRef = "entityManagerFactory")
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @Import(DataSourceConfiguration.class)
 class JpaConfiguration {
-	public static final String[] ENTITIES_PACKAGE = {"com.github.emailtohl.integration.user.entities"};
+	public static final String[] ENTITIES_PACKAGE = {"com.github.emailtohl.integration.cms.entities"};
 	
 	/*
 	hibernate.hbm2ddl.auto参数的作用主要用于：自动创建|更新|验证数据库表结构。如果不是此方面的需求建议set value="none"。
@@ -100,17 +100,6 @@ class JpaConfiguration {
 		return adapter;
 	}
 	
-	/*
-	hibernate.hbm2ddl.auto参数的作用主要用于：自动创建|更新|验证数据库表结构。如果不是此方面的需求建议set value="none"。
-	create：
-	每次加载hibernate时都会删除上一次的生成的表，然后根据你的model类再重新来生成新表，哪怕两次没有任何改变也要这样执行，这就是导致数据库表数据丢失的一个重要原因。
-	create-drop ：
-	每次加载hibernate时根据model类生成表，但是sessionFactory一关闭,表就自动删除。
-	update：
-	最常用的属性，第一次加载hibernate时根据model类会自动建立起表的结构（前提是先建立好数据库），以后加载hibernate时根据 model类自动更新表结构，即使表结构改变了但表中的行仍然存在不会删除以前的行。要注意的是当部署到服务器后，表结构是不会被马上建立起来的，是要等 应用第一次运行起来后才会。
-	validate ：
-	每次加载hibernate时，验证创建数据库表结构，只会和数据库中的表进行比较，不会创建新表，但是会插入新值。
-	*/
 	@Bean(name = "entityManagerFactory")
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		LocalContainerEntityManagerFactoryBean emfb = new LocalContainerEntityManagerFactoryBean();

@@ -22,8 +22,41 @@
 			<version>1.0.0-RELEASE</version>
 		</dependency>
 		<dependency>
+			<groupId>com.github.emailtohl.integration</groupId>
+			<artifactId>integration-user</artifactId>
+			<version>1.0.0-RELEASE</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.github.emailtohl.integration</groupId>
+					<artifactId>integration-common</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -37,10 +70,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-oxm</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
