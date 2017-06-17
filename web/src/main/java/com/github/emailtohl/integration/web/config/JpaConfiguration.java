@@ -18,6 +18,7 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.orm.hibernate5.HibernateExceptionTranslator;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -111,6 +112,11 @@ class JpaConfiguration {
 	@Bean(name = "annotationDrivenTransactionManager")
 	public PlatformTransactionManager jpaTransactionManager() {
 		return new JpaTransactionManager(entityManagerFactory().getObject());
+	}
+	
+	@Bean
+	public DataSourceTransactionManager transactionManagerForTest() {
+		return new DataSourceTransactionManager(dataSource);
 	}
 	
 	/**

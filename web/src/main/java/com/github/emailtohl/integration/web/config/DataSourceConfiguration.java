@@ -20,6 +20,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
+import org.springframework.util.StringUtils;
 
 /**
  * 数据源配置
@@ -169,4 +170,16 @@ public class DataSourceConfiguration {
 		return index;
 	}
 
+	@Bean(name = "templatesPath")
+	public File templatesPath(@Named("root") File root) {
+		File templatesPath = new File(root, "templates");
+		if (!templatesPath.exists()) {
+			templatesPath.mkdir();
+		}
+		String path = env.getProperty("templatesPath");
+		if (StringUtils.hasText(path)) {
+			templatesPath = new File(path);
+		}
+		return templatesPath;
+	}
 }

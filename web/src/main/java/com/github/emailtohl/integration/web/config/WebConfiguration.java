@@ -29,11 +29,11 @@ import org.springframework.web.servlet.view.JstlView;
 // It also registers the PageableHandlerMethodArgumentResolver and SortHandlerMethodArgumentResolver beans, 
 // enabling conversion of Pageables and Sorts from request parameters
 @EnableSpringDataWebSupport
-@ComponentScan(basePackages = "com.github.emailtohl.building.site.controller", useDefaultFilters = false, includeFilters = @ComponentScan.Filter(Controller.class))
+@ComponentScan(basePackages = "com.github.emailtohl.integration.web", useDefaultFilters = false, includeFilters = @ComponentScan.Filter(Controller.class))
 @Import({ WebsocketConfiguration.class })
 public class WebConfiguration extends WebMvcConfigurerAdapter {
 	/**
-	 * RootContextConfiguration中定义的LocalValidatorFactoryBean继承了SpringValidatorAdapter
+	 * ServiceConfiguration中定义的LocalValidatorFactoryBean继承了SpringValidatorAdapter
 	 */
 	@Inject
 	SpringValidatorAdapter validator;
