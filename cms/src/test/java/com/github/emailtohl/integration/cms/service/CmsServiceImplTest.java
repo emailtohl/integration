@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,7 +32,6 @@ import com.github.emailtohl.integration.cms.entities.Comment;
 import com.github.emailtohl.integration.cms.entities.Type;
 import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
 import com.github.emailtohl.integration.common.jpa.Pager;
-import com.github.emailtohl.integration.user.service.SecurityContextManager;
 
 /**
  * cms的服务层实现
@@ -40,17 +40,16 @@ import com.github.emailtohl.integration.user.service.SecurityContextManager;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceConfiguration.class)
-@ActiveProfiles(DataSourceConfiguration.POSTGRESQL_DB)
+@ActiveProfiles(DataSourceConfiguration.H2_RAM_DB)
+@Transactional
 public class CmsServiceImplTest {
 	static final Logger logger = LogManager.getLogger();
 	final Pageable pageable = new PageRequest(0, 20);
 	@Inject CmsService cmsService;
 	@Inject CleanAuditData cleanAuditData;
-	@Inject SecurityContextManager securityContextManager;
 
 	@Before
 	public void setUp() throws Exception {
-		securityContextManager.setEmailtohl();
 	}
 
 	@After
@@ -81,7 +80,7 @@ public class CmsServiceImplTest {
 	public void testArticle() throws ResourceNotFoundException {
 		CmsTestData td = new CmsTestData();
 		Article a = new Article("test", "test", "test", "summary");
-		long id = cmsService.saveArticle(td.foo.getEmail(), a, td.subType.getName()).getId();
+		long id = cmsService.saveArticle(td.emailtohl.getEmail(), a, td.subType.getName()).getId();
 		assertTrue(id > 0);
 		a = cmsService.getArticle(id);
 		try {
@@ -107,16 +106,16 @@ public class CmsServiceImplTest {
 	public void testComment() {
 		CmsTestData td = new CmsTestData();
 		Article a = new Article("test", "test", "test", "summary");
-		long articleId = cmsService.saveArticle(td.foo.getEmail(), a, "noType").getId();
+		long articleId = cmsService.saveArticle(td.emailtohl.getEmail(), a, "noType").getId();
 		Article article = cmsService.saveComment(td.bar.getEmail(), articleId, "my comment");
 		assertFalse(article.getComments().isEmpty());
 		long commentId = article.getComments().get(0).getId();
 		try {
 			Comment c = cmsService.findComment(commentId);
 			assertEquals("my comment", c.getContent());
-			assertEquals(td.emailtohl.getUsername(), c.getCritics());
-			assertEquals(td.emailtohl.getIconSrc(), c.getIcon());
-			cmsService.updateComment(td.foo.getEmail(), commentId, "update");
+			assertEquals(td.bar.getUsername(), c.getCritics());
+			assertEquals(td.bar.getIconSrc(), c.getIcon());
+			cmsService.updateComment(td.bar.getEmail(), commentId, "update");
 			c = cmsService.findComment(commentId);
 			assertEquals("update", c.getContent());
 		} finally {
