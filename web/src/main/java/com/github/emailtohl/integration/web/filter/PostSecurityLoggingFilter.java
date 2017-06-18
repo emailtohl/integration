@@ -30,14 +30,12 @@ public class PostSecurityLoggingFilter implements Filter {
 	 * Default constructor.
 	 */
 	public PostSecurityLoggingFilter() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
 	 * @see Filter#destroy()
 	 */
 	public void destroy() {
-		// TODO Auto-generated method stub
 	}
 
 	/**

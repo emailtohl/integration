@@ -19,25 +19,22 @@
 	</appenders>
 	<loggers>
 		<root level="info">
+			<!-- 注：root已经关联了Console appender，所以其他目录就不需要再关联，
+			否则关联一次就多打印一次，也可以使用<logger additivity="false">关闭 -->
 			<appender-ref ref="Console" />
 		</root>
 		<logger name="com.github.emailtohl.integration.common" level="debug">
-			<appender-ref ref="Console" />
 		</logger>
 		<logger name="org.springframework.test" level="info">
-			<appender-ref ref="Console" />
 			<!-- <appender-ref ref="commonFileAppender" /> -->
 		</logger>
 		<logger name="org.springframework.security" level="info">
-			<appender-ref ref="Console" />
 			<!-- <appender-ref ref="commonFileAppender" /> -->
 		</logger>
 		<logger name="org.hibernate" level="info">
-			<appender-ref ref="Console" />
 			<!-- <appender-ref ref="commonFileAppender" /> -->
 		</logger>
 		<logger name="org.apache" level="info">
-			<appender-ref ref="Console" />
 			<!-- <appender-ref ref="commonFileAppender" /> -->
 		</logger>
 		<!-- <logger name="org.hibernate.type.descriptor.sql" level="TRACE" /> -->
