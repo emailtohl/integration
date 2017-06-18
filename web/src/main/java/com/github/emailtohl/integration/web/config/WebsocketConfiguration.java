@@ -20,7 +20,7 @@ import org.springframework.web.socket.handler.AbstractWebSocketHandler;
  * @date 2017.02.04
  */
 @EnableWebSocket
-public class WebsocketConfiguration implements WebSocketConfigurer {
+class WebsocketConfiguration implements WebSocketConfigurer {
 	@Bean
 	public WebSocketHandler testWebSocketHandler() {
 		return new TestWebSocketHandler();

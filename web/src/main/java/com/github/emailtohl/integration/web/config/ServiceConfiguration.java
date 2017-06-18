@@ -68,7 +68,7 @@ import freemarker.template.TemplateExceptionHandler;
 		"com.github.emailtohl.integration.web",
 	}, 
 	excludeFilters = @ComponentScan.Filter({ Controller.class, Configuration.class }))
-@Import({JpaConfiguration.class, ThreadConfiguration.class})
+@Import({JpaConfiguration.class, ThreadConfiguration.class, SecurityConfiguration.class})
 public class ServiceConfiguration implements TransactionManagementConfigurer, AsyncConfigurer, SchedulingConfigurer {
 	private static final Logger logger = LogManager.getLogger();
 

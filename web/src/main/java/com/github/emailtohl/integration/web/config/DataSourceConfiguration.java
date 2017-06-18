@@ -112,7 +112,7 @@ public class DataSourceConfiguration {
 	@Bean(name = "root")
 	public File projectRoot() {
 		File f = new File(getClass().getResource("/").getFile());
-		logger.debug("测试环境中的上下文根目录是：{}", f.getAbsolutePath());
+		logger.debug("项目根目录是：{}", f.getAbsolutePath());
 		return f;
 	}
 	
@@ -126,7 +126,7 @@ public class DataSourceConfiguration {
 	@Bean(name = "root")
 	public File webRoot(ServletContext servletContext) {
 		File f = new File(servletContext.getRealPath(""));
-		logger.debug("生产环境中的上下文根目录是：{}", f.getAbsolutePath());
+		logger.debug("web容器中的项目根目录是：{}", f.getAbsolutePath());
 		return f;
 	}
 	
