@@ -5,7 +5,7 @@
 	<artifactId>integration-flow</artifactId>
 	<packaging>jar</packaging>
 
-	<name>cms</name>
+	<name>flow</name>
 	
 	<parent>
 		<groupId>com.github.emailtohl.integration</groupId>

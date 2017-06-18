@@ -62,6 +62,7 @@ import freemarker.template.TemplateExceptionHandler;
 //如果满足，在name所命名的缓存空间中查找使用key存储的对象，如果找到，将找到的结果返回，如果没有找到执行方法，将方法的返回值以key-value对象的方式存入name缓存中，然后方法返回。
 @EnableCaching
 @ComponentScan(basePackages = {
+		"com.github.emailtohl.integration.message",
 		"com.github.emailtohl.integration.user",
 		"com.github.emailtohl.integration.cms",
 		"com.github.emailtohl.integration.flow",

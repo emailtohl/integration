@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @author HeLei
  * @date 2017.02.04
  */
-@Component
+@Component("cmsCleanAuditData")
 public class CleanAuditData {
 	@Inject JdbcTemplate jdbcTemplate;
 	private static final String delete_revinfo = "DELETE FROM revinfo WHERE rev = ?";

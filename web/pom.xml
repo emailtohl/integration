@@ -23,6 +23,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.github.emailtohl.integration</groupId>
+			<artifactId>integration-message</artifactId>
+			<version>1.0.0-RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.emailtohl.integration</groupId>
 			<artifactId>integration-user</artifactId>
 			<version>1.0.0-RELEASE</version>
 		</dependency>
