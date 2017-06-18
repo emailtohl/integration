@@ -33,12 +33,6 @@ import org.springframework.web.servlet.view.JstlView;
 @Import({ WebsocketConfiguration.class })
 public class WebConfiguration extends WebMvcConfigurerAdapter {
 	/**
-	 * ServiceConfiguration中定义的LocalValidatorFactoryBean继承了SpringValidatorAdapter
-	 */
-	@Inject
-	SpringValidatorAdapter validator;
-	
-	/**
 	 * ViewResolver根据模板名返回一个View接口，该接口的render(model, request, response)
 	 * 方法就是接受数据模型及Servlet的request和response对象，并结结合生成视图输出。
 	 * 
@@ -78,6 +72,11 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
 	}
 	
 	/**
+	 * ServiceConfiguration中定义的LocalValidatorFactoryBean继承了SpringValidatorAdapter
+	 */
+	@Inject
+	SpringValidatorAdapter validator;
+	/**
 	 * WebMvcConfigurerAdapter中的getValidator()返回的值是null所以spring mvc不会对表单进行校验
 	 * 现在覆盖该方法，告诉spring mvc校验器，这样就会对提交的表单进行校验了
 	 * @return 这里用全名是为了区分在RootContextConfiguration中使用的javax.validation.Validator
@@ -85,7 +84,7 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
 	 */
 	@Override
 	public org.springframework.validation.Validator getValidator() {
-		return this.validator;
+		return validator;
 	}
 	
 }

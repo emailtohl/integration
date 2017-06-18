@@ -64,13 +64,16 @@ import freemarker.template.TemplateExceptionHandler;
 @ComponentScan(basePackages = {
 		"com.github.emailtohl.integration.user",
 		"com.github.emailtohl.integration.cms",
-		"com.github.emailtohl.integration.flow"}, 
-excludeFilters = @ComponentScan.Filter({
-	Controller.class, Configuration.class }))
+		"com.github.emailtohl.integration.flow",
+	}, 
+	excludeFilters = @ComponentScan.Filter({ Controller.class, Configuration.class }))
 @Import({JpaConfiguration.class, ThreadConfiguration.class})
 public class ServiceConfiguration implements TransactionManagementConfigurer, AsyncConfigurer, SchedulingConfigurer {
 	private static final Logger logger = LogManager.getLogger();
 
+	/**
+	 * 由JpaConfiguration配置的Bean注入
+	 */
 	@Inject
 	@Named("annotationDrivenTransactionManager")
 	PlatformTransactionManager jpaTransactionManager;
@@ -80,7 +83,9 @@ public class ServiceConfiguration implements TransactionManagementConfigurer, As
 		return jpaTransactionManager;
 	}
 
-	
+	/**
+	 * 由ThreadConfiguration配置的Bean注入
+	 */
 	@Inject
 	ThreadPoolTaskScheduler taskScheduler;
 	/**
@@ -169,8 +174,12 @@ public class ServiceConfiguration implements TransactionManagementConfigurer, As
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
 		messageSource.setCacheSeconds(-1);// 指定时间刷新，默认是-1永不刷新
 		messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
-		messageSource.setBasenames("/WEB-INF/i18n/titles", "/WEB-INF/i18n/messages", "/WEB-INF/i18n/errors",
-				"/WEB-INF/i18n/validation");
+		messageSource.setBasenames(
+			"/WEB-INF/i18n/titles", 
+			"/WEB-INF/i18n/messages", 
+			"/WEB-INF/i18n/errors",
+			"/WEB-INF/i18n/validation"
+		);
 		return messageSource;
 	}
 	

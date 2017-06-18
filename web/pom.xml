@@ -25,12 +25,16 @@
 			<groupId>com.github.emailtohl.integration</groupId>
 			<artifactId>integration-user</artifactId>
 			<version>1.0.0-RELEASE</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.github.emailtohl.integration</groupId>
-					<artifactId>integration-common</artifactId>
-				</exclusion>
-			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.github.emailtohl.integration</groupId>
+			<artifactId>integration-cms</artifactId>
+			<version>1.0.0-RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.emailtohl.integration</groupId>
+			<artifactId>integration-flow</artifactId>
+			<version>1.0.0-RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>

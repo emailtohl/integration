@@ -18,13 +18,13 @@
 		</RollingFile>
 	</appenders>
 	<loggers>
-		<root level="info">
+		<root level="warn">
 			<appender-ref ref="Console" />
 		</root>
-		<logger name="com.github.emailtohl.integration.web" level="debug">
+		<logger name="com.github.emailtohl.integration.web" level="info">
 			<appender-ref ref="Console" />
 		</logger>
-		<logger name="org.springframework.test" level="info">
+		<logger name="org.springframework.test" level="warn">
 			<appender-ref ref="Console" />
 			<!-- <appender-ref ref="webFileAppender" /> -->
 		</logger>
@@ -32,7 +32,7 @@
 			<appender-ref ref="Console" />
 			<!-- <appender-ref ref="webFileAppender" /> -->
 		</logger>
-		<logger name="org.hibernate" level="info">
+		<logger name="org.hibernate" level="warn">
 			<appender-ref ref="Console" />
 			<!-- <appender-ref ref="webFileAppender" /> -->
 		</logger>

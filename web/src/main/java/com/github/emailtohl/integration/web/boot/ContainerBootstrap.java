@@ -39,37 +39,36 @@ public class ContainerBootstrap implements WebApplicationInitializer {
 				"/upload/*", "/templates/*", "*.html", "*.css", "*.js", "*.png", "*.gif", "*.jpg");
 
 		/* 配置Spring根应用上下文 */
-		AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
+		AnnotationConfigWebApplicationContext serviceContext = new AnnotationConfigWebApplicationContext();
 		/* 载入配置 */
-		rootContext.getEnvironment().setActiveProfiles(DataSourceConfiguration.JNDI_POSTGRESQL_DB, DataSourceConfiguration.ENV_SERVLET_PATH);// 激活spring配置中的profile
-		rootContext.register(ServiceConfiguration.class);
-		container.addListener(new ContextLoaderListener(rootContext));
+		serviceContext.getEnvironment().setActiveProfiles(DataSourceConfiguration.JNDI_POSTGRESQL_DB, DataSourceConfiguration.ENV_SERVLET_PATH);// 激活spring配置中的profile
+		serviceContext.register(ServiceConfiguration.class);
+		container.addListener(new ContextLoaderListener(serviceContext));
 
 		/*
 		 * 配置SpringMvc org.springframework.web.context.ContextLoaderListener.
 		 * ContextLoaderListener 可以自动将根应用上下文设置为DispatcherServlet的父上下文
 		 */
-		AnnotationConfigWebApplicationContext springServletContext = new AnnotationConfigWebApplicationContext();
+		AnnotationConfigWebApplicationContext webContext = new AnnotationConfigWebApplicationContext();
 		/* 载入配置 */
-		springServletContext.register(WebConfiguration.class);
+		webContext.register(WebConfiguration.class);
 		ServletRegistration.Dynamic dispatcher = container.addServlet("springDispatcher",
-				new DispatcherServlet(springServletContext));
+				new DispatcherServlet(webContext));
 		dispatcher.setLoadOnStartup(1);
 		/* 可以上传文件 */
 		dispatcher.setMultipartConfig(new MultipartConfigElement(null, 20_971_520L, 41_943_040L, 512_000));
 		dispatcher.addMapping("/");
 		// 另一种激活spring配置中的profile的方式
-//		dispatcher.setInitParameter("spring.profiles.active", PROFILE_PRODUCTION);
-//		container.setInitParameter("spring.profiles.active", PROFILE_PRODUCTION);
+//		dispatcher.setInitParameter("spring.profiles.active", DataSourceConfiguration.JNDI_POSTGRESQL_DB);
+//		container.setInitParameter("spring.profiles.active", DataSourceConfiguration.ENV_SERVLET_PATH);
 
 		/* 在Servlet容器中注册监听器 */
 		container.addListener(SessionListener.class);
 		
 		/* 在Servlet容器中注册过滤器 */
 		FilterRegistration.Dynamic registration = container.addFilter("characterEncodingFilter", new CharacterEncodingFilter("UTF-8"));
-		/* 第一个参数为null：响应默认的DispatcherType.REQUEST
-		         第二个参数为false，表明该filter将在web.xml中配置的任何filter之前
-		         第三个参数表明将响应所有地址 */
+		// 第一个参数为null：响应默认的DispatcherType.REQUEST
+		// 第二个参数为false，表明该filter将在web.xml中配置的任何filter之前 第三个参数表明将响应所有地址
 		registration.addMappingForUrlPatterns(null, false, "/*");
 		registration = container.addFilter("loggingFilter", new PreSecurityLoggingFilter());
 		registration.addMappingForUrlPatterns(null, false, "/*");

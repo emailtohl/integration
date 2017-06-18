@@ -42,14 +42,22 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 //这是SpringData的注解，启动后，它将扫描指定包中继承了Repository（实际业务代码中的接口是间接继承它）的接口，并为其提供代理
 //repositoryImplementationPostfix = "Impl" 扫描实现类的名字，若该类的名字为接口名+"Impl"，则认为该实现类将提供SpringData以外的功能
-@EnableJpaRepositories(basePackages = {"com.github.emailtohl.integration.user.dao", "com.github.emailtohl.integration.flow.dao"}, 
+@EnableJpaRepositories(basePackages = {
+		"com.github.emailtohl.integration.user.dao", 
+		"com.github.emailtohl.integration.cms.dao",
+		"com.github.emailtohl.integration.flow.dao",
+		}, 
 		repositoryImplementationPostfix = "Impl", 
 		transactionManagerRef = "annotationDrivenTransactionManager", 
 		entityManagerFactoryRef = "entityManagerFactory")
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @Import(DataSourceConfiguration.class)
 class JpaConfiguration {
-	public static final String[] ENTITIES_PACKAGE = {"com.github.emailtohl.integration.user.entities", "com.github.emailtohl.integration.flow.entities"};
+	public static final String[] ENTITIES_PACKAGE = {
+			"com.github.emailtohl.integration.user.entities", 
+			"com.github.emailtohl.integration.cms.entities",
+			"com.github.emailtohl.integration.flow.entities",
+	};
 	
 	/*
 	hibernate.hbm2ddl.auto参数的作用主要用于：自动创建|更新|验证数据库表结构。如果不是此方面的需求建议set value="none"。

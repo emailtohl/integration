@@ -32,7 +32,7 @@ import org.springframework.util.StringUtils;
 @PropertySource({ "classpath:database.properties", "classpath:config.properties" })
 public class DataSourceConfiguration {
 	private static final Logger logger = LogManager.getLogger();
-	public static final String JNDI_POSTGRESQL_DB = "postgresql_db";
+	public static final String JNDI_POSTGRESQL_DB = "jndi_postgresql_db";
 	public static final String POSTGRESQL_DB = "postgresql_db";
 	public static final String H2_RAM_DB = "h2_ram_db";
 	
@@ -136,7 +136,13 @@ public class DataSourceConfiguration {
 	 */
 	@Bean(name = "data")
 	public File dataPath(@Named("root") File root) {
-		File dataPath = new File(root, "data");
+		String path = env.getProperty("dataPath");
+		File dataPath;
+		if (StringUtils.hasText(path)) {
+			dataPath = new File(path);
+		} else {
+			dataPath = new File(root.getParentFile(), "data");
+		}
 		if (!dataPath.exists())
 			dataPath.mkdir();
 		return dataPath;
@@ -172,14 +178,15 @@ public class DataSourceConfiguration {
 
 	@Bean(name = "templatesPath")
 	public File templatesPath(@Named("root") File root) {
-		File templatesPath = new File(root, "templates");
-		if (!templatesPath.exists()) {
-			templatesPath.mkdir();
-		}
 		String path = env.getProperty("templatesPath");
+		File templatesPath;
 		if (StringUtils.hasText(path)) {
 			templatesPath = new File(path);
+		} else {
+			templatesPath = new File(root, "templates");
 		}
+		if (!templatesPath.exists())
+			templatesPath.mkdir();
 		return templatesPath;
 	}
 }

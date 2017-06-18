@@ -24,10 +24,4 @@ public class SecurityBootstrap extends AbstractSecurityWebApplicationInitializer
 		return true;
 	}
 	
-/*
-	@Override
-	protected Set<SessionTrackingMode> getSessionTrackingModes() {
-		return EnumSet.of(SessionTrackingMode.SSL);
-	}
-	*/
 }
