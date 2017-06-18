@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 这是JPA的配置文件，仅作参考，项目中的JPA配置均交与Spring管理，使用编程式配置
+ -->
+
 <persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
@@ -57,7 +61,7 @@
 			<property name="hibernate.connection.password" value="123456" />
 			<property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/integration" />
 			  -->
-			  
+			
 			<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
 			<property name="hibernate.connection.username" value="sa" />

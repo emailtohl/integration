@@ -46,7 +46,6 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
 import com.github.emailtohl.integration.common.lucene.FileSearch;
-import com.github.emailtohl.integration.user.userTestConfig.SecurityConfiguration;
 import com.github.emailtohl.integration.web.config.DataSourceConfiguration;
 import com.github.emailtohl.integration.web.config.ThreadConfiguration;
 
@@ -77,7 +76,7 @@ import freemarker.template.TemplateExceptionHandler;
 		"com.github.emailtohl.integration.web",
 	}, 
 	excludeFilters = @ComponentScan.Filter({ Controller.class, Configuration.class }))
-@Import({JpaConfiguration.class, ThreadConfiguration.class, SecurityConfiguration.class})
+@Import({JpaConfiguration.class, ThreadConfiguration.class})
 public class ServiceConfiguration implements TransactionManagementConfigurer, AsyncConfigurer, SchedulingConfigurer {
 	private static final Logger logger = LogManager.getLogger();
 
@@ -281,12 +280,13 @@ public class ServiceConfiguration implements TransactionManagementConfigurer, As
 		return rmiProxy;
 	}
 	
-	
 	/**
 	 * 测试配置
 	 * @param args
 	 */
 	public static void main(String[] args) {
+//		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("integration-unit");
+//		System.out.println(entityManagerFactory);
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		context.getEnvironment().setActiveProfiles(DataSourceConfiguration.H2_RAM_DB, DataSourceConfiguration.ENV_TEST_PATH);
 		context.register(ServiceConfiguration.class);

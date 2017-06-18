@@ -1,9 +1,9 @@
 package com.github.emailtohl.integration.web.webTestConfig;
 
-import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.sql.DataSource;
 
 import org.hibernate.dialect.PostgreSQL9Dialect;
@@ -16,11 +16,13 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.orm.hibernate5.HibernateExceptionTranslator;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalEntityManagerFactoryBean;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.Database;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -70,35 +72,7 @@ class JpaConfiguration {
 	DataSource dataSource;
 	@Inject
 	Environment env;
-	@Inject
-	@Named("indexBase")
-	File indexBase;
 	
-	@Bean
-	public JdbcTemplate jdbcTemplate() {
-		return new JdbcTemplate(dataSource);
-	}
-	
-	/**
-	 * 使用META-INFO/persistence.xml中的配置
-	 * @return
-	 */
-	@Bean(name = "entityManagerFactory")
-	public LocalEntityManagerFactoryBean entityManagerFactory() {
-		LocalEntityManagerFactoryBean emfb = new LocalEntityManagerFactoryBean();
-		emfb.setPersistenceUnitName("integration-unit");
-		return emfb;
-	}
-	
-	@Bean(name = "annotationDrivenTransactionManager")
-	public PlatformTransactionManager jpaTransactionManager() {
-		return new JpaTransactionManager(entityManagerFactory().getObject());
-	}
-	
-	@Bean
-	public DataSourceTransactionManager transactionManagerForTest() {
-		return new DataSourceTransactionManager(dataSource);
-	}
 	
 	/**
 	 * 创造测试数据
@@ -107,6 +81,48 @@ class JpaConfiguration {
 	@Bean
 	public InitDataSource initEmbeddedDataSource() {
 		return new InitDataSource(entityManagerFactory().getObject());
+	}
+	
+	@Bean
+	public JdbcTemplate jdbcTemplate() {
+		return new JdbcTemplate(dataSource);
+	}
+	
+	@Bean
+	public JpaVendorAdapter jpaVendorAdapter() {
+		HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+		if (contains(DataSourceConfiguration.H2_RAM_DB)) {
+			adapter.setDatabase(Database.H2);
+			adapter.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
+		} else {
+			adapter.setDatabase(Database.POSTGRESQL);
+			adapter.setDatabasePlatform("org.hibernate.dialect.PostgreSQL94Dialect");
+		}
+		adapter.setShowSql(true);
+		adapter.setGenerateDdl(true);
+		return adapter;
+	}
+	
+	@Bean(name = "entityManagerFactory")
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+		LocalContainerEntityManagerFactoryBean emfb = new LocalContainerEntityManagerFactoryBean();
+		emfb.setDataSource(dataSource);
+		emfb.setJpaVendorAdapter(jpaVendorAdapter());
+		// 实际上hibernate可以扫描类路径下有JPA注解的实体类，但是JPA规范并没有此功能，所以最好还是告诉它实际所在位置
+		emfb.setPackagesToScan(ENTITIES_PACKAGE);
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put("hibernate.hbm2ddl.auto", hibernate_hbm2ddl_auto);
+		properties.put("hibernate.format_sql", "true");
+		// hibernate.search.default.directory_provider默认是filesystem
+		// 设置hibernate.search.default.indexBase可指定索引目录
+		properties.put("hibernate.search.default.directory_provider", "ram");
+		emfb.setJpaPropertyMap(properties);
+		return emfb;
+	}
+	
+	@Bean(name = "annotationDrivenTransactionManager")
+	public PlatformTransactionManager jpaTransactionManager() {
+		return new JpaTransactionManager(entityManagerFactory().getObject());
 	}
 	
 	/**
