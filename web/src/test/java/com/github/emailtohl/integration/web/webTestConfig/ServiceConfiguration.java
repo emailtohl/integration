@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.web.config;
+package com.github.emailtohl.integration.web.webTestConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +9,7 @@ import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.sql.DataSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,6 +19,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -44,6 +46,9 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
 import com.github.emailtohl.integration.common.lucene.FileSearch;
+import com.github.emailtohl.integration.user.userTestConfig.SecurityConfiguration;
+import com.github.emailtohl.integration.web.config.DataSourceConfiguration;
+import com.github.emailtohl.integration.web.config.ThreadConfiguration;
 
 import freemarker.template.TemplateExceptionHandler;
 
@@ -274,5 +279,20 @@ public class ServiceConfiguration implements TransactionManagementConfigurer, As
 		rmiProxy.setServiceUrl("rmi://localhost:1199/authenticationServiceRMI");
 		rmiProxy.setServiceInterface(AuthenticationProvider.class);
 		return rmiProxy;
+	}
+	
+	
+	/**
+	 * 测试配置
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+		context.getEnvironment().setActiveProfiles(DataSourceConfiguration.H2_RAM_DB, DataSourceConfiguration.ENV_TEST_PATH);
+		context.register(ServiceConfiguration.class);
+		context.refresh();
+		DataSource ds = context.getBean(DataSource.class);
+		System.out.println(ds);
+		context.close();
 	}
 }

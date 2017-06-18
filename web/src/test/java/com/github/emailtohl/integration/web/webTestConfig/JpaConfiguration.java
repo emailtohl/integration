@@ -1,8 +1,6 @@
-package com.github.emailtohl.integration.web.config;
+package com.github.emailtohl.integration.web.webTestConfig;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -22,15 +20,11 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.orm.hibernate5.HibernateExceptionTranslator;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.JpaVendorAdapter;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.Database;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.orm.jpa.LocalEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import com.github.emailtohl.integration.web.config.DataSourceConfiguration;
 
 /**
  * JPA Hibernate配置
@@ -70,7 +64,7 @@ class JpaConfiguration {
 	validate ：
 	每次加载hibernate时，验证创建数据库表结构，只会和数据库中的表进行比较，不会创建新表，但是会插入新值。
 	*/
-	public static final String hibernate_hbm2ddl_auto = "update";
+	public static final String hibernate_hbm2ddl_auto = "create-drop";
 	
 	@Inject
 	DataSource dataSource;
@@ -85,35 +79,14 @@ class JpaConfiguration {
 		return new JdbcTemplate(dataSource);
 	}
 	
-	@Bean
-	public JpaVendorAdapter jpaVendorAdapter() {
-		HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
-		if (contains(DataSourceConfiguration.H2_RAM_DB)) {
-			adapter.setDatabase(Database.H2);
-			adapter.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
-		} else {
-			adapter.setDatabase(Database.POSTGRESQL);
-			adapter.setDatabasePlatform("org.hibernate.dialect.PostgreSQL94Dialect");
-		}
-		adapter.setShowSql(true);
-		adapter.setGenerateDdl(true);
-		return adapter;
-	}
-	
+	/**
+	 * 使用META-INFO/persistence.xml中的配置
+	 * @return
+	 */
 	@Bean(name = "entityManagerFactory")
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-		LocalContainerEntityManagerFactoryBean emfb = new LocalContainerEntityManagerFactoryBean();
-		emfb.setDataSource(dataSource);
-		emfb.setJpaVendorAdapter(jpaVendorAdapter());
-		// 实际上hibernate可以扫描类路径下有JPA注解的实体类，但是JPA规范并没有此功能，所以最好还是告诉它实际所在位置
-		emfb.setPackagesToScan(ENTITIES_PACKAGE);
-		Map<String, Object> properties = new HashMap<String, Object>();
-		properties.put("hibernate.hbm2ddl.auto", hibernate_hbm2ddl_auto);
-		properties.put("hibernate.format_sql", "true");
-		// hibernate.search.default.directory_provider默认是filesystem
-		// 设置hibernate.search.default.indexBase可指定索引目录
-		properties.put("hibernate.search.default.indexBase", indexBase.getAbsolutePath());
-		emfb.setJpaPropertyMap(properties);
+	public LocalEntityManagerFactoryBean entityManagerFactory() {
+		LocalEntityManagerFactoryBean emfb = new LocalEntityManagerFactoryBean();
+		emfb.setPersistenceUnitName("integration-unit");
 		return emfb;
 	}
 	
@@ -125,6 +98,15 @@ class JpaConfiguration {
 	@Bean
 	public DataSourceTransactionManager transactionManagerForTest() {
 		return new DataSourceTransactionManager(dataSource);
+	}
+	
+	/**
+	 * 创造测试数据
+	 * @return
+	 */
+	@Bean
+	public InitDataSource initEmbeddedDataSource() {
+		return new InitDataSource(entityManagerFactory().getObject());
 	}
 	
 	/**
@@ -142,18 +124,7 @@ class JpaConfiguration {
 		return new AuditorAware<String>() {
 			@Override
 			public String getCurrentAuditor() {
-				if (contains(DataSourceConfiguration.ENV_TEST_PATH)) {
-					return "tester";
-				}
-				String s = "";
-				SecurityContext c = SecurityContextHolder.getContext();
-				if (c != null) {
-					Authentication a = c.getAuthentication();
-					if (a != null) {
-						s = a.getName();
-					}
-				}
-				return s;
+				return "tester";
 			}
 		};
 	}
@@ -175,8 +146,7 @@ class JpaConfiguration {
 		builder.setProperty("hibernate.hbm2ddl.auto", hibernate_hbm2ddl_auto);
 		// hibernate.search.default.directory_provider默认是filesystem
 		// 设置hibernate.search.default.indexBase可指定索引目录
-		builder.setProperty("hibernate.search.default.directory_provider", "filesystem");
-		builder.setProperty("hibernate.search.default.indexBase", indexBase.getAbsolutePath());
+		builder.setProperty("hibernate.search.default.directory_provider", "ram");
 		return builder;
 	}
 	

@@ -17,7 +17,7 @@ import org.springframework.util.ErrorHandler;
  * @date 2017.06.17
  */
 @Configuration
-class ThreadConfiguration {
+public class ThreadConfiguration {
 	private static final Logger logger = LogManager.getLogger();
 	/**
 	 * Spring的ThreadPoolTaskScheduler既实现了TaskExecutor接口（对@Async注解的方法异步执行），又实现了TaskScheduler接口（对@Scheduled注解方法按计划执行）

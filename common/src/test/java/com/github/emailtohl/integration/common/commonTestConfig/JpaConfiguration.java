@@ -106,7 +106,7 @@ class JpaConfiguration {
 	}
 	
 	/**
-	 * 初始化内存数据库
+	 * 创造测试数据
 	 * @return
 	 */
 	@Bean
@@ -148,9 +148,7 @@ class JpaConfiguration {
 		} else {
 			builder.setProperty("hibernate.dialect", PostgreSQL9Dialect.class.getCanonicalName());
 		}
-		builder.setProperty("hibernate.dialect", PostgreSQL9Dialect.class.getCanonicalName());
 		builder.setProperty("hibernate.hbm2ddl.auto", hibernate_hbm2ddl_auto);
-		builder.setProperty("hibernate.search.default.directory_provider", "filesystem");
 		// hibernate.search.default.directory_provider默认是filesystem
 		// 设置hibernate.search.default.indexBase可指定索引目录
 		builder.setProperty("hibernate.search.default.directory_provider", "ram");

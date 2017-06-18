@@ -16,6 +16,9 @@ import javax.websocket.Decoder;
 import javax.websocket.EncodeException;
 import javax.websocket.Encoder;
 import javax.websocket.EndpointConfig;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 /**
  * 为websocket提供序列化支持，可在@ServerEndpoint的参数encoders和decoders中声明继承了本类的类
  * @author HeLei
@@ -24,6 +27,7 @@ import javax.websocket.EndpointConfig;
  * @param <T extends Serializable> 被序列化的类
  */
 public abstract class ObjectCoder<T extends Serializable> implements Encoder.BinaryStream<T>, Decoder.BinaryStream<T> {
+	private Logger logger = LogManager.getLogger();
 	/**
 	 * 持有对象的class
 	 */
@@ -74,7 +78,7 @@ public abstract class ObjectCoder<T extends Serializable> implements Encoder.Bin
 		try (ObjectInputStream oin = new ObjectInputStream(new BufferedInputStream(in))) {
 			obj = (T) oin.readObject();
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			logger.catching(e);
 		}
 		return obj;
 	}
