@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import javax.validation.constraints.Min;
 
 /**
@@ -16,7 +15,7 @@ import javax.validation.constraints.Min;
  */
 @org.hibernate.envers.Audited
 @Entity
-@Table(name = "t_employee")
+//@Table(name = "t_employee")
 public class Employee extends User {
 	private static final long serialVersionUID = 3500096827826710751L;
 	private Integer empNum;
