@@ -17,6 +17,35 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>com.github.emailtohl.integration</groupId>
+			<artifactId>integration-common</artifactId>
+			<version>1.0.0-RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.emailtohl.integration</groupId>
+			<artifactId>integration-message</artifactId>
+			<version>1.0.0-RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.emailtohl.integration</groupId>
+			<artifactId>integration-user</artifactId>
+			<version>1.0.0-RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.emailtohl.integration</groupId>
+			<artifactId>integration-cms</artifactId>
+			<version>1.0.0-RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.emailtohl.integration</groupId>
+			<artifactId>integration-flow</artifactId>
+			<version>1.0.0-RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.1.0</version>

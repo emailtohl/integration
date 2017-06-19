@@ -45,6 +45,19 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 class JpaConfiguration {
 	public static final String[] ENTITIES_PACKAGE = {"com.github.emailtohl.integration.user.entities"};
 	
+	/*
+	hibernate.hbm2ddl.auto参数的作用主要用于：自动创建|更新|验证数据库表结构。如果不是此方面的需求建议set value="none"。
+	create：
+	每次加载hibernate时都会删除上一次的生成的表，然后根据你的model类再重新来生成新表，哪怕两次没有任何改变也要这样执行，这就是导致数据库表数据丢失的一个重要原因。
+	create-drop ：
+	每次加载hibernate时根据model类生成表，但是sessionFactory一关闭,表就自动删除。
+	update：
+	最常用的属性，第一次加载hibernate时根据model类会自动建立起表的结构（前提是先建立好数据库），以后加载hibernate时根据 model类自动更新表结构，即使表结构改变了但表中的行仍然存在不会删除以前的行。要注意的是当部署到服务器后，表结构是不会被马上建立起来的，是要等 应用第一次运行起来后才会。
+	validate ：
+	每次加载hibernate时，验证创建数据库表结构，只会和数据库中的表进行比较，不会创建新表，但是会插入新值。
+	*/
+	public static final String hibernate_hbm2ddl_auto = "create-drop";
+	
 	@Inject
 	DataSource dataSource;
 	@Inject
@@ -52,7 +65,7 @@ class JpaConfiguration {
 	
 	
 	/**
-	 * 初始化内存数据库
+	 * 创造测试数据
 	 * @return
 	 */
 	@Bean
@@ -68,19 +81,12 @@ class JpaConfiguration {
 	@Bean
 	public JpaVendorAdapter jpaVendorAdapter() {
 		HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
-		boolean b = false;
-		for (String apf : env.getActiveProfiles()) {
-			if (DataSourceConfiguration.POSTGRESQL_DB.equals(apf)) {
-				b = true;
-				break;
-			}
-		}
-		if (b) {
-			adapter.setDatabase(Database.POSTGRESQL);
-			adapter.setDatabasePlatform("org.hibernate.dialect.PostgreSQL94Dialect");
-		} else {
+		if (contains(DataSourceConfiguration.H2_RAM_DB)) {
 			adapter.setDatabase(Database.H2);
 			adapter.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
+		} else {
+			adapter.setDatabase(Database.POSTGRESQL);
+			adapter.setDatabasePlatform("org.hibernate.dialect.PostgreSQL94Dialect");
 		}
 		adapter.setShowSql(true);
 		adapter.setGenerateDdl(true);
@@ -106,7 +112,7 @@ class JpaConfiguration {
 		// 实际上hibernate可以扫描类路径下有JPA注解的实体类，但是JPA规范并没有此功能，所以最好还是告诉它实际所在位置
 		emfb.setPackagesToScan(ENTITIES_PACKAGE);
 		Map<String, Object> properties = new HashMap<String, Object>();
-		properties.put("hibernate.hbm2ddl.auto", "create-drop");
+		properties.put("hibernate.hbm2ddl.auto", hibernate_hbm2ddl_auto);
 		properties.put("hibernate.format_sql", "true");
 		// hibernate.search.default.directory_provider默认是filesystem
 		// 设置hibernate.search.default.indexBase可指定索引目录
@@ -149,24 +155,29 @@ class JpaConfiguration {
 	public LocalSessionFactoryBuilder sessionFactory() {
 		LocalSessionFactoryBuilder builder = new LocalSessionFactoryBuilder(dataSource);
 		builder.scanPackages("com.github.emailtohl.integration.common.testData");
-		boolean b = false;
-		for (String apf : env.getActiveProfiles()) {
-			if (DataSourceConfiguration.POSTGRESQL_DB.equals(apf)) {
-				b = true;
-				break;
-			}
-		}
-		if (b) {
-			builder.setProperty("hibernate.dialect", PostgreSQL9Dialect.class.getCanonicalName());
-		} else {
+		if (contains(DataSourceConfiguration.H2_RAM_DB)) {
 			builder.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+		} else {
+			builder.setProperty("hibernate.dialect", PostgreSQL9Dialect.class.getCanonicalName());
 		}
-		builder.setProperty("hibernate.dialect", PostgreSQL9Dialect.class.getCanonicalName());
-		builder.setProperty("hibernate.hbm2ddl.auto", "update");
-		builder.setProperty("hibernate.search.default.directory_provider", "filesystem");
+		builder.setProperty("hibernate.hbm2ddl.auto", hibernate_hbm2ddl_auto);
 		// hibernate.search.default.directory_provider默认是filesystem
 		// 设置hibernate.search.default.indexBase可指定索引目录
 		builder.setProperty("hibernate.search.default.directory_provider", "ram");
 		return builder;
+	}
+	
+	/**
+	 * 测试当前环境是否含有此名字
+	 * @param envName
+	 * @return
+	 */
+	public boolean contains(String envName) {
+		for (String s : env.getActiveProfiles()) {
+			if (envName.equals(s)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
