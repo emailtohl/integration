@@ -49,7 +49,7 @@ public class LoginCtrl {
 	@Inject private EmailService emailService;
 	@Inject private ThreadPoolTaskScheduler taskScheduler;
 	@Inject private SessionRegistry sessionRegistry;
-	@Inject private Gson gson;
+	Gson gson = new Gson();
 	
 	/**
 	 * 忘记密码时，当发送邮件时，会记录一个token，该token有时效，过期会被清除

@@ -25,7 +25,7 @@
 		</root>
 		<logger name="com.github.emailtohl.integration.web" level="info">
 		</logger>
-		<logger name="org.springframework.test" level="warn">
+		<logger name="org.springframework" level="info">
 			<!-- <appender-ref ref="webFileAppender" /> -->
 		</logger>
 		<logger name="org.springframework.security" level="info">

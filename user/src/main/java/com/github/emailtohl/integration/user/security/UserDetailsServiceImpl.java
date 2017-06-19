@@ -13,7 +13,11 @@ import org.springframework.stereotype.Service;
 import com.github.emailtohl.integration.common.Constant;
 import com.github.emailtohl.integration.user.dao.UserRepository;
 import com.github.emailtohl.integration.user.entities.User;
-
+/**
+ * 本类实现了UserDetailsService
+ * @author HeLei
+ * @date 2017.06.15
+ */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 	private UserRepository userRepository;

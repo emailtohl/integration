@@ -16,20 +16,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.github.emailtohl.integration.user.dto.RoleDto;
 import com.github.emailtohl.integration.user.service.RoleService;
+import com.github.emailtohl.integration.web.config.DataSourceConfiguration;
+import com.github.emailtohl.integration.web.webTestConfig.ServiceConfiguration;
 import com.google.gson.Gson;
 /**
- * 业务类测试
+ * 本类中的测试并不依赖于Spring容器中的任何Bean
+ * 但是要让SpringJUnit4ClassRunner运行必须指定一个配置
  * @author HeLei
  * @date 2017.02.04
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = WebConfiguration.class)
+@ContextConfiguration(classes = ServiceConfiguration.class)
+@ActiveProfiles({ DataSourceConfiguration.H2_RAM_DB, DataSourceConfiguration.ENV_TEST_PATH })
 public class RoleCtrlTest {
 	Gson gson = new Gson();
 	

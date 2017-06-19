@@ -22,6 +22,7 @@ import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,15 +31,19 @@ import org.springframework.web.util.NestedServletException;
 
 import com.github.emailtohl.integration.user.service.UserService;
 import com.github.emailtohl.integration.web.WebTestData;
+import com.github.emailtohl.integration.web.config.DataSourceConfiguration;
 import com.github.emailtohl.integration.web.service.mail.EmailService;
+import com.github.emailtohl.integration.web.webTestConfig.ServiceConfiguration;
 import com.google.gson.Gson;
 /**
- * 业务类测试
+ * 本类测试依赖Spring容器中的localValidatorFactoryBean做校验
+ * 在classpath下，除了需要hibernate-validator外还需要org.glassfish.web中的javax.el
  * @author HeLei
  * @date 2017.02.04
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = WebConfiguration.class)
+@ContextConfiguration(classes = ServiceConfiguration.class)
+@ActiveProfiles({ DataSourceConfiguration.H2_RAM_DB, DataSourceConfiguration.ENV_TEST_PATH })
 public class LoginCtrlTest {
 	private static final Logger logger = LogManager.getLogger();
 	UserService userService = Mockito.mock(UserService.class, RETURNS_SMART_NULLS);
