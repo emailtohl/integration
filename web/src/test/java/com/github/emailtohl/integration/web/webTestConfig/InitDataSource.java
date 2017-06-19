@@ -5,7 +5,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import com.github.emailtohl.integration.cms.CmsTestData;
+import com.github.emailtohl.integration.web.WebTestData;
 
 /**
  * 初始化数据库
@@ -38,7 +38,7 @@ class InitDataSource {
 		if (!isInit) {
 			synchronized (InitDataSource.class) {
 				if (!isInit) {
-					CmsTestData td = new CmsTestData();
+					WebTestData td = new WebTestData();
 					EntityManager em = factory.createEntityManager();
 					em.getTransaction().begin();
 
