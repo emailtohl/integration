@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- 这是JPA的配置文件，仅作参考，项目中的JPA配置均交与Spring管理，使用编程式配置
+<!-- 
+JavaEE标准中，使用了JPA需要提供此配置文件，否则会一直提示错误。
+但项目中已经用Spring进行管理，所以此文件不再需要。
+此文件放于此处，仅作占位符和参考，对项目没有任何影响。
  -->
 
 <persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
