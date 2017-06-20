@@ -24,6 +24,7 @@
 		<module>user</module>
 		<module>cms</module>
 		<module>flow</module>
+		<module>conference</module>
 		<module>web</module>
 	</modules>
 

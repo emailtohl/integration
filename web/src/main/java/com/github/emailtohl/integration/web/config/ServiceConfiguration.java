@@ -69,6 +69,7 @@ import freemarker.template.TemplateExceptionHandler;
 		"com.github.emailtohl.integration.user",
 		"com.github.emailtohl.integration.cms",
 		"com.github.emailtohl.integration.flow",
+		"com.github.emailtohl.integration.conference",
 		"com.github.emailtohl.integration.web",
 	}, 
 	excludeFilters = @ComponentScan.Filter({ Controller.class, Configuration.class }))

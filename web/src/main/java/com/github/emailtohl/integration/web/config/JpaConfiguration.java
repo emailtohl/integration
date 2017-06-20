@@ -46,6 +46,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 		"com.github.emailtohl.integration.user.dao", 
 		"com.github.emailtohl.integration.cms.dao",
 		"com.github.emailtohl.integration.flow.dao",
+		"com.github.emailtohl.integration.conference.dao",
 		}, 
 		repositoryImplementationPostfix = "Impl", 
 		transactionManagerRef = "annotationDrivenTransactionManager", 
@@ -57,6 +58,7 @@ class JpaConfiguration {
 			"com.github.emailtohl.integration.user.entities", 
 			"com.github.emailtohl.integration.cms.entities",
 			"com.github.emailtohl.integration.flow.entities",
+			"com.github.emailtohl.integration.conference.entities",
 	};
 	
 	/*

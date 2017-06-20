@@ -42,6 +42,11 @@
 			<version>1.0.0-RELEASE</version>
 		</dependency>
 		<dependency>
+			<groupId>com.github.emailtohl.integration</groupId>
+			<artifactId>integration-conference</artifactId>
+			<version>1.0.0-RELEASE</version>
+		</dependency>
+		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
 			<scope>test</scope>
