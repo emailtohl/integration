@@ -22,7 +22,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.BeanUtils;
@@ -34,9 +33,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
@@ -46,18 +42,15 @@ import com.github.emailtohl.integration.user.entities.Role;
 import com.github.emailtohl.integration.user.entities.User;
 import com.github.emailtohl.integration.user.service.UserService;
 import com.github.emailtohl.integration.web.WebTestData;
-import com.github.emailtohl.integration.web.config.DataSourceConfiguration;
-import com.github.emailtohl.integration.web.webTestConfig.ServiceConfiguration;
 import com.google.gson.Gson;
 /**
  * 本类中的测试并不依赖于Spring容器中的任何Bean
- * 但是要让SpringJUnit4ClassRunner运行必须指定一个配置
  * @author HeLei
  * @date 2017.02.04
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = ServiceConfiguration.class)
-@ActiveProfiles({ DataSourceConfiguration.H2_RAM_DB, DataSourceConfiguration.ENV_TEST_PATH })
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = ServiceConfiguration.class)
+//@ActiveProfiles({ DataSourceConfiguration.H2_RAM_DB, DataSourceConfiguration.ENV_TEST_PATH })
 public class UserCtrlTest {
 	private static final Logger logger = LogManager.getLogger();
 	UserService userService = Mockito.mock(UserService.class, RETURNS_SMART_NULLS);

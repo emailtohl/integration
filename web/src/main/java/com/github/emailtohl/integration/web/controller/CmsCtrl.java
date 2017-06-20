@@ -41,7 +41,7 @@ import com.github.emailtohl.integration.common.exception.ResourceNotFoundExcepti
 import com.github.emailtohl.integration.common.jpa.Pager;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.web.dto.WebPage;
-import com.github.emailtohl.integration.web.exception.VerifyFailure;
+import com.github.emailtohl.integration.web.exception.VerifyFailureException;
 import com.google.gson.Gson;
 
 import freemarker.template.Configuration;
@@ -100,10 +100,10 @@ public class CmsCtrl {
 			for (ObjectError oe : e.getAllErrors()) {
 				logger.info(oe);
 			}
-			throw new VerifyFailure(e.toString());
+			throw new VerifyFailureException(e.toString());
 		}
 		Article a = new Article(form.title, form.keywords, form.body, form.summary);
-		cmsService.saveArticle(SecUtil.getCurrentUsername(), a, form.type);
+		cmsService.saveArticle(CtrlUtil.getCurrentUsername(), a, form.type);
 	}
 	
 	/**
@@ -159,7 +159,7 @@ public class CmsCtrl {
 			for (ObjectError oe : e.getAllErrors()) {
 				logger.info(oe);
 			}
-			throw new VerifyFailure(e.toString());
+			throw new VerifyFailureException(e.toString());
 		}
 		cmsService.updateArticle(id, form.title, form.keywords, form.body, form.summary, form.type);
 	}
@@ -248,7 +248,7 @@ public class CmsCtrl {
 	@RequestMapping(value = "cms/comment", method = POST)
 	public String saveComment(@RequestParam(required = true, name = "articleId") long articleId,
 			@RequestParam(required = true, name = "content") String content) {
-		cmsService.saveComment(SecUtil.getCurrentUsername(), articleId, content);
+		cmsService.saveComment(CtrlUtil.getCurrentUsername(), articleId, content);
 		return "redirect:/detail?id=" + articleId;
 	}
 	
@@ -260,7 +260,7 @@ public class CmsCtrl {
 	@RequestMapping(value = "cms/comment/{id}", method = PUT)
 	public String updateComment(@PathVariable("id") long id, 
 			@RequestParam(required = true, name = "commentContent") String commentContent) {
-		Article a = cmsService.updateComment(SecUtil.getCurrentUsername(), id, commentContent);
+		Article a = cmsService.updateComment(CtrlUtil.getCurrentUsername(), id, commentContent);
 		return "redirect:/detail?id=" + a.getId();
 	}
 	

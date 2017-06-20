@@ -35,12 +35,12 @@ public class EncryptionCtrl {
 	
 	@RequestMapping(value = "publicKey", method = POST)
 	public void uploadPublicKey(String publicKey) {
-		userService.setPublicKey(SecUtil.getCurrentUsername(), publicKey);
+		userService.setPublicKey(CtrlUtil.getCurrentUsername(), publicKey);
 	}
 	
 	@RequestMapping(value = "publicKey", method = DELETE)
 	public void deletePublicKey() {
-		userService.clearPublicKey(SecUtil.getCurrentUsername());
+		userService.clearPublicKey(CtrlUtil.getCurrentUsername());
 	}
 	
 	@RequestMapping(value = "serverPublicKey", method = GET)
@@ -70,7 +70,7 @@ public class EncryptionCtrl {
 		
 		User u = null;
 		try {
-			String email = SecUtil.getCurrentUsername();
+			String email = CtrlUtil.getCurrentUsername();
 			u = userService.getUserByEmail(email);
 		} catch (ResourceNotFoundException e) {
 			return null;

@@ -111,7 +111,11 @@ public class DataSourceConfiguration {
 	@Profile(ENV_TEST_PATH)
 	@Bean(name = "root")
 	public File projectRoot() {
-		File f = new File(getClass().getResource("/").getFile());
+//		File f = new File(getClass().getResource("/").getFile());
+		File f = new File("target");
+		if (!f.exists()) {
+			f.mkdirs();
+		}
 		logger.debug("项目根目录是：{}", f.getAbsolutePath());
 		return f;
 	}

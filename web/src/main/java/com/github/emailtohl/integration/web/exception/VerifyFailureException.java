@@ -8,26 +8,26 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @date 2017.02.04
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class VerifyFailure extends RestException {
+public class VerifyFailureException extends RestException {
 	private static final long serialVersionUID = 2104594800958968108L;
 
-	public VerifyFailure() {
+	public VerifyFailureException() {
 		super();
 	}
 
-	public VerifyFailure(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+	public VerifyFailureException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
 
-	public VerifyFailure(String message, Throwable cause) {
+	public VerifyFailureException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	public VerifyFailure(String message) {
+	public VerifyFailureException(String message) {
 		super(message);
 	}
 
-	public VerifyFailure(Throwable cause) {
+	public VerifyFailureException(Throwable cause) {
 		super(cause);
 	}
 	

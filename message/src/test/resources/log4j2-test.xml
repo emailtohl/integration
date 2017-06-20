@@ -25,7 +25,7 @@
 		</root>
 		<logger name="com.github.emailtohl.integration.message" level="debug">
 		</logger>
-		<logger name="org.springframework.test" level="info">
+		<logger name="org.springframework" level="info">
 			<!-- <appender-ref ref="messageFileAppender" /> -->
 		</logger>
 		<logger name="org.apache" level="info">

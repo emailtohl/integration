@@ -25,10 +25,7 @@
 		</root>
 		<logger name="com.github.emailtohl.integration.cms" level="debug">
 		</logger>
-		<logger name="org.springframework.test" level="info">
-			<!-- <appender-ref ref="cmsFileAppender" /> -->
-		</logger>
-		<logger name="org.springframework.security" level="info">
+		<logger name="org.springframework" level="info">
 			<!-- <appender-ref ref="cmsFileAppender" /> -->
 		</logger>
 		<logger name="org.hibernate" level="info">

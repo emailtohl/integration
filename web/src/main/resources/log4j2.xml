@@ -23,7 +23,7 @@
 			否则关联一次就多打印一次，也可以使用<logger additivity="false">关闭 -->
 			<appender-ref ref="Console" />
 		</root>
-		<logger name="com.github.emailtohl.integration.web" level="info">
+		<logger name="com.github.emailtohl.integration" level="info">
 		</logger>
 		<logger name="org.springframework" level="info">
 			<!-- <appender-ref ref="webFileAppender" /> -->

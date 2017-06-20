@@ -72,7 +72,7 @@ public class ApplicationFormCtrl {
 	@RequestMapping(value = "mine", method = RequestMethod.GET)
 	@ResponseBody
 	public Pager<ApplicationForm> findMyApplicationForm(@PageableDefault(page = 0, size = 10, sort = BaseEntity.CREATE_DATE_PROPERTY_NAME, direction = Direction.DESC) Pageable pageable) {
-		Page<ApplicationForm> page = applicationFormService.findApplicationFormByEmail(SecUtil.getCurrentUsername(), pageable);
+		Page<ApplicationForm> page = applicationFormService.findApplicationFormByEmail(CtrlUtil.getCurrentUsername(), pageable);
 		return new Pager<ApplicationForm>(page.getContent(), page.getTotalElements(), pageable.getPageNumber(), pageable.getPageSize());
 	}
 	
@@ -130,7 +130,7 @@ public class ApplicationFormCtrl {
 			}
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		long id = applicationFormService.application(SecUtil.getCurrentUsername(), af.getName(), af.getDescription());
+		long id = applicationFormService.application(CtrlUtil.getCurrentUsername(), af.getName(), af.getDescription());
 		String uri = ServletUriComponentsBuilder.fromCurrentServletMapping().path("/applicationForm/{id}")
 				.buildAndExpand(id).toString();
 		HttpHeaders headers = new HttpHeaders();
@@ -153,7 +153,7 @@ public class ApplicationFormCtrl {
 			}
 			return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
 		}
-		applicationFormService.transit(SecUtil.getCurrentUsername(), id, form.status, form.cause);
+		applicationFormService.transit(CtrlUtil.getCurrentUsername(), id, form.status, form.cause);
 		
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}

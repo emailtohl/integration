@@ -18,17 +18,14 @@
 		</RollingFile>
 	</appenders>
 	<loggers>
-		<root level="info">
+		<root level="warn">
 			<!-- 注：root已经关联了Console appender，所以其他目录就不需要再关联，
 			否则关联一次就多打印一次，也可以使用<logger additivity="false">关闭 -->
 			<appender-ref ref="Console" />
 		</root>
-		<logger name="com.github.emailtohl.integration.flow" level="debug">
+		<logger name="com.github.emailtohl.integration.flow" level="info">
 		</logger>
-		<logger name="org.springframework.test" level="info">
-			<!-- <appender-ref ref="flowFileAppender" /> -->
-		</logger>
-		<logger name="org.springframework.security" level="info">
+		<logger name="org.springframework" level="info">
 			<!-- <appender-ref ref="flowFileAppender" /> -->
 		</logger>
 		<logger name="org.hibernate" level="info">
