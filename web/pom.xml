@@ -19,32 +19,32 @@
 		<dependency>
 			<groupId>com.github.emailtohl.integration</groupId>
 			<artifactId>integration-common</artifactId>
-			<version>1.0.0-RELEASE</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.emailtohl.integration</groupId>
 			<artifactId>integration-message</artifactId>
-			<version>1.0.0-RELEASE</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.emailtohl.integration</groupId>
 			<artifactId>integration-user</artifactId>
-			<version>1.0.0-RELEASE</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.emailtohl.integration</groupId>
 			<artifactId>integration-cms</artifactId>
-			<version>1.0.0-RELEASE</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.emailtohl.integration</groupId>
 			<artifactId>integration-flow</artifactId>
-			<version>1.0.0-RELEASE</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.emailtohl.integration</groupId>
 			<artifactId>integration-conference</artifactId>
-			<version>1.0.0-RELEASE</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>

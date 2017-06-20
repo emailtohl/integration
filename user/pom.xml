@@ -19,7 +19,7 @@
 		<dependency>
 			<groupId>com.github.emailtohl.integration</groupId>
 			<artifactId>integration-common</artifactId>
-			<version>1.0.0-RELEASE</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
