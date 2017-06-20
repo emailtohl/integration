@@ -10,6 +10,7 @@ import java.time.LocalDate;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import javax.validation.Valid;
@@ -51,11 +52,11 @@ public class ForumPostCtrl {
 	public static final String IMAGE_DIR = "image_dir";
 	private UpDownloader upDownloader;
 	@Inject ForumPostService forumPostService;
-	@Inject File resourcePath;
+	@Inject @Named("resources") File resources;
 	
 	@PostConstruct
 	public void createIconDir() {
-		File f = new File(resourcePath, IMAGE_DIR);
+		File f = new File(resources, IMAGE_DIR);
 		if (!f.exists()) {
 			f.mkdir();
 		}
@@ -121,7 +122,7 @@ public class ForumPostCtrl {
 			// 第三个参数为空表示没有错误，不为空则会弹出一个对话框显示　error　message　的内容
 			html = "<script type=\"text/javascript\">window.parent.CKEDITOR.tools.callFunction(" + CKEditorFuncNum + ",'','上传的文件名冲突');</script>";
 		} else {
-			String url = absolutePath = UpDownloader.getRelativeRootURL(absolutePath, resourcePath.getAbsolutePath());
+			String url = absolutePath = UpDownloader.getRelativeRootURL(absolutePath, resources.getAbsolutePath());
 			html = "<script type=\"text/javascript\">window.parent.CKEDITOR.tools.callFunction(" + CKEditorFuncNum + ",'" + url + "','');</script>";
 		}
 		response.addHeader("X-Frame-OPTIONS", "SAMEORIGIN");
