@@ -115,12 +115,12 @@ requirejs(['jquery', 'jquery-ui'], function($) {
 	$(function() {
 		// Resolve conflict in jQuery UI tooltip with Bootstrap tooltip
 		$.widget.bridge('uibutton', $.ui.button);
-		// 加载页面主题需要的js文件
+		// 加载项目
 		require(['bootstrap', 'jquery-slimscroll', 'fastclick', 'adminlte', 'adminlte-app'], function() {
 			// 加载项目所需的框架
-			require(['angular', 'angular-animate', 'angular-cookies', 'angular-touch', 'ui-router'], function() {
-				// 加载项目
-				require(['app'], function() {
+			require(['angular', 'app'], function(angular) {
+				angular.element(document).ready(function() {
+					angular.bootstrap(document, [ 'app' ]);
 					console.log('app started');
 				});
 			});
