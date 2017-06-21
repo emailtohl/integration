@@ -134,5 +134,12 @@ define([
 				}
 			}
 		}])
+		.config(function($stateProvider, $urlRouterProvider) {
+			$urlRouterProvider.otherwise('/');
+		})
+		// withCredentials是一个设置在底层 XMLHttpRequest(AJAX)对象的标记，可以跨站访问时携带cookie
+		.config(function($httpProvider) {
+			$httpProvider.defaults.withCredentials = true;
+		})
 		;
 });

@@ -138,7 +138,9 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	 */
 	@Override
 	public void configure(WebSecurity security) {
-		security.ignoring().antMatchers("/lib/**")
+		security.ignoring()
+		.antMatchers("/**")// 开发测试阶段，忽略所有
+		.antMatchers("/lib/**")
 		.antMatchers("/common/**")
 		.antMatchers("/app/**")
 		.antMatchers("/download/**")
