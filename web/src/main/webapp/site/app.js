@@ -12,9 +12,15 @@ define([
 ], function(angular) {
 	return angular.module('app', [
 			'ui.router', 'ngAnimate', 'ngCookies', 'ngTouch',
+			/*'dashboardModule',*/
 			'commonModule',
-			/*'userModule',*/
-
+			'userModule',
+			'roleAuthCfgModule',
+			'crmModule',
+			'cmsModule',
+			'encryptionModule',
+			'applicationFormModule',
+			'forumModule',
 		])
 		.run(['$rootScope', '$state', '$stateParams', '$http', function($rootScope, $state, $stateParams, $http) {
 			// 让页面能同步状态，显示出该状态应有的效果，例如某菜单被激活的样式
@@ -127,5 +133,6 @@ define([
 					});
 				}
 			}
-		}]);
+		}])
+		;
 });
