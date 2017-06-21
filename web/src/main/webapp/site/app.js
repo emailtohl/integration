@@ -42,7 +42,8 @@ define([
 						this.fun = fun;
 					}
 				};
-				$http.get('authentication').success(function(data) {
+				$http.get('authentication').then(function(resp) {
+					var data = resp.data;
 					console.log('authentication:')
 					console.log(data);
 					$rootScope.authentication = data;
@@ -53,7 +54,14 @@ define([
 						promise.fun(data);
 					}
 
-				});
+				})
+				.catch(function(resp) {
+					
+				})
+				.finally(function() {
+					
+				})
+				;
 				return promise;
 			};
 			// 判断是否有此权限

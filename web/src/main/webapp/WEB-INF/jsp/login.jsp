@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Log in</title>
+  <title>AdminLTE 2 | Log in</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <!-- Bootstrap 3.3.6 -->
+  <!-- Bootstrap 3.3.7 -->
   <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="lib/fonts/font-awesome.min.css">
+  <link rel="stylesheet" href="lib/assets/css/font-awesome.min.css">
   <!-- Ionicons -->
-  <link rel="stylesheet" href="lib/fonts/ionicons.min.css">
+  <link rel="stylesheet" href="lib/assets/css/ionicons.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="lib/AdminLTE/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="lib/adminLTE/css/AdminLTE.min.css">
   <!-- iCheck -->
   <link rel="stylesheet" href="lib/iCheck/square/blue.css">
 
@@ -23,6 +23,10 @@
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
+
+  <!-- Google Font -->
+  <link rel="stylesheet" href="lib/assets/fonts/SourceSansPro.css">
+  <link rel="stylesheet" href="lib/select2/select2.min.css">
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
@@ -118,13 +122,13 @@
   <!-- /.modal-dialog -->
 </div>
 
-<!-- jquery-2.2.3.min.js -->
-<script src="lib/jquery/jquery-2.2.3.min.js"></script>
-<!-- Bootstrap 3.3.6 -->
+<!-- jquery-3.2.1.min.js -->
+<script src="lib/jquery/jquery-3.2.1.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
 <script src="lib/bootstrap/js/bootstrap.min.js"></script>
 <!-- iCheck -->
 <script src="lib/iCheck/icheck.min.js"></script>
-<!-- 我的RSA加密，保护用户登录密码 -->
+<!-- 我的RSA加密，保护用户登录密码  -->
 <script src="lib/cryptico-with-base64-myrsa-myaes.min.js"></script>
 <script>
   $(function () {
@@ -146,14 +150,14 @@
 	 email = $('input[name="email"]').val();
 	 _csrf = $('input[name="_csrf"]').val();
 	 if (!email || email.match(p) == null) {
-	  tip('请正确填写你的邮箱地址');
+	  tip('è¯·æ­£ç¡®å¡«åä½ çé®ç®±å°å');
 	  return false;
 	 }
 	 $.post('forgetPassword', {
 	  email : email,
 	  _csrf : _csrf
 	 });
-	 tip('请检查邮件，重置密码');
+	 tip('è¯·æ£æ¥é®ä»¶ï¼éç½®å¯ç ');
 	});
     /* 
 	$('form').on('submit', function(e) {
