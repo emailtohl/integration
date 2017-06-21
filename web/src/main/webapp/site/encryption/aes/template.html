@@ -1,0 +1,62 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    AES密钥
+    <small>AES密钥</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li ui-sref="dashboard"><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+    <li class="active">AES Key</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="box-body">
+      <div class="alert alert-danger alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+        	妥善保管私钥，否则无法解密服务器上的信息!
+      </div>
+    </div>
+ 	<div class="box-body pad">
+	    <form name="f">
+      	  <div class="box">
+      	    <div class="box-body">
+				<div class="form-group has-feedback" ng-class="{'has-success':f.aeskey.$valid,'has-error':f.aeskey.$invalid}">
+		          <label for="">密钥</label>
+		          <textarea class="form-control" name="aeskey" ng-model="ctrl.aesKey" placeholder="AES密钥" type="text" required="required"></textarea>
+				  <span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':f.aeskey.$valid,'glyphicon-warning-sign':f.aeskey.$invalid}"></span>
+				  <span ng-show="f.aeskey.$invalid">
+				  	<span style="color:red;">没有密钥无法解密信息</span>
+				  </span>
+				</div>
+      	    </div>
+      	    <div class="box-footer">
+      	    <!-- 
+      	    	<div class="form-group col-md-6">
+      	    		<label for="">密钥长度</label>
+      	    		<select class="form-control" ng-model="ctrl.bitLength" ng-options="obj.value as obj.name for obj in ctrl.bitEnum">
+      	    		</select>
+      	    	</div>
+      	    	 -->
+      	    	<div class="form-group col-md-6">
+      	    		创建密钥  <span class="label label-warning" ng-show="ctrl.isLocalStorage">已存储密钥</span>
+			    	<button type="button" class="form-control btn btn-primary" ng-click="ctrl.getKey()" ng-disabled="ctrl.isLocalStorage">计算</button>
+      	    	</div>
+      	    	<div class="form-group col-md-6">
+      	    		清除本地存储密钥
+			    	<button type="button" class="form-control btn btn-danger"  ng-click="ctrl.cleanLocalStorage()" ng-disabled="!ctrl.isLocalStorage">清除</button>
+      	    	</div>
+      	    </div>
+		  </div>
+	    </form>
+	  </div>
+	  
+	  <div>
+	  	<textarea class="textarea" name="plaintext" ng-model="ctrl.plaintext" ng-change="ctrl.plaintextChange()" placeholder="明文" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+	  </div>
+	  <div>
+	  	<textarea class="textarea" name="ciphertext" ng-change="ctrl.ciphertextChange()" ng-model="ctrl.ciphertext" placeholder="密文" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+	  </div>
+</section>

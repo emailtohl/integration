@@ -121,8 +121,8 @@ public class DataSourceConfiguration {
 	}
 	
 	/**
-	 * 项目目录
-	 * 在容器中可以返回容器的上下文根目录
+	 * 项目在目录
+	 * 在web容器中的根目录
 	 * @param servletContext 被注入进来的容器上下文
 	 * @return
 	 */
@@ -142,10 +142,14 @@ public class DataSourceConfiguration {
 	public File dataPath(@Named("root") File root) {
 		String path = env.getProperty("dataPath");
 		File dataPath;
-		if (StringUtils.hasText(path)) {
+		if (StringUtils.hasText(path)) {// 若有配置，则以配置为准
 			dataPath = new File(path);
-		} else {
-			dataPath = new File(root.getParentFile(), "data");
+		} else {// 如果没有配置，则相对于项目目录进行创建
+			if (contains(ENV_SERVLET_PATH)) {// 如果是在web容器中，为了避免发布时被清除，在上级目录中创建一个data目录
+				dataPath = new File(root.getParentFile(), "data");
+			} else {// 否则，应该是在测试环境下，那么就在本项目的target目录下创建一个data目录
+				dataPath = new File(root, "data");
+			}
 		}
 		if (!dataPath.exists())
 			dataPath.mkdir();
@@ -192,5 +196,19 @@ public class DataSourceConfiguration {
 		if (!templatesPath.exists())
 			templatesPath.mkdir();
 		return templatesPath;
+	}
+	
+	/**
+	 * 测试当前环境是否含有此名字
+	 * @param envName
+	 * @return
+	 */
+	public boolean contains(String envName) {
+		for (String s : env.getActiveProfiles()) {
+			if (envName.equals(s)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

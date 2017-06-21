@@ -1,0 +1,10 @@
+define(['cms/module',
+	'cms/resource/service',
+	'cms/resource/ctrl',
+	'cms/category/service',
+	'cms/category/ctrl',
+	'cms/article/service',
+	'cms/article/ctrl',
+	'cms/comment/service',
+	'cms/comment/ctrl',
+], function() {});

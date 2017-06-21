@@ -1,0 +1,79 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+            添加帖子
+    <small>论坛添加帖子</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li ui-sref="dashboard"><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+    <li class="active">add forum</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+  <div class="box-body" ng-if="!isAuthenticated()">
+    <div class="alert alert-danger alert-dismissible">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+      <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+      	请先登录，否则发帖无效!
+    </div>
+  </div>
+  <div class="row">
+    <form name="f">
+    <div class="col-md-12">
+      <div class="box box-info">
+     	  <div class="form-group has-feedback" ng-class="{'has-success':f.title.$valid,'has-warning':f.title.$error.required,'has-error':f.title.$error.minlength}">
+	        <label for="exampleInputEmail1">标题</label>
+	        <input type="text" placeholder="title" name="title" class="form-control" ng-model="ctrl.forumPost.title" required="required">
+	        <span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':f.title.$valid,'glyphicon-warning-sign':f.title.$error.required,'glyphicon-remove':f.title.$error.minlength}"></span>
+		    <span ng-show="f.title.$error.required">
+			This is a required field
+			</span>
+			<span ng-show="f.title.$error.minlength">
+			Minimum length required is 6
+			</span>
+			<span ng-show="f.title.$invalid">
+			This field is invalid
+			</span>
+	        <span class="glyphicon glyphicon-ok form-control-feedback"></span>
+	      </div>
+     	  <div class="form-group has-feedback">
+	        <label for="exampleInputEmail1">关键字</label>
+	        <input type="text" placeholder="keywords" name="keywords" class="form-control" ng-model="ctrl.forumPost.keywords">
+	      </div>
+      </div>
+      <div class="box box-info">
+        <div class="box-header">
+          <h3 class="box-title">CK Editor
+            <small>Advanced and full of features</small>
+          </h3>
+          <!-- tools box -->
+          <div class="pull-right box-tools">
+            <button type="button" class="btn btn-info btn-sm" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+              <i class="fa fa-minus"></i></button>
+            <button type="button" class="btn btn-info btn-sm" data-widget="remove" data-toggle="tooltip" title="Remove">
+              <i class="fa fa-times"></i></button>
+          </div>
+          <!-- /. tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body pad">
+           <textarea id="editor1" name="body" rows="10" cols="80" ng-model="ctrl.forumPost.body">
+               This is my textarea to be replaced with CKEditor.
+           </textarea>
+        </div>
+      </div>
+      <!-- /.box -->
+      <div class="box box-info">
+        <input type="submit" value="发帖" class="btn btn-primary btn-block" ng-disabled="f.$invalid || !ctrl.forumPost.body || !isAuthenticated()" ng-click="ctrl.submit()">
+      </div>
+    </div>
+    <!-- /.col-->
+    
+    </form>
+
+  </div>
+  <!-- ./row -->
+</section>
+

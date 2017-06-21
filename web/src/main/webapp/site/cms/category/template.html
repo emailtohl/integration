@@ -1,0 +1,106 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    CMS
+    <small>分类目录</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li ui-sref="dashboard"><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+    <li class="active">category</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+	<div class="row" ng-hide="ctrl.isDetail">
+        <div class="col-xs-12">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">文章类型</h3>
+              <div class="box-tools">
+		        <form ng-submit="ctrl.query()" class="input-group input-group-sm ng-pristine ng-valid" style="width: 150px;">
+		          <input name="table_search" ng-model="ctrl.queryParam.name" class="form-control pull-right ng-pristine ng-untouched ng-valid ng-empty" placeholder="Search title" type="text">
+		          <div class="input-group-btn">
+		            <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+		          </div>
+		        </form>
+		      </div>
+	          
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th class="col-md-1">序号</th>
+                  <th class="col-md-2">类型名</th>
+                  <th class="col-md-2">父类型</th>
+                  <th class="col-md-2">文章数</th>
+                  <th class="col-md-5">描述</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="x in ctrl.pager.content" style="cursor: pointer;" ng-click="ctrl.edit(x.id)">
+                  <td ng-bind="$index + 1" class="col-md-1"></td>
+                  <td ng-bind="x.name" class="col-md-2"></td>
+                  <td ng-bind="x.parent.name" class="col-md-2"></td>
+                  <td ng-bind="x.articles.length" class="col-md-2"></td>
+                  <td ng-bind="x.description" class="col-md-5"></td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                  <th class="col-md-1">序号</th>
+                  <th class="col-md-2">类型名</th>
+                  <th class="col-md-2">父类型</th>
+                  <th class="col-md-2">文章数</th>
+                  <th class="col-md-5">描述</th>
+                </tr>
+                </tfoot>
+              </table>
+              <pager page-number="ctrl.pager.pageNumber" total-pages="ctrl.pager.totalPages" button-count="5" on-click="ctrl.btnClick(pageNumber)">
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+          
+	      <div class="box-footer clearfix" >
+	      	<button type="button" class="btn btn-default pull-right" ng-click="ctrl.add()">新增</button>
+	      </div>
+	      
+        </div>
+	</div>
+
+	<div class="row" ng-show="ctrl.isDetail">
+	  <form role="form" name="f">
+		<div class="box-header">
+          <h3 class="box-title">详情</h3>
+          <button type="button" class="btn btn-warning pull-right" ng-click="ctrl.delete()" ng-if="hasAuthority('content_manager')">删除</button>
+        </div>
+	    <div class="box-body">
+	      <div class="form-group has-feedback" ng-class="{'has-success':f.name.$valid,'has-warning':f.name.$error.required,'has-error':f.name.$error.minlength}">
+	        <label for="">分类名</label>
+	        <input type="text" placeholder="name" name="name" class="form-control" ng-model="ctrl.form.name" required="required">
+	        <span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':f.name.$valid,'glyphicon-warning-sign':f.name.$error.required,'glyphicon-remove':f.name.$error.minlength}"></span>
+	      </div>
+	      <div class="form-group">
+	        <label for="">父类型</label>
+	        <select class="form-control select2" style="width: 100%;" select2 ng-model="ctrl.form.parent">
+		      <option value="">无</option>
+		      <option value="{{x.name}}" ng-repeat="x in ctrl.types | excludeSelf:ctrl.form.id">{{x.name}}</option>
+		    </select>
+	      </div>
+	      <div class="form-group">
+	        <label for="">描述</label>
+	        <textarea rows="3" placeholder="description" class="form-control" ng-model="ctrl.form.description"></textarea>
+	      </div>
+	    </div>
+	    <div class="box-footer clearfix">
+	      <button class="btn btn-default pull-left" ng-click="ctrl.back()">返回</button>
+	      <button class="btn btn-primary pull-right" ng-click="ctrl.submit()" ng-disabled="f.$invalid">提交</button>
+	    </div>
+	    <!-- /.box-body -->
+	  </form>
+	</div>
+
+</section>
