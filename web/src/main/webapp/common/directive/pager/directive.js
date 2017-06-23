@@ -12,8 +12,8 @@ define([ 'common/module' ], function(common) {
 	.directive('pager', function() {
 		function init($scope) {
 			// 查询页码，默认查询第一页
-			if (!$scope.pageNumber || $scope.pageNumber < 1) {
-				$scope.pageNumber = 1;
+			if (!$scope.pageNumber || $scope.pageNumber < 0) {
+				$scope.pageNumber = 0;
 			}
 			// 查询之后，如果没有查询到结果，总页数可能为0
 			if ($scope.totalPages == null || $scope.totalPages < 0) {
@@ -39,7 +39,7 @@ define([ 'common/module' ], function(common) {
 			link : function($scope, $element, $attrs) {
 				init($scope);
 				$scope.click = function(selectPageNum) {
-					if (selectPageNum < 1 || selectPageNum > $scope.totalPages
+					if (selectPageNum < 0 || selectPageNum >= $scope.totalPages
 							|| selectPageNum == $scope.pageNumber) {
 						return;
 					}
@@ -47,12 +47,12 @@ define([ 'common/module' ], function(common) {
 					$scope.onClick({pageNumber : selectPageNum});
 				};
 				$scope.previous = function() {
-					if ($scope.pageNumber > 1) {
+					if ($scope.pageNumber > 0) {
 						$scope.click($scope.pageNumber - 1);
 					}
 				};
 				$scope.next = function() {
-					if ($scope.pageNumber < $scope.totalPages) {
+					if ($scope.pageNumber < $scope.totalPages - 1) {
 						$scope.click($scope.pageNumber + 1);
 					}
 				};
@@ -89,27 +89,27 @@ define([ 'common/module' ], function(common) {
 						$scope.isShow = false;
 						return;
 					}
-					if (pageNumber > 1) {
+					if (pageNumber > 0) {
 						$scope.previousBtn = true;
 					} else {
 						$scope.previousBtn = false;
 					}
-					if (pageNumber < totalPages) {
+					if (pageNumber < totalPages - 1) {
 						$scope.nextBtn = true;
 					} else {
 						$scope.nextBtn = false;
 					}
 					$scope.pageNumArr = [];
-					if (totalPages - pageNumber + 1 > buttonCount) {
+					if (totalPages - pageNumber > buttonCount) {
 						$scope.more = true;
 						for (i = pageNumber, j = 0; j < buttonCount; i++, j++) {
 							$scope.pageNumArr.push(i);
 						}
 					} else {
 						$scope.more = false;
-						startItem = totalPages - buttonCount + 1;
-						if (startItem < 1) {
-							startItem = 1;
+						startItem = totalPages - buttonCount;
+						if (startItem < 0) {
+							startItem = 0;
 						}
 						for (i = startItem; i <= totalPages; i++) {
 							$scope.pageNumArr.push(i);

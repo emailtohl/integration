@@ -163,6 +163,6 @@ define([ 'common/module', 'common/service/util' ], function(commonModule) {
 		$httpProvider.interceptors.push('OverlayInterceptor');
 		$httpProvider.interceptors.push('ErrorInterceptor');
 		$httpProvider.interceptors.push('csrfTokenInterceptor');
-		$httpProvider.interceptors.push('pagerInterceptor');
+//		$httpProvider.interceptors.push('pagerInterceptor');
 	} ]);
 });

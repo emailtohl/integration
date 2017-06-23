@@ -8,17 +8,17 @@ define(['angular', 'ui-router', 'common/context'], function(angular) {
 			})
 			.state('applicationForm.submit', {
 				url: '/submit',
-				templateUrl: 'site/applicationForm/application/application.html',
+				templateUrl: 'site/applicationForm/application/template.html',
 				controller: 'ApplicationCtrl as ctrl'
 			})
 			.state('applicationForm.audit', {
 				url: '/audit',
-				templateUrl: 'site/applicationForm/audit/audit.html',
+				templateUrl: 'site/applicationForm/audit/template.html',
 				controller: 'ApplicationFormAuditCtrl as ctrl'
 			})
 			.state('applicationForm.history', {
 				url: '/history',
-				templateUrl: 'site/applicationForm/history/history.html',
+				templateUrl: 'site/applicationForm/history/template.html',
 				controller: 'ApplicationFormHistoryCtrl as ctrl'
 			});
 	});

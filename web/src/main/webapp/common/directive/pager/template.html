@@ -5,7 +5,7 @@
         <a href="javascript:void(0)" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a>
       </li>
       <li class="paginate_button" ng-repeat="pageNum in pageNumArr" ng-click="click(pageNum)" ng-class="getClass(pageNum)">
-        <a href="javascript:void(0)" aria-controls="example2" data-dt-idx="{{pageNum}}" tabindex="0">{{pageNum}}</a>
+        <a href="javascript:void(0)" aria-controls="example2" data-dt-idx="{{pageNum}}" tabindex="0">{{pageNum + 1}}</a>
       </li>
       <li class="paginate_button " ng-if="more" ng-click="clickMore()">
         <a href="javascript:void(0)" aria-controls="example2" data-dt-idx="10" tabindex="0">……</a>
