@@ -23,9 +23,9 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 		};
 		
 		self.query = function() {
-			service.queryComments(self.queryParam.query, self.queryParam.page).success(function(data) {
-				self.pager = data;
-				console.log(data);
+			service.queryComments(self.queryParam.query, self.queryParam.page).then(function(resp) {
+				self.pager = resp.data;
+				console.log(resp.data);
 				self.isDetail = false;
 			});
 		};
@@ -33,7 +33,8 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 		self.query();
 		
 		self.edit = function(id) {
-			service.findComment(id).success(function(data) {
+			service.findComment(id).then(function(resp) {
+				var data = resp.data;
 				console.log(data);
 				self.comment = data;
 				self.isDetail = true;
@@ -58,7 +59,7 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 		self.approvedComment = function() {
 			if (!self.comment.id)
 				return;
-			service.approvedComment(self.comment.id).success(function(data) {
+			service.approvedComment(self.comment.id).then(function(resp) {
 				self.comment.isApproved = true;
 			});
 		};
@@ -66,7 +67,7 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 		self.rejectComment = function() {
 			if (!self.comment.id)
 				return;
-			service.rejectComment(self.comment.id).success(function(data) {
+			service.rejectComment(self.comment.id).then(function(resp) {
 				self.comment.isApproved = false;
 			});
 		};
@@ -84,7 +85,7 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 			if (!self.comment.id)
 				return;
 			if (confirm('确定删除该评论吗？')) {
-				service.deleteComment(self.comment.id).success(function(data) {
+				service.deleteComment(self.comment.id).then(function(resp) {
 					self.query();
 				});
 			}

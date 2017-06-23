@@ -5,8 +5,8 @@ define(['cms/module', 'cms/article/service', 'cms/category/service', 'ckeditor',
 		const editorID = "article-editor";
 		var self = this, promise;
 		promise = $scope.getAuthentication();
-		categoryService.getTypes().success(function(data) {
-			self.types = data;
+		categoryService.getTypes().then(function(resp) {
+			self.types = resp.data;
 		});
 		
 		// 用于切换界面，详情状态就是新增和编辑，反之则是列表页面
@@ -18,9 +18,9 @@ define(['cms/module', 'cms/article/service', 'cms/category/service', 'ckeditor',
 		};
 		
 		self.query = function() {
-			service.search(self.queryParam.query, self.queryParam.page).success(function(data) {
-				self.pager = data;
-				console.log(data);
+			service.search(self.queryParam.query, self.queryParam.page).then(function(resp) {
+				self.pager = resp.data;
+				console.log(resp.data);
 				self.isDetail = false;
 			});
 		};
@@ -39,9 +39,9 @@ define(['cms/module', 'cms/article/service', 'cms/category/service', 'ckeditor',
 		};
 		
 		self.edit = function(id) {
-			service.findArticle(id).success(function(data) {
-				console.log(data);
-				self.article = data;
+			service.findArticle(id).then(function(resp) {
+				console.log(resp.data);
+				self.article = resp.data;
 				self.isDetail = true;
 				refresh();
 			});
@@ -58,12 +58,12 @@ define(['cms/module', 'cms/article/service', 'cms/category/service', 'ckeditor',
 		
 		self.submit = function() {
 			if (self.article.id) {
-				service.updateArticle(self.article.id, self.article).success(function(data) {
+				service.updateArticle(self.article.id, self.article).then(function(resp) {
 					self.query();
 					self.isDetail = false;
 				});
 			} else {
-				service.saveArticle(self.article).success(function(data) {
+				service.saveArticle(self.article).then(function(resp) {
 					self.query();
 					self.isDetail = false;
 				});
@@ -74,7 +74,7 @@ define(['cms/module', 'cms/article/service', 'cms/category/service', 'ckeditor',
 			if (!self.article.id)
 				return;
 			if (confirm('确定删除《' + self.article.title + '》吗？')) {
-				service.deleteArticle(self.article.id).success(function(data) {
+				service.deleteArticle(self.article.id).then(function(resp) {
 					self.query();
 				});
 			}
@@ -83,7 +83,7 @@ define(['cms/module', 'cms/article/service', 'cms/category/service', 'ckeditor',
 		self.approveArticle = function() {
 			if (!self.article.id)
 				return;
-			service.approveArticle(self.article.id).success(function(data) {
+			service.approveArticle(self.article.id).then(function(resp) {
 				self.article.isApproved = true;
 			});
 		};
@@ -91,7 +91,7 @@ define(['cms/module', 'cms/article/service', 'cms/category/service', 'ckeditor',
 		self.rejectArticle = function() {
 			if (!self.article.id)
 				return;
-			service.rejectArticle(self.article.id).success(function(data) {
+			service.rejectArticle(self.article.id).then(function(resp) {
 				self.article.isApproved = false;
 			});
 		};
@@ -99,7 +99,7 @@ define(['cms/module', 'cms/article/service', 'cms/category/service', 'ckeditor',
 		self.openComment = function() {
 			if (!self.article.id)
 				return;
-			service.openComment(self.article.id).success(function(data) {
+			service.openComment(self.article.id).then(function(resp) {
 				self.article.isComment = true;
 			});
 		};
@@ -107,7 +107,7 @@ define(['cms/module', 'cms/article/service', 'cms/category/service', 'ckeditor',
 		self.closeComment = function() {
 			if (!self.article.id)
 				return;
-			service.closeComment(self.article.id).success(function(data) {
+			service.closeComment(self.article.id).then(function(resp) {
 				self.article.isComment = false;
 			});
 		};

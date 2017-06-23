@@ -54,7 +54,7 @@ define(['forum/module', 'forum/add/service', 'ckeditor', 'ckeditorConfig'], func
 
 		self.submit = function() {
 			self.forumPost.email = $scope.authentication.username;
-			forumAddService.add(self.forumPost).success(function(data) {
+			forumAddService.add(self.forumPost).then(function(resp) {
 				self.forumPost = {};
 				$state.go('forum.search', {}, { reload : true });
 			});

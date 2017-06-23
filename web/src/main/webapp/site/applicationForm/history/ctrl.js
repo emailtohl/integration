@@ -38,9 +38,9 @@ define(['applicationForm/module', 'applicationForm/service', 'moment'], function
 				self.form.name,
 				self.form.status,
 				self.form.start,
-				self.form.end).success(
-				function(data) {
-					self.pager = data;
+				self.form.end).then(
+				function(resp) {
+					self.pager = resp.data;
 					console.log(self.pager);
 				});
 		};
@@ -59,8 +59,8 @@ define(['applicationForm/module', 'applicationForm/service', 'moment'], function
 			if (!$scope.hasAuthority('application_form_transit')) {
 				return;
 			}
-			applicationFormService.getHistoryById(id).success(function(data) {
-				self.detail = data;
+			applicationFormService.getHistoryById(id).then(function(resp) {
+				self.detail = resp.data;
 				self.modal.open = true;
 			});
 		};

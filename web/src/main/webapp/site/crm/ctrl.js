@@ -13,8 +13,8 @@ define(['crm/module', 'crm/service'], function(crmModule) {
 		self.form = JSON.parse(init);
 		self.customer = {};
 		function query() {
-			crmService.query(self.form).success(function(data) {
-				self.pager = data;
+			crmService.query(self.form).then(function(resp) {
+				self.pager = resp.data;
 			});
 		}
 		query();
@@ -30,8 +30,8 @@ define(['crm/module', 'crm/service'], function(crmModule) {
 		};
 		self.openModal = function(id) {
 			if (id) {// 有id表示编辑
-				crmService.get(id).success(function(data) {
-					self.customer = data;
+				crmService.get(id).then(function(resp) {
+					self.customer = resp.data;
 				});
 			} else {// 否则就是新增
 				self.customer = {};
@@ -44,11 +44,11 @@ define(['crm/module', 'crm/service'], function(crmModule) {
 			type : '',
 			whenConfirm : function() {
 				if (self.customer.id) {
-					crmService.update(self.customer).success(function(data) {
+					crmService.update(self.customer).then(function(resp) {
 						query();
 					});
 				} else {
-					crmService.add(self.customer).success(function(data) {
+					crmService.add(self.customer).then(function(resp) {
 						query();
 					});
 				}

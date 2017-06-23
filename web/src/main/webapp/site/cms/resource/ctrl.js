@@ -47,13 +47,13 @@ define(['jquery', 'cms/module', 'cms/resource/service', 'ztree'], function($, cm
 		// 加载根目录
 		getFileRoot();
 		// 获取所有的字符集
-		service.getAvailableCharsets().success(function(data) {
-			self.availableCharsets = data;
+		service.getAvailableCharsets().then(function(resp) {
+			self.availableCharsets = resp.data;
 		});
 		// 全文搜索整个文件系统，找出跟查询条件匹配的文件
 		self.query = function() {
-			service.query(self.queryParam).success(function(data) {
-				var zNodes = data;
+			service.query(self.queryParam).then(function(resp) {
+				var zNodes = resp.data;
 				rootName = zNodes.name;
 				zTreeObj = $.fn.zTree.init($("#resource-tree"), setting, zNodes);
 			});
@@ -65,7 +65,7 @@ define(['jquery', 'cms/module', 'cms/resource/service', 'ztree'], function($, cm
 			// 后台识别的是相对路径
 			var i = self.path.indexOf(rootName + '/');
 			var path = self.path.substring(i);
-			service.writeText(path, self.content, self.charset).success(function(data) {
+			service.writeText(path, self.content, self.charset).then(function(resp) {
 				getFileRoot(self.path);
 			});
 		};
@@ -87,8 +87,8 @@ define(['jquery', 'cms/module', 'cms/resource/service', 'ztree'], function($, cm
 		 * 获取根目录
 		 */
 		function getFileRoot(openPath) {
-			service.getFileRoot().success(function(data) {
-				var zNodes = data;
+			service.getFileRoot().then(function(resp) {
+				var zNodes = resp.data;
 				rootName = zNodes.name;
 				zNodes.open = true;
 				if (openPath) {
@@ -110,7 +110,7 @@ define(['jquery', 'cms/module', 'cms/resource/service', 'ztree'], function($, cm
 			}
 			if (confirm('确认删除吗？')) {
 				filename = ztreeutil.getFilePath(treeNode);
-				service['delete'](filename).success(function(data) {
+				service['delete'](filename).then(function(resp) {
 					getFileRoot(filename);
 				});
 			}
@@ -131,7 +131,7 @@ define(['jquery', 'cms/module', 'cms/resource/service', 'ztree'], function($, cm
 				} else {
 					destName = newName;
 				}
-				service.reName(srcName, destName).success(function(data) {
+				service.reName(srcName, destName).then(function(resp) {
 					getFileRoot(destName);
 				});
 			}
@@ -169,7 +169,7 @@ define(['jquery', 'cms/module', 'cms/resource/service', 'ztree'], function($, cm
 					*/
 					var dirName = ztreeutil.getFilePath(treeNode);
 					dirName += '/new node' + (newCount++);
-					service.createDir(dirName).success(function(data) {
+					service.createDir(dirName).then(function(resp) {
 						getFileRoot(dirName);
 					});
 					return false;
@@ -289,7 +289,8 @@ define(['jquery', 'cms/module', 'cms/resource/service', 'ztree'], function($, cm
 				, 'lib/codemirror/mode/javascript/javascript', 'lib/codemirror/mode/xml/xml'
 				, 'lib/codemirror/mode/diff/diff', 'lib/codemirror/mode/css/css'],
 				function(CodeMirror) {
-					service.loadText(path, self.charset).success(function(data) {
+					service.loadText(path, self.charset).then(function(resp) {
+						var data = resp.data;
 						var textarea = document.getElementById('cms-content-text');
 						textarea.innerHTML = '';
 						$('div.CodeMirror').remove();

@@ -29,7 +29,7 @@ define(['encryption/module', 'common/service/myaes', 'encryption/service'], func
 			self.isLocalStorage = false;
 		};
 		
-		service.testMessage().success(function(data) {
+		service.testMessage().then(function(resp) {
 			
 		});
 		

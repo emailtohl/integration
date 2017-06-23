@@ -13,8 +13,8 @@ define(['cms/module', 'cms/category/service'], function(cmsModule) {
 		};
 		
 		self.query = function() {
-			service.getTypePager(self.queryParam.name, self.queryParam.page).success(function(data) {
-				self.pager = data;
+			service.getTypePager(self.queryParam.name, self.queryParam.page).then(function(resp) {
+				self.pager = resp.data;
 				self.isDetail = false;
 			});
 		};
@@ -32,8 +32,8 @@ define(['cms/module', 'cms/category/service'], function(cmsModule) {
 		};
 		
 		self.edit = function(id) {
-			service.findTypeById(id).success(function(data) {
-				self.form = data;
+			service.findTypeById(id).then(function(resp) {
+				self.form = resp.data;
 				if (self.form.parent) {
 					self.form.parent = self.form.parent.name;
 				}
@@ -47,13 +47,13 @@ define(['cms/module', 'cms/category/service'], function(cmsModule) {
 		
 		self.submit = function() {
 			if (self.form.id) {
-				service.updateType(self.form.id, self.form).success(function(data) {
+				service.updateType(self.form.id, self.form).then(function(resp) {
 					self.query();
 					getTypes();
 					self.isDetail = false;
 				});
 			} else {
-				service.saveType(self.form).success(function(data) {
+				service.saveType(self.form).then(function(resp) {
 					self.query();
 					getTypes();
 					self.isDetail = false;
@@ -65,7 +65,7 @@ define(['cms/module', 'cms/category/service'], function(cmsModule) {
 			if (!self.form.id)
 				return;
 			if (confirm('确定删除' + self.form.name + '吗？')) {
-				service.deleteType(self.form.id).success(function(data) {
+				service.deleteType(self.form.id).then(function(resp) {
 					self.query();
 					getTypes();
 				});
@@ -73,8 +73,8 @@ define(['cms/module', 'cms/category/service'], function(cmsModule) {
 		};
 		
 		function getTypes() {
-			service.getTypes().success(function(data) {
-				self.types = data;
+			service.getTypes().then(function(resp) {
+				self.types = resp.data;
 			});
 		}
 	}])

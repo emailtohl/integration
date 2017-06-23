@@ -3,7 +3,7 @@ define([
 	/*'dashboard/context',*/
 	'common/context',
 	'user/context',
-	'roleAuthCfg/context',
+	'role/context',
 	'forum/context',
 	'applicationForm/context',
 	'crm/context',
@@ -15,7 +15,7 @@ define([
 			/*'dashboardModule',*/
 			'commonModule',
 			'userModule',
-			'roleAuthCfgModule',
+			'roleModule',
 			'crmModule',
 			'cmsModule',
 			'encryptionModule',

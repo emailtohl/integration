@@ -28,7 +28,7 @@ define(['encryption/module', 'common/service/myrsa', 'encryption/service'], func
 			}
 		};
 		self.uploadPublicKey = function() {
-			service.uploadPublicKey(self.publicKey).success(function(data) {
+			service.uploadPublicKey(self.publicKey).then(function(resp) {
 				alert('公钥上传成功');
 			});
 		};
@@ -38,23 +38,24 @@ define(['encryption/module', 'common/service/myrsa', 'encryption/service'], func
 			self.isLocalStorage = false;
 		};
 		self.deletePublicKey = function() {
-			service.deletePublicKey().success(function(data) {
+			service.deletePublicKey().then(function(resp) {
 				
 			});
 		};
 		self.submitEncryption = function() {
 			if (self.testMessage && self.serverPublicKey) {
 				var ciphertext = myrsa.encrypt(self.testMessage, self.serverPublicKey);
-				service.secret(ciphertext).success(function(data) {
+				service.secret(ciphertext).then(function(resp) {
 					alert('提交成功');
 				});
 			}
 		}
 		
-		service.getServerPublicKey().success(function(data) {
-			self.serverPublicKey = data.serverPublicKey;
+		service.getServerPublicKey().then(function(resp) {
+			self.serverPublicKey = resp.data.serverPublicKey;
 		});
-		service.testMessage().success(function(data) {
+		service.testMessage().then(function(resp) {
+			var data = resp.data;
 			console.log(data);
 			if (self.privateKey && data.ciphertext) {
 				self.testMessage = myrsa.decrypt(data.ciphertext, self.privateKey);

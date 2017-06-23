@@ -7,12 +7,12 @@ define(['forum/module', 'forum/search/service'], function(forumModule) {
 		var queryInput = $('form[name="fulltextsearch"]').find('input[name="search"]');
 		
 		if ($state.params.query && $state.params.query.trim()) {
-			forumSearchService.search($state.params.query, 1).success(function(data) {
-				self.pager = data;
+			forumSearchService.search($state.params.query, 1).then(function(resp) {
+				self.pager = resp.data;
 			});
 		} else {
-			forumSearchService.getPager(1).success(function(data) {
-				self.pager = data;
+			forumSearchService.getPager(1).then(function(resp) {
+				self.pager = resp.data;
 			});
 		}
 		
@@ -29,12 +29,12 @@ define(['forum/module', 'forum/search/service'], function(forumModule) {
 		self.search = function(pageNumber) {
 			var query = queryInput.val();
 			if (query && query.trim()) {
-				forumSearchService.search(query, pageNumber).success(function(data) {
-					self.pager = data;
+				forumSearchService.search(query, pageNumber).then(function(resp) {
+					self.pager = resp.data;
 				});
 			} else {
-				forumSearchService.getPager(pageNumber).success(function(data) {
-					self.pager = data;
+				forumSearchService.getPager(pageNumber).then(function(resp) {
+					self.pager = resp.data;
 				});
 			}
 		};
@@ -45,9 +45,9 @@ define(['forum/module', 'forum/search/service'], function(forumModule) {
 		self['delete'] = function(id, $event) {
 			$event.stopPropagation();
 			if (confirm('确定删除吗？')) {
-				forumSearchService['delete'](id).success(function(data) {
-					forumSearchService.getPager(1).success(function(data) {
-						self.pager = data;
+				forumSearchService['delete'](id).then(function(resp) {
+					forumSearchService.getPager(1).then(function(resp) {
+						self.pager = resp.data;
 					});
 				});
 			}

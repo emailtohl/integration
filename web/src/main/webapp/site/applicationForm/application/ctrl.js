@@ -10,7 +10,7 @@ define(['applicationForm/module', 'applicationForm/service'], function(applicati
 		$scope.getAuthentication();
 		self.form = self.form || {};
 		self.submit = function() {
-			applicationFormService.add(self.form).success(function(data) {
+			applicationFormService.add(self.form).then(function(resp) {
 				$state.go('applicationForm.audit', {}, { reload : true });
 			});
 		};
