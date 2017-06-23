@@ -1,4 +1,5 @@
-define(['crm/module',
+define([
+	'crm/module',
 	'crm/service',
 	'crm/ctrl',
 ], function() {});

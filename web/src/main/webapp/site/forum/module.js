@@ -9,13 +9,13 @@ define(['angular', 'ui-router', 'common/context'], function(angular) {
 				})
 				.state('forum.add', {
 					url: '/add',
-					templateUrl: 'site/forum/add/add.html',
-					controller: 'ForumAddCtrl as ctrl'
+					templateUrl: 'site/forum/add/template.html',
+					controller: 'ForumAdd as ctrl'
 				})
 				.state('forum.search', {
 					url: '/search/{query}',
-					templateUrl: 'site/forum/search/list.html',
-					controller: 'ForumSearchCtrl as ctrl'
+					templateUrl: 'site/forum/search/template.html',
+					controller: 'ForumSearch as ctrl'
 				});
 		});
 });

@@ -1,6 +1,6 @@
-define(['forum/module',
-	'forum/add/service',
-	'forum/add/forumAddCtrl',
-	'forum/search/service',
-	'forum/search/forumSearchCtrl',
+define([
+	'forum/module',
+	'forum/service',
+	'forum/add/ctrl',
+	'forum/search/ctrl',
 ], function() {});

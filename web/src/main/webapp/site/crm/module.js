@@ -4,8 +4,8 @@ define(['angular', 'ui-router', 'common/context'], function(angular) {
 			$stateProvider
 				.state('crm', {
 					url: '/crm',
-					templateUrl: 'site/crm/crm.html',
-					controller: 'CrmCtrl as ctrl'
+					templateUrl: 'site/crm/template.html',
+					controller: 'Crm as ctrl'
 				});
 		});
 });
