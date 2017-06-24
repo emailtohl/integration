@@ -1,5 +1,6 @@
 /**
  * 分页组件：生成页码按钮
+ * 序号从0开始，但页面显示还是从1开始
  * 实际上生成页码按钮，必要信息只有当前页和总页数，可以通过代码一次性生成
  * 不过这是静态的，但是当点击页码按钮后，查询结果会更新，这就需要重新生成页码按钮，这不符合angular的编程风格
  * 定义angular的指令后，只需监控当前页pageNumber和总页数totalPages，指令会自动更新页码按钮
@@ -26,7 +27,7 @@ define([ 'common/module' ], function(common) {
 		}
 		return {
 			restrict : 'EA',
-			templateUrl : 'common/directive/pager/template.html',
+			templateUrl : 'common/directive/pager0/template.html',
 			scope : {
 				pageNumber : '=',
 				totalPages : '=',
@@ -111,7 +112,7 @@ define([ 'common/module' ], function(common) {
 						if (startItem < 0) {
 							startItem = 0;
 						}
-						for (i = startItem; i <= totalPages; i++) {
+						for (i = startItem; i < totalPages; i++) {
 							$scope.pageNumArr.push(i);
 						}
 					}

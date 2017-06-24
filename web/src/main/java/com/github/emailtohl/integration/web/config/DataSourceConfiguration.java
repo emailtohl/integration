@@ -35,6 +35,10 @@ public class DataSourceConfiguration {
 	public static final String JNDI_POSTGRESQL_DB = "jndi_postgresql_db";
 	public static final String POSTGRESQL_DB = "postgresql_db";
 	public static final String H2_RAM_DB = "h2_ram_db";
+	// 在容器中的环境
+	public static final String ENV_SERVLET = "env_servlet";
+	// 在容器中的环境
+	public static final String ENV_NO_SERVLET = "env_no_servlet";
 	
 	/**
 	 * 静态配置方法，该方法将在最早执行，这样才能读取properties配置
@@ -96,21 +100,31 @@ public class DataSourceConfiguration {
 		return lookup.getDataSource("jdbc/integration");
 	}
 
+	/**
+	 * 在servlet容器中
+	 * @param servletContext
+	 * @return
+	 */
+	@Profile({ ENV_SERVLET })
 	@Bean(name = "root")
-	public File projectRoot() {
-//		File f = new File(getClass().getResource("/").getFile());
+	public File webRoot(ServletContext servletContext) {
+		File f = new File(servletContext.getRealPath(""));
+		logger.info("web容器中的项目根目录是：{}", f.getAbsolutePath());
+		return f;
+	}
+	
+	/**
+	 * 未在容器中
+	 * @return
+	 */
+	@Profile({ ENV_NO_SERVLET })
+	@Bean(name = "root")
+	public File root() {
 		File f = new File("target");
 		if (!f.exists()) {
 			f.mkdirs();
 		}
 		logger.debug("项目根目录是：{}", f.getAbsolutePath());
-		return f;
-	}
-	
-	@Bean(name = "root")
-	public File webRoot(ServletContext servletContext) {
-		File f = new File(servletContext.getRealPath(""));
-		logger.debug("web容器中的项目根目录是：{}", f.getAbsolutePath());
 		return f;
 	}
 	
@@ -125,7 +139,13 @@ public class DataSourceConfiguration {
 		if (StringUtils.hasText(path)) {// 若有配置，则以配置为准
 			dataPath = new File(path);
 		} else {// 如果没有配置，则相对于项目目录进行创建
-			dataPath = new File(root.getParentFile(), "data");
+			if (contains(ENV_SERVLET)) {
+				// 若在容器中，则在上级目录下创建数据目录
+				dataPath = new File(root.getParentFile(), "integration-data");
+			} else {
+				// 若不在容器中，则在当前目录下创建数据目录
+				dataPath = new File(root, "integration-data");
+			}
 		}
 		if (!dataPath.exists())
 			dataPath.mkdir();
@@ -137,6 +157,7 @@ public class DataSourceConfiguration {
 	 * @param servletContext 被注入进来的容器上下文
 	 * @return
 	 */
+	@Profile({ ENV_SERVLET })
 	@Bean(name = "resources")
 	public File resourcePath(@Named("root") File root) {
 		File resourcePath = new File(root, "resources");
@@ -172,5 +193,18 @@ public class DataSourceConfiguration {
 			templatesPath.mkdir();
 		return templatesPath;
 	}
-	
+
+	/**
+	 * 测试当前环境是否含有此名字
+	 * @param envName
+	 * @return
+	 */
+	public boolean contains(String envName) {
+		for (String s : env.getActiveProfiles()) {
+			if (envName.equals(s)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

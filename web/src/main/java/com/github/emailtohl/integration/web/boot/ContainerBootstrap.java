@@ -41,7 +41,10 @@ public class ContainerBootstrap implements WebApplicationInitializer {
 		/* 配置Spring根应用上下文 */
 		AnnotationConfigWebApplicationContext serviceContext = new AnnotationConfigWebApplicationContext();
 		/* 载入配置 */
-		serviceContext.getEnvironment().setActiveProfiles(DataSourceConfiguration.JNDI_POSTGRESQL_DB);// 激活spring配置中的profile
+		serviceContext.getEnvironment().setActiveProfiles(
+			DataSourceConfiguration.JNDI_POSTGRESQL_DB,
+			DataSourceConfiguration.ENV_SERVLET
+		);// 激活spring配置中的profile
 		serviceContext.register(ServiceConfiguration.class);
 		container.addListener(new ContextLoaderListener(serviceContext));
 
@@ -60,7 +63,7 @@ public class ContainerBootstrap implements WebApplicationInitializer {
 		dispatcher.addMapping("/");
 		// 另一种激活spring配置中的profile的方式
 //		dispatcher.setInitParameter("spring.profiles.active", DataSourceConfiguration.JNDI_POSTGRESQL_DB);
-//		container.setInitParameter("spring.profiles.active", DataSourceConfiguration.ENV_SERVLET_PATH);
+//		container.setInitParameter("spring.profiles.active", DataSourceConfiguration.ENV_SERVLET);
 
 		/* 在Servlet容器中注册监听器 */
 		container.addListener(SessionListener.class);

@@ -4,8 +4,8 @@ define(['user/module', 'user/service'], function(userModule) {
 			var self = this;
 			$scope.getAuthentication();
 			self.params = {
-				page: 1,
-				size: 10,
+				page: 0,
+				size: 5,
 			};
 			self.query = function() {
 				userService.getUserPager(self.params).then(function(resp) {
@@ -15,8 +15,8 @@ define(['user/module', 'user/service'], function(userModule) {
 			};
 			self.reset = function() {
 				self.params = {
-					page: 1,
-					size: 10,
+					page: 0,
+					size: 5,
 					enabled: '',
 				};
 			};

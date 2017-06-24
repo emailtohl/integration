@@ -96,7 +96,7 @@ public class DataSourceConfiguration {
 	}
 	
 	@Bean(name = "root")
-	public File projectRoot() {
+	public File root() {
 //		File f = new File(getClass().getResource("/").getFile());
 		File f = new File("target");
 		if (!f.exists()) {

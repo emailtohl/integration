@@ -6,6 +6,6 @@ require([
 	'common/service/util',
 	'common/service/ztree-util',
 	'common/directive/modal/directive',
-	'common/directive/pager/directive',
+	'common/directive/pager0/directive',
 	'common/directive/repeatfinish/directive',
 ]);

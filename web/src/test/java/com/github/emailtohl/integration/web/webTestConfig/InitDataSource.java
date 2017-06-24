@@ -22,14 +22,19 @@ class InitDataSource {
 	// 注意：这是为实际项目环境添加数据
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-		context.getEnvironment().setActiveProfiles(DataSourceConfiguration.POSTGRESQL_DB);
-		context.register(com.github.emailtohl.integration.web.config.JpaConfiguration.class);
+		context.getEnvironment().setActiveProfiles(
+			com.github.emailtohl.integration.web.config.DataSourceConfiguration.POSTGRESQL_DB,
+			com.github.emailtohl.integration.web.config.DataSourceConfiguration.ENV_NO_SERVLET
+		);
+		context.register(
+			com.github.emailtohl.integration.web.config.JpaConfiguration.class
+		);
 		context.refresh();
 		AutowireCapableBeanFactory factory = context.getAutowireCapableBeanFactory();
 		InitDataSource self = new InitDataSource();
 		factory.autowireBeanProperties(self, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
 		factory.initializeBean(self, "initDataSource");
-//		self.init();// @PostConstruct自动执行
+		// self.init();// @PostConstruct自动执行
 		context.close();
 	}
 	

@@ -6,12 +6,8 @@ define(['user/module', 'user/service'], function(userModule) {
 			$scope.getAuthentication();
 			self.getDetail = function(id) {
 				userService.getUserById(id).then(function(resp) {
-						self.detail = resp.data;
-					})
-					.error(function(data, status, fun, obj) {
-						console.log(data);
-						// location.replace('login');
-					});
+					self.detail = resp.data;
+				});
 			};
 			self.getDetail($state.params.id);
 			self.whenDone = function() {
