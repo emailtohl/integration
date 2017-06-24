@@ -288,7 +288,7 @@ public class ServiceConfiguration implements TransactionManagementConfigurer, As
 //		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("integration-unit");
 //		System.out.println(entityManagerFactory);
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-		context.getEnvironment().setActiveProfiles(DataSourceConfiguration.H2_RAM_DB, DataSourceConfiguration.ENV_TEST_PATH);
+		context.getEnvironment().setActiveProfiles(DataSourceConfiguration.H2_RAM_DB);
 		context.register(ServiceConfiguration.class);
 		context.refresh();
 		DataSource ds = context.getBean(DataSource.class);

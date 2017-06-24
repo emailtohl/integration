@@ -31,8 +31,8 @@ import org.springframework.web.util.NestedServletException;
 
 import com.github.emailtohl.integration.user.service.UserService;
 import com.github.emailtohl.integration.web.WebTestData;
-import com.github.emailtohl.integration.web.config.DataSourceConfiguration;
 import com.github.emailtohl.integration.web.service.mail.EmailService;
+import com.github.emailtohl.integration.web.webTestConfig.DataSourceConfiguration;
 import com.github.emailtohl.integration.web.webTestConfig.ServiceConfiguration;
 import com.google.gson.Gson;
 /**
@@ -43,7 +43,7 @@ import com.google.gson.Gson;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceConfiguration.class)
-@ActiveProfiles({ DataSourceConfiguration.H2_RAM_DB, DataSourceConfiguration.ENV_TEST_PATH })
+@ActiveProfiles({ DataSourceConfiguration.H2_RAM_DB })
 public class LoginCtrlTest {
 	private static final Logger logger = LogManager.getLogger();
 	UserService userService = Mockito.mock(UserService.class, RETURNS_SMART_NULLS);

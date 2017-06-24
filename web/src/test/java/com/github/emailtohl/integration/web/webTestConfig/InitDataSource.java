@@ -5,6 +5,9 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 import com.github.emailtohl.integration.web.WebTestData;
 
 /**
@@ -15,9 +18,24 @@ import com.github.emailtohl.integration.web.WebTestData;
  */
 //@Component 如果是自动扫描则不容易理解，显示地写在配置文件中
 class InitDataSource {
+	
+	// 注意：这是为实际项目环境添加数据
+	public static void main(String[] args) {
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+		context.getEnvironment().setActiveProfiles(DataSourceConfiguration.POSTGRESQL_DB);
+		context.register(com.github.emailtohl.integration.web.config.JpaConfiguration.class);
+		context.refresh();
+		AutowireCapableBeanFactory factory = context.getAutowireCapableBeanFactory();
+		InitDataSource self = new InitDataSource();
+		factory.autowireBeanProperties(self, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
+		factory.initializeBean(self, "initDataSource");
+//		self.init();// @PostConstruct自动执行
+		context.close();
+	}
+	
 	@Inject
 	EntityManagerFactory factory;
-	
+
 	public InitDataSource() {}
 
 	public InitDataSource(EntityManagerFactory factory) {
@@ -90,5 +108,5 @@ class InitDataSource {
 			}
 		}
 	}
-
+	
 }

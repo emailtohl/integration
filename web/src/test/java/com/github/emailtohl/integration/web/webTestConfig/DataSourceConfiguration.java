@@ -1,10 +1,9 @@
-package com.github.emailtohl.integration.web.config;
+package com.github.emailtohl.integration.web.webTestConfig;
 
 import java.io.File;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +28,7 @@ import org.springframework.util.StringUtils;
  * @date 2017.06.12
  */
 @Configuration
-@PropertySource({ "classpath:database.properties", "classpath:config.properties" })
+@PropertySource({ "classpath:database_test.properties", "classpath:config.properties" })
 public class DataSourceConfiguration {
 	private static final Logger logger = LogManager.getLogger();
 	public static final String JNDI_POSTGRESQL_DB = "jndi_postgresql_db";
@@ -95,7 +94,7 @@ public class DataSourceConfiguration {
 		JndiDataSourceLookup lookup = new JndiDataSourceLookup();
 		return lookup.getDataSource("jdbc/integration");
 	}
-
+	
 	@Bean(name = "root")
 	public File projectRoot() {
 //		File f = new File(getClass().getResource("/").getFile());
@@ -104,13 +103,6 @@ public class DataSourceConfiguration {
 			f.mkdirs();
 		}
 		logger.debug("项目根目录是：{}", f.getAbsolutePath());
-		return f;
-	}
-	
-	@Bean(name = "root")
-	public File webRoot(ServletContext servletContext) {
-		File f = new File(servletContext.getRealPath(""));
-		logger.debug("web容器中的项目根目录是：{}", f.getAbsolutePath());
 		return f;
 	}
 	
@@ -125,24 +117,11 @@ public class DataSourceConfiguration {
 		if (StringUtils.hasText(path)) {// 若有配置，则以配置为准
 			dataPath = new File(path);
 		} else {// 如果没有配置，则相对于项目目录进行创建
-			dataPath = new File(root.getParentFile(), "data");
+			dataPath = new File(root, "data");
 		}
 		if (!dataPath.exists())
 			dataPath.mkdir();
 		return dataPath;
-	}
-	
-	/**
-	 * web资源目录
-	 * @param servletContext 被注入进来的容器上下文
-	 * @return
-	 */
-	@Bean(name = "resources")
-	public File resourcePath(@Named("root") File root) {
-		File resourcePath = new File(root, "resources");
-		if (!resourcePath.exists())
-			resourcePath.mkdir();
-		return resourcePath;
 	}
 	
 	/**

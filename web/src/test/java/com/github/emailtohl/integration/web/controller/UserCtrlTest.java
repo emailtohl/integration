@@ -50,7 +50,7 @@ import com.google.gson.Gson;
  */
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes = ServiceConfiguration.class)
-//@ActiveProfiles({ DataSourceConfiguration.H2_RAM_DB, DataSourceConfiguration.ENV_TEST_PATH })
+//@ActiveProfiles({ DataSourceConfiguration.H2_RAM_DB })
 public class UserCtrlTest {
 	private static final Logger logger = LogManager.getLogger();
 	UserService userService = Mockito.mock(UserService.class, RETURNS_SMART_NULLS);

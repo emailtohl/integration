@@ -19,7 +19,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.web.WebTestData;
-import com.github.emailtohl.integration.web.config.DataSourceConfiguration;
+import com.github.emailtohl.integration.web.webTestConfig.DataSourceConfiguration;
 import com.github.emailtohl.integration.web.webTestConfig.ServiceConfiguration;
 
 import freemarker.core.ParseException;
@@ -35,7 +35,7 @@ import freemarker.template.TemplateNotFoundException;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceConfiguration.class)
-@ActiveProfiles({ DataSourceConfiguration.H2_RAM_DB, DataSourceConfiguration.ENV_TEST_PATH })
+@ActiveProfiles({ DataSourceConfiguration.H2_RAM_DB })
 public class CmsCtrlTest {
 	@Inject
 	Configuration cfg;

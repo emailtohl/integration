@@ -53,7 +53,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 		entityManagerFactoryRef = "entityManagerFactory")
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @Import(DataSourceConfiguration.class)
-class JpaConfiguration {
+public class JpaConfiguration {
 	public static final String[] ENTITIES_PACKAGE = {
 			"com.github.emailtohl.integration.user.entities", 
 			"com.github.emailtohl.integration.cms.entities",
@@ -144,9 +144,6 @@ class JpaConfiguration {
 		return new AuditorAware<String>() {
 			@Override
 			public String getCurrentAuditor() {
-				if (contains(DataSourceConfiguration.ENV_TEST_PATH)) {
-					return "tester";
-				}
 				String s = "";
 				SecurityContext c = SecurityContextHolder.getContext();
 				if (c != null) {

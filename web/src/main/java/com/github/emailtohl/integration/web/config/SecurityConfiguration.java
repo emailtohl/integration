@@ -134,12 +134,12 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 	
 	/**
-	 * 告诉Spring Security需要忽略的路径
+	 * 配置Spring Security的Filter链
 	 */
 	@Override
 	public void configure(WebSecurity security) {
+		// 告诉Spring Security需要忽略的路径
 		security.ignoring()
-		.antMatchers("/**")// 开发测试阶段，忽略所有
 		.antMatchers("/lib/**")
 		.antMatchers("/common/**")
 		.antMatchers("/app/**")
@@ -217,7 +217,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/cms/**").fullyAuthenticated()
 				.anyRequest().authenticated()
 			// HTTP Basic Authentication是基于REST风格，通过HTTP状态码与访问它的应用程序进行沟通
-			/*.and().httpBasic()*/
+			.and().httpBasic()
 			// 登录配置
 			.and()
 //			.addFilterBefore(new CORSFilter(), ChannelProcessingFilter.class)

@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -58,7 +59,7 @@
          <!-- <b style="color: red;">Login failed. Please try again.</b><br /><br /> -->
      </c:if>
      <p id="publicKey" style="display:none">${publicKey}</p>
-    <form action="/building/login" method="post">
+    <form action="${pageContext.request.contextPath}/login" method="post">
       <div class="form-group has-feedback">
         <input type="email" class="form-control" name="email" placeholder="your email">
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
@@ -141,7 +142,7 @@
 	function tip(content) {
 	 var div = $('div.modal');
 	 div.find('#content').text(content);
-	 div.modal('show');                // initializes and invokes show immediately
+	 div.modal('show'); // initializes and invokes show immediately
 	}
 	
 	$('a#forgot').on('click', function() {
@@ -150,14 +151,14 @@
 	 email = $('input[name="email"]').val();
 	 _csrf = $('input[name="_csrf"]').val();
 	 if (!email || email.match(p) == null) {
-	  tip('è¯·æ­£ç¡®å¡«åä½ çé®ç®±å°å');
+	  tip('Please fill in your email address correctly');
 	  return false;
 	 }
 	 $.post('forgetPassword', {
 	  email : email,
 	  _csrf : _csrf
 	 });
-	 tip('è¯·æ£æ¥é®ä»¶ï¼éç½®å¯ç ');
+	 tip('Please check the E-mail and reset the password');
 	});
     /* 
 	$('form').on('submit', function(e) {

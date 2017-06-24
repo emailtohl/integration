@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.github.emailtohl.integration.user.dto.RoleDto;
 import com.github.emailtohl.integration.user.service.RoleService;
-import com.github.emailtohl.integration.web.config.DataSourceConfiguration;
+import com.github.emailtohl.integration.web.webTestConfig.DataSourceConfiguration;
 import com.github.emailtohl.integration.web.webTestConfig.ServiceConfiguration;
 import com.google.gson.Gson;
 /**
@@ -34,7 +34,7 @@ import com.google.gson.Gson;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceConfiguration.class)
-@ActiveProfiles({ DataSourceConfiguration.H2_RAM_DB, DataSourceConfiguration.ENV_TEST_PATH })
+@ActiveProfiles({ DataSourceConfiguration.H2_RAM_DB })
 public class RoleCtrlTest {
 	Gson gson = new Gson();
 	
