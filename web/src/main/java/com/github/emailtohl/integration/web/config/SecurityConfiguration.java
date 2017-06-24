@@ -41,6 +41,7 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
@@ -51,7 +52,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
 import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
+import com.github.emailtohl.integration.message.event.LoginEvent;
 import com.github.emailtohl.integration.user.security.UserPermissionEvaluator;
+import com.github.emailtohl.integration.web.controller.UserCtrl;
 import com.github.emailtohl.integration.web.filter.UserPasswordEncryptionFilter;
 
 /**
@@ -142,7 +145,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		security.ignoring()
 		.antMatchers("/lib/**")
 		.antMatchers("/common/**")
-		.antMatchers("/app/**")
+		.antMatchers("/site/**")
 		.antMatchers("/download/**")
 		.antMatchers("/templates/**")
 		.antMatchers("/article/**")
@@ -175,17 +178,19 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			"/fileUploadServer/test",
 		};
 		security
-			.authorizeRequests()
-				.antMatchers("/login").permitAll()
+		// HTTP Basic Authentication是基于REST风格，通过HTTP状态码与访问它的应用程序进行沟通
+			.httpBasic()
+			.and().authorizeRequests()
 				// 跨域请求登录页面时，要发送一个预访问请求：PreflightRequest，让spring security不做拦截
 				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+				.antMatchers("/login").permitAll()
 				.antMatchers(permitUrl).permitAll()
 				.antMatchers("/user/**").fullyAuthenticated()
 				.antMatchers("/encryption/**").fullyAuthenticated()
 				.antMatchers("/secure").fullyAuthenticated()
 				.antMatchers("/forum/**").fullyAuthenticated()
 				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-//				.antMatchers(HttpMethod.GET, UserCtrl.ICON_DIR + "/**").permitAll()
+				.antMatchers(HttpMethod.GET, UserCtrl.ICON_DIR + "/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/user/**").hasAnyAuthority(USER_READ_ALL, USER_READ_SELF)
 				.antMatchers(HttpMethod.DELETE, "/user/**").hasAnyAuthority(USER_DELETE)
 				.antMatchers(HttpMethod.POST, "/user/employee").hasAuthority(USER_CREATE_SPECIAL)
@@ -216,15 +221,12 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, "/cms/rejectComment/**").hasAuthority(CONTENT_MANAGER)
 				.antMatchers("/cms/**").fullyAuthenticated()
 				.anyRequest().authenticated()
-			// HTTP Basic Authentication是基于REST风格，通过HTTP状态码与访问它的应用程序进行沟通
-			.and().httpBasic()
 			// 登录配置
-			.and()
-//			.addFilterBefore(new CORSFilter(), ChannelProcessingFilter.class)
+			.and().addFilterBefore(new CORSFilter(), ChannelProcessingFilter.class)
 			.formLogin()
 				.loginPage("/login").loginProcessingUrl("/login").failureUrl("/login?error")
 				.successHandler((request, response, authentication) -> {
-//					publisher.publishEvent(new LoginEvent(authentication.getName()));
+					publisher.publishEvent(new LoginEvent(authentication.getName()));
 					response.sendRedirect(request.getContextPath());
 				})
 				.usernameParameter("email").passwordParameter("password").permitAll()
@@ -402,3 +404,4 @@ class CORSFilter implements Filter {
 	}
 	
 }
+

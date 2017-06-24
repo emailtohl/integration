@@ -26,8 +26,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.github.emailtohl.integration.web.config.DataSourceConfiguration;
-
 /**
  * JPA Hibernate配置
  * @author HeLei

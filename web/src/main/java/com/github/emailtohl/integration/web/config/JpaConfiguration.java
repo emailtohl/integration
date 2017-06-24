@@ -97,8 +97,8 @@ public class JpaConfiguration {
 			adapter.setDatabase(Database.POSTGRESQL);
 			adapter.setDatabasePlatform("org.hibernate.dialect.PostgreSQL94Dialect");
 		}
-		adapter.setShowSql(true);
-		adapter.setGenerateDdl(true);
+		adapter.setShowSql(false);
+		adapter.setGenerateDdl(false);
 		return adapter;
 	}
 	
