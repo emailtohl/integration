@@ -15,13 +15,15 @@ requirejs.config({
 
 		jquery: '../lib/jquery/jquery-3.2.1.min',
 		'jquery-ui': '../lib/jquery/jquery-ui.min',
+		bootstrap: '../lib/bootstrap/js/bootstrap.min',
 		angular: '../lib/angular/angular.min',
 		'angular-animate': '../lib/angular/angular-animate.min',
 		'angular-cookies': '../lib/angular/angular-cookies.min',
 		'angular-touch': '../lib/angular/angular-touch.min',
 		'ui-router': '../lib/ui/router/angular-ui-router.min',
 		'ui-select': '../lib/ui/select/select.min',
-		bootstrap: '../lib/bootstrap/js/bootstrap.min',
+		'ui-bootstrap': '../lib/ui/bootstrap/require-ui-bootstrap',
+		'ui-bootstrap-datepicker' : '../lib/ui/bootstrap/datepicker/datepicker',
 		'jquery-slimscroll': '../lib/assets/js/jquery.slimscroll.min',
 		fastclick: '../lib/assets/js/fastclick.min',
 		adminlte: '../lib/adminLTE/js/adminlte.min',
@@ -41,6 +43,10 @@ requirejs.config({
 			deps: ['jquery'],
 			exports: 'ui',
 		},
+		bootstrap: {
+			deps: ['jquery'],
+			exports: 'bootstrap'
+		},
 		angular: {
 			exports: 'angular',
 		},
@@ -59,10 +65,6 @@ requirejs.config({
 		'ui-router': {
 			deps: ['angular'],
 			exports: 'uiRouter',
-		},
-		bootstrap: {
-			deps: ['jquery'],
-			exports: 'bootstrap'
 		},
 		'jquery-slimscroll': {
 			deps: ['jquery'],

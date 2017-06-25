@@ -8,4 +8,6 @@ require([
 	'common/directive/modal/directive',
 	'common/directive/pager0/directive',
 	'common/directive/repeatfinish/directive',
+	/*'common/directive/autocomplete/directive',*/
+	
 ]);

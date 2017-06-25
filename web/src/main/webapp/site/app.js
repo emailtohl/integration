@@ -1,5 +1,5 @@
 define([
-	'angular', 'angular-animate', 'angular-cookies', 'angular-touch', 'ui-router',
+	'angular', 'angular-animate', 'angular-cookies', 'angular-touch', 'ui-router', 
 	/*'dashboard/context',*/
 	'common/context',
 	'user/context',

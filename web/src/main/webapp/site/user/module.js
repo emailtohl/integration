@@ -1,5 +1,5 @@
-define(['angular', 'ui-router', 'common/context'], function(angular) {
-	return angular.module('userModule', ['ui.router', 'commonModule'])
+define(['angular', 'ui-router', 'common/context', 'ui-bootstrap'], function(angular) {
+	return angular.module('userModule', ['ui.router', 'commonModule', 'ui.bootstrap'])
 		.config(function($stateProvider) {
 			$stateProvider
 				.state('user', {
