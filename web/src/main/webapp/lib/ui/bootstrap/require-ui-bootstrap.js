@@ -1,7 +1,7 @@
 /**
  * 在require环境下，angular需要注入不能直接在全局中访问，所以为ui.bootstrap做一层包装，否则无法执行
  */
-define(['angular'], function(angular) {
+define(['angular', 'angular-animate', 'angular-touch'], function(angular) {
 
 	/*
 	 * angular-ui-bootstrap

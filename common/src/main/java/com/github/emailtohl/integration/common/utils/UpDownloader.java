@@ -50,6 +50,25 @@ public class UpDownloader {
 	}
 	
 	/**
+	 * 获取到根目录的名字，如basePath是D:\program\apache-tomcat-9.0.0.M15\wtpwebapps\integration-data\resources
+	 * 则返回resources
+	 * @return
+	 */
+	public String getBaseName() {
+		String replacement;
+		if (File.separator.equals("\\"))
+			replacement = "\\\\";
+		else
+			replacement = "/";
+		try {
+			String[] arr = basePath.getPath().split(replacement);
+			return arr[arr.length - 1];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return basePath.getPath();
+		}
+	}
+	
+	/**
 	 * 上传文件，地址为basePath + relativePath
 	 * @param relativePath 例如icon/id_xxx.png 分隔符的格式可以是URL(Unix)中的“/”，也可以是Windows的“\”
 	 * @return basePath + relativePath

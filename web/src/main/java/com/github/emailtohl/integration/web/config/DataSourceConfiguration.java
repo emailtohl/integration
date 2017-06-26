@@ -129,7 +129,7 @@ public class DataSourceConfiguration {
 	}
 	
 	/**
-	 * 数据目录
+	 * 存放数据的目录，其下，有公开的resources目录，也有未公开的索引（index）等目录
 	 * @return
 	 */
 	@Bean(name = "data")
@@ -153,14 +153,16 @@ public class DataSourceConfiguration {
 	}
 	
 	/**
-	 * web资源目录
-	 * @param servletContext 被注入进来的容器上下文
+	 * web资源目录，在tomcat上配置虚拟目录的地址：
+	 * <Context debug="0" docBase="D:\program\apache-tomcat-9.0.0.M15\wtpwebapps\integration-data\resources" path="/web/resources" reloadable="true"/>
+	 * 此目录为公开外部访问的根目录，数据库存储的目录地址以此目录作为根
+	 * 
+	 * @param dataPath 存放数据的目录，其下，有公开的resources目录，也有未公开的索引（index）等目录
 	 * @return
 	 */
-	@Profile({ ENV_SERVLET })
 	@Bean(name = "resources")
-	public File resourcePath(@Named("root") File root) {
-		File resourcePath = new File(root, "resources");
+	public File resourcePath(@Named("data") File dataPath) {
+		File resourcePath = new File(dataPath, "resources");
 		if (!resourcePath.exists())
 			resourcePath.mkdir();
 		return resourcePath;
@@ -181,13 +183,13 @@ public class DataSourceConfiguration {
 	}
 
 	@Bean(name = "templatesPath")
-	public File templatesPath(@Named("root") File root) {
+	public File templatesPath(@Named("data") File dataPath) {
 		String path = env.getProperty("templatesPath");
 		File templatesPath;
 		if (StringUtils.hasText(path)) {
 			templatesPath = new File(path);
 		} else {
-			templatesPath = new File(root, "templates");
+			templatesPath = new File(dataPath, "templates");
 		}
 		if (!templatesPath.exists())
 			templatesPath.mkdir();

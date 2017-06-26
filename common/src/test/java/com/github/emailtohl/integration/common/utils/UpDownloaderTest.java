@@ -63,6 +63,21 @@ public class UpDownloaderTest {
 		if (f.exists())
 			UpDownloader.deleteDir(basePath);
 	}
+	
+	@Test
+	public void testGetBaseName() {
+		assertEquals("test", upDownloader.getBaseName());
+		UpDownloader ud = new UpDownloader("D:\\program\\apache-tomcat-9.0.0.M15\\wtpwebapps\\integration-data\\resources");
+		assertEquals("resources", ud.getBaseName());
+		ud = new UpDownloader("/opt/apache-tomcat-9.0.0.M15/wtpwebapps/integration-data/resources");
+		assertEquals("resources", ud.getBaseName());
+		ud = new UpDownloader("/");
+		assertEquals(File.separator, ud.getBaseName());
+		ud = new UpDownloader("\\");
+		assertEquals(File.separator, ud.getBaseName());
+		ud = new UpDownloader("abc");
+		assertEquals("abc", ud.getBaseName());
+	}
 
 	@Test
 	public void testUploadStringPart() throws IOException {

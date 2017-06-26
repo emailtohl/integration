@@ -8,7 +8,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
@@ -78,7 +77,7 @@ public class UserCtrl {
 		if (!f.exists()) {
 			f.mkdir();
 		}
-		upDownloader = new UpDownloader(f);
+		upDownloader = new UpDownloader(resourcePath);
 	}
 	
 	/**
@@ -328,17 +327,22 @@ public class UserCtrl {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void uploadIcon(@RequestParam("id") long id, @RequestPart("icon") Part icon) throws IOException {
 		LocalDate date = LocalDate.now();
-		String dir = ICON_DIR + File.separator + date.getYear() + File.separator + date.getDayOfYear();
-		File fdir = new File(upDownloader.getAbsolutePath(dir));
-		if (!fdir.exists()) {
-			fdir.mkdirs();
+		String relativeDir = ICON_DIR + File.separator + date.getYear() + File.separator + date.getDayOfYear();
+		File absoluteDir = new File(upDownloader.getAbsolutePath(relativeDir));
+		if (!absoluteDir.exists()) {
+			absoluteDir.mkdirs();
 		}
-		String iconName = dir + File.separator + id + '_' + icon.getSubmittedFileName();
+		String iconName = relativeDir + File.separator + id + '_' + icon.getSubmittedFileName();
 
 		User u = userService.getUser(id);
 		// 删除原有的图片，且同步数据库中的信息
-		if (u.getIconSrc() != null && !u.getIconSrc().isEmpty()) {
-			File exist = new File(upDownloader.getAbsolutePath(u.getIconSrc()));
+		String iconSrc = u.getIconSrc();
+		if (iconSrc != null && !iconSrc.isEmpty()) {
+			String baseName = upDownloader.getBaseName();
+			if (iconSrc.startsWith(baseName)) {
+				iconSrc = iconSrc.substring(baseName.length());
+			}
+			File exist = new File(upDownloader.getAbsolutePath(iconSrc));
 			if (exist.exists()) {
 				exist.delete();
 			}
@@ -350,14 +354,8 @@ public class UserCtrl {
 		loginCtrl.updateIconSrcMap(u.getEmail(), url);// 同时更新用户头像的缓存信息
 		
 		// 再保存一份到数据库中
-		byte[] b = new byte[(int) icon.getSize()];// 保证图片尺寸不会太大
-		try {
-			InputStream in = icon.getInputStream();
-			in.read(b, 0, (int) icon.getSize());
-			userService.updateIcon(id, b);
-		} catch (IOException e) {
-			logger.info("用户头像图片写入数据库失败", e);
-		}
+		byte[] b = upDownloader.getFile(iconName);
+		userService.updateIcon(id, b);
 	}
 	
 	public void setUserService(UserService userService) {
