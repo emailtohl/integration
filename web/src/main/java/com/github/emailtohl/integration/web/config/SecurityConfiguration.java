@@ -146,6 +146,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		.antMatchers("/lib/**")
 		.antMatchers("/common/**")
 		.antMatchers("/site/**")
+		.antMatchers("/resources/**")
 		.antMatchers("/download/**")
 		.antMatchers("/templates/**")
 		.antMatchers("/article/**")

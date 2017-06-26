@@ -42,7 +42,7 @@
                 <td ng-bind="x.name" class="col-md-2"></td>
                 <td ng-bind="x.email" class="col-md-2"></td>
                 <td ng-bind="x.description" class="col-md-3"></td>
-                <td ng-bind="x.roleNames" class="col-md-2"></td>
+                <td ng-bind="x.roleNames | join" class="col-md-2"></td>
                 <td ng-bind="x.revisionDate" class="col-md-2"></td>
                 <td class="col-md-1">
                 	<span class="label" ng-class="{'label-danger' : x.revisionType == 'DEL', 'label-warning' : x.revisionType == 'ADD', 'label-info' : x.revisionType == 'MOD'}">

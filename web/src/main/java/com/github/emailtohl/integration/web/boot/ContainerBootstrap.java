@@ -35,7 +35,7 @@ public class ContainerBootstrap implements WebApplicationInitializer {
 	@Override
 	public void onStartup(ServletContext container) throws ServletException {
 		/* 默认的Servlet可以处理静态资源 */
-		container.getServletRegistration("default").addMapping("/app/*", "/common/*", "/download/*", "/lib/*",
+		container.getServletRegistration("default").addMapping("/site/**", "/common/**", "/lib/*", "resources/**", "/download/*",
 				"/upload/*", "/templates/*", "*.html", "*.css", "*.js", "*.png", "*.gif", "*.jpg");
 
 		/* 配置Spring根应用上下文 */

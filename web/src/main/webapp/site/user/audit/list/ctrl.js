@@ -1,5 +1,10 @@
 define(['user/module', 'user/service'], function(userModule) {
 	return userModule
+		.filter('join', function() {
+			return function(data) {
+				return data.join('， ');
+			};
+		})
 		.controller('UserAuditList', ['$scope', '$http', '$state', 'userService', function($scope, $http, $state, userService) {
 			var self = this;
 			self.roleMap = {
@@ -15,7 +20,7 @@ define(['user/module', 'user/service'], function(userModule) {
 			};
 			$scope.getAuthentication();
 			self.params = {
-				page: 1,
+				page: 0,
 				size: 10,
 				email: '',
 			};
@@ -47,7 +52,7 @@ define(['user/module', 'user/service'], function(userModule) {
 			};
 			self.reset = function() {
 				self.params = {
-					page: 1,
+					page: 0,
 					size: 10,
 					email: '',
 				};
