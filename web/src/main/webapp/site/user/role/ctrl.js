@@ -4,7 +4,7 @@ define(['user/module', 'user/service'], function(userModule) {
 			var self = this;
 			$scope.getAuthentication();
 			self.params = {
-				page: 1,
+				page: 0,
 				size: 10,
 				email: '',
 				roles: []
@@ -35,8 +35,12 @@ define(['user/module', 'user/service'], function(userModule) {
 				self.query();
 			};
 			self.reset = function() {
-				self.params.email = '';
-				self.params.roles.length = 0;
+				self.params = {
+					page: 0,
+					size: 10,
+					email: '',
+					roles: []
+				};
 			};
 
 			self.modal = {
