@@ -31,7 +31,7 @@
 </head>
 <body class="hold-transition skin-blue sidebar-mini" data-ng-class="{'box' : overlay}">
 
-<div class="overlay" ng-show="overlay">
+<div class="overlay" data-ng-show="overlay">
   <i class="fa fa-refresh fa-spin"></i>
 </div>
 
@@ -71,7 +71,7 @@
                   <li><!-- start message -->
                     <a href="#">
                       <div class="pull-left">
-                        <img src="lib/adminLTE/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                        <img data-ng-src="{{getIconSrc()}}" class="img-circle" alt="User Image">
                       </div>
                       <h4>
                         Support Team
@@ -84,7 +84,7 @@
                   <li>
                     <a href="#">
                       <div class="pull-left">
-                        <img src="lib/adminLTE/img/user3-128x128.jpg" class="img-circle" alt="User Image">
+                        <img data-ng-src="{{getIconSrc()}}" class="img-circle" alt="User Image">
                       </div>
                       <h4>
                         AdminLTE Design Team
@@ -96,7 +96,7 @@
                   <li>
                     <a href="#">
                       <div class="pull-left">
-                        <img src="lib/adminLTE/img/user4-128x128.jpg" class="img-circle" alt="User Image">
+                        <img data-ng-src="{{getIconSrc()}}" class="img-circle" alt="User Image">
                       </div>
                       <h4>
                         Developers
@@ -108,7 +108,7 @@
                   <li>
                     <a href="#">
                       <div class="pull-left">
-                        <img src="lib/adminLTE/img/user3-128x128.jpg" class="img-circle" alt="User Image">
+                        <img data-ng-src="{{getIconSrc()}}" class="img-circle" alt="User Image">
                       </div>
                       <h4>
                         Sales Department
@@ -120,7 +120,7 @@
                   <li>
                     <a href="#">
                       <div class="pull-left">
-                        <img src="lib/adminLTE/img/user4-128x128.jpg" class="img-circle" alt="User Image">
+                        <img data-ng-src="{{getIconSrc()}}" class="img-circle" alt="User Image">
                       </div>
                       <h4>
                         Reviewers
@@ -254,13 +254,13 @@
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="lib/adminLTE/img/user2-160x160.jpg" class="user-image" alt="User Image">
+              <img data-ng-src="{{getIconSrc()}}" class="user-image" alt="User Image">
               <span class="hidden-xs">Alexander Pierce</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
-                <img src="lib/adminLTE/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                <img data-ng-src="{{getIconSrc()}}" class="img-circle" alt="User Image">
 
                 <p>
                   Alexander Pierce - Web Developer
@@ -288,7 +288,7 @@
                   <a href="#" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
-                  <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                  <a href="#" class="btn btn-default btn-flat" data-ng-click="logout()">Sign out</a>
                 </div>
               </li>
             </ul>
@@ -308,7 +308,7 @@
       <!-- Sidebar user panel -->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="lib/adminLTE/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+          <img data-ng-src="{{getIconSrc()}}" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
           <p>Alexander Pierce</p>
@@ -329,73 +329,73 @@
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
-        <li ng-class="{active: $state.includes('dashboard')}"><a ui-sref="dashboard"><i class="fa fa-dashboard"></i> <span>首页</span></a></li>
-        <li class="treeview" ng-class="{active: $state.includes('forum')}">
+        <li data-ng-class="{active: $state.includes('dashboard')}"><a ui-sref="dashboard"><i class="fa fa-dashboard"></i> <span>首页</span></a></li>
+        <li class="treeview" data-ng-class="{active: $state.includes('forum')}">
           <a href="#">
             <i class="fa fa-forumbee"></i>
             <span>论坛</span>
             <i class="fa fa-angle-left pull-right"></i>
           </a>
           <ul class="treeview-menu">
-            <li ng-class="{active: $state.includes('forum.search')}" ><a ui-sref="forum.search" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>全文查找</a></li>
-            <li ng-class="{active: $state.includes('forum.add')}"><a ui-sref="forum.add" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>发帖</a></li>
+            <li data-ng-class="{active: $state.includes('forum.search')}" ><a ui-sref="forum.search" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>全文查找</a></li>
+            <li data-ng-class="{active: $state.includes('forum.add')}"><a ui-sref="forum.add" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>发帖</a></li>
           </ul>
         </li>
-        <li class="" ng-if="hasAuthority('user_customer')" ng-class="{active: $state.includes('crm')}" ui-sref="crm">
+        <li class="" data-ng-if="hasAuthority('user_customer')" data-ng-class="{active: $state.includes('crm')}" ui-sref="crm">
           <a href="#">
             <i class="fa fa-user-md"></i>
             <span>客户管理</span>
           </a>
         </li>
-        <li class="treeview" ng-class="{active: $state.includes('applicationForm')}">
+        <li class="treeview" data-ng-class="{active: $state.includes('applicationForm')}">
           <a href="#">
           	  <i class="fa fa-tasks"></i>
 	          <span>申请表</span>
 	          <i class="fa fa-angle-left pull-right"></i>
 	      </a>
           <ul class="treeview-menu">
-            <li ng-class="{active: $state.includes('applicationForm.submit')}" ><a ui-sref="applicationForm.submit" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>提交申请表</a></li>
-            <li ng-class="{active: $state.includes('applicationForm.audit')}" ><a ui-sref="applicationForm.audit" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>处理申请表</a></li>
-            <li ng-if="hasAuthority('application_form_read_history')" ng-class="{active: $state.includes('applicationForm.history')}"><a ui-sref="applicationForm.history" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>处理记录</a></li>
+            <li data-ng-class="{active: $state.includes('applicationForm.submit')}" ><a ui-sref="applicationForm.submit" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>提交申请表</a></li>
+            <li data-ng-class="{active: $state.includes('applicationForm.audit')}" ><a ui-sref="applicationForm.audit" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>处理申请表</a></li>
+            <li data-ng-if="hasAuthority('application_form_read_history')" data-ng-class="{active: $state.includes('applicationForm.history')}"><a ui-sref="applicationForm.history" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>处理记录</a></li>
           </ul>
         </li>
-        <li class="treeview" ng-class="{active: $state.includes('cms')}" ng-if="hasAuthority('resource_manager')">
+        <li class="treeview" data-ng-class="{active: $state.includes('cms')}" data-ng-if="hasAuthority('resource_manager')">
           <a href="#">
           	  <i class="fa fa-file-o"></i>
 	          <span>内容管理</span>
 	          <i class="fa fa-angle-left pull-right"></i>
 	      </a>
           <ul class="treeview-menu">
-            <li ng-class="{active: $state.includes('cms.resource')}" ><a ui-sref="cms.resource" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>资源管理</a></li>
-            <li ng-class="{active: $state.includes('cms.category')}" ><a ui-sref="cms.category" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>分类目录</a></li>
-            <li ng-class="{active: $state.includes('cms.article')}" ><a ui-sref="cms.article" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>文章发布</a></li>
-            <li ng-class="{active: $state.includes('cms.comment')}" ><a ui-sref="cms.comment" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>评论管理</a></li>
+            <li data-ng-class="{active: $state.includes('cms.resource')}" ><a ui-sref="cms.resource" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>资源管理</a></li>
+            <li data-ng-class="{active: $state.includes('cms.category')}" ><a ui-sref="cms.category" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>分类目录</a></li>
+            <li data-ng-class="{active: $state.includes('cms.article')}" ><a ui-sref="cms.article" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>文章发布</a></li>
+            <li data-ng-class="{active: $state.includes('cms.comment')}" ><a ui-sref="cms.comment" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>评论管理</a></li>
           </ul>
         </li>
-        <li class="treeview" ng-class="{active: $state.includes('encryption')}" >
+        <li class="treeview" data-ng-class="{active: $state.includes('encryption')}" >
           <a href="#">
           	  <i class="fa fa-key"></i>
 	          <span>密钥管理</span>
 	          <i class="fa fa-angle-left pull-right"></i>
 	      </a>
           <ul class="treeview-menu">
-            <li ng-class="{active: $state.includes('encryption.rsa')}" ><a ui-sref="encryption.rsa" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>RSA密钥</a></li>
-            <li ng-class="{active: $state.includes('encryption.aes')}" ><a ui-sref="encryption.aes" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>AES密钥</a></li>
+            <li data-ng-class="{active: $state.includes('encryption.rsa')}" ><a ui-sref="encryption.rsa" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>RSA密钥</a></li>
+            <li data-ng-class="{active: $state.includes('encryption.aes')}" ><a ui-sref="encryption.aes" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>AES密钥</a></li>
           </ul>
         </li>
-        <li class="treeview" ng-class="{active: $state.includes('user')}">
+        <li class="treeview" data-ng-class="{active: $state.includes('user')}">
           <a href="#">
           	<i class="fa fa-users"></i>
           	<span>用户管理</span>
           	<i class="fa fa-angle-left pull-right"></i>
           </a>
           <ul class="treeview-menu">
-            <li ng-class="{active: $state.includes('user.list') || $state.includes('user.detail')}"><a ui-sref="user.list" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>账户管理</a></li>
-            <li ng-class="{active: $state.includes('user.role')}" ng-if="hasAuthority('user_grant_roles')"><a ui-sref="user.role" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>角色配置</a></li>
-            <li ng-class="{active: $state.includes('user.audit')}" ng-if="hasAuthority('audit_user')"><a ui-sref="user.audit.list" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>用户审计</a></li>
+            <li data-ng-class="{active: $state.includes('user.list') || $state.includes('user.detail')}"><a ui-sref="user.list" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>账户管理</a></li>
+            <li data-ng-class="{active: $state.includes('user.role')}" data-ng-if="hasAuthority('user_grant_roles')"><a ui-sref="user.role" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>角色配置</a></li>
+            <li data-ng-class="{active: $state.includes('user.audit')}" data-ng-if="hasAuthority('audit_user')"><a ui-sref="user.audit.list" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>用户审计</a></li>
           </ul>
         </li>
-        <li class="treeview" ng-if="hasAuthority('user_role_authority_allocation')" ng-class="{active: $state.includes('role') || $state.includes('roleAudit')}">
+        <li class="treeview" data-ng-if="hasAuthority('user_role_authority_allocation')" data-ng-class="{active: $state.includes('role') || $state.includes('roleAudit')}">
           <a href="#">
             <i class="fa fa-th"></i>
             <span>角色权限关系</span>
@@ -404,8 +404,8 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li ng-class="{active: $state.includes('role')}"><a ui-sref="role" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>角色配置</a></li>
-            <li ng-class="{active: $state.includes('roleAudit')}" ng-if="hasAuthority('audit_role')"><a ui-sref="roleAudit.list" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>角色审计</a></li>
+            <li data-ng-class="{active: $state.includes('role')}"><a ui-sref="role" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>角色配置</a></li>
+            <li data-ng-class="{active: $state.includes('roleAudit')}" data-ng-if="hasAuthority('audit_role')"><a ui-sref="roleAudit.list" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>角色审计</a></li>
           </ul>
         </li>
       </ul>

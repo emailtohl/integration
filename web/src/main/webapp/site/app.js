@@ -111,7 +111,7 @@ define([
 				if(!iconSrc)
 					iconSrc = $rootScope.authentication && $rootScope.authentication.principal && $rootScope.authentication.principal.iconSrc;
 				if(!iconSrc)
-					iconSrc = 'lib/AdminLTE/img/user2-160x160.jpg';
+					iconSrc = 'lib/adminLTE/img/user2-160x160.jpg';
 				return iconSrc;
 			}
 

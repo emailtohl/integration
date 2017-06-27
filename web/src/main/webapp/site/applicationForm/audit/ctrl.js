@@ -6,7 +6,7 @@ define(['applicationForm/module', 'applicationForm/service'], function(applicati
 	.controller('ApplicationFormAuditCtrl', [ '$scope', '$http', '$state', 'applicationFormService', 'util'
 	                         , function($scope, $http, $state, applicationFormService, util) {
 		const initForm = JSON.stringify({
-			page : 1,
+			page : 0,
 			name : null,
 			status : null
 		});

@@ -86,7 +86,7 @@ define([ 'common/module' ], function(commonModule) {
 				for (name in data) {
 					if (!data.hasOwnProperty(name))
 						continue;
-					if (!data[name] || typeof data[name] === 'function')
+					if (data[name] == null || typeof data[name] === 'function')
 						continue;
 					value = data[name].toString();
 					name = encodeURIComponent(name);
