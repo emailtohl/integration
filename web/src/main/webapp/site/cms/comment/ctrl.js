@@ -18,7 +18,7 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 		self.isDetail = false;
 		self.comment = {};
 		self.queryParam = {
-			page : 1,
+			page : 0,
 			query : '',
 		};
 		

@@ -13,7 +13,7 @@ define(['cms/module', 'cms/article/service', 'cms/category/service', 'ckeditor',
 		self.isDetail = false;
 		self.article = {};
 		self.queryParam = {
-			page : 1,
+			page : 0,
 			query : '',
 		};
 		

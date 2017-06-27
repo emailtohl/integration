@@ -8,7 +8,7 @@ define(['cms/module', 'cms/category/service'], function(cmsModule) {
 		self.isDetail = false;
 		self.form = {};
 		self.queryParam = {
-			page : 1,
+			page : 0,
 			name : '',
 		};
 		

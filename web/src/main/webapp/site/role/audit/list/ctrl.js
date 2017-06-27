@@ -15,7 +15,7 @@ define(['role/module', 'role/service'], function(roleModule) {
 			};
 			$scope.getAuthentication();
 			self.params = {
-				page: 1,
+				page: 0,
 				size: 5,
 				name: '',
 			};
@@ -35,13 +35,13 @@ define(['role/module', 'role/service'], function(roleModule) {
 			};
 			self.reset = function() {
 				self.params = {
-					page: 1,
+					page: 0,
 					size: 10,
 					name: '',
 				};
 			};
 			self.detail = function(id, revision) {
-				$state.go('roleAuthCfgAudit.detail', {
+				$state.go('roleAudit.detail', {
 					id: id,
 					revision: revision
 				}, {

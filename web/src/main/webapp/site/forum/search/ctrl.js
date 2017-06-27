@@ -6,11 +6,11 @@ define(['forum/module', 'forum/service'], function(forumModule) {
 			var queryInput = $('form[name="fulltextsearch"]').find('input[name="search"]');
 
 			if($state.params.query && $state.params.query.trim()) {
-				forumService.search($state.params.query, 1).then(function(resp) {
+				forumService.search($state.params.query, 0).then(function(resp) {
 					self.pager = resp.data;
 				});
 			} else {
-				forumService.getPager(1).then(function(resp) {
+				forumService.getPager(0).then(function(resp) {
 					self.pager = resp.data;
 				});
 			}
@@ -45,7 +45,7 @@ define(['forum/module', 'forum/service'], function(forumModule) {
 				$event.stopPropagation();
 				if(confirm('确定删除吗？')) {
 					forumService['delete'](id).then(function(resp) {
-						forumService.getPager(1).then(function(resp) {
+						forumService.getPager(0).then(function(resp) {
 							self.pager = resp.data;
 						});
 					});

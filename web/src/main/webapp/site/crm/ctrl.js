@@ -2,7 +2,7 @@ define(['crm/module', 'crm/service'], function(crmModule) {
 	return crmModule
 		.controller('Crm', ['$scope', '$http', '$state', 'crmService', function($scope, $http, $state, crmService) {
 			const init = JSON.stringify({
-				page: 1,
+				page: 0,
 				name: '',
 				title: '',
 				affiliation: ''

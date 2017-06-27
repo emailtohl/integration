@@ -14,12 +14,12 @@ define(['angular', 'ui-router', 'common/context'], function(angular) {
 				})
 				.state('roleAudit.list', {
 					url: '/list',
-					templateUrl: 'site/roleAuthCfg/audit/template.html',
+					templateUrl: 'site/role/audit/list/template.html',
 					controller: 'RoleAuditList as ctrl'
 				})
 				.state('roleAudit.detail', {
 					url: '/detail/id/{id}/revision/{revision}',
-					templateUrl: 'site/roleAuthCfg/audit/template.html',
+					templateUrl: 'site/role/audit/detail/template.html',
 					controller: 'RoleAuditDetail as ctrl'
 				});
 		});

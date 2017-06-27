@@ -395,7 +395,7 @@
             <li ng-class="{active: $state.includes('user.audit')}" ng-if="hasAuthority('audit_user')"><a ui-sref="user.audit.list" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>用户审计</a></li>
           </ul>
         </li>
-        <li class="treeview" ng-if="hasAuthority('user_role_authority_allocation')" ng-class="{active: $state.includes('roleAuthCfg')}">
+        <li class="treeview" ng-if="hasAuthority('user_role_authority_allocation')" ng-class="{active: $state.includes('role') || $state.includes('roleAudit')}">
           <a href="#">
             <i class="fa fa-th"></i>
             <span>角色权限关系</span>
@@ -404,8 +404,8 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li ng-class="{active: $state.includes('roleAuthCfg')}"><a ui-sref="roleAuthCfg" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>角色配置</a></li>
-            <li ng-class="{active: $state.includes('roleAuthCfgAudit')}" ng-if="hasAuthority('audit_role')"><a ui-sref="roleAuthCfgAudit.list" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>角色审计</a></li>
+            <li ng-class="{active: $state.includes('role')}"><a ui-sref="role" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>角色配置</a></li>
+            <li ng-class="{active: $state.includes('roleAudit')}" ng-if="hasAuthority('audit_role')"><a ui-sref="roleAudit.list" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>角色审计</a></li>
           </ul>
         </li>
       </ul>

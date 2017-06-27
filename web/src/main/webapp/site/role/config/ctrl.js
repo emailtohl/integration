@@ -12,7 +12,8 @@ define(['role/module', 'role/service'], function(roleModule) {
 
 			function getAuthorities() {
 				roleService.getAuthorities().then(function(resp) {
-					self.authorities = resp.data;
+					var data = resp.data;
+					self.authorities = data;
 					// 创建一个以权限名为key，权限对象为value的map
 					self.authMap = {};
 					for(var i = 0; i < data.length; i++) {
@@ -69,7 +70,8 @@ define(['role/module', 'role/service'], function(roleModule) {
 				clearAuthMapSelected(); // 先清理self.authMap中的被属性
 				if(id) { // 如果是编辑
 					roleService.getRole(id).then(function(resp) {
-						self.form = resp.data;
+						var data = resp.data;
+						self.form = data;
 						for(var i = 0; i < data.authorities.length; i++) {
 							// 根据权限名查询权限对象，然后将其被选属性改为true
 							self.authMap[data.authorities[i].name].selected = true;
