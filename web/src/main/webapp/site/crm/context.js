@@ -1,4 +1,4 @@
-define([
+require([
 	'crm/module',
 	'crm/service',
 	'crm/ctrl',

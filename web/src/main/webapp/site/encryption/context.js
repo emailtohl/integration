@@ -1,4 +1,4 @@
-define([
+require([
 	'encryption/module',
 	'encryption/service',
 	'encryption/rsa/ctrl',

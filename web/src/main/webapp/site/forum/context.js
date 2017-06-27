@@ -1,4 +1,4 @@
-define([
+require([
 	'forum/module',
 	'forum/service',
 	'forum/add/ctrl',

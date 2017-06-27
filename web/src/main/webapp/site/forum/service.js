@@ -1,5 +1,5 @@
 define(['forum/module', 'common/module'], function(forumModule) {
-	return forumModule.factory('forumAddService', ['$http', 'util', function($http, util) {
+	return forumModule.factory('forumService', ['$http', 'util', function($http, util) {
 		return {
 			getPager: function(page) {
 				var param = page ? '?page=' + page : '';

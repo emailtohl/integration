@@ -1,4 +1,4 @@
-define(['cms/module',
+require(['cms/module',
 	'cms/resource/service',
 	'cms/resource/ctrl',
 	'cms/category/service',

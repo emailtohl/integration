@@ -13,7 +13,7 @@ define(['angular', 'ui-router', 'common/context'], function(angular) {
 					controller: 'ForumAdd as ctrl'
 				})
 				.state('forum.search', {
-					url: '/search/{query}',
+					url: '/search',
 					templateUrl: 'site/forum/search/template.html',
 					controller: 'ForumSearch as ctrl'
 				});

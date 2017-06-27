@@ -1,3 +1,3 @@
-define(['dashboard/module',
+require(['dashboard/module',
 	'dashboard/dashboardCtrl'
 ], function() {});

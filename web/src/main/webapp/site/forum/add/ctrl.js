@@ -1,4 +1,4 @@
-define(['forum/module', 'common/module', 'forum/service', 'ckeditor', 'ckeditorConfig'], function(forumModule) {
+define(['forum/module', 'common/module', 'forum/service'/*, 'ckeditor', 'ckeditorConfig'*/], function(forumModule) {
 	return forumModule
 		.controller('ForumAdd', ['$scope', '$http', '$state', 'forumService', 'util', function($scope, $http, $state, forumService, util) {
 			var self = this, promise;

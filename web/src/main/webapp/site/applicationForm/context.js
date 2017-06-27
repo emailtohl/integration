@@ -1,4 +1,4 @@
-define(['applicationForm/module',
+require(['applicationForm/module',
         'applicationForm/application/ctrl',
         'applicationForm/audit/ctrl',
         'applicationForm/history/ctrl',

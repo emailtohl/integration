@@ -98,9 +98,7 @@ define([
 			// 进入全文搜索
 			$('form[name="fulltextsearch"]').on('submit', function(e) {
 				e.preventDefault();
-				$state.go('forum.search', {
-					query: $(this).find('input').val()
-				}, {
+				$state.go('forum.search', {}, {
 					reload: true
 				});
 			});
