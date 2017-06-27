@@ -2,7 +2,7 @@ define(['jquery', 'cms/module', 'cms/resource/service', 'ztree'], function($, cm
 	return cmsModule
 	.controller('ResourceCtrl', ['$scope', '$http', '$state', 'resourceService', 'util', 'ztreeutil',
 	                                function($scope, $http, $state, service, util, ztreeutil) {
-		var self = this, hideRoot = 'resource'/*这个路径在rootName上一级，用于前端访问所用*/, rootName, style, zTreeObj, cm;
+		var self = this, hideRoot = 'resources'/*这个路径在rootName上一级，用于前端访问所用*/, rootName, style, zTreeObj, cm;
 		var setting = {
 			edit : {
 				enable : true,
