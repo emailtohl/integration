@@ -1,4 +1,4 @@
-define(['cms/module', 'cms/article/service', 'cms/category/service', 'ckeditor', 'ckeditorConfig'], function(cmsModule) {
+define(['cms/module', 'cms/article/service', 'cms/category/service'], function(cmsModule) {
 	return cmsModule
 	.controller('ArticleCtrl', ['$scope', '$http', '$state', 'articleService', 'categoryService', 'util',
 	                                function($scope, $http, $state, service, categoryService, util) {
@@ -116,16 +116,19 @@ define(['cms/module', 'cms/article/service', 'cms/category/service', 'ckeditor',
 		 * 刷新编辑器区的内容
 		 */
 		function refresh() {
-			var editor = CKEDITOR.instances[editorID]; // 编辑器的"name"属性的值
-			if (editor) {
-				editor.destroy(true);// 销毁编辑器
-			}
-			editor = CKEDITOR.replace(editorID, {
-				filebrowserImageUploadUrl : getUrlWithCsrfParam(),
-			}); // 替换编辑器，editorID为ckeditor的"id"属性的值
-			editor.on('change', function(event) {
-				self.article.body = this.getData();// 内容
-				$scope.$apply();
+			// 'ckeditor', 'ckeditorConfig'在define的顶部加载会有问题
+			require(['ckeditor', 'ckeditorConfig'], function() {
+				var editor = CKEDITOR.instances[editorID]; // 编辑器的"name"属性的值
+				if (editor) {
+					editor.destroy(true);// 销毁编辑器
+				}
+				editor = CKEDITOR.replace(editorID, {
+					filebrowserImageUploadUrl : getUrlWithCsrfParam(),
+				}); // 替换编辑器，editorID为ckeditor的"id"属性的值
+				editor.on('change', function(event) {
+					self.article.body = this.getData();// 内容
+					$scope.$apply();
+				});
 			});
 		}
 		

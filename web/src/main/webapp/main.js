@@ -92,7 +92,7 @@ requirejs.config({
 		},
 		ckeditor: {
 			deps: ['jquery'],
-			exports: 'ckeditor'
+			exports: 'CKEDITOR'
 		},
 		ckeditorConfig: {
 			deps: ['ckeditor'],
