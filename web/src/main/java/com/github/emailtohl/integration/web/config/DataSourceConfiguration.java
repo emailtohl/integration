@@ -1,12 +1,14 @@
 package com.github.emailtohl.integration.web.config;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
@@ -183,7 +185,7 @@ public class DataSourceConfiguration {
 	}
 
 	@Bean(name = "templatesPath")
-	public File templatesPath(@Named("data") File dataPath) {
+	public File templatesPath(@Named("data") File dataPath, @Named("root") File root) throws IOException {
 		String path = env.getProperty("templatesPath");
 		File templatesPath;
 		if (StringUtils.hasText(path)) {
@@ -191,8 +193,13 @@ public class DataSourceConfiguration {
 		} else {
 			templatesPath = new File(dataPath, "templates");
 		}
-		if (!templatesPath.exists())
+		if (!templatesPath.exists()) {
 			templatesPath.mkdir();
+			if (contains(ENV_SERVLET)) {
+				File src = new File(root, "templates");
+				FileUtils.copyDirectory(src, templatesPath, true);
+			}
+		}
 		return templatesPath;
 	}
 

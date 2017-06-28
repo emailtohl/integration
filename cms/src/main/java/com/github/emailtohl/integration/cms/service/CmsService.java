@@ -14,6 +14,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 
@@ -156,8 +157,8 @@ public interface CmsService {
 	 * @return article 用于清除缓存
 	 */
 	@CachePut(value = CACHE_NAME_ARTICLE, key = "#result.id")
-	@PreAuthorize("isAuthenticated() && #email == principal.username)")
-	Article saveComment(@NotNull String email, @Min(1) long articleId, @NotNull String content);
+	@PreAuthorize("isAuthenticated() && #email == principal.username")
+	Article saveComment(@NotNull @P("email") String email, @Min(1) long articleId, @NotNull String content);
 
 	/**
 	 * 修改评论
@@ -167,8 +168,8 @@ public interface CmsService {
 	 * @return article 用于清除缓存
 	 */
 	@CachePut(value = CACHE_NAME_ARTICLE, key = "#result.id")
-	@PreAuthorize("isAuthenticated() && #email == principal.username)")
-	Article updateComment(@NotNull String email, @Min(1) long id, @NotNull String commentContent);
+	@PreAuthorize("isAuthenticated() && #email == principal.username")
+	Article updateComment(@NotNull @P("email") String email, @Min(1) long id, @NotNull String commentContent);
 	
 	/**
 	 * 删除评论

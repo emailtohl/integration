@@ -36,7 +36,7 @@ public class Article extends BaseEntity implements Comparable<Article> {
 	private String body;
 	private String summary;
 	private String cover;
-	@NotNull
+//	@NotNull
 	private User author;
 	private Type type;
 	private boolean isApproved = true;
