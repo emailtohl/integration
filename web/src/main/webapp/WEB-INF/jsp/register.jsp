@@ -6,23 +6,24 @@
   <title>AdminLTE 2 | Starter</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <!-- Bootstrap 3.3.6 -->
+  <!-- Bootstrap 3.3.7 -->
   <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="lib/fonts/font-awesome.min.css">
+  <link rel="stylesheet" href="lib/assets/css/font-awesome.min.css">
   <!-- Ionicons -->
-  <link rel="stylesheet" href="lib/fonts/ionicons.min.css">
+  <link rel="stylesheet" href="lib/assets/css/ionicons.min.css">
   <!-- jqueryui -->
-  <link rel="stylesheet" href="lib/jqueryui/jquery-ui.min.css">
-  <link rel="stylesheet" href="lib/bootstrap-jquery-ui/jquery-ui-1.10.0.custom.css">
+  <link rel="stylesheet" href="lib/jquery/jquery-ui.min.css">
   
   <!-- Theme style -->
-  <link rel="stylesheet" href="lib/AdminLTE/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="lib/adminLTE/css/AdminLTE.min.css">
   <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
         page. However, you can choose any other skin. Make sure you
         apply the skin class to the body tag so the changes take effect.
   -->
-  <link rel="stylesheet" href="lib/AdminLTE/css/skins/skin-blue.min.css">
+  <link rel="stylesheet" href="lib/adminLTE/css/skins/skin-blue.min.css">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="lib/iCheck/square/blue.css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -30,6 +31,9 @@
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
+  <!-- Google Font -->
+  <link rel="stylesheet" href="lib/assets/fonts/SourceSansPro.css">
+  
 </head>
 <body class="hold-transition register-page">
 <div class="register-box">
@@ -106,7 +110,7 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span></button>
-        <h4 class="modal-title">输入无效</h4>
+        <h4 class="modal-title">输入无效</h4>
       </div>
       <div class="modal-body">
         <p id="content"></p>
@@ -120,10 +124,10 @@
   <!-- /.modal-dialog -->
 </div>
 
-<!-- jQuery 2.2.3 -->
-<script src="lib/jquery/jquery-2.2.3.min.js"></script>
-<script src="lib/jqueryui/jquery-ui.min.js"></script>
-<!-- Bootstrap 3.3.6 -->
+<!-- jquery-3.2.1.min.js -->
+<script src="lib/jquery/jquery-3.2.1.min.js"></script>
+<script src="lib/jquery/jquery-ui.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
 <script src="lib/bootstrap/js/bootstrap.min.js"></script>
 <!-- iCheck -->
 <script src="lib/iCheck/icheck.min.js"></script>
