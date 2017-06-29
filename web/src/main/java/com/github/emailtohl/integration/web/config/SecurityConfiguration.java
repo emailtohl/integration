@@ -179,9 +179,9 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			"/fileUploadServer/test",
 		};
 		security
-		// HTTP Basic Authentication是基于REST风格，通过HTTP状态码与访问它的应用程序进行沟通
-			.httpBasic()
-			.and().authorizeRequests()
+			// HTTP Basic Authentication是基于REST风格，通过HTTP状态码与访问它的应用程序进行沟通
+			/*.httpBasic()
+			.and()*/.authorizeRequests()
 				// 跨域请求登录页面时，要发送一个预访问请求：PreflightRequest，让spring security不做拦截
 				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 				.antMatchers("/login").permitAll()

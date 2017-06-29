@@ -55,15 +55,16 @@ define([
 					}
 
 				})
-				.catch(function(resp) {
+				['catch'](function(resp) {
 					
 				})
-				.finally(function() {
+				['finally'](function() {
 					
 				})
 				;
 				return promise;
 			};
+			$rootScope.getAuthentication();
 			// 判断是否有此权限
 			$rootScope.hasAuthority = function(authority) {
 				var flag = false,
@@ -90,7 +91,7 @@ define([
 
 			// 注销
 			$rootScope.logout = function() {
-				$http.post('logout').success(function(data) {
+				$http.post('logout').then(function(resp) {
 					location.replace('login');
 				});
 			};
