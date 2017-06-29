@@ -31,7 +31,7 @@ public class SystemInfoWebSocket implements Observe {
 	private static Logger logger = LogManager.getLogger();
 	private Session session;
 	private HttpSession httpSession;
-	private Gson gson;
+	private Gson gson = new Gson();
 	private SystemInfo systemInfo;
 	
 	@OnOpen
@@ -44,7 +44,6 @@ public class SystemInfoWebSocket implements Observe {
 				.getRequiredWebApplicationContext(httpSession.getServletContext());
 		systemInfo = context.getBean(SystemInfo.class);
 		systemInfo.register(this);
-		gson = context.getBean(Gson.class);
 	}
 	
 	@OnMessage

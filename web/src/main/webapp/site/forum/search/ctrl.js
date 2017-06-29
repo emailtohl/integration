@@ -16,12 +16,15 @@ define(['forum/module', 'forum/service'], function(forumModule) {
 			}
 
 			self.renderFinish = function() {
-				CKEDITOR.replaceAll($('textarea'));
-				CKEDITOR.on('instanceReady', function(ev) {
-					var editor = ev.editor;
-					if(editor.name != 'editor1') {
-						editor.setReadOnly(true);
-					}
+				// 'ckeditor', 'ckeditorConfig'在define的顶部加载会有问题
+				require(['ckeditor', 'ckeditorConfig'], function() {
+					CKEDITOR.replaceAll($('textarea'));
+					CKEDITOR.on('instanceReady', function(ev) {
+						var editor = ev.editor;
+						if(editor.name != 'editor1') {
+							editor.setReadOnly(true);
+						}
+					});
 				});
 			};
 

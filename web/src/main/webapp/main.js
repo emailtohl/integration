@@ -34,6 +34,8 @@ requirejs.config({
 		'ckeditorConfig': '../lib/ckeditor/config',
 		'moment': '../lib/moment/moment',
 		'bootstrap-datepicker' : '../lib/datepicker/bootstrap-datepicker',
+		'sparkline' : '../lib/sparkline/jquery.sparkline.min',
+		'knob' : '../lib/knob/jquery.knob',
 	},
 	shim: {
 		// 他们都遵循AMD规范，所以不必声明
@@ -105,6 +107,14 @@ requirejs.config({
 		},
 		'bootstrap-datepicker': {
 			deps: ['jquery'],
+		},
+		'sparkline' : {
+			deps : [ 'jquery' ],
+			exports : 'sparkline'
+		},
+		'knob' : {
+			deps : [ 'jquery-ui' ],
+			exports : 'knob'
 		},
 	},
 	// Do not use RequireJS' paths option to configure the path to CodeMirror, since it will break loading submodules through relative paths. Use the packages configuration option instead
