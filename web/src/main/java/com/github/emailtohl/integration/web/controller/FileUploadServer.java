@@ -16,15 +16,11 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
-import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.Errors;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,9 +32,7 @@ import com.github.emailtohl.integration.common.lucene.FileSearch;
 import com.github.emailtohl.integration.common.utils.TextUtil;
 import com.github.emailtohl.integration.common.utils.UpDownloader;
 import com.github.emailtohl.integration.common.ztree.ZtreeNode;
-import com.github.emailtohl.integration.user.dto.UserDto;
 import com.github.emailtohl.integration.web.exception.BadRequestException;
-import com.github.emailtohl.integration.web.exception.VerifyFailureException;
 /**
  * 文件上传控制器
  * 本类涉及很多文件路径，为避免参数中的路径和实际路径冲突，所以请求统一为POST
@@ -275,46 +269,6 @@ public class FileUploadServer {
 		public String toString() {
 			return "Form [path=" + path + ", textContext=" + textContext + ", charset=" + charset + "]";
 		}
-	}
-	
-	/**
-	 * 用于angular fileload指令的测试控制器
-	 * 由于未在spring中找到如何通过@RequestPart获取多文件
-	 * 所以自定义工具从HttpServletRequest获取所有文件
-	 * @param request
-	 * @param multiplefiles
-	 * @param singlefile
-	 * @param user
-	 * @param errors
-	 * @return
-	 */
-	@RequestMapping(value = "test", method = POST, produces = "text/plain; charset=utf-8")
-	@ResponseBody
-	public String fileUploadServer(
-			HttpServletRequest request,
-			@RequestPart("multiplefiles") Part multiplefiles,
-			@RequestPart("singlefile") Part singlefile,
-			@Valid UserDto user,
-			Errors errors) {
-		if (errors.hasErrors()) {
-			StringBuilder sb = new StringBuilder();
-			for (ObjectError s : errors.getAllErrors()) {
-				sb.append(s.toString());
-			}
-			throw new VerifyFailureException(sb.toString());
-		}
-		logger.debug(multiplefiles);
-		logger.debug(singlefile);
-		logger.debug(user);
-		String result = CtrlUtil.multipartOnload(request, "temp/");
-		return result;
-	}
-	
-	@RequestMapping(value = "testng", method = POST, produces = "text/plain; charset=utf-8")
-	@ResponseBody
-	public String testng(HttpServletRequest request) {
-		String result = CtrlUtil.multipartOnload(request, "temp/");
-		return result;
 	}
 	
 }

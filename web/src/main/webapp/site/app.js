@@ -1,26 +1,26 @@
 define([
 	'angular', 'angular-animate', 'angular-cookies', 'angular-touch', 'ui-router', 
-	/*'dashboard/context',*/
 	'common/context',
 	'user/context',
 	'role/context',
+	'crm/context',
+	'encryption/context',
 	'forum/context',
 	'applicationForm/context',
-	'crm/context',
 	'cms/context',
-	'encryption/context'
+	'dashboard/context',
 ], function(angular) {
 	return angular.module('app', [
 			'ui.router', 'ngAnimate', 'ngCookies', 'ngTouch',
-			/*'dashboardModule',*/
 			'commonModule',
 			'userModule',
 			'roleModule',
 			'crmModule',
-			'cmsModule',
 			'encryptionModule',
+			'cmsModule',
 			'applicationFormModule',
 			'forumModule',
+			'dashboardModule',
 		])
 		.run(['$rootScope', '$state', '$stateParams', '$http', function($rootScope, $state, $stateParams, $http) {
 			// 让页面能同步状态，显示出该状态应有的效果，例如某菜单被激活的样式
@@ -142,7 +142,7 @@ define([
 			}
 		}])
 		.config(function($stateProvider, $urlRouterProvider) {
-			$urlRouterProvider.otherwise('/');
+			$urlRouterProvider.otherwise('/dashboard');
 		})
 		// withCredentials是一个设置在底层 XMLHttpRequest(AJAX)对象的标记，可以跨站访问时携带cookie
 		.config(function($httpProvider) {

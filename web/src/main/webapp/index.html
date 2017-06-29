@@ -17,6 +17,8 @@
   <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
   <link rel="stylesheet" href="lib/adminLTE/css/skins/_all-skins.min.css">
+  <!-- Date Picker -->
+  <link rel="stylesheet" href="lib/datepicker/datepicker3.css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -329,7 +331,12 @@
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
-        <li data-ng-class="{active: $state.includes('dashboard')}"><a ui-sref="dashboard"><i class="fa fa-dashboard"></i> <span>首页</span></a></li>
+        <li data-ng-class="{active: $state.includes('dashboard')}">
+        	<a ui-sref="dashboard">
+        		<i class="fa fa-dashboard"></i>
+        		<span>首页</span>
+        	</a>
+        </li>
         <li class="treeview" data-ng-class="{active: $state.includes('forum')}">
           <a href="#">
             <i class="fa fa-forumbee"></i>

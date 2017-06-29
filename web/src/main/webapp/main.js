@@ -33,6 +33,7 @@ requirejs.config({
 		'ckeditor': '../lib/ckeditor/ckeditor',
 		'ckeditorConfig': '../lib/ckeditor/config',
 		'moment': '../lib/moment/moment',
+		'bootstrap-datepicker' : '../lib/datepicker/bootstrap-datepicker',
 	},
 	shim: {
 		// 他们都遵循AMD规范，所以不必声明
@@ -102,6 +103,9 @@ requirejs.config({
 			deps: ['jquery'],
 			exports: 'moment'
 		},
+		'bootstrap-datepicker': {
+			deps: ['jquery'],
+		},
 	},
 	// Do not use RequireJS' paths option to configure the path to CodeMirror, since it will break loading submodules through relative paths. Use the packages configuration option instead
 	packages: [{
@@ -118,7 +122,7 @@ requirejs(['jquery', 'jquery-ui'], function($) {
 		// Resolve conflict in jQuery UI tooltip with Bootstrap tooltip
 		$.widget.bridge('uibutton', $.ui.button);
 		// 加载项目
-		require(['bootstrap', 'jquery-slimscroll', 'fastclick', 'adminlte', 'adminlte-app'], function() {
+		require(['bootstrap', 'jquery-slimscroll', 'fastclick', 'adminlte', 'adminlte-app', 'bootstrap-datepicker'], function() {
 			// 加载项目所需的框架
 			require(['angular', 'app'], function(angular) {
 				angular.element(document).ready(function() {

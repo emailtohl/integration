@@ -143,6 +143,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity security) {
 		// 告诉Spring Security需要忽略的路径
 		security.ignoring()
+		.antMatchers("/main.js")
 		.antMatchers("/lib/**")
 		.antMatchers("/common/**")
 		.antMatchers("/site/**")
@@ -176,7 +177,6 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			"/about",
 			"/chat/**",
 			"/systemInfo",
-			"/fileUploadServer/test",
 		};
 		security
 			// HTTP Basic Authentication是基于REST风格，通过HTTP状态码与访问它的应用程序进行沟通

@@ -1,11 +1,9 @@
-define(['angular', 'dashboard/module', 'sparkline', 'knob'], function(angular) {
+define(['angular', 'dashboard/module'], function(angular) {
 	return angular.module('dashboardModule')
 	.controller('DashboardCtrl', ['$scope', '$http', '$state', '$cookies', function($scope, $http, $state, $cookies) {
 		var self = this, isHttps = window.location.protocol == 'https:' ? true : false;
-		// AdminLTE dashboard demo (This is only for demo purposes)
-		// AdminLTE for demo purposes
-		require(['dashboard/dashboard2', 'dashboard/demo'], function() {});
 		self.chatlist = [];
+		$('#calendar').datepicker();
 		
 		/**
 		 * 向获取身份认证方法中注册聊天程序.
@@ -13,7 +11,7 @@ define(['angular', 'dashboard/module', 'sparkline', 'knob'], function(angular) {
 		$scope.getAuthentication(function(data) {
 			var callee = arguments.callee;
 			if (data && data.username) {
-				var url = (isHttps ? 'wss://' : 'ws://') + window.location.host + '/building/chat/' + data.username;
+				var url = (isHttps ? 'wss://' : 'ws://') + window.location.host + '/web/chat/' + data.username;
 				var connection = new WebSocket(url);
 				
 				connection.onopen = function(e) {
@@ -67,9 +65,9 @@ define(['angular', 'dashboard/module', 'sparkline', 'knob'], function(angular) {
 		/**
 		 * 获取系统信息
 		 */
-		self.systemInfo = {};
+/*		self.systemInfo = {};
 		(function SystemInfo() {
-			var url = (isHttps ? 'wss://' : 'ws://') + window.location.host + '/building/systemInfo';
+			var url = (isHttps ? 'wss://' : 'ws://') + window.location.host + '/web/systemInfo';
 			var connection = new WebSocket(url);
 			var $knob = $(".knob"), isCreated = false;
 			
@@ -121,7 +119,7 @@ define(['angular', 'dashboard/module', 'sparkline', 'knob'], function(angular) {
 		    	alert('WebSocketError! ' + e.data);
 		    }
 		})();
-		
+		*/
 		
 		
 		
@@ -132,7 +130,7 @@ define(['angular', 'dashboard/module', 'sparkline', 'knob'], function(angular) {
 		   ** and then updates the display a couple of times a second via
 		   ** setTimeout()
 		   **/
-		  (function drawMouseSpeedDemo() {
+/*		  (function drawMouseSpeedDemo() {
 		    var mrefreshinterval = 500; // update display every 500ms
 		    var lastmousex = -1;
 		    var lastmousey = -1;
@@ -165,6 +163,6 @@ define(['angular', 'dashboard/module', 'sparkline', 'knob'], function(angular) {
 		    };
 		    // We could use setInterval instead, but I prefer to do it this way
 		    setTimeout(mdraw, mrefreshinterval);
-		  })();
+		  })();*/
 	}]);
 });

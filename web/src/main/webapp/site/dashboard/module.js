@@ -1,4 +1,4 @@
-define(['angular', 'angular-cookies', 'ui-router'/*, 'chartjs', 'jvectormap', 'jvectormap-world'*/], function(angular) {
+define(['angular', 'angular-cookies', 'ui-router'], function(angular) {
 	return angular.module('dashboardModule', ['ui.router', 'ngCookies'])
 		.config(function($stateProvider) {
 			$stateProvider
