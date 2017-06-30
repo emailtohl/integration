@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.web.chat;
+package com.github.emailtohl.integration.web.service.chat;
 
 import java.io.Serializable;
 import java.time.Instant;

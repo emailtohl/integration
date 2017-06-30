@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.web.chat;
+package com.github.emailtohl.integration.web.service.chat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +24,7 @@ import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.Session;
 
-import com.github.emailtohl.integration.web.chat.ChatMessage.Type;
+import com.github.emailtohl.integration.web.service.chat.ChatMessage.Type;
 /**
  * websocket，模拟群集的客户端点
  * 它同时也是一个servlet，首先接收前端传来的消息，然后将消息推送给后台服务端

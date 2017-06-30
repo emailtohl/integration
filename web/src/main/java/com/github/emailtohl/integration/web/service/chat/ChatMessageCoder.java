@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.web.chat;
+package com.github.emailtohl.integration.web.service.chat;
 
 import com.github.emailtohl.integration.web.websocket.ObjectCoder;
 /**

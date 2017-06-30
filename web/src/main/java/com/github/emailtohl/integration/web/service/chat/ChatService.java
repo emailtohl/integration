@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.web.chat;
+package com.github.emailtohl.integration.web.service.chat;
 /**
  * 聊天程序的接口
  * @author HeLei
