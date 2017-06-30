@@ -3,7 +3,7 @@
  * @author HeLei
  * @date 2017.02.04
  */
-define([ 'common/module', 'ztree' ], function(commonModule) {
+define([ 'common/module'/*, 'ztree'*/ ], function(commonModule) {
 	return commonModule.factory('ztreeutil', [ function() {
 		/**
 		 * 判断该层级上是否已经创建了此节点，如果已创建，则返回数组序号，否则返回-1
