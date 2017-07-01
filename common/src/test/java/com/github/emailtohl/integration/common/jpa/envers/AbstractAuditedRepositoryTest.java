@@ -42,7 +42,7 @@ import com.github.emailtohl.integration.common.testEntities.User;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceConfiguration.class)
-@ActiveProfiles(DataSourceConfiguration.H2_RAM_DB)
+@ActiveProfiles(DataSourceConfiguration.DB_RAM_H2)
 @Transactional
 public class AbstractAuditedRepositoryTest {
 	private static final Logger logger = LogManager.getLogger();

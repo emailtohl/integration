@@ -34,9 +34,9 @@ import org.springframework.util.StringUtils;
 @PropertySource({ "classpath:database.properties", "classpath:config.properties" })
 public class DataSourceConfiguration {
 	private static final Logger logger = LogManager.getLogger();
-	public static final String JNDI_POSTGRESQL_DB = "jndi_postgresql_db";
-	public static final String POSTGRESQL_DB = "postgresql_db";
-	public static final String H2_RAM_DB = "h2_ram_db";
+	public static final String DB_JNDI = "db_jndi";
+	public static final String DB_CONFIG = "db_config";
+	public static final String DB_RAM_H2 = "db_ram_h2";
 	// 在容器中的环境
 	public static final String ENV_SERVLET = "env_servlet";
 	// 在容器中的环境
@@ -71,7 +71,7 @@ public class DataSourceConfiguration {
 	 * 
 	 * @return
 	 */
-	@Profile(H2_RAM_DB)
+	@Profile(DB_RAM_H2)
 	@Bean
 	public DataSource embeddedDataSource() {
 		return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2)
@@ -79,7 +79,7 @@ public class DataSourceConfiguration {
 				.build();
 	}
 
-	@Profile(POSTGRESQL_DB)
+	@Profile(DB_CONFIG)
 	@Bean(name = "pool_dataSource")
 	public DataSource tomcatJdbc() {
 		// 创建连接池属性对象
@@ -95,7 +95,7 @@ public class DataSourceConfiguration {
 		return dataSource;
 	}
 
-	@Profile({ JNDI_POSTGRESQL_DB })
+	@Profile({ DB_JNDI })
 	@Bean(name = "jndi_dataSource")
 	public DataSource jndiDataSource() {
 		JndiDataSourceLookup lookup = new JndiDataSourceLookup();

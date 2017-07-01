@@ -20,8 +20,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 @Configuration
 @PropertySource({ "classpath:database.properties" })
 public class DataSourceConfiguration {
-	public static final String POSTGRESQL_DB = "postgresql_db";
-	public static final String H2_RAM_DB = "h2_ram_db";
+	public static final String DB_CONFIG = "db_config";
+	public static final String DB_RAM_H2 = "db_ram_h2";
 	
 	/**
 	 * 静态配置方法，该方法将在最早执行，这样才能读取properties配置
@@ -45,7 +45,7 @@ public class DataSourceConfiguration {
 	 * 内存数据库
 	 * @return
 	 */
-	@Profile(H2_RAM_DB)
+	@Profile(DB_RAM_H2)
 	@Bean
 	public DataSource embeddedDataSource() {
 		return new EmbeddedDatabaseBuilder()
@@ -54,7 +54,7 @@ public class DataSourceConfiguration {
 				.build();
 	}
 	
-	@Profile(POSTGRESQL_DB)
+	@Profile(DB_CONFIG)
 	@Bean(name = "test_dataSource")
 	public DataSource testDataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();

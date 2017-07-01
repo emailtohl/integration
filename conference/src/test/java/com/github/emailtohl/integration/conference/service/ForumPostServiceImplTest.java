@@ -38,7 +38,7 @@ import com.github.emailtohl.integration.user.dao.UserRepository;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceConfiguration.class)
-@ActiveProfiles(DataSourceConfiguration.H2_RAM_DB)
+@ActiveProfiles(DataSourceConfiguration.DB_RAM_H2)
 public class ForumPostServiceImplTest {
 	static final Logger logger = LogManager.getLogger();
 	final Pageable pageable = new PageRequest(0, 20);

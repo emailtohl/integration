@@ -54,7 +54,7 @@ import javassist.NotFoundException;
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceConfiguration.class)
-@ActiveProfiles(DataSourceConfiguration.H2_RAM_DB)
+@ActiveProfiles(DataSourceConfiguration.DB_RAM_H2)
 public class UserServiceImplTest {
 	static final Logger logger = LogManager.getLogger();
 	@Inject @Named("userServiceImpl") UserService userService;

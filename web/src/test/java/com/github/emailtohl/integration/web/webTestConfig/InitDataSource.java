@@ -23,7 +23,7 @@ class InitDataSource {
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		context.getEnvironment().setActiveProfiles(
-			com.github.emailtohl.integration.web.config.DataSourceConfiguration.POSTGRESQL_DB,
+			com.github.emailtohl.integration.web.config.DataSourceConfiguration.DB_CONFIG,
 			com.github.emailtohl.integration.web.config.DataSourceConfiguration.ENV_NO_SERVLET
 		);
 		context.register(
@@ -99,6 +99,7 @@ class InitDataSource {
 					em.persist(td.bar);
 					em.persist(td.baz);
 					em.persist(td.qux);
+					em.persist(td.administrator);
 					
 					em.persist(td.parent);
 					em.persist(td.subType);

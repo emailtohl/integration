@@ -35,7 +35,7 @@ import freemarker.template.TemplateNotFoundException;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceConfiguration.class)
-@ActiveProfiles({ DataSourceConfiguration.H2_RAM_DB })
+@ActiveProfiles({ DataSourceConfiguration.DB_RAM_H2 })
 public class CmsCtrlTest {
 	@Inject
 	Configuration cfg;

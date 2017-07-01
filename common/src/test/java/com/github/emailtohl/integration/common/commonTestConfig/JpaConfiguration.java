@@ -71,7 +71,7 @@ class JpaConfiguration {
 	@Bean
 	public JpaVendorAdapter jpaVendorAdapter() {
 		HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
-		if (contains(DataSourceConfiguration.H2_RAM_DB)) {
+		if (contains(DataSourceConfiguration.DB_RAM_H2)) {
 			adapter.setDatabase(Database.H2);
 			adapter.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
 		} else {
@@ -143,7 +143,7 @@ class JpaConfiguration {
 	public LocalSessionFactoryBuilder sessionFactory() {
 		LocalSessionFactoryBuilder builder = new LocalSessionFactoryBuilder(dataSource);
 		builder.scanPackages("com.github.emailtohl.integration.common.testData");
-		if (contains(DataSourceConfiguration.H2_RAM_DB)) {
+		if (contains(DataSourceConfiguration.DB_RAM_H2)) {
 			builder.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
 		} else {
 			builder.setProperty("hibernate.dialect", PostgreSQL9Dialect.class.getCanonicalName());

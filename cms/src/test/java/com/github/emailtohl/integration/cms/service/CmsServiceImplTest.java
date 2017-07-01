@@ -40,7 +40,7 @@ import com.github.emailtohl.integration.common.jpa.Pager;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceConfiguration.class)
-@ActiveProfiles(DataSourceConfiguration.H2_RAM_DB)
+@ActiveProfiles(DataSourceConfiguration.DB_RAM_H2)
 @Transactional
 public class CmsServiceImplTest {
 	static final Logger logger = LogManager.getLogger();

@@ -43,7 +43,7 @@ import com.github.emailtohl.integration.user.entities.User;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceConfiguration.class)
-@ActiveProfiles(DataSourceConfiguration.H2_RAM_DB)
+@ActiveProfiles(DataSourceConfiguration.DB_RAM_H2)
 public class ApplicationFormServiceImplTest {
 	static final Logger logger = LogManager.getLogger();
 	@Inject UserRepository userRepository;

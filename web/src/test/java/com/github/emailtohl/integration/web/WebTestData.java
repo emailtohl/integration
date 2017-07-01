@@ -45,6 +45,7 @@ import com.github.emailtohl.integration.user.entities.Department;
 import com.github.emailtohl.integration.user.entities.Employee;
 import com.github.emailtohl.integration.user.entities.Role;
 import com.github.emailtohl.integration.user.entities.Subsidiary;
+import com.github.emailtohl.integration.user.entities.User;
 import com.github.emailtohl.integration.user.entities.User.Gender;
 /**
  * 用于测试的数据
@@ -86,6 +87,7 @@ public class WebTestData {
 	public final Employee bar = new Employee();
 	public final Customer baz = new Customer();
 	public final Customer qux = new Customer();
+	public final User administrator = new User();
 	
 	public final Company company = new Company();
 	public final Department product = new Department(), qa = new Department();
@@ -295,6 +297,33 @@ public class WebTestData {
 			e.printStackTrace();
 		}
 		qux.setIconSrc("download/img/icon-head-qux.jpg");
+		
+		administrator.setName("管理员");
+		administrator.setUsername("administrator");
+		administrator.setEmail("administrator@administrator");
+		administrator.setTelephone("123456");
+		administrator.setAddress("local");
+		administrator.setEnabled(true);
+		administrator.setPassword(BCrypt.hashpw("123456", salt));
+		administrator.setDescription("administrator管理员");
+		s = new Subsidiary();
+		s.setCity("重庆");
+		s.setCountry("中国");
+		s.setProvince("重庆");
+		s.setLanguage("zh");
+		s.setMobile("187******82");
+		administrator.setSubsidiary(s);
+		administrator.setGender(Gender.MALE);
+		administrator.getRoles().addAll(Arrays.asList(admin, user));
+		try (InputStream is = cl.getResourceAsStream("img/icon-head-administrator.png")) {
+			icon = new byte[is.available()];
+			is.read(icon);
+			administrator.setIcon(icon);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		administrator.setIconSrc("download/img/icon-head-administrator.png");
+		
 		
 		product.setEmployees(new HashSet<Employee>(Arrays.asList(foo)));
 		qa.setEmployees(new HashSet<Employee>(Arrays.asList(bar)));
