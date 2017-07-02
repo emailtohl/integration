@@ -16,7 +16,7 @@
  * @date 2017.02.04
  */
 
-define([ 'common/module', 'common/service/util', 'datetimepicker-zh' ], function(commonModule) {
+define(['jquery', 'common/module', 'common/service/util'], function($, commonModule) {
 	commonModule.directive('datetimepicker', [ 'util', function(util) {
 		util.loadasync('lib/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css');
 		return {
@@ -38,8 +38,11 @@ define([ 'common/module', 'common/service/util', 'datetimepicker-zh' ], function
 				};
 				
 				$.extend(options, $scope.config);
-				// Angular将元素封装成了jqLite，可直接使用jQuery的接口
-				$($element).datetimepicker(options);
+				
+				require(['datetimepicker-zh'], function() {
+					// Angular将元素封装成了jqLite，可直接使用jQuery的接口
+					$($element).datetimepicker(options);
+				});
 				
 				if (ngModelCtrl) {
 					// When data changes inside AngularJS

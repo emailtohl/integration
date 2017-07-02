@@ -57,7 +57,7 @@ define([ 'common/module', 'common/service/util', 'jquery', 'jquery-ui' ], functi
 					changeMonth: true,
 					changeYear: true,
 					showAnim : 'show',
-//					dateFormat : 'yy-mm-dd',
+					dateFormat : 'yyyy-mm-dd',
 					showButtonPanel: true,
 				};
 				$.extend(options, $scope.config);

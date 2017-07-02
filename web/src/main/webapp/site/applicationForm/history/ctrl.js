@@ -1,20 +1,25 @@
 /**
  * 查询审核记录
  */
-define(['applicationForm/module', 'applicationForm/service', 'moment'], function(applicationFormModule, service, moment) {
+define(['applicationForm/module', 'applicationForm/service'], function(applicationFormModule, service) {
 	return applicationFormModule
 	.controller('ApplicationFormHistoryCtrl', [ '$scope', '$http', '$state', 'applicationFormService', 'util'
 	                         , function($scope, $http, $state, applicationFormService, util) {
-		const initForm = JSON.stringify({
-			page : 0,
-			name : null,
-			applicant : null,
-			handler : null,
-			status : null,
-			start : moment().startOf('year').format('YYYY-MM-DD HH:mm:ss'),
-			end : moment().format('YYYY-MM-DD HH:mm:ss'),
+		var initForm = '{}';
+		require(['moment'], function(moment) {
+			initForm = JSON.stringify({
+				page : 0,
+				name : null,
+				applicant : null,
+				handler : null,
+				status : null,
+				start : moment().startOf('year').format('YYYY-MM-DD HH:mm:ss'),
+				end : moment().format('YYYY-MM-DD HH:mm:ss'),
+			});
 		});
+		
 		var self = this;
+		self.config={dateFormat:'YYYY-MM-DD HH:mm:ss'};
 		util.loadasync('lib/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css');
 		$scope.getAuthentication();
 		
