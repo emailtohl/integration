@@ -34,6 +34,7 @@ requirejs.config({
 		'moment': '../lib/moment/moment',
 		'bootstrap-datepicker' : '../lib/datepicker/bootstrap-datepicker',
 		'datepicker-zh' : '../lib/datepicker/locales/bootstrap-datepicker.zh-CN',
+		'angular-datepicker': '../lib/angular-datepicker/angular-datepicker',
 		'sparkline' : '../lib/sparkline/jquery.sparkline.min',
 		'knob' : '../lib/knob/jquery.knob',
 	},
@@ -107,6 +108,9 @@ requirejs.config({
 		},
 		'bootstrap-datepicker': {
 			deps: ['jquery'],
+		},
+		'angular-datepicker': {
+			deps: ['angular'],
 		},
 		'sparkline' : {
 			deps : [ 'jquery' ],

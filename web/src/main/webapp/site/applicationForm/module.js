@@ -1,5 +1,5 @@
 define(['angular', 'ui-router', 'common/context'], function(angular) {
-	return angular.module('applicationFormModule', ['ui.router', 'commonModule']).config(function($stateProvider) {
+	return angular.module('applicationFormModule', ['ui.router', 'commonModule', 'datePicker']).config(function($stateProvider) {
 		$stateProvider
 			.state('applicationForm', {
 				'abstract': 'true',
