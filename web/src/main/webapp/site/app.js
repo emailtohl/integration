@@ -1,6 +1,6 @@
 define([
 	'angular', 'angular-animate', 'angular-cookies', 'angular-touch', 'ui-router', 
-	'angular-datepicker',
+	'angular-datepicker', 'ng-verify',
 	'common/context',
 	'user/context',
 	'role/context',

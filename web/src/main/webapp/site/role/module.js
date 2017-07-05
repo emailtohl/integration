@@ -1,5 +1,5 @@
 define(['angular', 'ui-router', 'common/context'], function(angular) {
-	return angular.module('roleModule', ['ui.router', 'commonModule'])
+	return angular.module('roleModule', ['ui.router', 'commonModule', 'ngVerify'])
 		.config(function($stateProvider) {
 			$stateProvider
 				.state('role', {

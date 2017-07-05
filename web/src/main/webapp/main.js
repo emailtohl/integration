@@ -35,6 +35,7 @@ requirejs.config({
 		'bootstrap-datepicker' : '../lib/datepicker/bootstrap-datepicker',
 		'datepicker-zh' : '../lib/datepicker/locales/bootstrap-datepicker.zh-CN',
 		'angular-datepicker': '../lib/angular-datepicker/angular-datepicker',
+		'ng-verify': '../lib/ng-verify/ng-verify',
 		'sparkline' : '../lib/sparkline/jquery.sparkline.min',
 		'knob' : '../lib/knob/jquery.knob',
 	},
@@ -109,7 +110,13 @@ requirejs.config({
 		'bootstrap-datepicker': {
 			deps: ['jquery'],
 		},
+		'datepicker-zh': {
+			deps: ['bootstrap-datepicker'],
+		},
 		'angular-datepicker': {
+			deps: ['angular'],
+		},
+		'ng-verify': {
 			deps: ['angular'],
 		},
 		'sparkline' : {
@@ -136,7 +143,7 @@ requirejs(['jquery', 'jquery-ui'], function($) {
 		// Resolve conflict in jQuery UI tooltip with Bootstrap tooltip
 		$.widget.bridge('uibutton', $.ui.button);
 		// 加载项目
-		require(['bootstrap', 'jquery-slimscroll', 'fastclick', 'adminlte', 'adminlte-app', 'bootstrap-datepicker'], function() {
+		require(['bootstrap', 'jquery-slimscroll', 'fastclick', 'adminlte', 'adminlte-app'], function() {
 			// 加载项目所需的框架
 			require(['angular', 'app'], function(angular) {
 				angular.element(document).ready(function() {
