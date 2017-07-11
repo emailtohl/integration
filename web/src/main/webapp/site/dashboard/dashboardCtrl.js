@@ -1,6 +1,6 @@
 define(['angular', 'dashboard/module'], function(angular) {
 	return angular.module('dashboardModule')
-	.controller('DashboardCtrl', ['$scope', '$http', '$state', '$cookies', function($scope, $http, $state, $cookies) {
+	.controller('DashboardCtrl', ['$scope', '$http', '$state', '$cookies', 'util', function($scope, $http, $state, $cookies, util) {
 		var self = this, isHttps = window.location.protocol == 'https:' ? true : false;
 		self.chatlist = [];
 		$('#calendar').datepicker();
@@ -11,7 +11,8 @@ define(['angular', 'dashboard/module'], function(angular) {
 		$scope.getAuthentication(function(data) {
 			var callee = arguments.callee;
 			if (data && data.username) {
-				var url = (isHttps ? 'wss://' : 'ws://') + window.location.host + '/web/chat/' + data.username;
+				var chatUrl = util.getRootName() + '/chat/';
+				var url = (isHttps ? 'wss://' : 'ws://') + window.location.host + chatUrl + data.username;
 				var connection = new WebSocket(url);
 				
 				connection.onopen = function(e) {
@@ -63,7 +64,8 @@ define(['angular', 'dashboard/module'], function(angular) {
 			
 			require(['knob'], function() {
 				self.systemInfo = {};
-				var url = (isHttps ? 'wss://' : 'ws://') + window.location.host + '/web/systemInfo';
+				var systemInfoUrl = util.getRootName() + '/systemInfo';
+				var url = (isHttps ? 'wss://' : 'ws://') + window.location.host + systemInfoUrl;
 				var connection = new WebSocket(url);
 				var $knob = $(".knob"), isCreated = false;
 				
