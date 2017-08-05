@@ -1,4 +1,4 @@
-define(['angular', 'dashboard/module'], function(angular) {
+define(['angular', 'dashboard/module', 'bootstrap-datepicker'], function(angular) {
 	return angular.module('dashboardModule')
 	.controller('DashboardCtrl', ['$scope', '$http', '$state', '$cookies', 'util', function($scope, $http, $state, $cookies, util) {
 		var self = this, isHttps = window.location.protocol == 'https:' ? true : false;

@@ -27,6 +27,7 @@ requirejs.config({
 		fastclick: '../lib/assets/js/fastclick.min',
 		adminlte: '../lib/adminLTE/js/adminlte.min',
 		'adminlte-app': '../lib/adminLTE/js/app.min',
+		'adminlte-demo': '../lib/adminLTE/js/demo',
 		select2: '../lib/select2/select2.full.min',
 		ztree: '../lib/ztree/jquery.ztree.all.min',
 		'ckeditor': '../lib/ckeditor/ckeditor',
@@ -87,6 +88,9 @@ requirejs.config({
 			deps: ['adminlte'],
 			exports: 'adminlteApp'
 		},
+		'adminlte-demo' : {
+			deps: ['adminlte-app']
+		},
 		select2: {
 			deps: ['jquery'],
 			exports: 'select2'
@@ -143,7 +147,7 @@ requirejs(['jquery', 'jquery-ui'], function($) {
 		// Resolve conflict in jQuery UI tooltip with Bootstrap tooltip
 		$.widget.bridge('uibutton', $.ui.button);
 		// 加载项目
-		require(['bootstrap', 'jquery-slimscroll', 'fastclick', 'adminlte', 'adminlte-app'], function() {
+		require(['bootstrap', 'jquery-slimscroll', 'fastclick', 'adminlte', 'adminlte-app', 'adminlte-demo'], function() {
 			// 加载项目所需的框架
 			require(['angular', 'app'], function(angular) {
 				angular.element(document).ready(function() {
