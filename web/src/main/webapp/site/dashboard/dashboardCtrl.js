@@ -3,8 +3,11 @@ define(['angular', 'dashboard/module'], function(angular) {
 	.controller('DashboardCtrl', ['$scope', '$http', '$state', '$cookies', 'util', function($scope, $http, $state, $cookies, util) {
 		var self = this, isHttps = window.location.protocol == 'https:' ? true : false;
 		self.chatlist = [];
+		// bootstrap-datepicker.js由require加载有问题
 		util.loadasync('lib/datepicker/bootstrap-datepicker.js').success(function() {
-			$('#calendar').datepicker();
+			util.loadasync('lib/datepicker/locales/bootstrap-datepicker.zh-CN.js').success(function() {
+				$('#calendar').datepicker();
+			});
 		});
 		
 		/**

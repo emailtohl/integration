@@ -32,11 +32,11 @@
 		<project.version>1.0.0-RELEASE</project.version>
 		<project.name>admin</project.name>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<springframework.version>4.3.8.RELEASE</springframework.version>
+		<springframework.version>4.3.10.RELEASE</springframework.version>
 		<spring.security.version>4.2.3.RELEASE</spring.security.version>
 		<!-- 注意：Hibernate search与Hibernate和Lucene有版本兼容性，下列组合是兼容的：
-		Hibernate search 5.6.0，Hibernate 5.1.3.Final，Lucene 5.5.2 -->
-		<hibernate.version>5.1.3.Final</hibernate.version>
+		Hibernate search 5.6.0，Hibernate 5.1.8.Final，Lucene 5.5.2 -->
+		<hibernate.version>5.1.8.Final</hibernate.version>
 		<hibernate.search>5.6.2.Final</hibernate.search>
 		<lucene.version>5.5.4</lucene.version>
 		<log4j.version>2.8.2</log4j.version>
@@ -52,7 +52,7 @@
 		<dependency>
 		    <groupId>org.apache.commons</groupId>
 		    <artifactId>commons-lang3</artifactId>
-		    <version>3.5</version>
+		    <version>3.6</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -129,7 +129,7 @@
 			<dependency>
 				<groupId>com.squareup.okhttp3</groupId>
 				<artifactId>okhttp</artifactId>
-				<version>3.8.0</version>
+				<version>3.8.1</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.mail</groupId>
@@ -275,12 +275,12 @@
 			<dependency>
 				<groupId>org.apache.tomcat</groupId>
 				<artifactId>tomcat-jdbc</artifactId>
-				<version>9.0.0.M21</version>
+				<version>9.0.0.M25</version>
 			</dependency>
 			<dependency>
 				<groupId>org.postgresql</groupId>
 				<artifactId>postgresql</artifactId>
-				<version>42.1.1</version>
+				<version>42.1.4</version>
 				<scope>runtime</scope>
 			</dependency>
 			<dependency>

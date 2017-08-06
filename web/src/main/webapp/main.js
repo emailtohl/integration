@@ -32,8 +32,6 @@ requirejs.config({
 		'ckeditor': '../lib/ckeditor/ckeditor',
 		'ckeditorConfig': '../lib/ckeditor/config',
 		'moment': '../lib/moment/moment',
-		'bootstrap-datepicker' : '../lib/datepicker/bootstrap-datepicker',
-		'datepicker-zh' : '../lib/datepicker/locales/bootstrap-datepicker.zh-CN',
 		'angular-datepicker': '../lib/angular-datepicker/angular-datepicker',
 		'ng-verify': '../lib/ng-verify/ng-verify',
 		'sparkline' : '../lib/sparkline/jquery.sparkline.min',
@@ -106,12 +104,6 @@ requirejs.config({
 		moment: {
 			deps: ['jquery'],
 			exports: 'moment'
-		},
-		'bootstrap-datepicker': {
-			deps: ['jquery'],
-		},
-		'datepicker-zh': {
-			deps: ['bootstrap-datepicker'],
 		},
 		'angular-datepicker': {
 			deps: ['angular'],
