@@ -70,6 +70,7 @@ public class UserCtrlTest {
     Page<User> page = new PageImpl<>(Arrays.asList());
 	
     {
+    	when(userService.exist(anyString())).thenReturn(true);
     	when(userService.addEmployee(anyObject())).thenReturn(td.bar);
     	when(userService.addCustomer(anyObject())).thenReturn(td.emailtohl);
     	when(userService.enableUser(anyLong())).thenReturn(td.emailtohl);
@@ -122,6 +123,12 @@ public class UserCtrlTest {
 		.andExpect(header().stringValues("Allow", "OPTIONS,HEAD,GET,PUT,DELETE"));
 	}
 
+	@Test
+	public void testExist() throws Exception {
+		mockMvc.perform(get("/user/exist?username=abc"))
+		.andExpect(status().isOk());
+	}
+	
 	@Test
 	public void testGetUserById() throws Exception {
 		mockMvc.perform(get("/user/id/100"))

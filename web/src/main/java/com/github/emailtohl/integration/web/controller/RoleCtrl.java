@@ -74,7 +74,7 @@ public class RoleCtrl {
      * @param roleName
      * @return
      */
-    @RequestMapping(value = "exist", method = GET)
+    @RequestMapping(value = "role/exist", method = GET)
     @ResponseBody
     public String exist(@RequestParam(required = false, name = "roleName", defaultValue = "") String roleName) {
         if (!StringUtils.hasText(roleName)) {

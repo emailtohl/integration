@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
@@ -56,6 +57,10 @@ public class Role extends BaseEntity {
 	private String description;
 	private transient Set<User> users = new HashSet<User>();
 	private Set<Authority> authorities = new HashSet<Authority>();
+    /**
+     * 若角色已被用户使用，所以就不能删除，该标记用于不能删除的角色
+     */
+	private Boolean canBeDeleted;
 	
 	@Column(nullable = false, unique = true)
 	public String getName() {
@@ -92,6 +97,15 @@ public class Role extends BaseEntity {
 	}
 	public void setAuthorities(Set<Authority> authorities) {
 		this.authorities = authorities;
+	}
+
+	@Transient
+	public Boolean getCanBeDeleted() {
+		return canBeDeleted;
+	}
+
+	public void setCanBeDeleted(Boolean canBeDeleted) {
+		this.canBeDeleted = canBeDeleted;
 	}
 
 	@Override

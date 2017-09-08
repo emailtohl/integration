@@ -58,6 +58,12 @@ public class RoleCtrlTest {
 	@After
 	public void tearDown() throws Exception {
 	}
+	
+	@Test
+	public void testExist() throws Exception {
+		mockMvc.perform(get("/role/exist?roleName=abc"))
+		.andExpect(status().isOk());
+	}
 
 	@Test
 	public void testGetRole() throws Exception {
