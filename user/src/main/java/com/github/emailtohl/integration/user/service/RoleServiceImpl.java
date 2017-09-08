@@ -7,6 +7,7 @@ import static com.github.emailtohl.integration.common.jpa.entity.BaseEntity.VERS
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -34,14 +35,26 @@ public class RoleServiceImpl implements RoleService {
 	
 	@Override
 	public List<Role> getRoles() {
-		return roleRepository.findAll();
+		final Set<Long> ids = roleRepository.roleIdsWhichCanNotBeDeleted();
+		return roleRepository.findAll().stream().peek(r -> {
+			if (ids.contains(r.getId())) {
+                r.setCanBeDeleted(false);
+            } else {
+                r.setCanBeDeleted(true);
+            }
+		}).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<Authority> getAuthorities() {
 		return authorityRepository.findAll();
 	}
-
+	
+	@Override
+    public boolean exist(String roleName) {
+        return roleRepository.exist(roleName);
+    }
+	
 	@Override
 	public long createRole(Role role) {
 		Role r = new Role();

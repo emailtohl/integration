@@ -105,6 +105,11 @@ public class RoleServiceImplTest {
 		assertFalse(roleService.getRoles().isEmpty());
 		assertTrue(roleService.getAuthorities().contains(auth1));
 		assertTrue(roleService.getAuthorities().contains(auth2));
+		
+		assertTrue(roleService.exist(r.getName()));
+		assertFalse(roleService.exist("!@#$"));
+		assertFalse(roleService.exist(""));
+		assertFalse(roleService.exist(null));
 	}
 
 	@Test

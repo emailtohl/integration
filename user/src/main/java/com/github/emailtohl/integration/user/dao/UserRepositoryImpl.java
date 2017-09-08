@@ -124,4 +124,14 @@ public class UserRepositoryImpl extends AbstractCriterionQueryRepository<User> i
 		entityManager.flush();
 	}
 	
+    @Override
+    public boolean exist(String username) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> q = cb.createQuery(Long.class);
+        Root<User> r = q.from(User.class);
+        q = q.select(cb.count(r)).where(cb.equal(r.get("username"), username));
+        Long count = entityManager.createQuery(q).getSingleResult();
+        return count > 0;
+    }
+	
 }

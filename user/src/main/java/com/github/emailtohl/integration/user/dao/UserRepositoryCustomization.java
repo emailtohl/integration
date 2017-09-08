@@ -50,4 +50,11 @@ public interface UserRepositoryCustomization extends CriterionQueryRepository<Us
 	 * 将缓存刷新到数据库
 	 */
 	void flush();
+
+	/**
+	 * 确定该用户名是否可用
+	 * @param username
+	 * @return
+	 */
+	boolean exist(String username);
 }

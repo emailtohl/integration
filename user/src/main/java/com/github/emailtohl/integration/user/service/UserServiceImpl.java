@@ -56,6 +56,15 @@ public class UserServiceImpl implements UserService, Serializable {
 		admin = roleRepository.findByName(ADMIN);
 	}
 	
+	/**
+	 * 判断该用户是否存在
+	 * @param username
+	 */
+    @Override
+    public boolean exist(String username) {
+        return userRepository.exist(username);
+    }
+    
 	@Override
 	public User addEmployee(Employee u) {
 		Employee e = new Employee();

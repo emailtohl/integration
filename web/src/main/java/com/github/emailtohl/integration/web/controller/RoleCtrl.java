@@ -17,11 +17,14 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -66,6 +69,20 @@ public class RoleCtrl {
 		return roleService.getAuthorities();
 	}
 	
+    /**
+     * 查询该角色名是否已用
+     * @param roleName
+     * @return
+     */
+    @RequestMapping(value = "exist", method = GET)
+    @ResponseBody
+    public String exist(@RequestParam(required = false, name = "roleName", defaultValue = "") String roleName) {
+        if (!StringUtils.hasText(roleName)) {
+            return String.format("{\"exist\":%b}", false);
+        }
+        return String.format("{\"exist\":%b}", roleService.exist(roleName));
+    }
+    
 	/**
 	 * 对long createRole(@Valid Role role);的封装，便于控制器调用
 	 * @param role 包含角色的基本信息

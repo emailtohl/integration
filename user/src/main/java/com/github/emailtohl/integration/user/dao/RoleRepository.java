@@ -8,6 +8,6 @@ import com.github.emailtohl.integration.user.entities.Role;
  * @author HeLei
  * @date 2017.02.04
  */
-public interface RoleRepository extends JpaRepository<Role, Long> {
+public interface RoleRepository extends JpaRepository<Role, Long>, RoleRepositoryCustomization {
 	Role findByName(String name);
 }

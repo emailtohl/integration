@@ -268,5 +268,11 @@ public interface UserService {
 	@CachePut(value = CACHE_NAME_USER, key = "#result.email")
 	@PreAuthorize("isAuthenticated()")
 	User clearPublicKey(@NotNull String email);
+
+	/**
+	 * 判断该用户是否存在
+	 * @param username
+	 */
+	boolean exist(String username);
 	
 }

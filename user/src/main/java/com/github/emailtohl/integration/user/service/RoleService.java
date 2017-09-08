@@ -48,6 +48,13 @@ public interface RoleService {
 	 */
 	@Cacheable(value = CACHE_NAME_AUTHORITY_LIST)
 	List<Authority> getAuthorities();
+
+	/**
+	 * 确定该角色名是否能用
+	 * @param roleName
+	 * @return
+	 */
+	boolean exist(String roleName);
 	
 	/**
 	 * 新增一个角色
@@ -90,4 +97,5 @@ public interface RoleService {
 	 */
 	@CacheEvict(value = { CACHE_NAME_ROLE, CACHE_NAME_ROLE_LIST, CACHE_NAME_USER, CACHE_NAME_USER_PAGER }, allEntries = true)
 	void deleteRole(long id);
+
 }

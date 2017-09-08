@@ -30,6 +30,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -106,6 +107,20 @@ public class UserCtrl {
 		return new ResponseEntity<Void>(null, headers, HttpStatus.NO_CONTENT);
 	}
 	
+    /**
+     * 查询该角色名是否已用
+     * @param username
+     * @return
+     */
+    @RequestMapping(value = "exist", method = GET)
+    @ResponseBody
+    public String exist(@RequestParam(required = false, name = "username", defaultValue = "") String username) {
+        if (!StringUtils.hasText(username)) {
+            return String.format("{\"exist\":%b}", false);
+        }
+        return String.format("{\"exist\":%b}", userService.exist(username));
+    }
+    
 	/**
 	 * 通过id获取User
 	 * 注意，userService获取的User对象，可能是一个普通的User，也可能是继承User的Employ或Manager

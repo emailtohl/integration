@@ -118,8 +118,19 @@ public class UserServiceImplTest {
 	}
 	
 	@Test
+	public void testExist() {
+		
+	}
+	
+	@Test
 	public void testCRUD1() {
 		Long id = userService.addEmployee(emp).getId();
+		
+		assertTrue(userService.exist(emp.getUsername()));
+		assertFalse(userService.exist("~*&^$"));
+		assertFalse(userService.exist(""));
+		assertFalse(userService.exist(null));
+		
 		try {
 			assertNotNull(id);
 			// test query
