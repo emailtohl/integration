@@ -15,14 +15,12 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
-import com.github.emailtohl.integration.common.jpa.Pager;
+import com.github.emailtohl.integration.common.jpa._Page;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.common.utils.BeanUtil;
 import com.github.emailtohl.integration.user.dao.DepartmentRepository;
@@ -257,22 +255,16 @@ public class UserServiceImpl implements UserService, Serializable {
 	}
 
 	@Override
-	public Pager<User> getUserPager(User u, Pageable pageable) {
+	public _Page<User> getUserPage(User u, Pageable pageable) {
 		String fuzzy = u.getEmail();
 		if (fuzzy != null && !fuzzy.isEmpty()) {
 			fuzzy = '%' + fuzzy + '%';
 			u.setEmail(fuzzy);
 		}
-		Pager<User> pe = userRepository.dynamicQuery(u, pageable);
+		_Page<User> pe = userRepository.dynamicQuery(u, pageable);
 		List<User> ls = convert(pe.getContent());
-		Pager<User> pd = new Pager<User>(ls, pe.getTotalElements(), pageable.getPageNumber(), pe.getPageSize());
+		_Page<User> pd = new _Page<User>(ls, pe.getTotalElements(), pageable.getPageNumber(), pe.getPageSize());
 		return pd;
-	}
-
-	@Override
-	public Page<User> getUserPage(User u, Pageable pageable) {
-		Pager<User> p = this.getUserPager(u, pageable);
-		return new PageImpl<User>(p.getContent(), pageable, p.getTotalElements());
 	}
 
 	@Override
@@ -285,12 +277,12 @@ public class UserServiceImpl implements UserService, Serializable {
 	}
 
 	@Override
-	public Pager<User> getPageByRoles(String email, Set<String> roleNames, Pageable pageable) {
+	public _Page<User> getPageByRoles(String email, Set<String> roleNames, Pageable pageable) {
 		String fuzzy = email;
 		if (email != null && !email.isEmpty()) {
 			fuzzy = '%' + email + '%';
 		}
-		return userRepository.getPagerByCriteria(fuzzy, roleNames, pageable);
+		return userRepository.getPageByCriteria(fuzzy, roleNames, pageable);
 	}
 	
 	@Override

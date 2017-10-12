@@ -2,7 +2,7 @@ package com.github.emailtohl.integration.user.service;
 
 import static com.github.emailtohl.integration.user.entities.Authority.USER_ROLE_AUTHORITY_ALLOCATION;
 import static com.github.emailtohl.integration.user.service.UserService.CACHE_NAME_USER;
-import static com.github.emailtohl.integration.user.service.UserService.CACHE_NAME_USER_PAGER;
+import static com.github.emailtohl.integration.user.service.UserService.CACHE_NAME_USER_PAGE;
 
 import java.util.List;
 import java.util.Set;
@@ -80,7 +80,7 @@ public interface RoleService {
 	 * @param id
 	 * @param role
 	 */
-	@CacheEvict(value = { CACHE_NAME_ROLE, CACHE_NAME_ROLE_LIST, CACHE_NAME_USER, CACHE_NAME_USER_PAGER }, allEntries = true)
+	@CacheEvict(value = { CACHE_NAME_ROLE, CACHE_NAME_ROLE_LIST, CACHE_NAME_USER, CACHE_NAME_USER_PAGE }, allEntries = true)
 	void updateRole(long id, @Valid Role role);
 	
 	/**
@@ -88,14 +88,14 @@ public interface RoleService {
 	 * @param roleId 角色ID
 	 * @param authorityNames 权限名
 	 */
-	@CacheEvict(value = { CACHE_NAME_ROLE, CACHE_NAME_ROLE_LIST, CACHE_NAME_USER, CACHE_NAME_USER_PAGER }, allEntries = true)
+	@CacheEvict(value = { CACHE_NAME_ROLE, CACHE_NAME_ROLE_LIST, CACHE_NAME_USER, CACHE_NAME_USER_PAGE }, allEntries = true)
 	void grantAuthorities(long roleId, Set<String> authorityNames);
 	
 	/**
 	 * 删除角色
 	 * @param id
 	 */
-	@CacheEvict(value = { CACHE_NAME_ROLE, CACHE_NAME_ROLE_LIST, CACHE_NAME_USER, CACHE_NAME_USER_PAGER }, allEntries = true)
+	@CacheEvict(value = { CACHE_NAME_ROLE, CACHE_NAME_ROLE_LIST, CACHE_NAME_USER, CACHE_NAME_USER_PAGE }, allEntries = true)
 	void deleteRole(long id);
 
 }

@@ -45,7 +45,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
-import com.github.emailtohl.integration.common.jpa.Pager;
+import com.github.emailtohl.integration.common.jpa._Page;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.common.utils.UpDownloader;
 import com.github.emailtohl.integration.user.dto.UserDto;
@@ -167,13 +167,13 @@ public class UserCtrl {
 	 * @param pageable
 	 * @return
 	 */
-	@RequestMapping(value = "pager", method = GET)
+	@RequestMapping(value = "page", method = GET)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	public Pager<User> getUserPager(@ModelAttribute UserDto form, 
+	public _Page<User> getUserPage(@ModelAttribute UserDto form, 
 			@PageableDefault(page = 0, size = 10, sort = BaseEntity.ID_PROPERTY_NAME, direction = Direction.DESC) Pageable pageable) {
 		User u = form.convertUser();
-		return userService.getUserPager(u, pageable);
+		return userService.getUserPage(u, pageable);
 	}
 	
 	/**
@@ -185,7 +185,7 @@ public class UserCtrl {
 	@RequestMapping(value = "pageByRoles", method = GET)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	public Pager<User> getPageByRoles(String email, String roles,
+	public _Page<User> getPageByRoles(String email, String roles,
 			@PageableDefault(page = 0, size = 10, sort = BaseEntity.MODIFY_DATE_PROPERTY_NAME, direction = Direction.DESC) Pageable pageable) {
 		Set<String> set = new HashSet<String>();
 		if (roles != null && !roles.isEmpty()) {

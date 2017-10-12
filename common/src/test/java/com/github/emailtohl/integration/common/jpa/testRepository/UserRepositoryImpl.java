@@ -17,7 +17,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.query.QueryUtils;
 
-import com.github.emailtohl.integration.common.jpa.Pager;
+import com.github.emailtohl.integration.common.jpa._Page;
 import com.github.emailtohl.integration.common.jpa.jpaCriterionQuery.AbstractCriterionQueryRepository;
 import com.github.emailtohl.integration.common.testEntities.Employee;
 import com.github.emailtohl.integration.common.testEntities.User;
@@ -31,12 +31,12 @@ import com.github.emailtohl.integration.common.testEntities.User;
 public class UserRepositoryImpl extends AbstractCriterionQueryRepository<User> implements UserRepositoryCustomization {
 
 	@Override
-	public Pager<User> dynamicQuery(User user, Pageable pageable) {
-		return super.getPager(user, pageable.getPageNumber(), pageable.getPageSize(), AccessType.PROPERTY);
+	public _Page<User> dynamicQuery(User user, Pageable pageable) {
+		return super.getPage(user, pageable.getPageNumber(), pageable.getPageSize(), AccessType.PROPERTY);
 	}
 	
 	@Override
-	public Pager<User> getPagerByRoles(String email, Set<String> roleNames, Pageable pageable) {
+	public _Page<User> getPageByRoles(String email, Set<String> roleNames, Pageable pageable) {
 		StringBuilder jpql = new StringBuilder("SELECT DISTINCT u FROM User u WHERE 1 = 1");
 		Map<String, Object> args = new HashMap<String, Object>();
 		if (roleNames != null && roleNames.size() > 0) {
@@ -49,11 +49,11 @@ public class UserRepositoryImpl extends AbstractCriterionQueryRepository<User> i
 			jpql.append(" AND u.email LIKE :email");
 			args.put("email", email);
 		}
-		return super.getPager(jpql.toString(), args, pageable.getPageNumber(), pageable.getPageSize());
+		return super.getPage(jpql.toString(), args, pageable.getPageNumber(), pageable.getPageSize());
 	}
 	
 	@Override
-	public Pager<User> getPagerByCriteria(String email, Set<String> roleNames, Pageable pageable) {
+	public _Page<User> getPageByCriteria(String email, Set<String> roleNames, Pageable pageable) {
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		
 		CriteriaQuery<Long> q1 = cb.createQuery(Long.class);
@@ -92,7 +92,7 @@ public class UserRepositoryImpl extends AbstractCriterionQueryRepository<User> i
 				.setMaxResults(pageable.getPageSize())
 				.getResultList();
 		
-		return new Pager<User>(ls, count, pageable.getPageNumber(), pageable.getPageSize());
+		return new _Page<User>(ls, count, pageable.getPageNumber(), pageable.getPageSize());
 	}
 
 	/**
@@ -101,8 +101,8 @@ public class UserRepositoryImpl extends AbstractCriterionQueryRepository<User> i
 	 */
 	@Override
 	public Page<User> getPage(User user, Pageable pageable) {
-		Pager<User> myPager = getPager(user, pageable.getPageNumber(), pageable.getPageSize(), AccessType.PROPERTY);
-		Page<User> springPage = new PageImpl<User>(myPager.getContent(), pageable, myPager.getTotalElements());
+		_Page<User> myPage = getPage(user, pageable.getPageNumber(), pageable.getPageSize(), AccessType.PROPERTY);
+		Page<User> springPage = new PageImpl<User>(myPage.getContent(), pageable, myPage.getTotalElements());
 		return springPage;
 	}
 

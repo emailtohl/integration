@@ -16,7 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.integration.common.jpa.Pager;
+import com.github.emailtohl.integration.common.jpa._Page;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.common.jpa.envers.Tuple;
 import com.github.emailtohl.integration.user.dao.RoleAudit;
@@ -36,21 +36,21 @@ public class AuditedServiceImpl implements AuditedService {
 	@Inject RoleAudit roleAudit;
 
 	@Override
-	public Pager<UserDto> getUserRevision(String email, Pageable pageable) {
+	public _Page<UserDto> getUserRevision(String email, Pageable pageable) {
 		Map<String, String> propertyNameValueMap = new HashMap<>();
 		propertyNameValueMap.put("email", email);
 		Page<Tuple<User>> page = userAudit.getEntityRevision(propertyNameValueMap, pageable);
 		List<UserDto> ls = page.getContent().stream().map(this::convert).collect(toList());
-		return new Pager<>(ls, page.getTotalElements(), page.getNumber(), page.getSize());
+		return new _Page<>(ls, page.getTotalElements(), page.getNumber(), page.getSize());
 	}
 
 	@Override
-	public Pager<UserDto> getUsersAtRevision(int revision, String email, Pageable pageable) {
+	public _Page<UserDto> getUsersAtRevision(int revision, String email, Pageable pageable) {
 		Map<String, String> propertyNameValueMap = new HashMap<>();
 		propertyNameValueMap.put("email", email);
 		Page<User> page = userAudit.getEntitiesAtRevision(revision, propertyNameValueMap, pageable);
 		List<UserDto> ls = page.getContent().stream().map(this::convert).collect(toList());
-		return new Pager<>(ls, page.getTotalElements(), page.getNumber(), page.getSize());
+		return new _Page<>(ls, page.getTotalElements(), page.getNumber(), page.getSize());
 	}
 
 	@Override
@@ -59,21 +59,21 @@ public class AuditedServiceImpl implements AuditedService {
 	}
 
 	@Override
-	public Pager<RoleDto> getRoleRevision(String name, Pageable pageable) {
+	public _Page<RoleDto> getRoleRevision(String name, Pageable pageable) {
 		Map<String, String> propertyNameValueMap = new HashMap<>();
 		propertyNameValueMap.put("name", name);
 		Page<Tuple<Role>> page = roleAudit.getEntityRevision(propertyNameValueMap, pageable);
 		List<RoleDto> ls = page.getContent().stream().map(this::convertRole).collect(toList());
-		return new Pager<>(ls, page.getTotalElements(), page.getNumber(), page.getSize());
+		return new _Page<>(ls, page.getTotalElements(), page.getNumber(), page.getSize());
 	}
 
 	@Override
-	public Pager<RoleDto> getRolesAtRevision(int revision, String name, Pageable pageable) {
+	public _Page<RoleDto> getRolesAtRevision(int revision, String name, Pageable pageable) {
 		Map<String, String> propertyNameValueMap = new HashMap<>();
 		propertyNameValueMap.put("name", name);
 		Page<Role> page = roleAudit.getEntitiesAtRevision(revision, propertyNameValueMap, pageable);
 		List<RoleDto> ls = page.getContent().stream().map(this::convert).collect(toList());
-		return new Pager<>(ls, page.getTotalElements(), page.getNumber(), page.getSize());
+		return new _Page<>(ls, page.getTotalElements(), page.getNumber(), page.getSize());
 	}
 
 	@Override

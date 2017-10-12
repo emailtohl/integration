@@ -36,7 +36,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
-import com.github.emailtohl.integration.common.jpa.Pager;
+import com.github.emailtohl.integration.common.jpa._Page;
 import com.github.emailtohl.integration.user.dto.UserDto;
 import com.github.emailtohl.integration.user.entities.Role;
 import com.github.emailtohl.integration.user.entities.User;
@@ -89,10 +89,9 @@ public class UserCtrlTest {
     	when(userService.updateIcon(anyLong(), anyObject())).thenReturn(td.emailtohl);
     	when(userService.mergeEmployee(anyString(), anyObject())).thenReturn(td.emailtohl);
     	when(userService.mergeCustomer(anyString(), anyObject())).thenReturn(td.emailtohl);
-    	when(userService.getUserPager(anyObject(), anyObject())).thenReturn(new Pager<User>(page));
-    	when(userService.getUserPage(anyObject(), anyObject())).thenReturn(page);
+    	when(userService.getUserPage(anyObject(), anyObject())).thenReturn(new _Page<User>(page));
     	when(userService.isExist(anyString())).thenReturn(true);
-    	when(userService.getPageByRoles(anyString(), anyObject(), anyObject())).thenReturn(new Pager<User>(page));
+    	when(userService.getPageByRoles(anyString(), anyObject(), anyObject())).thenReturn(new _Page<User>(page));
     	when(userService.getRoles()).thenReturn(Arrays.asList(td.admin, td.manager, td.employee));
     	when(userService.setPublicKey(anyString(), anyString())).thenReturn(td.emailtohl);
     	when(userService.clearPublicKey(anyString())).thenReturn(td.emailtohl);
@@ -158,8 +157,8 @@ public class UserCtrlTest {
 	}
 
 //	@Test
-	public void testGetUserPager() throws Exception {
-		mockMvc.perform(get("/user/pager?email=foo@test.com&page=0&size=20"))
+	public void testGetUserPage() throws Exception {
+		mockMvc.perform(get("/user/page?email=foo@test.com&page=0&size=20"))
 		.andExpect(status().isOk());
 		
 		mockMvc.perform(get("/user/email?email=bar@test.com&page=0&size=20"))

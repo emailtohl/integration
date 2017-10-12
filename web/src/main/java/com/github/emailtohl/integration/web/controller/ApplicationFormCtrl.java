@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.github.emailtohl.integration.common.Constant;
-import com.github.emailtohl.integration.common.jpa.Pager;
+import com.github.emailtohl.integration.common.jpa._Page;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.flow.entities.ApplicationForm;
 import com.github.emailtohl.integration.flow.entities.ApplicationForm.Status;
@@ -71,9 +71,9 @@ public class ApplicationFormCtrl {
 	 */
 	@RequestMapping(value = "mine", method = RequestMethod.GET)
 	@ResponseBody
-	public Pager<ApplicationForm> findMyApplicationForm(@PageableDefault(page = 0, size = 10, sort = BaseEntity.CREATE_DATE_PROPERTY_NAME, direction = Direction.DESC) Pageable pageable) {
+	public _Page<ApplicationForm> findMyApplicationForm(@PageableDefault(page = 0, size = 10, sort = BaseEntity.CREATE_DATE_PROPERTY_NAME, direction = Direction.DESC) Pageable pageable) {
 		Page<ApplicationForm> page = applicationFormService.findApplicationFormByEmail(CtrlUtil.getCurrentUsername(), pageable);
-		return new Pager<ApplicationForm>(page.getContent(), page.getTotalElements(), pageable.getPageNumber(), pageable.getPageSize());
+		return new _Page<ApplicationForm>(page.getContent(), page.getTotalElements(), pageable.getPageNumber(), pageable.getPageSize());
 	}
 	
 	/**
@@ -85,12 +85,12 @@ public class ApplicationFormCtrl {
 	 */
 	@RequestMapping(value = "query", method = RequestMethod.GET)
 	@ResponseBody
-	public Pager<ApplicationForm> queryApplicationForm(@RequestParam(name = "name", required = false) String name, 
+	public _Page<ApplicationForm> queryApplicationForm(@RequestParam(name = "name", required = false) String name, 
 			@RequestParam(name = "status", required = false) Status status,
 			@PageableDefault(page = 0, size = 10, sort = BaseEntity.CREATE_DATE_PROPERTY_NAME, direction = Direction.DESC) Pageable pageable) {
 		Page<ApplicationForm> page = applicationFormService.findByNameAndStatus(name, status, pageable);
 		
-		return new Pager<ApplicationForm>(page.getContent(), page.getTotalElements(), pageable.getPageNumber(), pageable.getPageSize());
+		return new _Page<ApplicationForm>(page.getContent(), page.getTotalElements(), pageable.getPageNumber(), pageable.getPageSize());
 	}
 	
 	/**
@@ -177,7 +177,7 @@ public class ApplicationFormCtrl {
 	 */
 	@RequestMapping(value = "history", method = RequestMethod.GET)
 	@ResponseBody
-	public Pager<ApplicationHandleHistory> history(
+	public _Page<ApplicationHandleHistory> history(
 			@RequestParam(required = false) String applicant, 
 			@RequestParam(required = false) String handler,
 			@RequestParam(required = false) String name,
@@ -199,7 +199,7 @@ public class ApplicationFormCtrl {
 		}
 		Page<ApplicationHandleHistory> page = applicationFormService.history(applicant, handler, name, status, startTime, endTime, pageable);
 		
-		return new Pager<ApplicationHandleHistory>(page.getContent(), page.getTotalElements(), pageable.getPageNumber(), pageable.getPageSize());
+		return new _Page<ApplicationHandleHistory>(page.getContent(), page.getTotalElements(), pageable.getPageNumber(), pageable.getPageSize());
 	}
 	
 	/**

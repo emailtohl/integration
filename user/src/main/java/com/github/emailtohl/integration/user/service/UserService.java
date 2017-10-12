@@ -21,7 +21,6 @@ import javax.validation.constraints.Pattern;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -30,7 +29,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.github.emailtohl.integration.common.Constant;
 import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
-import com.github.emailtohl.integration.common.jpa.Pager;
+import com.github.emailtohl.integration.common.jpa._Page;
 import com.github.emailtohl.integration.user.entities.Customer;
 import com.github.emailtohl.integration.user.entities.Employee;
 import com.github.emailtohl.integration.user.entities.Role;
@@ -45,7 +44,7 @@ import com.github.emailtohl.integration.user.entities.User;
 public interface UserService {
 	// 该缓存map的key是用户的email而非id，这是因为getUserByEmail方法在上下文访问较多，而通过id访问的场景主要在于用户管理里面，无需缓存
 	String CACHE_NAME_USER = "userCache";
-	String CACHE_NAME_USER_PAGER = "userPagerCache";
+	String CACHE_NAME_USER_PAGE = "userPageCache";
 	
 	/**
 	 * 创建雇员账号，但只授予Employee的角色
@@ -53,7 +52,7 @@ public interface UserService {
 	 * @param u
 	 * @return 用于缓存
 	 */
-	@CacheEvict(value = CACHE_NAME_USER_PAGER, allEntries = true)
+	@CacheEvict(value = CACHE_NAME_USER_PAGE, allEntries = true)
 	@CachePut(value = CACHE_NAME_USER, key = "#result.email")
 	@PreAuthorize("hasAuthority('" + USER_CREATE_SPECIAL + "')")
 	User addEmployee(@Valid Employee u);
@@ -64,7 +63,7 @@ public interface UserService {
 	 * @param u
 	 * @return 用于缓存
 	 */
-	@CacheEvict(value = CACHE_NAME_USER_PAGER, allEntries = true)
+	@CacheEvict(value = CACHE_NAME_USER_PAGE, allEntries = true)
 	@CachePut(value = CACHE_NAME_USER, key = "#result.email")
 	User addCustomer(@Valid Customer u);
 	
@@ -73,7 +72,7 @@ public interface UserService {
 	 * @param id
 	 * @return 用于缓存
 	 */
-	@CacheEvict(value = CACHE_NAME_USER_PAGER, allEntries = true)
+	@CacheEvict(value = CACHE_NAME_USER_PAGE, allEntries = true)
 	@CachePut(value = CACHE_NAME_USER, key = "#result.email")
 	User enableUser(@Min(value = 1L) Long id);
 	
@@ -82,7 +81,7 @@ public interface UserService {
 	 * @param id
 	 * @return 用于缓存
 	 */
-	@CacheEvict(value = CACHE_NAME_USER_PAGER, allEntries = true)
+	@CacheEvict(value = CACHE_NAME_USER_PAGE, allEntries = true)
 	@CachePut(value = CACHE_NAME_USER, key = "#result.email")
 	@PreAuthorize("hasAuthority('" + USER_DISABLE + "')")
 	User disableUser(@Min(value = 1L) Long id);
@@ -92,7 +91,7 @@ public interface UserService {
 	 * @param roleNames
 	 * @return 用于缓存
 	 */
-	@CacheEvict(value = CACHE_NAME_USER_PAGER, allEntries = true)
+	@CacheEvict(value = CACHE_NAME_USER_PAGE, allEntries = true)
 	@CachePut(value = CACHE_NAME_USER, key = "#result.email")
 	@PreAuthorize("hasAuthority('" + USER_GRANT_ROLES + "')")
 	User grantRoles(long id, String... roleNames);
@@ -131,7 +130,7 @@ public interface UserService {
 	 * 删除用户
 	 * @param id
 	 */
-	@CacheEvict(value = { CACHE_NAME_USER, CACHE_NAME_USER_PAGER }, allEntries = true)
+	@CacheEvict(value = { CACHE_NAME_USER, CACHE_NAME_USER_PAGE }, allEntries = true)
 	@PreAuthorize("hasAuthority('" + USER_DELETE + "')")
 	void deleteUser(@Min(value = 1L) Long id);
 	
@@ -180,7 +179,7 @@ public interface UserService {
 	 * @param u中的id不能为null， u中属性不为null的值为修改项
 	 * @return 用于缓存
 	 */
-	@CacheEvict(value = CACHE_NAME_USER_PAGER, allEntries = true)
+	@CacheEvict(value = CACHE_NAME_USER_PAGE, allEntries = true)
 	@CachePut(value = CACHE_NAME_USER, key = "#result.email")
 	@PreAuthorize("hasAuthority('" + USER_UPDATE_ALL + "') || (hasAuthority('" + USER_UPDATE_SELF + "') && #email == principal.username)")
 	User mergeEmployee(@NotNull @P("email") String email, Employee emp);
@@ -194,37 +193,24 @@ public interface UserService {
 	 * @param u中的id不能为null， u中属性不为null的值为修改项
 	 * @return 用于缓存
 	 */
-	@CacheEvict(value = CACHE_NAME_USER_PAGER, allEntries = true)
+	@CacheEvict(value = CACHE_NAME_USER_PAGE, allEntries = true)
 	@CachePut(value = CACHE_NAME_USER, key = "#result.email")
 	@PreAuthorize("hasAuthority('" + USER_UPDATE_ALL + "') || (hasAuthority('" + USER_UPDATE_SELF + "') && #email == principal.username)")
 	User mergeCustomer(@NotNull @P("email") String email, Customer cus);
 	
 	/**
-	 * 获取用户Pager
+	 * 获取用户Page
 	 * 
-	 * 实现类中要对Pager中返回的List中敏感信息进行过滤
-	 * 
-	 * @param u
-	 * @param pageable
-	 * @return
-	 */
-	@Cacheable(value = CACHE_NAME_USER_PAGER, key = "#root.args")
-	@NotNull
-	@PreAuthorize("isAuthenticated()")
-	Pager<User> getUserPager(User u, Pageable pageable);
-	
-	/**
-	 * 获取用户Page,这里的Page是Spring Data提供的数据结构
-	 * 
-	 * 实现类中要对Pager中返回的List中敏感信息进行过滤
+	 * 实现类中要对Page中返回的List中敏感信息进行过滤
 	 * 
 	 * @param u
 	 * @param pageable
 	 * @return
 	 */
+	@Cacheable(value = CACHE_NAME_USER_PAGE, key = "#root.args")
 	@NotNull
 	@PreAuthorize("isAuthenticated()")
-	Page<User> getUserPage(User u, Pageable pageable);
+	_Page<User> getUserPage(User u, Pageable pageable);
 	
 	/**
 	 * 检查该邮箱是否注册
@@ -234,15 +220,15 @@ public interface UserService {
 	boolean isExist(@Pattern(regexp = Constant.PATTERN_EMAIL, flags = { Pattern.Flag.CASE_INSENSITIVE }) String email);
 	
 	/**
-	 * 通过用户邮箱名和角色名组合查询Pager
+	 * 通过用户邮箱名和角色名组合查询Page
 	 * @param email
 	 * @param roles
 	 * @param pageable
 	 * @return
 	 */
-	@Cacheable(value = CACHE_NAME_USER_PAGER, key = "#root.args")
+	@Cacheable(value = CACHE_NAME_USER_PAGE, key = "#root.args")
 	@PreAuthorize("isAuthenticated()")
-	Pager<User> getPageByRoles(String email, Set<String> roleNames, Pageable pageable);
+	_Page<User> getPageByRoles(String email, Set<String> roleNames, Pageable pageable);
 	
 	/**
 	 * 获取用户角色

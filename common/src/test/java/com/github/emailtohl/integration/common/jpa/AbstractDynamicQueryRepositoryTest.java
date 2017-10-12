@@ -92,40 +92,40 @@ public class AbstractDynamicQueryRepositoryTest {
 	}
 	
 	@Test
-	public void testGetPagerStringObjectArrayIntegerInteger() throws ParseException {
+	public void testGetPageStringObjectArrayIntegerInteger() throws ParseException {
 		Date d = sdf.parse("1982-01-01");
 		//序列可以倒着写
 		String jpql = "select u from User u join u.roles r where u.enabled = ?2 and u.birthday > ?1 and r.name = ?3";
-		Pager<User> pager = concrete.getPager(jpql, new Object[] { d, true, Role.USER }, 0, 10);
-		List<User> ls = pager.getContent();
+		_Page<User> page = concrete.getPage(jpql, new Object[] { d, true, Role.USER }, 0, 10);
+		List<User> ls = page.getContent();
 		assertFalse(ls.isEmpty());
 		for (User u : ls) {
 			logger.debug(u);
 		}
-		logger.debug(pager.getPageNumber());
-		logger.debug(pager.getPageSize());
-		logger.debug(pager.getOffset());
-		logger.debug(pager.getTotalPages());
-		logger.debug(pager.getTotalElements());
+		logger.debug(page.getPageNumber());
+		logger.debug(page.getPageSize());
+		logger.debug(page.getOffset());
+		logger.debug(page.getTotalPages());
+		logger.debug(page.getTotalElements());
 	}
 
 	@Test
-	public void testGetPagerStringMapOfStringObjectIntegerInteger() {
+	public void testGetPageStringMapOfStringObjectIntegerInteger() {
 		//序列可以倒着写
 		String jpql = "SELECT DISTINCT u FROM User u JOIN u.roles r WHERE u.email LIKE :email AND r.name IN :roleNames";
 		Map<String, Object> args = new HashMap<String, Object>();
 		args.put("email", "emailtohl@163.com");
 		args.put("roleNames", Arrays.asList(Role.ADMIN, Role.USER));
-		Pager<User> pager = concrete.getPager(jpql, args, 0, 10);
-		List<User> ls = pager.getContent();
+		_Page<User> Page = concrete.getPage(jpql, args, 0, 10);
+		List<User> ls = Page.getContent();
 		assertFalse(ls.isEmpty());
 	}
 
 	@Test
-	public void testGetPagerEIntegerIntegerAccessType() {
-		//将实体作为参数，查询出Pager
+	public void testGetPageEIntegerIntegerAccessType() {
+		//将实体作为参数，查询出Page
 		//此处实体类是基类，而派生类中的属性不会被分析出来，所以派生类可以放心地继承实体并作为DTO传输数据
-		Pager<User> pu = concrete.getPager(u, 0, 5, AccessType.PROPERTY);
+		_Page<User> pu = concrete.getPage(u, 0, 5, AccessType.PROPERTY);
 		List<User> ls = pu.getContent();
 		assertFalse(ls.isEmpty());
 		for (User user : ls) {

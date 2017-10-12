@@ -38,7 +38,7 @@ import com.github.emailtohl.integration.cms.entities.Comment;
 import com.github.emailtohl.integration.cms.entities.Type;
 import com.github.emailtohl.integration.cms.service.CmsService;
 import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
-import com.github.emailtohl.integration.common.jpa.Pager;
+import com.github.emailtohl.integration.common.jpa._Page;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.web.dto.WebPage;
 import com.github.emailtohl.integration.web.exception.VerifyFailureException;
@@ -83,8 +83,8 @@ public class CmsCtrl {
 	@ResponseBody
 	public String search(@RequestParam(name="query", required = false, defaultValue = "") String query, 
 			@PageableDefault(page = 0, size = 10, sort = {"title", "keywords"}, direction = Direction.DESC) Pageable pageable) {
-		Pager<Article> pager = cmsService.searchArticles(query, pageable);
-		String json = gson.toJson(pager);// 因Article有时间类型，用配置了时间格式的Gson解析
+		_Page<Article> page = cmsService.searchArticles(query, pageable);
+		String json = gson.toJson(page);// 因Article有时间类型，用配置了时间格式的Gson解析
 		return json;
 	}
 	
@@ -224,8 +224,8 @@ public class CmsCtrl {
 	@ResponseBody
 	public String queryComments(@RequestParam(required = false, name = "query", defaultValue = "") String query, 
 			@PageableDefault(page = 0, size = 10, sort = {BaseEntity.CREATE_DATE_PROPERTY_NAME, "article.title"}, direction = Direction.DESC) Pageable pageable) {
-		Pager<Comment> pager = cmsService.queryComments(query, pageable);
-		String json = gson.toJson(pager);// 因Article有时间类型，用配置了时间格式的Gson解析
+		_Page<Comment> page = cmsService.queryComments(query, pageable);
+		String json = gson.toJson(page);// 因Article有时间类型，用配置了时间格式的Gson解析
 		return json;
 	}
 	
@@ -298,11 +298,11 @@ public class CmsCtrl {
 	 * 获取所有的分类
 	 * @return
 	 */
-	@RequestMapping(value = "cms/typePager", method = GET)
+	@RequestMapping(value = "cms/typePage", method = GET)
 	@ResponseBody
-	public Pager<Type> getTypePager(@RequestParam(name="name", required = false, defaultValue = "") String name, 
+	public _Page<Type> getTypePage(@RequestParam(name="name", required = false, defaultValue = "") String name, 
 			@PageableDefault(page = 0, size = 10, sort = {BaseEntity.CREATE_DATE_PROPERTY_NAME}, direction = Direction.DESC) Pageable pageable) {
-		return cmsService.getTypePager(name, pageable);
+		return cmsService.getTypePage(name, pageable);
 	}
 	
 	/**

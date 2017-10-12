@@ -84,11 +84,11 @@ public abstract class AbstractDynamicQueryRepository<E extends Serializable> ext
 	}
 
 	/**
-	 * 得到一个Pager对象，包含最大页码，数据List等信息
+	 * 得到一个Page对象，包含最大页码，数据List等信息
 	 * 参数是数组
 	 */
 	@Override
-	public Pager<E> getPager(String jpql, Object[] args, Integer pageNumber, Integer pageSize) {
+	public _Page<E> getPage(String jpql, Object[] args, Integer pageNumber, Integer pageSize) {
 		Matcher m;
 		if (jpql == null || !(m = jpqlPattern.matcher(jpql)).find())
 			throw new IllegalArgumentException("JPQL可能是null，或者格式可能不对，也可能是正则表达式编写不对");
@@ -131,17 +131,17 @@ public abstract class AbstractDynamicQueryRepository<E extends Serializable> ext
 		logger.debug("SELECT Query: \n" + jpql + "\n" + "Arguments: \n" + Arrays.toString(args) + "\n"
 				+ "firstResult: \n" + startPosition + "\n" + "maxResults: \n" + pageSize);
 		List<E> singlePage = pagedQuery.getResultList();
-		Pager<E> p = new Pager<E>(singlePage, totalElements, pageNumber, pageSize);
+		_Page<E> p = new _Page<E>(singlePage, totalElements, pageNumber, pageSize);
 		p.setPageNumber(pageNumber);
 		return p;
 	}
 
 	/**
-	 * 得到一个Pager对象，包含最大页码，数据List等信息
+	 * 得到一个Page对象，包含最大页码，数据List等信息
 	 * 参数是Map
 	 */
 	@Override
-	public Pager<E> getPager(String jpql, Map<String, Object> args, Integer pageNumber, Integer pageSize) {
+	public _Page<E> getPage(String jpql, Map<String, Object> args, Integer pageNumber, Integer pageSize) {
 		Matcher m;
 		if (jpql == null || !(m = jpqlPattern.matcher(jpql)).find())
 			throw new IllegalArgumentException("JPQL可能是null，或者格式可能不对，也可能是正则表达式编写不对");
@@ -183,24 +183,24 @@ public abstract class AbstractDynamicQueryRepository<E extends Serializable> ext
 		logger.debug("SELECT Query: \n" + jpql + "\n" + "Arguments: \n" + args + "\n" + "firstResult: \n"
 				+ startPosition + "\n" + "maxResults: \n" + pageSize);
 		List<E> singlePage = pagedQuery.getResultList();
-		Pager<E> p = new Pager<E>(singlePage, totalElements, pageNumber, pageSize);
+		_Page<E> p = new _Page<E>(singlePage, totalElements, pageNumber, pageSize);
 		p.setPageNumber(pageNumber);
 		return p;
 	}
 	
 	/**
-	 * 得到一个Pager对象，包含最大页码，数据List等信息
+	 * 得到一个Page对象，包含最大页码，数据List等信息
 	 * 参数是实体对象，程序会分析该实体对象哪些属性有值，然后生成一条查询的JPQL，如此实现动态查询
 	 */
 	@Override
-	public Pager<E> getPager(E entity, Integer pageNum, Integer pageSize, AccessType type) {
+	public _Page<E> getPage(E entity, Integer pageNum, Integer pageSize, AccessType type) {
 		JpqlAndArgs jaa;
 		if (AccessType.FIELD == type) {
 			jaa = jpqlAndArgsByField(entity);
 		} else {
 			jaa = jpqlAndArgsByPropety(entity);
 		}
-		return getPager(jaa.jpql, jaa.args, pageNum, pageSize);
+		return getPage(jaa.jpql, jaa.args, pageNum, pageSize);
 	}
 	
 	/**

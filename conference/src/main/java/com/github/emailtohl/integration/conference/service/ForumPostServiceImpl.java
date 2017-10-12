@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.integration.common.jpa.Pager;
+import com.github.emailtohl.integration.common.jpa._Page;
 import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
 import com.github.emailtohl.integration.conference.dao.ForumPostRepository;
 import com.github.emailtohl.integration.conference.dto.ForumPostDto;
@@ -29,7 +29,7 @@ public class ForumPostServiceImpl implements ForumPostService {
 	@Inject ForumPostRepository forumPostRepository;
 
 	@Override
-	public Pager<SearchResult<ForumPostDto>> search(String query, Pageable pageable) {
+	public _Page<SearchResult<ForumPostDto>> search(String query, Pageable pageable) {
 		Page<SearchResult<ForumPost>> page = this.forumPostRepository.search(query, pageable);
 		/*
 		List<SearchResult<ForumPostDto>> ls = new ArrayList<SearchResult<ForumPostDto>>();
@@ -47,7 +47,7 @@ public class ForumPostServiceImpl implements ForumPostService {
 				.map(s -> new SearchResult<ForumPostDto>(convert(s.getEntity()), s.getRelevance(), null))
 				.collect(Collectors.toList());
 		
-		return new Pager<SearchResult<ForumPostDto>>(ls, page.getTotalElements(), pageable.getPageNumber(), pageable.getPageSize());
+		return new _Page<SearchResult<ForumPostDto>>(ls, page.getTotalElements(), pageable.getPageNumber(), pageable.getPageSize());
 	}
 	
 	@Override
@@ -57,21 +57,21 @@ public class ForumPostServiceImpl implements ForumPostService {
 	}
 	
 	@Override
-	public Pager<ForumPostDto> find(String query, Pageable pageable) {
+	public _Page<ForumPostDto> find(String query, Pageable pageable) {
 		Page<ForumPost> page = forumPostRepository.find(query, pageable);
 		List<ForumPostDto> ls = page.getContent().stream().filter(f -> f != null).map(this::convert).collect(Collectors.toList());
-		return new Pager<ForumPostDto>(ls, page.getTotalElements(), pageable.getPageNumber(), pageable.getPageSize());
+		return new _Page<ForumPostDto>(ls, page.getTotalElements(), pageable.getPageNumber(), pageable.getPageSize());
 	}
 
 	@Override
-	public Pager<ForumPostDto> findAllAndPaging(String query, Pageable pageable) {
+	public _Page<ForumPostDto> findAllAndPaging(String query, Pageable pageable) {
 		Page<ForumPost> page = forumPostRepository.findAllAndPaging(query, pageable);
 		List<ForumPostDto> ls = page.getContent().stream().filter(f -> f != null).map(this::convert).collect(Collectors.toList());
-		return new Pager<>(ls, page.getTotalElements(), pageable.getPageNumber(), pageable.getPageSize());
+		return new _Page<>(ls, page.getTotalElements(), pageable.getPageNumber(), pageable.getPageSize());
 	}
 	
 	@Override
-	public Pager<ForumPostDto> getPager(Pageable pageable) {
+	public _Page<ForumPostDto> getPage(Pageable pageable) {
 		Page<ForumPost> page = forumPostRepository.findAll(pageable);
 		/*
 		List<ForumPostDto> ls = new ArrayList<ForumPostDto>();
@@ -79,7 +79,7 @@ public class ForumPostServiceImpl implements ForumPostService {
 		*/
 		List<ForumPostDto> ls = page.getContent().stream().map(this::convert).collect(Collectors.toList());
 		
-		return new Pager<ForumPostDto>(ls, page.getTotalElements(), pageable.getPageNumber(), pageable.getPageSize());
+		return new _Page<ForumPostDto>(ls, page.getTotalElements(), pageable.getPageNumber(), pageable.getPageSize());
 	}
 	
 	@Override

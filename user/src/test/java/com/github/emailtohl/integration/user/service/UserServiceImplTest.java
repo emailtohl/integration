@@ -24,14 +24,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
-import com.github.emailtohl.integration.common.jpa.Pager;
+import com.github.emailtohl.integration.common.jpa._Page;
 import com.github.emailtohl.integration.user.UserTestData;
 import com.github.emailtohl.integration.user.dao.CleanAuditData;
 import com.github.emailtohl.integration.user.dao.RoleRepository;
@@ -231,18 +230,6 @@ public class UserServiceImplTest {
 	}
 	
 	@Test
-	public void testGetUserPager() {
-		UserTestData td = new UserTestData();
-		// 查询页从第0页开始
-		User u = new User();
-		u.setUsername(td.foo.getUsername());
-		u.setRoles(td.foo.getRoles());
-		u.setEmail(td.foo.getEmail());
-		Pager<User> p = userService.getUserPager(u, new PageRequest(0, 20));
-		assertTrue(p.getContent().size() > 0);
-	}
-	
-	@Test
 	public void testGetUserPage() {
 		UserTestData td = new UserTestData();
 		// 查询页从第0页开始
@@ -250,7 +237,7 @@ public class UserServiceImplTest {
 		u.setUsername(td.foo.getUsername());
 		u.setRoles(td.foo.getRoles());
 		u.setEmail(td.foo.getEmail());
-		Page<User> p = userService.getUserPage(u, new PageRequest(0, 20));
+		_Page<User> p = userService.getUserPage(u, new PageRequest(0, 20));
 		assertTrue(p.getContent().size() > 0);
 	}
 	

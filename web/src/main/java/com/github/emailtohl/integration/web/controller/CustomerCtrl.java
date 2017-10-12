@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.emailtohl.integration.common.jpa.Pager;
+import com.github.emailtohl.integration.common.jpa._Page;
 import com.github.emailtohl.integration.user.dto.UserDto;
 import com.github.emailtohl.integration.user.entities.Customer;
 import com.github.emailtohl.integration.user.service.CustomerService;
@@ -43,8 +43,8 @@ public class CustomerCtrl {
 	 * @param pageable
 	 * @return
 	 */
-	@RequestMapping(value = "pager", method = GET)
-	public Pager<Customer> query(@RequestParam(required = false) String name, @RequestParam(required = false) String title, @RequestParam(required = false) String affiliation, 
+	@RequestMapping(value = "page", method = GET)
+	public _Page<Customer> query(@RequestParam(required = false) String name, @RequestParam(required = false) String title, @RequestParam(required = false) String affiliation, 
 			@PageableDefault(page = 0, size = 10, sort = {"name", "title", "affiliation"}, direction = Direction.DESC) Pageable pageable) {
 		return customerService.query(name, title, affiliation, pageable);
 	}
