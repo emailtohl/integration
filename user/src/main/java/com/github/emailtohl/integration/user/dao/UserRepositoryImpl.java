@@ -17,7 +17,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.query.QueryUtils;
 
-import com.github.emailtohl.integration.common.jpa._Page;
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.jpaCriterionQuery.AbstractCriterionQueryRepository;
 import com.github.emailtohl.integration.user.entities.Employee;
 import com.github.emailtohl.integration.user.entities.User;
@@ -31,12 +31,12 @@ import com.github.emailtohl.integration.user.entities.User;
 public class UserRepositoryImpl extends AbstractCriterionQueryRepository<User> implements UserRepositoryCustomization {
 
 	@Override
-	public _Page<User> dynamicQuery(User user, Pageable pageable) {
+	public Paging<User> dynamicQuery(User user, Pageable pageable) {
 		return super.getPage(user, pageable.getPageNumber(), pageable.getPageSize(), AccessType.PROPERTY);
 	}
 	
 	@Override
-	public _Page<User> getPageByRoles(String email, Set<String> roleNames, Pageable pageable) {
+	public Paging<User> getPageByRoles(String email, Set<String> roleNames, Pageable pageable) {
 		StringBuilder jpql = new StringBuilder("SELECT DISTINCT u FROM User u WHERE 1 = 1");
 		Map<String, Object> args = new HashMap<String, Object>();
 		if (roleNames != null && roleNames.size() > 0) {
@@ -53,7 +53,7 @@ public class UserRepositoryImpl extends AbstractCriterionQueryRepository<User> i
 	}
 	
 	@Override
-	public _Page<User> getPageByCriteria(String email, Set<String> roleNames, Pageable pageable) {
+	public Paging<User> getPageByCriteria(String email, Set<String> roleNames, Pageable pageable) {
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		
 		CriteriaQuery<Long> q1 = cb.createQuery(Long.class);
@@ -92,7 +92,7 @@ public class UserRepositoryImpl extends AbstractCriterionQueryRepository<User> i
 				.setMaxResults(pageable.getPageSize())
 				.getResultList();
 		
-		return new _Page<User>(ls, count, pageable.getPageNumber(), pageable.getPageSize());
+		return new Paging<User>(ls, count, pageable.getPageNumber(), pageable.getPageSize());
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class UserRepositoryImpl extends AbstractCriterionQueryRepository<User> i
 	 */
 	@Override
 	public Page<User> getPage(User user, Pageable pageable) {
-		_Page<User> myPage = getPage(user, pageable.getPageNumber(), pageable.getPageSize(), AccessType.PROPERTY);
+		Paging<User> myPage = getPage(user, pageable.getPageNumber(), pageable.getPageSize(), AccessType.PROPERTY);
 		Page<User> springPage = new PageImpl<User>(myPage.getContent(), pageable, myPage.getTotalElements());
 		return springPage;
 	}

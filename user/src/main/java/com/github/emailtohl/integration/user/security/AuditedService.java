@@ -8,7 +8,7 @@ import javax.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import com.github.emailtohl.integration.common.jpa._Page;
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.user.dto.RoleDto;
 import com.github.emailtohl.integration.user.dto.UserDto;
 /**
@@ -25,7 +25,7 @@ public interface AuditedService {
 	 * @return
 	 */
 	@PreAuthorize("hasAuthority('" + AUDIT_USER + "')")
-	_Page<UserDto> getUserRevision(String email, Pageable pageable);
+	Paging<UserDto> getUserRevision(String email, Pageable pageable);
 	
 	/**
 	 * 查询User某个修订版下所有的历史记录
@@ -35,7 +35,7 @@ public interface AuditedService {
 	 * @return
 	 */
 	@PreAuthorize("hasAuthority('" + AUDIT_USER + "')")
-	_Page<UserDto> getUsersAtRevision(int revision, String email, Pageable pageable);
+	Paging<UserDto> getUsersAtRevision(int revision, String email, Pageable pageable);
 	
 	/**
 	 * 查询User在某个修订版时的历史记录
@@ -53,7 +53,7 @@ public interface AuditedService {
 	 * @return
 	 */
 	@PreAuthorize("hasAuthority('" + AUDIT_ROLE + "')")
-	_Page<RoleDto> getRoleRevision(String name, Pageable pageable);
+	Paging<RoleDto> getRoleRevision(String name, Pageable pageable);
 	
 	/**
 	 * 查询Role修订版下所有的历史记录
@@ -63,7 +63,7 @@ public interface AuditedService {
 	 * @return
 	 */
 	@PreAuthorize("hasAuthority('" + AUDIT_ROLE + "')")
-	_Page<RoleDto> getRolesAtRevision(int revision, String name, Pageable pageable);
+	Paging<RoleDto> getRolesAtRevision(int revision, String name, Pageable pageable);
 	
 	/**
 	 * 查询Role在某个修订版时的历史记录

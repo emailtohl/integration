@@ -30,7 +30,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
-import com.github.emailtohl.integration.common.jpa._Page;
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.user.UserTestData;
 import com.github.emailtohl.integration.user.dao.CleanAuditData;
 import com.github.emailtohl.integration.user.dao.RoleRepository;
@@ -237,7 +237,7 @@ public class UserServiceImplTest {
 		u.setUsername(td.foo.getUsername());
 		u.setRoles(td.foo.getRoles());
 		u.setEmail(td.foo.getEmail());
-		_Page<User> p = userService.getUserPage(u, new PageRequest(0, 20));
+		Paging<User> p = userService.getUserPage(u, new PageRequest(0, 20));
 		assertTrue(p.getContent().size() > 0);
 	}
 	

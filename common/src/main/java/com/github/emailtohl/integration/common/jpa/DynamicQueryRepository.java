@@ -21,7 +21,7 @@ public interface DynamicQueryRepository<E extends Serializable> {
 	 * @param pageSize 每页有多少行
 	 * @return 一个Page对象，包含查询结果的列表、当前页、最大页、最大行等信息
 	 */
-	_Page<E> getPage(String jpql, Object[] args, Integer pageNum, Integer pageSize);
+	Paging<E> getPage(String jpql, Object[] args, Integer pageNum, Integer pageSize);
 
 	/**
 	 * 动态查询一个Page对象
@@ -31,7 +31,7 @@ public interface DynamicQueryRepository<E extends Serializable> {
 	 * @param pageSize 每页有多少行
 	 * @return 一个Page对象，包含查询结果的列表、当前页、最大页、最大行等信息
 	 */
-	_Page<E> getPage(String jpql, Map<String, Object> args, Integer pageNum, Integer pageSize);
+	Paging<E> getPage(String jpql, Map<String, Object> args, Integer pageNum, Integer pageSize);
 
 	/**
 	 * 动态查询一个Page对象
@@ -41,5 +41,5 @@ public interface DynamicQueryRepository<E extends Serializable> {
 	 * @param type 获取实体对象的方式，FIELD是直接读取实体的字段，PROPERTY是读取实体的JavaBean属性
 	 * @return 一个Page对象，包含查询结果的列表、当前页、最大页、最大行等信息
 	 */
-	_Page<E> getPage(E entity, Integer pageNum, Integer pageSize, AccessType type);
+	Paging<E> getPage(E entity, Integer pageNum, Integer pageSize, AccessType type);
 }

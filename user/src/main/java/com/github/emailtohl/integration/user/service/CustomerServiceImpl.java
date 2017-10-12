@@ -20,7 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.github.emailtohl.integration.common.jpa._Page;
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.user.dao.CustomerRepository;
 import com.github.emailtohl.integration.user.entities.Customer;
 /**
@@ -33,7 +33,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Inject CustomerRepository customRepository;
 
 	@Override
-	public _Page<Customer> query(String name, String title, String affiliation, Pageable pageable) {
+	public Paging<Customer> query(String name, String title, String affiliation, Pageable pageable) {
 		Page<Customer> page = customRepository.query(StringUtils.hasText(name) ? name.trim() + '%' : name, 
 				StringUtils.hasText(title) ? title.trim() + '%' : title, 
 				StringUtils.hasText(affiliation) ? affiliation.trim() + '%' : affiliation, 
@@ -44,7 +44,7 @@ public class CustomerServiceImpl implements CustomerService {
 			return t;
 		})).collect(Collectors.toList());
 		
-		return new _Page<Customer>(ls, page.getTotalElements(), pageable.getPageNumber(), pageable.getPageSize());
+		return new Paging<Customer>(ls, page.getTotalElements(), pageable.getPageNumber(), pageable.getPageSize());
 	}
 
 	@Override

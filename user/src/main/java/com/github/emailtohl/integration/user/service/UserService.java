@@ -29,7 +29,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.github.emailtohl.integration.common.Constant;
 import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
-import com.github.emailtohl.integration.common.jpa._Page;
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.user.entities.Customer;
 import com.github.emailtohl.integration.user.entities.Employee;
 import com.github.emailtohl.integration.user.entities.Role;
@@ -210,7 +210,7 @@ public interface UserService {
 	@Cacheable(value = CACHE_NAME_USER_PAGE, key = "#root.args")
 	@NotNull
 	@PreAuthorize("isAuthenticated()")
-	_Page<User> getUserPage(User u, Pageable pageable);
+	Paging<User> getUserPage(User u, Pageable pageable);
 	
 	/**
 	 * 检查该邮箱是否注册
@@ -228,7 +228,7 @@ public interface UserService {
 	 */
 	@Cacheable(value = CACHE_NAME_USER_PAGE, key = "#root.args")
 	@PreAuthorize("isAuthenticated()")
-	_Page<User> getPageByRoles(String email, Set<String> roleNames, Pageable pageable);
+	Paging<User> getPageByRoles(String email, Set<String> roleNames, Pageable pageable);
 	
 	/**
 	 * 获取用户角色

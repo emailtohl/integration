@@ -96,7 +96,7 @@ public class AbstractDynamicQueryRepositoryTest {
 		Date d = sdf.parse("1982-01-01");
 		//序列可以倒着写
 		String jpql = "select u from User u join u.roles r where u.enabled = ?2 and u.birthday > ?1 and r.name = ?3";
-		_Page<User> page = concrete.getPage(jpql, new Object[] { d, true, Role.USER }, 0, 10);
+		Paging<User> page = concrete.getPage(jpql, new Object[] { d, true, Role.USER }, 0, 10);
 		List<User> ls = page.getContent();
 		assertFalse(ls.isEmpty());
 		for (User u : ls) {
@@ -116,7 +116,7 @@ public class AbstractDynamicQueryRepositoryTest {
 		Map<String, Object> args = new HashMap<String, Object>();
 		args.put("email", "emailtohl@163.com");
 		args.put("roleNames", Arrays.asList(Role.ADMIN, Role.USER));
-		_Page<User> Page = concrete.getPage(jpql, args, 0, 10);
+		Paging<User> Page = concrete.getPage(jpql, args, 0, 10);
 		List<User> ls = Page.getContent();
 		assertFalse(ls.isEmpty());
 	}
@@ -125,7 +125,7 @@ public class AbstractDynamicQueryRepositoryTest {
 	public void testGetPageEIntegerIntegerAccessType() {
 		//将实体作为参数，查询出Page
 		//此处实体类是基类，而派生类中的属性不会被分析出来，所以派生类可以放心地继承实体并作为DTO传输数据
-		_Page<User> pu = concrete.getPage(u, 0, 5, AccessType.PROPERTY);
+		Paging<User> pu = concrete.getPage(u, 0, 5, AccessType.PROPERTY);
 		List<User> ls = pu.getContent();
 		assertFalse(ls.isEmpty());
 		for (User user : ls) {

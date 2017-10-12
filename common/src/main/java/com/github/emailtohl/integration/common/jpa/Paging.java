@@ -15,7 +15,7 @@ import org.springframework.data.domain.Pageable;
  * @date 2017.02.04
  *************************************************
  */
-public class _Page<T> implements Serializable {
+public class Paging<T> implements Serializable {
 	private static final long serialVersionUID = -5098353318676033935L;
 	/**
 	 * 存储查询结果
@@ -51,7 +51,7 @@ public class _Page<T> implements Serializable {
 	 * totalElements默认是List的size
 	 * @param content
 	 */
-	public _Page(List<T> content) {
+	public Paging(List<T> content) {
 		this(content, content.size());
 	}
 	
@@ -60,7 +60,7 @@ public class _Page<T> implements Serializable {
 	 * @param content
 	 * @param totalElements
 	 */
-	public _Page(List<T> content, long totalElements) {
+	public Paging(List<T> content, long totalElements) {
 		this(content, totalElements, 0);
 	}
 	
@@ -70,11 +70,11 @@ public class _Page<T> implements Serializable {
 	 * @param totalElements
 	 * @param pageNumber
 	 */
-	public _Page(List<T> content, long totalElements, int pageNumber) {
+	public Paging(List<T> content, long totalElements, int pageNumber) {
 		this(content, totalElements, pageNumber, 20);
 	}
 	
-	public _Page(List<T> content, long totalElements, int pageNumber, int pageSize) {
+	public Paging(List<T> content, long totalElements, int pageNumber, int pageSize) {
 		this.content = content;
 		this.totalElements = totalElements;
 		this.pageNumber = pageNumber;
@@ -82,13 +82,13 @@ public class _Page<T> implements Serializable {
 		this.totalPages = (int) ((this.totalElements + this.pageSize - 1) / this.pageSize);
 	}
 	
-	public _Page(org.springframework.data.domain.Page<T> page) {
+	public Paging(org.springframework.data.domain.Page<T> page) {
 		this.content = page.getContent();
 		this.totalElements = page.getTotalElements();
 		this.totalPages = page.getTotalPages();
 	}
 	
-	public _Page(org.springframework.data.domain.Page<T> page, Pageable pageable) {
+	public Paging(org.springframework.data.domain.Page<T> page, Pageable pageable) {
 		this(page);
 		this.pageNumber = pageable.getPageNumber();
 		this.pageSize = pageable.getPageSize();

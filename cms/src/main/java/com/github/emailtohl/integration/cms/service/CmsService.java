@@ -22,7 +22,7 @@ import com.github.emailtohl.integration.cms.entities.Article;
 import com.github.emailtohl.integration.cms.entities.Comment;
 import com.github.emailtohl.integration.cms.entities.Type;
 import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
-import com.github.emailtohl.integration.common.jpa._Page;
+import com.github.emailtohl.integration.common.jpa.Paging;
 
 /**
  * cms的服务层接口
@@ -51,7 +51,7 @@ public interface CmsService {
 	 * @param pageable
 	 * @return 只返回查找到的实体类E
 	 */
-	_Page<Article> searchArticles(String query, Pageable pageable);
+	Paging<Article> searchArticles(String query, Pageable pageable);
 	
 	/**
 	 * 保存文章
@@ -147,7 +147,7 @@ public interface CmsService {
 	 * @param pageable
 	 * @return
 	 */
-	_Page<Comment> queryComments(String articleTitle, Pageable pageable);
+	Paging<Comment> queryComments(String articleTitle, Pageable pageable);
 	
 	/**
 	 * 保存文章，从安全上下文中查找用户名
@@ -218,7 +218,7 @@ public interface CmsService {
 	 * @return
 	 */
 	@PreAuthorize("isAuthenticated()")
-	_Page<Type> getTypePage(String typeName, Pageable pageable);
+	Paging<Type> getTypePage(String typeName, Pageable pageable);
 	
 	/**
 	 * 根据id查找文章类型

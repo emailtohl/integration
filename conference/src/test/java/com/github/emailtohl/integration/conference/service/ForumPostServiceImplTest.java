@@ -22,7 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.github.emailtohl.integration.common.jpa._Page;
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
 import com.github.emailtohl.integration.conference.ConferenceTestData;
 import com.github.emailtohl.integration.conference.conferenceTestConfig.DataSourceConfiguration;
@@ -70,7 +70,7 @@ public class ForumPostServiceImplTest {
 
 	@Test
 	public void testSearch() {
-		_Page<SearchResult<ForumPostDto>> p = forumPostService.search(body_emailtohl, pageable);
+		Paging<SearchResult<ForumPostDto>> p = forumPostService.search(body_emailtohl, pageable);
 		List<String> ls = Arrays.asList(title_emailtohl, title_foo, title_bar);
 		for (SearchResult<ForumPostDto> s : p.getContent()) {
 			logger.debug(s.getEntity().getTitle());
@@ -101,7 +101,7 @@ public class ForumPostServiceImplTest {
 		ls = forumPostService.findAll(Keywords_foo);
 		assertFalse(ls.isEmpty());
 		
-		_Page<ForumPostDto> p = forumPostService.findAllAndPaging(body_bar, pageable);
+		Paging<ForumPostDto> p = forumPostService.findAllAndPaging(body_bar, pageable);
 		assertFalse(p.getContent().isEmpty());
 		
 		p = forumPostService.find(Keywords_foo, pageable);
@@ -111,7 +111,7 @@ public class ForumPostServiceImplTest {
 
 	@Test
 	public void testGetPage() {
-		_Page<ForumPostDto> p = forumPostService.getPage(pageable);
+		Paging<ForumPostDto> p = forumPostService.getPage(pageable);
 		assertTrue(p.getTotalPages() > 0);
 	}
 

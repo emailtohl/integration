@@ -20,7 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
-import com.github.emailtohl.integration.common.jpa._Page;
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.common.utils.BeanUtil;
 import com.github.emailtohl.integration.user.dao.DepartmentRepository;
@@ -255,15 +255,15 @@ public class UserServiceImpl implements UserService, Serializable {
 	}
 
 	@Override
-	public _Page<User> getUserPage(User u, Pageable pageable) {
+	public Paging<User> getUserPage(User u, Pageable pageable) {
 		String fuzzy = u.getEmail();
 		if (fuzzy != null && !fuzzy.isEmpty()) {
 			fuzzy = '%' + fuzzy + '%';
 			u.setEmail(fuzzy);
 		}
-		_Page<User> pe = userRepository.dynamicQuery(u, pageable);
+		Paging<User> pe = userRepository.dynamicQuery(u, pageable);
 		List<User> ls = convert(pe.getContent());
-		_Page<User> pd = new _Page<User>(ls, pe.getTotalElements(), pageable.getPageNumber(), pe.getPageSize());
+		Paging<User> pd = new Paging<User>(ls, pe.getTotalElements(), pageable.getPageNumber(), pe.getPageSize());
 		return pd;
 	}
 
@@ -277,7 +277,7 @@ public class UserServiceImpl implements UserService, Serializable {
 	}
 
 	@Override
-	public _Page<User> getPageByRoles(String email, Set<String> roleNames, Pageable pageable) {
+	public Paging<User> getPageByRoles(String email, Set<String> roleNames, Pageable pageable) {
 		String fuzzy = email;
 		if (email != null && !email.isEmpty()) {
 			fuzzy = '%' + email + '%';
