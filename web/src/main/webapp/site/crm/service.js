@@ -2,7 +2,7 @@ define([ 'crm/module', 'common/context' ], function(crmModule) {
 	return crmModule.factory('crmService', [ '$http', 'util', function($http, util) {
 		return {
 			query : function(params) {
-				return $http.get('customer/pager?' + util.encodeUrlParams(params));
+				return $http.get('customer/page?' + util.encodeUrlParams(params));
 			},
 			get : function(id) {
 				return $http.get('customer/' + id);

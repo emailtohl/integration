@@ -18,7 +18,7 @@
 	    <div class="box-header">
 	      <h3 class="box-title">申请单列表</h3>
 	      <div class="box-tools">
-	        <form ng-submit="ctrl.getPager()" class="input-group input-group-sm" style="width: 150px;">
+	        <form ng-submit="ctrl.getPage()" class="input-group input-group-sm" style="width: 150px;">
 	          <input name="table_search" ng-model="ctrl.form.name" class="form-control pull-right" placeholder="Search title" type="text">
 	          <div class="input-group-btn">
 	            <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
@@ -40,7 +40,7 @@
 	          <th>处理意见</th>
 	          <th ng-if="hasAuthority('application_form_delete')">删除</th>
 	        </tr>
-	        <tr style="cursor: pointer;" ng-repeat="x in ctrl.pager.content" ng-click="ctrl.openModal(x.id)">
+	        <tr style="cursor: pointer;" ng-repeat="x in ctrl.page.content" ng-click="ctrl.openModal(x.id)">
 	          <td>{{x.applicant.email}}</td>
 	          <td>{{x.createDate}}</td>
 	          <td>{{x.name}}</td>
@@ -54,7 +54,7 @@
 	      </tbody></table>
 	    </div>
 	    <!-- /.box-body -->
-	    <pager page-number="ctrl.pager.pageNumber" total-pages="ctrl.pager.totalPages" button-count="5" on-click="ctrl.page(pageNumber)">
+	    <page page-number="ctrl.page.pageNumber" total-pages="ctrl.page.totalPages" button-count="5" on-click="ctrl.page(pageNumber)">
 	  </div>
 	  <!-- /.box -->
 	  </div>

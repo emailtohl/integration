@@ -34,7 +34,7 @@ define(['applicationForm/module', 'applicationForm/service'], function(applicati
 			self.form = JSON.parse(initForm);
 		};
 		
-		self.getPager = function() {
+		self.getPage = function() {
 			applicationFormService.history(
 				self.form.page,
 				self.form.applicant,
@@ -44,11 +44,11 @@ define(['applicationForm/module', 'applicationForm/service'], function(applicati
 				self.form.start,
 				self.form.end).then(
 				function(resp) {
-					self.pager = resp.data;
-					console.log(self.pager);
+					self.page = resp.data;
+					console.log(self.page);
 				});
 		};
-		self.getPager();
+		self.getPage();
 		
 		self.modal = {
 			open : false,
@@ -70,7 +70,7 @@ define(['applicationForm/module', 'applicationForm/service'], function(applicati
 		};
 		self.page = function(pageNumber) {
 			self.form.page = pageNumber;
-			self.getPager();
+			self.getPage();
 		};
 	}]);
 });

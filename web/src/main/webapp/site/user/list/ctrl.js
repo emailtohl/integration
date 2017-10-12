@@ -8,9 +8,9 @@ define(['user/module', 'user/service'], function(userModule) {
 				size: 5,
 			};
 			self.query = function() {
-				userService.getUserPager(self.params).then(function(resp) {
+				userService.getUserPage(self.params).then(function(resp) {
 					console.log(resp.data);
-					self.pager = resp.data;
+					self.page = resp.data;
 				});
 			};
 			self.reset = function() {

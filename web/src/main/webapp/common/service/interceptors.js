@@ -129,7 +129,7 @@ define([ 'common/module', 'common/service/util' ], function(commonModule) {
 			}
 		};
 	}])
-	.factory('pagerInterceptor', [ '$q', function($q) {
+	.factory('pageInterceptor', [ '$q', function($q) {
 		var p = /page=(\d+)/;
 		return {
 			request : function(config) {
@@ -163,6 +163,6 @@ define([ 'common/module', 'common/service/util' ], function(commonModule) {
 		$httpProvider.interceptors.push('OverlayInterceptor');
 		$httpProvider.interceptors.push('ErrorInterceptor');
 		$httpProvider.interceptors.push('csrfTokenInterceptor');
-//		$httpProvider.interceptors.push('pagerInterceptor');
+//		$httpProvider.interceptors.push('pageInterceptor');
 	} ]);
 });

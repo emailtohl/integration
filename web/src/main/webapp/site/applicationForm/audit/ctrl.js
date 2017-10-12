@@ -24,18 +24,18 @@ define(['applicationForm/module', 'applicationForm/service'], function(applicati
 		self.reset = function() {
 			self.form = JSON.parse(initForm);
 		};
-		self.getPager = function() {
+		self.getPage = function() {
 			if ($scope.hasAuthority('application_form_transit')) {// 如果有审批权限，则可查看所有申请单
 				applicationFormService.query(self.form.page, self.form.name, self.form.status).then(function(resp) {
-					self.pager = resp.data;
+					self.page = resp.data;
 				});
 			} else {// 否则查询与自己有关的申请单
 				applicationFormService.mine(self.form.page).then(function(resp) {
-					self.pager = resp.data;
+					self.page = resp.data;
 				});
 			}
 		};
-		self.getPager();
+		self.getPage();
 		
 		self.modal = {
 			open : false,
@@ -51,7 +51,7 @@ define(['applicationForm/module', 'applicationForm/service'], function(applicati
 				self.form.description = self.detail.description;
 				applicationFormService.transit(self.form).then(function(resp) {
 					self.openModal.open = false;
-					self.getPager();
+					self.getPage();
 					self.form = JSON.parse(initForm);
 				});
 			},
@@ -68,13 +68,13 @@ define(['applicationForm/module', 'applicationForm/service'], function(applicati
 		};
 		self.page = function(pageNumber) {
 			self.form.page = pageNumber;
-			self.getPager();
+			self.getPage();
 		};
 		self['delete'] = function(id, $event) {
 			$event.stopPropagation();
 			if (confirm('确定删除吗？')) {
 				applicationFormService['delete'](id).then(function(resp) {
-					self.getPager();
+					self.getPage();
 				});
 			}
 		};

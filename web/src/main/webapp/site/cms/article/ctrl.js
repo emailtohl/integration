@@ -19,7 +19,7 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 		
 		self.query = function() {
 			service.search(self.queryParam.query, self.queryParam.page).then(function(resp) {
-				self.pager = resp.data;
+				self.page = resp.data;
 				console.log(resp.data);
 				self.isDetail = false;
 			});

@@ -12,7 +12,7 @@
 <section class="content">
   <div class="row">
   
-      <div class="box box-info pop" ng-repeat="x in ctrl.pager.content" repeat-finish="ctrl.renderFinish()">
+      <div class="box box-info pop" ng-repeat="x in ctrl.page.content" repeat-finish="ctrl.renderFinish()">
         <div class="box-header">
           <div class="pull-left image">
             <img width="39" height="50" ng-src="{{x.user.iconSrc}}" class="img-circle" alt="User Image">
@@ -44,7 +44,7 @@
            </textarea>
         </div>
       </div>
-  	  <pager page-number="ctrl.pager.pageNumber" total-pages="ctrl.pager.totalPages" button-count="5" on-click="ctrl.search(pageNumber)">
+  	  <page page-number="ctrl.page.pageNumber" total-pages="ctrl.page.totalPages" button-count="5" on-click="ctrl.search(pageNumber)">
   </div>
   <!-- /.row -->
 </section>

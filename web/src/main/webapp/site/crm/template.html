@@ -61,7 +61,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-repeat="x in ctrl.pager.content" style="cursor:pointer" ng-click="ctrl.openModal(x.id)">
+							<tr ng-repeat="x in ctrl.page.content" style="cursor:pointer" ng-click="ctrl.openModal(x.id)">
 								<td ng-bind="x.name" class="col-md-1"></td>
 								<td ng-bind="x.title" class="col-md-1"></td>
 								<td ng-bind="x.affiliation" class="col-md-2"></td>
@@ -83,8 +83,8 @@
 							</tr>
 						</tfoot>
 					</table>
-					<pager page-number="ctrl.pager.pageNumber"
-						total-pages="ctrl.pager.totalPages" button-count="5"
+					<page page-number="ctrl.page.pageNumber"
+						total-pages="ctrl.page.totalPages" button-count="5"
 						on-click="ctrl.btnClick(pageNumber)">
 				</div>
 				<!-- /.box-body -->
