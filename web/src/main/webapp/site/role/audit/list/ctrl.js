@@ -22,7 +22,7 @@ define(['role/module', 'role/service'], function(roleModule) {
 
 			function roleRevision() {
 				service.roleRevision(self.params).then(function(resp) {
-					self.pager = resp.data;
+					self.page = resp.data;
 				});
 			}
 			roleRevision();

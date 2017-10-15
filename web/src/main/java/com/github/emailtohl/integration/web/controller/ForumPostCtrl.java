@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.emailtohl.integration.common.jpa.Pager;
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.common.utils.UpDownloader;
 import com.github.emailtohl.integration.conference.dto.ForumPostDto;
@@ -75,16 +75,16 @@ public class ForumPostCtrl {
 	}
 	
 	@RequestMapping(value = "search", method = RequestMethod.GET)
-	public Pager<ForumPostDto> search(@RequestParam String query,
+	public Paging<ForumPostDto> search(@RequestParam String query,
 			@PageableDefault(page = 0, size = 5, sort = BaseEntity.CREATE_DATE_PROPERTY_NAME, direction = Direction.DESC) Pageable pageable) {
 //		演示时使用完全查询，因为Hibernate Search FullTextQuery getResultSize never matches getResultList().size()
 //		return this.forumPostService.find(query, pageable);
 		return this.forumPostService.findAllAndPaging(query, pageable);
 	}
 
-	@RequestMapping(value = "pager", method = RequestMethod.GET)
-	Pager<ForumPostDto> searchPager(@PageableDefault(page = 0, size = 5, sort = BaseEntity.CREATE_DATE_PROPERTY_NAME, direction = Direction.DESC) Pageable pageable) {
-		return this.forumPostService.getPager(pageable);
+	@RequestMapping(value = "page", method = RequestMethod.GET)
+	public Paging<ForumPostDto> searchPage(@PageableDefault(page = 0, size = 5, sort = BaseEntity.CREATE_DATE_PROPERTY_NAME, direction = Direction.DESC) Pageable pageable) {
+		return this.forumPostService.getPage(pageable);
 	}
 	
 	/**

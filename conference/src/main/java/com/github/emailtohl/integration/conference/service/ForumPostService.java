@@ -13,7 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 
 import com.github.emailtohl.integration.common.Constant;
-import com.github.emailtohl.integration.common.jpa.Pager;
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
 import com.github.emailtohl.integration.conference.dto.ForumPostDto;
 /**
@@ -31,7 +31,7 @@ public interface ForumPostService {
 	 * @param pageable
 	 * @return
 	 */
-	Pager<SearchResult<ForumPostDto>> search(String query, Pageable pageable);
+	Paging<SearchResult<ForumPostDto>> search(String query, Pageable pageable);
 	
 	/**
 	 * 查询所有符合标准的对象
@@ -46,7 +46,7 @@ public interface ForumPostService {
 	 * @param pageable
 	 * @return
 	 */
-	Pager<ForumPostDto> findAllAndPaging(String query, Pageable pageable);
+	Paging<ForumPostDto> findAllAndPaging(String query, Pageable pageable);
 	
 	/**
 	 * 全文搜索
@@ -54,14 +54,14 @@ public interface ForumPostService {
 	 * @param pageable
 	 * @return 只返回查找到的实体类E
 	 */
-	Pager<ForumPostDto> find(String query, Pageable pageable);
+	Paging<ForumPostDto> find(String query, Pageable pageable);
 	
 	/**
 	 * 分页查询所有帖子
 	 * @param pageable
 	 * @return
 	 */
-	Pager<ForumPostDto> getPager(Pageable pageable);
+	Paging<ForumPostDto> getPage(Pageable pageable);
 	
 	/**
 	 * 根据标题查找帖子

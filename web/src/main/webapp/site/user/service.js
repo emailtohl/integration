@@ -10,8 +10,8 @@ define(['user/module', 'common/context'], function(userModule) {
 			/**
 			 * query对象中含有查询页码：pageNumber，pageSize
 			 */
-			getUserPager: function(params) {
-				return $http.get('user/pager?' + util.encodeUrlParams(params));
+			getUserPage: function(params) {
+				return $http.get('user/page?' + util.encodeUrlParams(params));
 			},
 			addUser: function(user) {
 				return $http.post('user/employee', user);

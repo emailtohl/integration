@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.emailtohl.integration.common.jpa.Pager;
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.user.dto.RoleDto;
 import com.github.emailtohl.integration.user.dto.UserDto;
 import com.github.emailtohl.integration.user.entities.User;
@@ -41,7 +41,7 @@ public class AuditCtrl {
 	 * @return
 	 */
 	@RequestMapping(value = "userRevision", method = RequestMethod.GET)
-	public Pager<UserDto> getUserRevision(@RequestParam(required = false) String email,
+	public Paging<UserDto> getUserRevision(@RequestParam(required = false) String email,
 			@PageableDefault(page = 0, size = 10, sort = {ID_PROPERTY_NAME}, direction = Direction.DESC) Pageable pageable) {
 		return auditedService.getUserRevision(email, pageable);
 	}
@@ -55,7 +55,7 @@ public class AuditCtrl {
 	 * @return
 	 */
 	@RequestMapping(value = "usersAtRevision", method = RequestMethod.GET)
-	public Pager<UserDto> getUsersAtRevision(@RequestParam(required = true) Integer revision, @RequestParam(required = false) String email,
+	public Paging<UserDto> getUsersAtRevision(@RequestParam(required = true) Integer revision, @RequestParam(required = false) String email,
 			@PageableDefault(page = 0, size = 10, sort = {ID_PROPERTY_NAME}, direction = Direction.DESC) Pageable pageable) {
 		return auditedService.getUsersAtRevision(revision, email, pageable);
 	}
@@ -80,7 +80,7 @@ public class AuditCtrl {
 	 * @return
 	 */
 	@RequestMapping(value = "roleRevision", method = RequestMethod.GET)
-	public Pager<RoleDto> getRoleRevision(@RequestParam(required = false) String name,
+	public Paging<RoleDto> getRoleRevision(@RequestParam(required = false) String name,
 			@PageableDefault(page = 0, size = 5, sort = {ID_PROPERTY_NAME}, direction = Direction.DESC) Pageable pageable) {
 		return auditedService.getRoleRevision(name, pageable);
 	}
@@ -94,7 +94,7 @@ public class AuditCtrl {
 	 * @return
 	 */
 	@RequestMapping(value = "rolesAtRevision", method = RequestMethod.GET)
-	public Pager<RoleDto> getRolesAtRevision(@RequestParam(required = true) Integer revision, @RequestParam(required = false) String name,
+	public Paging<RoleDto> getRolesAtRevision(@RequestParam(required = true) Integer revision, @RequestParam(required = false) String name,
 			@PageableDefault(page = 0, size = 5, sort = {ID_PROPERTY_NAME}, direction = Direction.DESC) Pageable pageable) {
 		return auditedService.getRolesAtRevision(revision, name, pageable);
 	}

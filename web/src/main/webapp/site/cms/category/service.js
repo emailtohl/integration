@@ -19,13 +19,13 @@ define(['cms/module', 'common/context' ], function(cmsModule) {
 			getTypes : function() {
 				return $http.get('cms/types');
 			},
-			getTypePager : function (name, page) {
+			getTypePage : function (name, page) {
 				var param = {
 					page : page,
 					name : name,
 				};
 				param = util.encodeUrlParams(param);
-				return $http.get('cms/typePager' + (param ? '?' + param : ''));
+				return $http.get('cms/typePage' + (param ? '?' + param : ''));
 			},
 			findTypeById : function(id) {
 				return $http.get('cms/type/' + id);

@@ -14,9 +14,9 @@ define(['user/module', 'user/service'], function(userModule) {
 			});
 			self.query = function() {
 				userService.getPageByRoles(self.params).then(function(resp) {
-					self.pager = resp.data;
-					for(var i = 0; i < self.pager.content.length; i++) {
-						bindRoleNames(self.pager.content[i]);
+					self.page = resp.data;
+					for(var i = 0; i < self.page.content.length; i++) {
+						bindRoleNames(self.page.content[i]);
 					}
 					/**
 					 * 用户的角色是一个对象，为了在页面显示出来，所以再为用户模型绑上字符串的角色数组

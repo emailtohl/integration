@@ -24,7 +24,7 @@ import com.github.emailtohl.integration.cms.entities.Article;
 import com.github.emailtohl.integration.cms.entities.Comment;
 import com.github.emailtohl.integration.cms.entities.Type;
 import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
-import com.github.emailtohl.integration.common.jpa.Pager;
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.user.dao.UserRepository;
 import com.github.emailtohl.integration.user.entities.User;
@@ -56,7 +56,7 @@ public class CmsServiceImpl implements CmsService {
 	}
 
 	@Override
-	public Pager<Article> searchArticles(String query, Pageable pageable) {
+	public Paging<Article> searchArticles(String query, Pageable pageable) {
 		Page<Article> page;
 		if (StringUtils.hasText(query)) {
 			page = articleRepository.find(query.trim(), pageable);
@@ -64,7 +64,7 @@ public class CmsServiceImpl implements CmsService {
 			page = articleRepository.findAll(pageable);
 		}
 		List<Article> ls = page.getContent().stream().map(this::articlefilter).collect(Collectors.toList());
-		return new Pager<>(ls, page.getTotalElements(), page.getNumber(), page.getSize());
+		return new Paging<>(ls, page.getTotalElements(), page.getNumber(), page.getSize());
 	}
 
 	@Override
@@ -189,7 +189,7 @@ public class CmsServiceImpl implements CmsService {
 	}
 
 	@Override
-	public Pager<Comment> queryComments(String query, Pageable pageable) {
+	public Paging<Comment> queryComments(String query, Pageable pageable) {
 		Page<Comment> page;
 		if (StringUtils.hasText(query))
 			page = commentRepository.find(query, pageable);
@@ -201,7 +201,7 @@ public class CmsServiceImpl implements CmsService {
 			t.setArticle(articlefilter(c.getArticle()));
 			return t;
 		}).collect(Collectors.toList());
-		return new Pager<Comment>(ls, page.getTotalElements(), page.getNumber(), page.getSize());
+		return new Paging<Comment>(ls, page.getTotalElements(), page.getNumber(), page.getSize());
 	}
 	
 	@Override
@@ -278,13 +278,13 @@ public class CmsServiceImpl implements CmsService {
 	}
 
 	@Override
-	public Pager<Type> getTypePager(String typeName, Pageable pageable) {
+	public Paging<Type> getTypePage(String typeName, Pageable pageable) {
 		Page<Type> page;
 		if (StringUtils.hasText(typeName))
 			page = typeRepository.findByNameLike(typeName.trim() + "%", pageable);
 		else
 			page = typeRepository.findAll(pageable);
-		return new Pager<>(page.getContent().stream().map(this::typeFilter).collect(Collectors.toList()),
+		return new Paging<>(page.getContent().stream().map(this::typeFilter).collect(Collectors.toList()),
 				page.getTotalElements(), page.getNumber(), page.getSize());
 	}
 

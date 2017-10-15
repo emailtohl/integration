@@ -19,9 +19,9 @@ import org.apache.logging.log4j.Logger;
  * @author HeLei
  * @date 2016.09.08
  */
-public abstract class AbstractJpaRepository<I extends Serializable, E extends Serializable> {
+public abstract class AbstractJpaRepository<ID, E extends Serializable> {
 	private static final Logger logger = LogManager.getLogger();
-	protected final Class<I> idClass;
+	protected final Class<ID> idClass;
 	protected final Class<E> entityClass;
 	@PersistenceUnit
 	protected EntityManagerFactory entityManagerFactory;
@@ -63,7 +63,7 @@ public abstract class AbstractJpaRepository<I extends Serializable, E extends Se
 			}
 			clz = clz.getSuperclass();
 		}
-		idClass = (Class<I>) classes[0];
+		idClass = (Class<ID>) classes[0];
 		entityClass = (Class<E>) classes[1];
 		if (idClass == null) {
 			logger.debug("初始化： " + this.getClass() + " 时，idClass == null");
@@ -82,7 +82,7 @@ public abstract class AbstractJpaRepository<I extends Serializable, E extends Se
 	 * @param idClass
 	 * @param entityClass
 	 */
-	public AbstractJpaRepository(Class<I> idClass, Class<E> entityClass) {
+	public AbstractJpaRepository(Class<ID> idClass, Class<E> entityClass) {
 		super();
 		this.idClass = idClass;
 		this.entityClass = entityClass;

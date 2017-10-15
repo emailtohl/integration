@@ -31,7 +31,7 @@ import com.github.emailtohl.integration.cms.entities.Article;
 import com.github.emailtohl.integration.cms.entities.Comment;
 import com.github.emailtohl.integration.cms.entities.Type;
 import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
-import com.github.emailtohl.integration.common.jpa.Pager;
+import com.github.emailtohl.integration.common.jpa.Paging;
 
 /**
  * cms的服务层实现
@@ -66,7 +66,7 @@ public class CmsServiceImplTest {
 	@Test
 	public void testFind() {
 		// 从正文中搜索
-		Pager<Article> p = cmsService.searchArticles("文章", pageable);
+		Paging<Article> p = cmsService.searchArticles("文章", pageable);
 		logger.debug(p.getContent());
 //		assertTrue(p.getTotalElements() > 0);
 		

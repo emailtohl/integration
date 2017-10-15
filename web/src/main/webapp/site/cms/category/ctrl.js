@@ -13,8 +13,8 @@ define(['cms/module', 'cms/category/service'], function(cmsModule) {
 		};
 		
 		self.query = function() {
-			service.getTypePager(self.queryParam.name, self.queryParam.page).then(function(resp) {
-				self.pager = resp.data;
+			service.getTypePage(self.queryParam.name, self.queryParam.page).then(function(resp) {
+				self.page = resp.data;
 				self.isDetail = false;
 			});
 		};

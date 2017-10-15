@@ -10,7 +10,7 @@
  */
 define([ 'common/module' ], function(common) {
 	common
-	.directive('pager', function() {
+	.directive('page', function() {
 		function init($scope) {
 			// 查询页码，默认查询第一页
 			if (!$scope.pageNumber || $scope.pageNumber < 1) {
@@ -27,7 +27,7 @@ define([ 'common/module' ], function(common) {
 		}
 		return {
 			restrict : 'EA',
-			templateUrl : 'common/directive/pager1/template.html',
+			templateUrl : 'common/directive/page1/template.html',
 			scope : {
 				pageNumber : '=',
 				totalPages : '=',

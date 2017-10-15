@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 
-import com.github.emailtohl.integration.common.jpa.Pager;
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.user.entities.Customer;
 /**
  * 为客户管理（CRM）提供服务接口
@@ -31,7 +31,7 @@ public interface CustomerService {
 	 * @param pageable
 	 * @return
 	 */
-	Pager<Customer> query(String name, String title, String affiliation, Pageable pageable);
+	Paging<Customer> query(String name, String title, String affiliation, Pageable pageable);
 	
 	/**
 	 * 获取客户详情

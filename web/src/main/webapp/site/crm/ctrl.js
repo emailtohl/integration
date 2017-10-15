@@ -14,7 +14,7 @@ define(['crm/module', 'crm/service'], function(crmModule) {
 
 			function query() {
 				crmService.query(self.form).then(function(resp) {
-					self.pager = resp.data;
+					self.page = resp.data;
 				});
 			}
 			query();

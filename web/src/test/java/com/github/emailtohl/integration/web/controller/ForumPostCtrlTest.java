@@ -70,7 +70,7 @@ public class ForumPostCtrlTest {
 			return "called with arguments: " + args;
 		};
 		when(forumPostService.search(null, pageable)).thenReturn(null);
-		when(forumPostService.getPager(pageable)).thenReturn(null);
+		when(forumPostService.getPage(pageable)).thenReturn(null);
 		when(forumPostService.findForumPostByTitle(null)).thenReturn(null);
 		doAnswer(answer).when(forumPostService).save(null, null, null, null);
 		doAnswer(answer).when(forumPostService).delete(100L);
@@ -109,7 +109,7 @@ public class ForumPostCtrlTest {
 	}
 
 //	@Test
-	public void testGetPager() {
+	public void testGetPage() {
 		fail("Not yet implemented");
 	}
 

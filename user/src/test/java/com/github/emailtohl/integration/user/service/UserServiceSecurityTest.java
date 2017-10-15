@@ -284,21 +284,9 @@ public class UserServiceSecurityTest {
 	
 	
 	@Test(expected = AuthenticationCredentialsNotFoundException.class)
-	public void testGetUserPager1() {
-		SecurityContextHolder.clearContext();
-		userService.getUserPager(null, null);
-	}
-	
-	@Test
-	public void testGetUserPager2() {
-		securityContextManager.setBar();
-		userService.getUserPager(customer, pageable);
-	}
-	
-	@Test(expected = AuthenticationCredentialsNotFoundException.class)
 	public void testGetUserPage1() {
 		SecurityContextHolder.clearContext();
-		userService.getUserPage(customer, pageable);
+		userService.getUserPage(null, null);
 	}
 	
 	@Test
