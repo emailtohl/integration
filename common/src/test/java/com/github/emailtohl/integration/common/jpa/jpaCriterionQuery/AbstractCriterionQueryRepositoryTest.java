@@ -3,6 +3,7 @@ package com.github.emailtohl.integration.common.jpa.jpaCriterionQuery;
 import static org.junit.Assert.assertFalse;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -57,8 +58,8 @@ public class AbstractCriterionQueryRepositoryTest {
 		factory.initializeBean(employeeRepository, "employeeForAbstractCriterionQueryRepositoryTest");
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
-	public void testUserSearch() {
+	@Test
+	public void testUserQuery() {
 		Sort sort = new Sort(Sort.Direction.DESC, "createDate")
 				 .and(new Sort(Sort.Direction.ASC, "id"));
 		Pageable p = new PageRequest(0, 20, sort);
@@ -86,7 +87,7 @@ public class AbstractCriterionQueryRepositoryTest {
 		set.add(c5);
 		set.add(c6);
 		set.add(c7);
-		Page<Customer> page = customerRepository.search(set, p);
+		Page<Customer> page = customerRepository.query(set, p);
 		logger.debug(page.getContent());
 		logger.debug(page.getNumber());
 		logger.debug(page.getNumberOfElements());
@@ -95,15 +96,22 @@ public class AbstractCriterionQueryRepositoryTest {
 		logger.debug(page.getSort());
 		assertFalse(page.getContent().isEmpty());
 		
-		
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testIllegalArgumentException() {
+		Sort sort = new Sort(Sort.Direction.DESC, "createDate")
+				 .and(new Sort(Sort.Direction.ASC, "id"));
+		Pageable p = new PageRequest(0, 20, sort);
+		Set<Criterion> set = new HashSet<Criterion>();
 		Criterion c8 = new Criterion("department.name", Criterion.Operator.LIKE, td.foo.getDepartment().getName());
 		set.clear();
 		set.add(c8);
-		page = customerRepository.search(set, p);
+		customerRepository.query(set, p);
 	}
 	
 	@Test
-	public void testEmployeeSearch() {
+	public void testEmployeeQuery() {
 		Sort sort = new Sort(Sort.Direction.DESC, "createDate")
 				 .and(new Sort(Sort.Direction.ASC, "id"));
 		Pageable p = new PageRequest(0, 20, sort);
@@ -121,7 +129,7 @@ public class AbstractCriterionQueryRepositoryTest {
 		set.add(c4);
 		set.add(c5);
 		set.add(c6);
-		Page<Employee> page = employeeRepository.search(set, p);
+		Page<Employee> page = employeeRepository.query(set, p);
 		logger.debug(page.getContent());
 		logger.debug(page.getNumber());
 		logger.debug(page.getNumberOfElements());
@@ -131,4 +139,23 @@ public class AbstractCriterionQueryRepositoryTest {
 		assertFalse(page.getContent().isEmpty());
 	}
 
+	@Test
+	public void testQueryList() {
+		Set<Criterion> set = new HashSet<>();
+		Criterion c1, c2, c3, c4, c5, c6;
+		c1 = new Criterion("email", Criterion.Operator.EQ, td.foo.getEmail());
+		c2 = new Criterion("department.name", Criterion.Operator.LIKE, td.foo.getDepartment().getName());
+		c3 = new Criterion("department.company.name", Criterion.Operator.LIKE, td.foo.getDepartment().getCompany().getName());
+		c4 = new Criterion("salary", Criterion.Operator.GT, td.foo.getSalary() - 1);
+		c5 = new Criterion("salary", Criterion.Operator.LT, td.foo.getSalary() + 1);
+		c6 = new Criterion("username", Criterion.Operator.NOT_LIKE, td.bar.getUsername());
+		set.add(c1);
+		set.add(c2);
+		set.add(c3);
+		set.add(c4);
+		set.add(c5);
+		set.add(c6);
+		List<Employee> ls = employeeRepository.query(set);
+		assertFalse(ls.isEmpty());
+	}
 }

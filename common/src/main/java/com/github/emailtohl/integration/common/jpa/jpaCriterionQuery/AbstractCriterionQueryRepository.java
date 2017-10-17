@@ -22,21 +22,25 @@ import com.github.emailtohl.integration.common.jpa.AbstractDynamicQueryRepositor
  * 
  * 注意：调用者需根据业务情况明确事务边界，添加上@javax.transaction.Transactional
  * 
- * @param <E> 实体类
+ * @param <E>
+ *            实体类
  * @author HeLei
  * @date 2017.02.04
  */
 public abstract class AbstractCriterionQueryRepository<E extends Serializable> extends AbstractDynamicQueryRepository<E>
 		implements CriterionQueryRepository<E> {
 	/**
-	 * 标准查询接口，根据传入的条件集合得到一个Page对象 注意:Pageable的查询是从第0页开始，条件集合之间是AND关系
+	 * 标准查询接口，根据传入的条件集合得到一个Page对象
+	 * 注意:Pageable的查询是从第0页开始，条件集合之间是AND关系
 	 * 
-	 * @param criteria 一个条件集合
-	 * @param pageable 分页对象
+	 * @param criteria
+	 *            一个条件集合
+	 * @param pageable
+	 *            分页对象
 	 * @return
 	 */
 	@Override
-	public Page<E> search(Collection<Criterion> criteria, Pageable pageable) {
+	public Page<E> query(Collection<Criterion> criteria, Pageable pageable) {
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
 		CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
@@ -56,6 +60,23 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 		return new PageImpl<E>(new ArrayList<E>(list), pageable, total);
 	}
 
+	/**
+	 * 标准查询接口，根据传入的条件集合得到一个Page对象
+	 * 注意，Pageable的查询是从第0页开始，条件集合之间是AND关系
+	 * 
+	 * @param criteria 一个条件集合
+	 * @return
+	 */
+	@Override
+	public List<E> query(Collection<Criterion> criteria) {
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<E> query = builder.createQuery(entityClass);
+		Root<E> queryRoot = query.from(entityClass);
+		return entityManager.createQuery(query.select(queryRoot).where(toPredicates(criteria, queryRoot, builder)))
+				.getResultList();
+
+	}
+
 	private Predicate[] toPredicates(Collection<Criterion> criteria, Root<?> root, CriteriaBuilder builder) {
 		Predicate[] predicates = new Predicate[criteria.size()];
 		int i = 0;
@@ -71,5 +92,5 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 	public AbstractCriterionQueryRepository(Class<E> entityClass) {
 		super(entityClass);
 	}
-	
+
 }
