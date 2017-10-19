@@ -77,6 +77,7 @@ public class UpDownloaderTest {
 		assertEquals(File.separator, ud.getBaseName());
 		ud = new UpDownloader("abc");
 		assertEquals("abc", ud.getBaseName());
+		UpDownloader.deleteDir(ud.getAbsolutePath(""));
 	}
 
 	@Test
