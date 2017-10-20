@@ -69,7 +69,7 @@ public abstract class AbstractDynamicQueryRepository<E extends Serializable> ext
 	/**
 	 * 查询字符串时，是否用LIKE模糊查询
 	 */
-	private boolean isFuzzy = true;
+	protected boolean isFuzzy = true;
 
 	protected AbstractDynamicQueryRepository() {
 		super();
@@ -243,7 +243,6 @@ public abstract class AbstractDynamicQueryRepository<E extends Serializable> ext
 				try {
 					info = Introspector.getBeanInfo(clz, Object.class);
 				} catch (IntrospectionException e) {
-					e.printStackTrace();
 					throw new IllegalArgumentException(e);
 				}
 				PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
@@ -403,7 +402,7 @@ public abstract class AbstractDynamicQueryRepository<E extends Serializable> ext
 		return new JpqlAndArgs(jpql.toString(), args.toArray());
 	}
 
-	private String getEntityName(E entity) {
+	protected String getEntityName(E entity) {
 		String entityName;
 		Entity e = entityClass.getAnnotation(Entity.class);
 		if (e == null || e.name().length() == 0) {
@@ -420,7 +419,7 @@ public abstract class AbstractDynamicQueryRepository<E extends Serializable> ext
 	 * @param o
 	 * @return
 	 */
-	private boolean availableObj(Object o) {
+	protected boolean availableObj(Object o) {
 		return o instanceof Serializable && o instanceof String || o instanceof Number || o instanceof Enum
 				|| o instanceof Character || o instanceof Boolean || o instanceof Date || o instanceof Calendar
 				|| o instanceof Timestamp || o instanceof TimeZone || o instanceof TemporalAmount || o instanceof Temporal;
@@ -432,8 +431,7 @@ public abstract class AbstractDynamicQueryRepository<E extends Serializable> ext
 	 * @param c
 	 * @return
 	 */
-	@SuppressWarnings("unused")
-	private boolean availableClass(Class<?> c) {
+	protected boolean availableClass(Class<?> c) {
 		return String.class.isAssignableFrom(c) || Number.class.isAssignableFrom(c) || Enum.class.isAssignableFrom(c)
 				|| Character.class.isAssignableFrom(c) || Boolean.class.isAssignableFrom(c)
 				|| Date.class.isAssignableFrom(c) || Calendar.class.isAssignableFrom(c)

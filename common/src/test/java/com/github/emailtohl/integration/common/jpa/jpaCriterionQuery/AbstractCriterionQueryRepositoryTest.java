@@ -7,6 +7,11 @@ import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.persistence.AccessType;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -157,5 +162,29 @@ public class AbstractCriterionQueryRepositoryTest {
 		set.add(c6);
 		List<Employee> ls = employeeRepository.query(set);
 		assertFalse(ls.isEmpty());
+	}
+	
+	@Test
+	public void testToPredicate() {
+		CriteriaBuilder cb = employeeRepository.getEntityManager().getCriteriaBuilder();
+		
+		CriteriaQuery<Employee> q = cb.createQuery(Employee.class);
+		Root<Employee> r = q.from(Employee.class);
+		
+		Set<Predicate> predicates = employeeRepository.toPredicate(new CommonTestData().foo, AccessType.PROPERTY, r, cb);
+		assertFalse(predicates.isEmpty());
+		
+		Predicate[] restrictions = new Predicate[predicates.size()];
+		
+		q = q.select(r).where(predicates.toArray(restrictions));
+		
+		for (Employee e : employeeRepository.getEntityManager().createQuery(q).getResultList()) {
+			System.out.println(e);
+		}
+		
+		predicates = employeeRepository.toPredicate(new CommonTestData().foo, AccessType.FIELD, r, cb);
+		assertFalse(predicates.isEmpty());
+		
+		System.out.println(predicates);
 	}
 }
