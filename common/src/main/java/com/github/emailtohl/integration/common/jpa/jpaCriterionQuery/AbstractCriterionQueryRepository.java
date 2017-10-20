@@ -77,13 +77,65 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 
 	}
 
-	private Predicate[] toPredicates(Collection<Criterion> criteria, Root<?> root, CriteriaBuilder builder) {
+	protected Predicate[] toPredicates(Collection<Criterion> criteria, Root<?> root, CriteriaBuilder builder) {
 		Predicate[] predicates = new Predicate[criteria.size()];
 		int i = 0;
 		for (Criterion c : criteria)
 			predicates[i++] = c.getOperator().toPredicate(c, root, builder);
 		return predicates;
 	}
+	
+	/**
+	 * 将对象存储的值转成谓词集合
+	 * 
+	 * 注意：1.不包括对象中集合属性； 2.谓词之间均为AND连接；3.浮点数也是用相等比较导致查询不到结果
+	 * @param e 实体参数
+	 * @param type 分析对象的方式
+	 * @return
+	 */
+/*	protected Collection<Criterion> getCriteriaExcludeCollection(E e, AccessType type) {
+		Set<Criterion> criteria = new HashSet<Criterion>();
+		handle(criteria, "", e, type);
+		return criteria;
+	}
+	
+	private void handle(Collection<Criterion> criteria, String path, Object e, AccessType type) {
+		if (type == null || type == AccessType.PROPERTY) {
+			for (Entry<String, Object> entry : BeanUtil.getPropertyNameValueMap(e).entrySet()) {
+				Object value = entry.getValue();
+				if (value == null || value instanceof Collection) {
+					continue;
+				}
+				if (value instanceof Number || value instanceof Boolean) {
+					String _path = StringUtils.hasText(path) ? path + '.' + entry.getKey() : entry.getKey();
+					criteria.add(new Criterion(_path, Operator.EQ, value));
+				} else if (value instanceof String) {
+					String _path = StringUtils.hasText(path) ? path + '.' + entry.getKey() : entry.getKey();
+					criteria.add(new Criterion(_path, Operator.LIKE, ((String) value).trim()));
+				} else {
+					String _path = StringUtils.hasText(path) ? path + '.' + entry.getKey() : entry.getKey();
+					handle(criteria, _path, value, type);
+				}
+			}
+		} else {
+			for (Entry<String, Object> entry : BeanUtil.getFieldNameValueMap(e).entrySet()) {
+				Object value = entry.getValue();
+				if (value == null || value instanceof Collection) {
+					continue;
+				}
+				if (value instanceof Number || value instanceof Boolean) {
+					String _path = StringUtils.hasText(path) ? path + '.' + entry.getKey() : entry.getKey();
+					criteria.add(new Criterion(_path, Operator.EQ, value));
+				} else if (value instanceof String) {
+					String _path = StringUtils.hasText(path) ? path + '.' + entry.getKey() : entry.getKey();
+					criteria.add(new Criterion(_path, Operator.LIKE, ((String) value).trim()));
+				} else {
+					String _path = StringUtils.hasText(path) ? path + '.' + entry.getKey() : entry.getKey();
+					handle(criteria, _path, value, type);
+				}
+			}
+		}
+	}*/
 
 	public AbstractCriterionQueryRepository() {
 		super();
