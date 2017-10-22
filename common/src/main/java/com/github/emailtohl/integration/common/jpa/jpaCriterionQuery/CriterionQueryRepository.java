@@ -2,6 +2,7 @@ package com.github.emailtohl.integration.common.jpa.jpaCriterionQuery;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,11 +17,21 @@ import com.github.emailtohl.integration.common.jpa.DynamicQueryRepository;
  */
 public interface CriterionQueryRepository<E extends Serializable> extends DynamicQueryRepository<E> {
 	/**
-	 * 标准查询接口，根据传入的条件集合得到一个Page对象 注意，Pageable的查询是从第0页开始，条件集合之间是AND关系
+	 * 标准查询接口，根据传入的条件集合得到一个Page对象
+	 * 注意，Pageable的查询是从第0页开始，条件集合之间是AND关系
 	 * 
 	 * @param criteria 一个条件集合
 	 * @param pageable 分页对象
 	 * @return
 	 */
-	Page<E> search(Collection<Criterion> criteriaList, Pageable pageable);
+	Page<E> query(Collection<Criterion> criteria, Pageable pageable);
+	
+	/**
+	 * 标准查询接口，根据传入的条件集合得到一个Page对象
+	 * 注意，Pageable的查询是从第0页开始，条件集合之间是AND关系
+	 * 
+	 * @param criteria 一个条件集合
+	 * @return
+	 */
+	List<E> query(Collection<Criterion> criteria);
 }
