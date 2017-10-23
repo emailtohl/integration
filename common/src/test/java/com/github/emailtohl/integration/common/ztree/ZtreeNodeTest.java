@@ -43,11 +43,11 @@ public class ZtreeNodeTest {
 
 	@Test
 	public void testNewInstance() {
-		ZtreeNode n = ZtreeNode.newInstance(test_root);
+		FileNode n = FileNode.newInstance(test_root);
 		Gson gson = new Gson();
 		String json = gson.toJson(n);
 		System.out.println(json);
-		ZtreeNode nn = gson.fromJson(json, ZtreeNode.class);
+		FileNode nn = gson.fromJson(json, FileNode.class);
 		System.out.println(nn);
 		assertEquals(nn, n);
 		long rootid = nn.getId();
@@ -57,11 +57,11 @@ public class ZtreeNodeTest {
 
 	@Test
 	public void testSetOpen() {
-		ZtreeNode n = ZtreeNode.newInstance(test_root);
+		FileNode n = FileNode.newInstance(test_root);
 		String path = sub2_2.getPath();
 		n.setOpen(path);
 		assertTrue(n.isOpen());
-		for (ZtreeNode sub : n.getChildren()) {
+		for (ZtreeNode<File> sub : n.getChildren()) {
 			if ("sub2".equals(sub.getName())) {
 				assertTrue(sub.isOpen());
 			} else {

@@ -1,12 +1,8 @@
 package com.github.emailtohl.integration.common.ztree;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Set;
-import java.util.TreeSet;
-
-import com.github.emailtohl.integration.common.Constant;
 
 /**
  * 前端zTree的数据模型
@@ -14,9 +10,62 @@ import com.github.emailtohl.integration.common.Constant;
  * @author HeLei
  * @date 2017.02.04
  */
-public class ZtreeNode implements Serializable, Comparable<ZtreeNode>{
-	private static final long serialVersionUID = -1932148922352477076L;
-	private transient static volatile long serial = 0;
+public class ZtreeNode<T> implements Serializable, Comparable<ZtreeNode<T>> {
+	private static final long serialVersionUID = -1014084140766054734L;
+	protected transient static volatile long serial = 0;
+	/** id 自动生成 */
+	protected final long id;
+	
+	/** pid 父节点，根节点为0 */
+	protected long pid = 0;
+	
+	/** 节点名 */
+	protected String name;
+	
+	/** 绑定的属性，可在ztree的setting.data.key中定义： {attribute:{}}*/
+	protected T attribute;
+	
+	/** 记录 treeNode 节点是否为父节点 */
+	protected boolean isParent = true;
+	
+	/** 判断 treeNode 节点是否被隐藏 */
+	protected boolean isHidden = false;
+	
+	/** 记录 treeNode 节点的 展开 / 折叠 状态 */
+	protected boolean open = false;
+	
+	/** 节点的 checkBox / radio 的 勾选状态 [setting.check.enable = true & treeNode.nocheck = false 时有效] */
+	protected boolean checked = false;
+	
+	/** 设置节点的 checkbox / radio 是否禁用 [setting.check.enable = true 时有效] */
+	protected boolean chkDisabled = false;
+	
+	/** 设置节点是否隐藏 checkbox / radio [setting.check.enable = true 时有效] */
+	protected boolean nocheck = false;
+	
+	/** 节点自定义图标的 URL 路径 */
+	protected String icon;
+	
+	/** 父节点自定义折叠时图标的 URL 路径 */
+	protected String iconClose;
+	
+	/** 父节点自定义展开时图标的 URL 路径 */
+	protected String iconOpen;
+	
+	/** 节点自定义图标的 className */
+	protected String iconSkin;
+	
+	/** 设置点击节点后在何处打开 url。[treeNode.url 存在时有效] 例如：{ "id":1, "name":"test1", "url":"http://myTest.com", "target":"_blank"} */
+	protected String target;
+	
+	/** 节点链接的目标 URL */
+	protected String url;
+	
+	/** 节点的子节点数据集合， 在前端，如果是文件而非目录，该字段应该为null，所以此处不初始化 */
+	protected Set<? extends ZtreeNode<T>> children;
+	
+	/** 自定义属性，用于标识查询结果 */
+	protected boolean selected;
 	
 	public ZtreeNode() {
 		synchronized(ZtreeNode.class) {
@@ -27,93 +76,14 @@ public class ZtreeNode implements Serializable, Comparable<ZtreeNode>{
 			id = serial;
 		}
 	}
-	
-	/**
-	 * 根据文件目录创建一个ZtreeNode实例
-	 * @param absolutePath 文件目录
-	 * @return ZtreeNode实例
-	 */
-	public static ZtreeNode newInstance(String absolutePath) {
-		return newInstance(new File(absolutePath));
-	}
-	
-	/**
-	 * 根据文件目录创建一个ZtreeNode实例
-	 * @param f 文件目录
-	 * @return ZtreeNode实例
-	 */
-	public static ZtreeNode newInstance(File f) {
-		return newInstance(f, 0);
-	}
-	
-	private static ZtreeNode newInstance(File f, long pid) {
-		ZtreeNode n = new ZtreeNode();
-		n.name = f.getName();
-		n.pid = pid;
-		if (f.isDirectory()) {
-			Set<ZtreeNode> children = new TreeSet<>();
-			for (File sf : f.listFiles()) {
-				children.add(newInstance(sf, n.id));
-			}
-			n.children = children;
-			n.isParent = true;
-		} else {
-			n.isParent = false;
-		}
-		return n;
+
+	public static long getSerial() {
+		return serial;
 	}
 
-	
-	/** id 自动生成 */
-	private final long id;
-	
-	/** pid 父节点，根节点为0 */
-	private long pid = 0;
-	
-	/** 节点名 */
-	private String name;
-	
-	/** 记录 treeNode 节点是否为父节点 */
-	private boolean isParent = true;
-	
-	/** 判断 treeNode 节点是否被隐藏 */
-	private boolean isHidden = false;
-	
-	/** 记录 treeNode 节点的 展开 / 折叠 状态 */
-	private boolean open = false;
-	
-	/** 节点的 checkBox / radio 的 勾选状态 [setting.check.enable = true & treeNode.nocheck = false 时有效] */
-	private boolean checked = false;
-	
-	/** 设置节点的 checkbox / radio 是否禁用 [setting.check.enable = true 时有效] */
-	private boolean chkDisabled = false;
-	
-	/** 设置节点是否隐藏 checkbox / radio [setting.check.enable = true 时有效] */
-	private boolean nocheck = false;
-	
-	/** 节点自定义图标的 URL 路径 */
-	private String icon;
-	
-	/** 父节点自定义折叠时图标的 URL 路径 */
-	private String iconClose;
-	
-	/** 父节点自定义展开时图标的 URL 路径 */
-	private String iconOpen;
-	
-	/** 节点自定义图标的 className */
-	private String iconSkin;
-	
-	/** 设置点击节点后在何处打开 url。[treeNode.url 存在时有效] 例如：{ "id":1, "name":"test1", "url":"http://myTest.com", "target":"_blank"} */
-	private String target;
-	
-	/** 节点链接的目标 URL */
-	private String url;
-	
-	/** 节点的子节点数据集合， 在前端，如果是文件而非目录，该字段应该为null，所以此处不初始化 */
-	private Set<ZtreeNode> children;
-	
-	/** 自定义属性，用于标识查询结果 */
-	private boolean selected;
+	public static void setSerial(long serial) {
+		ZtreeNode.serial = serial;
+	}
 
 	public long getPid() {
 		return pid;
@@ -131,9 +101,16 @@ public class ZtreeNode implements Serializable, Comparable<ZtreeNode>{
 		this.name = name;
 	}
 
-	/** 记录 treeNode 节点是否为父节点，依赖于children属性 */
+	public T getAttribute() {
+		return attribute;
+	}
+
+	public void setAttribute(T attribute) {
+		this.attribute = attribute;
+	}
+
 	public boolean isParent() {
-		return children != null;
+		return isParent;
 	}
 
 	public void setParent(boolean isParent) {
@@ -155,40 +132,7 @@ public class ZtreeNode implements Serializable, Comparable<ZtreeNode>{
 	public void setOpen(boolean open) {
 		this.open = open;
 	}
-	
-	/**
-	 * 根据路径匹配，打开对应的目录
-	 * @param path
-	 */
-	public void setOpen(String path) {
-		LinkedList<String> queue = new LinkedList<String>();
-		for (String name : path.split(Constant.PATTERN_SEPARATOR)) {
-			queue.add(name);
-		}
-		Set<ZtreeNode> nodes = new TreeSet<ZtreeNode>();
-		nodes.add(this);
-		setOpen(nodes, queue);
-	}
-	
-	private void setOpen(Set<ZtreeNode> nodes, LinkedList<String> queue) {
-		String name = queue.poll();
-		for (ZtreeNode node : nodes) {
-			if (node.isParent) {
-				if (name != null && name.equals(node.name)) {
-					node.open = true;
-					// 根据定义node.isParent == true，那么node.children != null，不过保险起见还是做判断
-					if (node.children != null) {
-						setOpen(node.children, queue);
-					}
-				}
-			} else {
-				if (name != null && name.equals(node.name)) {
-					node.selected = true;
-				}
-			}
-		}
-	}
-	
+
 	public boolean isChecked() {
 		return checked;
 	}
@@ -261,18 +205,14 @@ public class ZtreeNode implements Serializable, Comparable<ZtreeNode>{
 		this.url = url;
 	}
 
-	public Set<ZtreeNode> getChildren() {
+	public Set<? extends ZtreeNode<T>> getChildren() {
 		return children;
 	}
 
-	public void setChildren(Set<ZtreeNode> children) {
+	public void setChildren(Set<? extends ZtreeNode<T>> children) {
 		this.children = children;
 	}
 
-	public long getId() {
-		return id;
-	}
-	
 	public boolean isSelected() {
 		return selected;
 	}
@@ -281,12 +221,41 @@ public class ZtreeNode implements Serializable, Comparable<ZtreeNode>{
 		this.selected = selected;
 	}
 
-	@Override
-	public String toString() {
-		return "ZtreeNode [id=" + id + ", name=" + name + ", open=" + open + ", children=" + children + ", selected="
-				+ selected + "]";
+	public long getId() {
+		return id;
 	}
 
+	/**
+	 * 根据queue的顺序逐级打开ZtreeNode的节点
+	 * 
+	 * 注意：方法执行完后，会改变queue中的数据
+	 * @param nodes
+	 * @param queue
+	 */
+	protected void setOpen(Set<? extends ZtreeNode<T>> nodes, LinkedList<String> queue) {
+		String name = queue.poll();
+		for (ZtreeNode<T> node : nodes) {
+			if (node.isParent) {
+				if (name != null && name.equals(node.name)) {
+					node.open = true;
+					// 根据定义node.isParent == true，那么node.children != null，不过保险起见还是做判断
+					if (node.children != null) {
+						setOpen(node.children, queue);
+					}
+				}
+			} else {
+				if (name != null && name.equals(node.name)) {
+					node.selected = true;
+				}
+			}
+		}
+	}
+	
+	@Override
+	public int compareTo(ZtreeNode<T> o) {
+		return name.compareTo(o.name);
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -303,15 +272,10 @@ public class ZtreeNode implements Serializable, Comparable<ZtreeNode>{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ZtreeNode other = (ZtreeNode) obj;
+		@SuppressWarnings("unchecked")
+		ZtreeNode<T> other = (ZtreeNode<T>) obj;
 		if (id != other.id)
 			return false;
 		return true;
 	}
-
-	@Override
-	public int compareTo(ZtreeNode o) {
-		return name.compareTo(o.name);
-	}
-	
 }

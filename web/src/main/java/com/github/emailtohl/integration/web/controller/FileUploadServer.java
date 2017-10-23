@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.github.emailtohl.integration.common.lucene.FileSearch;
 import com.github.emailtohl.integration.common.utils.TextUtil;
 import com.github.emailtohl.integration.common.utils.UpDownloader;
-import com.github.emailtohl.integration.common.ztree.ZtreeNode;
+import com.github.emailtohl.integration.common.ztree.FileNode;
 import com.github.emailtohl.integration.web.exception.BadRequestException;
 /**
  * 文件上传控制器
@@ -83,8 +83,8 @@ public class FileUploadServer {
 	 */
 	@RequestMapping(value = "root", method = RequestMethod.GET)
 	@ResponseBody
-	public ZtreeNode getRoot() {
-		return ZtreeNode.newInstance(cmsRoot);
+	public FileNode getRoot() {
+		return FileNode.newInstance(cmsRoot);
 	}
 
 	/**
@@ -94,8 +94,8 @@ public class FileUploadServer {
 	 */
 	@RequestMapping(value = "query", method = RequestMethod.GET)
 	@ResponseBody
-	public ZtreeNode query(@RequestParam(required = false, name = "param", defaultValue = "") String param) {
-		ZtreeNode node = ZtreeNode.newInstance(cmsRoot);
+	public FileNode query(@RequestParam(required = false, name = "param", defaultValue = "") String param) {
+		FileNode node = FileNode.newInstance(cmsRoot);
 		if (!param.isEmpty()) {
 			fileSearch.queryForFilePath(param).forEach(s -> {
 				// 传给前端的是相对于CMS_DIR的路径
