@@ -1,8 +1,14 @@
 package com.github.emailtohl.integration.common.ztree;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * 前端zTree的数据模型
@@ -62,7 +68,7 @@ public class ZtreeNode<T> implements Serializable, Comparable<ZtreeNode<T>> {
 	protected String url;
 	
 	/** 节点的子节点数据集合， 在前端，如果是文件而非目录，该字段应该为null，所以此处不初始化 */
-	protected Set<? extends ZtreeNode<T>> children;
+	protected Set<ZtreeNode<T>> children;
 	
 	/** 自定义属性，用于标识查询结果 */
 	protected boolean selected;
@@ -205,11 +211,11 @@ public class ZtreeNode<T> implements Serializable, Comparable<ZtreeNode<T>> {
 		this.url = url;
 	}
 
-	public Set<? extends ZtreeNode<T>> getChildren() {
+	public Set<ZtreeNode<T>> getChildren() {
 		return children;
 	}
 
-	public void setChildren(Set<? extends ZtreeNode<T>> children) {
+	public void setChildren(Set<ZtreeNode<T>> children) {
 		this.children = children;
 	}
 
@@ -277,5 +283,46 @@ public class ZtreeNode<T> implements Serializable, Comparable<ZtreeNode<T>> {
 		if (id != other.id)
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return "ZtreeNode [name=" + name + ", children=" + children + "]";
+	}
+
+	/**
+	 * 根据Node接口返回一个ztree
+	 * @param nodes
+	 * @return
+	 */
+	public static Set<ZtreeNode<Node>> getZtreeNodes(Collection<Node> nodes) {
+		Map<String, ZtreeNode<Node>> map = new HashMap<String, ZtreeNode<Node>>();
+		for (Node n : nodes) {
+			ZtreeNode<Node> z = new ZtreeNode<Node>();
+			z.name = n.getName();
+			z.attribute = n;
+			z.isParent = false;
+			map.put(n.getKey(), z);
+		}
+		for (ZtreeNode<Node> z : map.values()) {
+			Node parent = z.getAttribute().getParent();
+			if (parent != null) {
+				ZtreeNode<Node> parentZn = map.get(parent.getKey());
+				if (parentZn != null) {
+					parentZn.isParent = true;
+					if (parentZn.children == null) {
+						parentZn.children = new TreeSet<ZtreeNode<Node>>();
+					}
+					parentZn.children.add(z);
+				}
+			}
+		}
+		for (Iterator<Entry<String, ZtreeNode<Node>>> i = map.entrySet().iterator(); i.hasNext();) {
+			Entry<String, ZtreeNode<Node>> e = i.next();
+			if (!e.getValue().isParent) {
+				i.remove();
+			}
+		}
+		return new TreeSet<ZtreeNode<Node>>(map.values());
 	}
 }

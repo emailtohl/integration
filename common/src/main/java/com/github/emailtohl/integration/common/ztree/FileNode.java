@@ -42,7 +42,7 @@ public class FileNode extends ZtreeNode<File> {
 		n.pid = pid;
 		n.attribute = f;
 		if (f.isDirectory()) {
-			Set<FileNode> children = new TreeSet<FileNode>();
+			Set<ZtreeNode<File>> children = new TreeSet<ZtreeNode<File>>();
 			for (File sf : f.listFiles()) {
 				children.add(newInstance(sf, n.id));
 			}

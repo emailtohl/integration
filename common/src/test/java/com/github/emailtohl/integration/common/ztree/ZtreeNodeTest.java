@@ -1,8 +1,13 @@
 package com.github.emailtohl.integration.common.ztree;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -68,5 +73,16 @@ public class ZtreeNodeTest {
 				assertFalse(sub.isOpen());
 			}
 		}
+	}
+	
+	@Test
+	public void testGetZtreeNodes() {
+		Department _super = new Department("super", null);
+		Department sub1 = new Department("sub1", _super);
+		Department sub2 = new Department("sub2", _super);
+		List<Node> c = Arrays.asList(_super, sub1, sub2);
+		Set<ZtreeNode<Node>> ztree = ZtreeNode.getZtreeNodes(c);
+		assertEquals(1, ztree.size());
+		System.out.println(ztree);
 	}
 }
