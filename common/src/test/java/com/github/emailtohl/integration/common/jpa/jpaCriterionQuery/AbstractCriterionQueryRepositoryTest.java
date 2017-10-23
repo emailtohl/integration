@@ -2,6 +2,10 @@ package com.github.emailtohl.integration.common.jpa.jpaCriterionQuery;
 
 import static org.junit.Assert.assertFalse;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -92,7 +96,7 @@ public class AbstractCriterionQueryRepositoryTest {
 		set.add(c5);
 		set.add(c6);
 		set.add(c7);
-		Page<Customer> page = customerRepository.query(set, p);
+		Page<Customer> page = customerRepository.queryForPage(set, p);
 		logger.debug(page.getContent());
 		logger.debug(page.getNumber());
 		logger.debug(page.getNumberOfElements());
@@ -112,7 +116,7 @@ public class AbstractCriterionQueryRepositoryTest {
 		Criterion c8 = new Criterion("department.name", Criterion.Operator.LIKE, td.foo.getDepartment().getName());
 		set.clear();
 		set.add(c8);
-		customerRepository.query(set, p);
+		customerRepository.queryForPage(set, p);
 	}
 	
 	@Test
@@ -134,7 +138,7 @@ public class AbstractCriterionQueryRepositoryTest {
 		set.add(c4);
 		set.add(c5);
 		set.add(c6);
-		Page<Employee> page = employeeRepository.query(set, p);
+		Page<Employee> page = employeeRepository.queryForPage(set, p);
 		logger.debug(page.getContent());
 		logger.debug(page.getNumber());
 		logger.debug(page.getNumberOfElements());
@@ -160,26 +164,31 @@ public class AbstractCriterionQueryRepositoryTest {
 		set.add(c4);
 		set.add(c5);
 		set.add(c6);
-		List<Employee> ls = employeeRepository.query(set);
+		List<Employee> ls = employeeRepository.queryForList(set);
 		assertFalse(ls.isEmpty());
 	}
 	
 	@Test
 	public void testToPredicate() {
-		Employee param = new CommonTestData().foo;
-		param.setAge(null);
-		param.setBirthday(null);
-		param.setCreateDate(null);
-		param.setModifyDate(null);
-		param.setPassword(null);
+		Employee params = new CommonTestData().foo;
+		params.setAge(null);
+		params.setBirthday(null);
+		params.setCreateDate(null);
+		params.setModifyDate(null);
+		params.setPassword(null);
 		
 		CriteriaBuilder cb = employeeRepository.getEntityManager().getCriteriaBuilder();
 		
 		CriteriaQuery<Employee> q = cb.createQuery(Employee.class);
 		Root<Employee> r = q.from(Employee.class);
 		
-		Set<Predicate> predicates = employeeRepository.toPredicate(param, AccessType.PROPERTY, r, cb);
+		Set<Predicate> predicates = employeeRepository.toPredicate(params, AccessType.PROPERTY, r, cb);
 		assertFalse(predicates.isEmpty());
+		
+		LocalDate start = LocalDate.ofYearDay(1980, 1);
+		LocalDate end = LocalDate.now();
+		
+		predicates.add(cb.between(r.get("birthday"), LocalDateToDate(start), LocalDateToDate(end)));
 		
 		Predicate[] restrictions = new Predicate[predicates.size()];
 		
@@ -192,8 +201,16 @@ public class AbstractCriterionQueryRepositoryTest {
 			System.out.println(e);
 		}
 		
-		predicates = employeeRepository.toPredicate(param, AccessType.FIELD, r, cb);
+		//-----
+		
+		q = cb.createQuery(Employee.class);
+		r = q.from(Employee.class);
+		predicates = employeeRepository.toPredicate(params, AccessType.FIELD, r, cb);
 		assertFalse(predicates.isEmpty());
+		predicates.add(cb.between(r.get("birthday"), LocalDateToDate(start), LocalDateToDate(end)));
+		restrictions = new Predicate[predicates.size()];
+		
+		q = q.select(r).where(predicates.toArray(restrictions));
 		
 		result = employeeRepository.getEntityManager().createQuery(q).getResultList();
 		assertFalse(result.isEmpty());
@@ -202,4 +219,25 @@ public class AbstractCriterionQueryRepositoryTest {
 			System.out.println(e);
 		}
 	}
+	
+	@Test
+	public void testQueryForPage() {
+		Employee params = new CommonTestData().foo;
+		params.setAge(null);
+		params.setBirthday(null);
+		params.setCreateDate(null);
+		params.setModifyDate(null);
+		params.setPassword(null);
+		Page<Employee> p = employeeRepository.queryForPage(params, new PageRequest(0, 20));
+		assertFalse(p.getContent().isEmpty());
+		System.out.println(p.getContent());
+	}
+	
+	
+	public Date LocalDateToDate(LocalDate d) {
+	    ZoneId zone = ZoneId.systemDefault();
+	    Instant instant = d.atStartOfDay().atZone(zone).toInstant();
+	    return Date.from(instant);
+	}
+
 }

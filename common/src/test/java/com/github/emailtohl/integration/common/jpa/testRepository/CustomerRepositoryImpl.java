@@ -37,7 +37,7 @@ public class CustomerRepositoryImpl extends AbstractSearchableRepository<Custome
 		if (StringUtils.hasText(affiliation)) {
 			set.add(new Criterion("affiliation", Operator.LIKE, affiliation));
 		}
-		Page<Customer> p = query(set, pageable);
+		Page<Customer> p = queryForPage(set, pageable);
 		return p;
 	}
 

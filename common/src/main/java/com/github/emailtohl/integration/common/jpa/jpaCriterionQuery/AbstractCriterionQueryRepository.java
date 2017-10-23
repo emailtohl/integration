@@ -58,7 +58,7 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 	 * @return
 	 */
 	@Override
-	public Page<E> query(Collection<Criterion> criteria, Pageable pageable) {
+	public Page<E> queryForPage(Collection<Criterion> criteria, Pageable pageable) {
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
 		CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
@@ -86,13 +86,55 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 	 * @return
 	 */
 	@Override
-	public List<E> query(Collection<Criterion> criteria) {
+	public List<E> queryForList(Collection<Criterion> criteria) {
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<E> query = builder.createQuery(entityClass);
 		Root<E> queryRoot = query.from(entityClass);
 		return entityManager.createQuery(query.select(queryRoot).where(toPredicates(criteria, queryRoot, builder)))
 				.getResultList();
 
+	}
+	
+	@Override
+	public Page<E> queryForPage(E params, Pageable pageable, AccessType type) {
+		CriteriaBuilder b = entityManager.getCriteriaBuilder();
+		CriteriaQuery<E> q = b.createQuery(entityClass);
+		Root<E> r = q.from(entityClass);
+		Set<Predicate> set = toPredicate(params, type, r, b);
+		Predicate[] predicates = new Predicate[set.size()];
+		q = q.select(r).where(set.toArray(predicates)).orderBy(QueryUtils.toOrders(pageable.getSort(), r, b));
+		List<E> result = entityManager.createQuery(q).setFirstResult(pageable.getOffset())
+				.setMaxResults(pageable.getPageSize()).getResultList();
+
+		CriteriaQuery<Long> c = b.createQuery(Long.class);
+		r = c.from(entityClass);
+		set = toPredicate(params, type, r, b);
+		predicates = new Predicate[set.size()];
+		c = c.select(b.count(r)).where(set.toArray(predicates));
+		Long total = entityManager.createQuery(c).getSingleResult();
+
+		return new PageImpl<E>(new ArrayList<E>(result), pageable, total);
+	}
+	
+	@Override
+	public Page<E> queryForPage(E params, Pageable pageable) {
+		return queryForPage(params, pageable, AccessType.PROPERTY);
+	}
+	
+	@Override
+	public List<E> queryForList(E params, AccessType type) {
+		CriteriaBuilder b = entityManager.getCriteriaBuilder();
+		CriteriaQuery<E> q = b.createQuery(entityClass);
+		Root<E> r = q.from(entityClass);
+		Set<Predicate> set = toPredicate(params, type, r, b);
+		Predicate[] predicates = new Predicate[set.size()];
+		q = q.select(r).where(set.toArray(predicates));
+		return entityManager.createQuery(q).getResultList();
+	}
+	
+	@Override
+	public List<E> queryForList(E params) {
+		return queryForList(params, AccessType.PROPERTY);
 	}
 
 	protected Predicate[] toPredicates(Collection<Criterion> criteria, Root<?> root, CriteriaBuilder builder) {
@@ -111,7 +153,8 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 	 * @param type 分析对象的方式
 	 * @return
 	 */
-	protected Set<Predicate> toPredicate(final E entity, final AccessType type, final Root<?> r, final CriteriaBuilder b) {
+	protected Set<Predicate> toPredicate(final E entity, final AccessType type, final Root<?> r,
+			final CriteriaBuilder b) {
 		final Set<Object> set = new HashSet<Object>();
 		Set<Predicate> predicates = new HashSet<Predicate>();
 		/**
@@ -189,7 +232,7 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 				}
 			}
 		}// END Inner class
-		
+
 		class PredicateByField {
 			@SuppressWarnings("unchecked")
 			void predicate(Object o, Path<?> prefix) {
@@ -213,7 +256,8 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 					for (int i = 0; i < fields.length; i++) {
 						Field field = fields[i];
 						int modifiers = field.getModifiers();
-						if (Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers) || field.getAnnotation(Transient.class) != null) {
+						if (Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers)
+								|| field.getAnnotation(Transient.class) != null) {
 							continue;
 						}
 						field.setAccessible(true);
