@@ -1,6 +1,5 @@
 package com.github.emailtohl.integration.common.jpa.jpaCriterionQuery;
 
-import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -59,7 +58,7 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 	 * @return
 	 */
 	@Override
-	public Page<E> query(Collection<Criterion> criteria, Pageable pageable) {
+	public Page<E> queryForPage(Collection<Criterion> criteria, Pageable pageable) {
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
 		CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
@@ -87,13 +86,55 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 	 * @return
 	 */
 	@Override
-	public List<E> query(Collection<Criterion> criteria) {
+	public List<E> queryForList(Collection<Criterion> criteria) {
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<E> query = builder.createQuery(entityClass);
 		Root<E> queryRoot = query.from(entityClass);
 		return entityManager.createQuery(query.select(queryRoot).where(toPredicates(criteria, queryRoot, builder)))
 				.getResultList();
 
+	}
+	
+	@Override
+	public Page<E> queryForPage(E params, Pageable pageable, AccessType type) {
+		CriteriaBuilder b = entityManager.getCriteriaBuilder();
+		CriteriaQuery<E> q = b.createQuery(entityClass);
+		Root<E> r = q.from(entityClass);
+		Set<Predicate> set = toPredicate(params, type, r, b);
+		Predicate[] predicates = new Predicate[set.size()];
+		q = q.select(r).where(set.toArray(predicates)).orderBy(QueryUtils.toOrders(pageable.getSort(), r, b));
+		List<E> result = entityManager.createQuery(q).setFirstResult(pageable.getOffset())
+				.setMaxResults(pageable.getPageSize()).getResultList();
+
+		CriteriaQuery<Long> c = b.createQuery(Long.class);
+		r = c.from(entityClass);
+		set = toPredicate(params, type, r, b);
+		predicates = new Predicate[set.size()];
+		c = c.select(b.count(r)).where(set.toArray(predicates));
+		Long total = entityManager.createQuery(c).getSingleResult();
+
+		return new PageImpl<E>(new ArrayList<E>(result), pageable, total);
+	}
+	
+	@Override
+	public Page<E> queryForPage(E params, Pageable pageable) {
+		return queryForPage(params, pageable, AccessType.PROPERTY);
+	}
+	
+	@Override
+	public List<E> queryForList(E params, AccessType type) {
+		CriteriaBuilder b = entityManager.getCriteriaBuilder();
+		CriteriaQuery<E> q = b.createQuery(entityClass);
+		Root<E> r = q.from(entityClass);
+		Set<Predicate> set = toPredicate(params, type, r, b);
+		Predicate[] predicates = new Predicate[set.size()];
+		q = q.select(r).where(set.toArray(predicates));
+		return entityManager.createQuery(q).getResultList();
+	}
+	
+	@Override
+	public List<E> queryForList(E params) {
+		return queryForList(params, AccessType.PROPERTY);
 	}
 
 	protected Predicate[] toPredicates(Collection<Criterion> criteria, Root<?> root, CriteriaBuilder builder) {
@@ -112,7 +153,8 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 	 * @param type 分析对象的方式
 	 * @return
 	 */
-	protected Set<Predicate> toPredicate(final E entity, final AccessType type, final Root<?> r, final CriteriaBuilder b) {
+	protected Set<Predicate> toPredicate(final E entity, final AccessType type, final Root<?> r,
+			final CriteriaBuilder b) {
 		final Set<Object> set = new HashSet<Object>();
 		Set<Predicate> predicates = new HashSet<Predicate>();
 		/**
@@ -136,66 +178,61 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 						clz = clz.getSuperclass();
 					}
 				}
-				BeanInfo info;
 				try {
-					info = Introspector.getBeanInfo(clz, Object.class);
-				} catch (IntrospectionException e) {
-					throw new IllegalArgumentException(e);
-				}
-				PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
-				for (PropertyDescriptor descriptor : descriptors) {
-					if (BeanUtil.getAnnotation(descriptor, Transient.class) != null) {
-						continue;
-					}
-					Object value = null;
-					try {
+					for (PropertyDescriptor descriptor : Introspector.getBeanInfo(clz, Object.class)
+							.getPropertyDescriptors()) {
+						if (BeanUtil.getAnnotation(descriptor, Transient.class) != null) {
+							continue;
+						}
 						Method m = descriptor.getReadMethod();
 						if (m == null) {
 							continue;
 						}
-						value = m.invoke(o);
-					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-						e.printStackTrace();
-					}
-					if (value == null) {
-						continue;
-					}
-					if (availableObj(value)) {
-						String name = descriptor.getName();
-						Path<?> path;
-						if (prefix == null) {
-							path = r.get(name);
-						} else {
-							path = prefix.get(name);
+						Object value = m.invoke(o);
+						if (value == null) {
+							continue;
 						}
-						if (value instanceof String && isFuzzy) {
-							predicates.add(b.like((Path<String>) path, ((String) value).trim()));
-						} else {
-							predicates.add(b.equal(path, value));
-						}
-					} else {
-						ManyToOne manyToOne = BeanUtil.getAnnotation(descriptor, ManyToOne.class);
-						OneToOne oneToOne = BeanUtil.getAnnotation(descriptor, OneToOne.class);
-						Embedded embedded = BeanUtil.getAnnotation(descriptor, Embedded.class);
-						if (manyToOne != null || oneToOne != null || embedded != null) {
-							if (set.contains(o)) {// 若遇到相互关联的情况，则终止递归
-								return;
-							}
-							set.add(o);
+						if (availableObj(value)) {
+							String name = descriptor.getName();
 							Path<?> path;
 							if (prefix == null) {
-								path = r.get(descriptor.getName());
+								path = r.get(name);
 							} else {
-								path = prefix.get(descriptor.getName());
+								path = prefix.get(name);
 							}
-							predicate(value, path);
+							if (value instanceof String && isFuzzy) {
+								predicates.add(b.like((Path<String>) path, ((String) value).trim()));
+							} else {
+								predicates.add(b.equal(path, value));
+							}
+						} else {
+							ManyToOne manyToOne = BeanUtil.getAnnotation(descriptor, ManyToOne.class);
+							OneToOne oneToOne = BeanUtil.getAnnotation(descriptor, OneToOne.class);
+							Embedded embedded = BeanUtil.getAnnotation(descriptor, Embedded.class);
+							if (manyToOne != null || oneToOne != null || embedded != null) {
+								if (set.contains(o)) {// 若遇到相互关联的情况，则终止递归
+									return;
+								}
+								set.add(o);
+								Path<?> path;
+								if (prefix == null) {
+									path = r.get(descriptor.getName());
+								} else {
+									path = prefix.get(descriptor.getName());
+								}
+								predicate(value, path);
+							}
 						}
-					}
 
+					}
+				} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException e) {
+					LOG.catching(e);
+					throw new IllegalArgumentException(e);
 				}
 			}
 		}// END Inner class
-		
+
 		class PredicateByField {
 			@SuppressWarnings("unchecked")
 			void predicate(Object o, Path<?> prefix) {
@@ -219,15 +256,17 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 					for (int i = 0; i < fields.length; i++) {
 						Field field = fields[i];
 						int modifiers = field.getModifiers();
-						if (Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers) || field.getAnnotation(Transient.class) != null) {
+						if (Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers)
+								|| field.getAnnotation(Transient.class) != null) {
 							continue;
 						}
 						field.setAccessible(true);
 						Object value = null;
 						try {
 							value = field.get(o);
-						} catch (IllegalArgumentException | IllegalAccessException e) {
-							e.printStackTrace();
+						} catch (IllegalAccessException e) {
+							LOG.catching(e);
+							throw new IllegalArgumentException(e);
 						}
 						if (value == null) {
 							continue;

@@ -1,8 +1,13 @@
 package com.github.emailtohl.integration.common.ztree;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -43,11 +48,11 @@ public class ZtreeNodeTest {
 
 	@Test
 	public void testNewInstance() {
-		ZtreeNode n = ZtreeNode.newInstance(test_root);
+		FileNode n = FileNode.newInstance(test_root);
 		Gson gson = new Gson();
 		String json = gson.toJson(n);
 		System.out.println(json);
-		ZtreeNode nn = gson.fromJson(json, ZtreeNode.class);
+		FileNode nn = gson.fromJson(json, FileNode.class);
 		System.out.println(nn);
 		assertEquals(nn, n);
 		long rootid = nn.getId();
@@ -57,16 +62,27 @@ public class ZtreeNodeTest {
 
 	@Test
 	public void testSetOpen() {
-		ZtreeNode n = ZtreeNode.newInstance(test_root);
+		FileNode n = FileNode.newInstance(test_root);
 		String path = sub2_2.getPath();
 		n.setOpen(path);
 		assertTrue(n.isOpen());
-		for (ZtreeNode sub : n.getChildren()) {
+		for (ZtreeNode<File> sub : n.getChildren()) {
 			if ("sub2".equals(sub.getName())) {
 				assertTrue(sub.isOpen());
 			} else {
 				assertFalse(sub.isOpen());
 			}
 		}
+	}
+	
+	@Test
+	public void testGetZtreeNodes() {
+		Department _super = new Department("super", null);
+		Department sub1 = new Department("sub1", _super);
+		Department sub2 = new Department("sub2", _super);
+		List<Node> c = Arrays.asList(_super, sub1, sub2);
+		Set<ZtreeNode<Node>> ztree = ZtreeNode.getZtreeNodes(c);
+		assertEquals(1, ztree.size());
+		System.out.println(ztree);
 	}
 }

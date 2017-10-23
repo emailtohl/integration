@@ -169,7 +169,7 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
 		if (end != null) {
 			set.add(new Criterion("applicationForm.createDate", Criterion.Operator.LTE, end));
 		}
-		page = applicationHandleHistoryRepository.query(set, pageable);
+		page = applicationHandleHistoryRepository.queryForPage(set, pageable);
 		return page;
 	}
 	
