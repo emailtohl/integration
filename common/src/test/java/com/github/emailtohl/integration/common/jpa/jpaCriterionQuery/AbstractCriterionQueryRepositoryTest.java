@@ -166,25 +166,40 @@ public class AbstractCriterionQueryRepositoryTest {
 	
 	@Test
 	public void testToPredicate() {
+		Employee param = new CommonTestData().foo;
+		param.setAge(null);
+		param.setBirthday(null);
+		param.setCreateDate(null);
+		param.setModifyDate(null);
+		param.setPassword(null);
+		
 		CriteriaBuilder cb = employeeRepository.getEntityManager().getCriteriaBuilder();
 		
 		CriteriaQuery<Employee> q = cb.createQuery(Employee.class);
 		Root<Employee> r = q.from(Employee.class);
 		
-		Set<Predicate> predicates = employeeRepository.toPredicate(new CommonTestData().foo, AccessType.PROPERTY, r, cb);
+		Set<Predicate> predicates = employeeRepository.toPredicate(param, AccessType.PROPERTY, r, cb);
 		assertFalse(predicates.isEmpty());
 		
 		Predicate[] restrictions = new Predicate[predicates.size()];
 		
 		q = q.select(r).where(predicates.toArray(restrictions));
 		
-		for (Employee e : employeeRepository.getEntityManager().createQuery(q).getResultList()) {
+		List<Employee> result = employeeRepository.getEntityManager().createQuery(q).getResultList();
+		assertFalse(result.isEmpty());
+		
+		for (Employee e : result) {
 			System.out.println(e);
 		}
 		
-		predicates = employeeRepository.toPredicate(new CommonTestData().foo, AccessType.FIELD, r, cb);
+		predicates = employeeRepository.toPredicate(param, AccessType.FIELD, r, cb);
 		assertFalse(predicates.isEmpty());
 		
-		System.out.println(predicates);
+		result = employeeRepository.getEntityManager().createQuery(q).getResultList();
+		assertFalse(result.isEmpty());
+		
+		for (Employee e : result) {
+			System.out.println(e);
+		}
 	}
 }
