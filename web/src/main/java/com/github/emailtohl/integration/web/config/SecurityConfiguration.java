@@ -209,7 +209,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/forum/image").authenticated()
 				.antMatchers("/audit/user*").hasAuthority(AUDIT_USER)
 				.antMatchers("/audit/role*").hasAuthority(AUDIT_ROLE)
-				.antMatchers("/role/**").hasAuthority(USER_ROLE_AUTHORITY_ALLOCATION)
+				.antMatchers("/role/**").hasAuthority(ROLE_AUTHORITY_ALLOCATION)
 				.antMatchers("/fileUploadServer/**").hasAuthority(RESOURCE_MANAGER)
 				.antMatchers(HttpMethod.POST, "/cms/comment").permitAll()// 发表评论，如果没认证则为匿名
 				.antMatchers(HttpMethod.DELETE, "/cms/article/**").hasAuthority(CONTENT_MANAGER)
