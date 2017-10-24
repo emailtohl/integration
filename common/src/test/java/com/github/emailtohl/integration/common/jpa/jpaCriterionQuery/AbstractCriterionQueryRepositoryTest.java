@@ -231,6 +231,11 @@ public class AbstractCriterionQueryRepositoryTest {
 		Page<Employee> p = employeeRepository.queryForPage(params, new PageRequest(0, 20));
 		assertFalse(p.getContent().isEmpty());
 		System.out.println(p.getContent());
+		
+		params = null;
+		p = employeeRepository.queryForPage(params, new PageRequest(0, 20));
+		assertFalse(p.getContent().isEmpty());
+		System.out.println(p.getContent());
 	}
 	
 	

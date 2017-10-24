@@ -307,6 +307,9 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 				}
 			}
 		}// END Inner class
+		if (entity == null) {
+			return predicates;
+		}
 		if (type == null || type == AccessType.PROPERTY) {
 			new PredicateByProperty().predicate(entity, null);
 		} else {
