@@ -32,7 +32,7 @@ public class UserTestData {
 	static final int HASHING_ROUNDS = 10;
 	
 	public final Authority
-			user_role_authority_allocation = new Authority(USER_ROLE_AUTHORITY_ALLOCATION, "对角色进行权限配置的权限"),
+			user_role_authority_allocation = new Authority(ROLE_AUTHORITY_ALLOCATION, "对角色进行权限配置的权限"),
 			user_create_ordinary = new Authority(USER_CREATE_ORDINARY, "创建普通账号，用于用户自行注册时"),
 			user_create_special = new Authority(USER_CREATE_SPECIAL, "创建有一定权限的账号，用于管理员创建时"),
 			user_enable = new Authority(USER_ENABLE, "激活账号"),
