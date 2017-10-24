@@ -17,7 +17,7 @@ import static com.github.emailtohl.integration.common.testEntities.Authority.USE
 import static com.github.emailtohl.integration.common.testEntities.Authority.USER_GRANT_ROLES;
 import static com.github.emailtohl.integration.common.testEntities.Authority.USER_READ_ALL;
 import static com.github.emailtohl.integration.common.testEntities.Authority.USER_READ_SELF;
-import static com.github.emailtohl.integration.common.testEntities.Authority.USER_ROLE_AUTHORITY_ALLOCATION;
+import static com.github.emailtohl.integration.common.testEntities.Authority.ROLE_AUTHORITY_ALLOCATION;
 import static com.github.emailtohl.integration.common.testEntities.Authority.USER_UPDATE_ALL;
 import static com.github.emailtohl.integration.common.testEntities.Authority.USER_UPDATE_SELF;
 import static com.github.emailtohl.integration.common.testEntities.Role.ADMIN;
@@ -54,7 +54,7 @@ public class CommonTestData {
 	static final int HASHING_ROUNDS = 10;
 	
 	public final Authority
-			user_role_authority_allocation = new Authority(USER_ROLE_AUTHORITY_ALLOCATION, "对角色进行权限配置的权限"),
+			role_authority_allocation = new Authority(ROLE_AUTHORITY_ALLOCATION, "对角色进行权限配置的权限"),
 			user_create_ordinary = new Authority(USER_CREATE_ORDINARY, "创建普通账号，用于用户自行注册时"),
 			user_create_special = new Authority(USER_CREATE_SPECIAL, "创建有一定权限的账号，用于管理员创建时"),
 			user_enable = new Authority(USER_ENABLE, "激活账号"),
@@ -93,7 +93,7 @@ public class CommonTestData {
 	public final Comment comment = new Comment();
 	
 	{
-		user_role_authority_allocation.getRoles().add(admin);
+		role_authority_allocation.getRoles().add(admin);
 		user_create_ordinary.getRoles().addAll(Arrays.asList(admin, manager, employee, user));
 		user_create_special.getRoles().addAll(Arrays.asList(admin, manager));
 		user_enable.getRoles().addAll(Arrays.asList(admin, manager, employee, user));
@@ -114,7 +114,7 @@ public class CommonTestData {
 		resource_manager.getRoles().addAll(Arrays.asList(admin, manager, employee));
 		content_manager.getRoles().addAll(Arrays.asList(admin, manager, employee));
 		
-		admin.getAuthorities().addAll(Arrays.asList(user_role_authority_allocation, user_create_ordinary, user_create_special, user_enable, user_disable, user_grant_roles, user_read_all, user_read_self, user_update_all, user_update_self, user_delete, user_customer, application_form_transit, application_form_read_history, application_form_delete, forum_delete, audit_user, audit_role, resource_manager, content_manager));
+		admin.getAuthorities().addAll(Arrays.asList(role_authority_allocation, user_create_ordinary, user_create_special, user_enable, user_disable, user_grant_roles, user_read_all, user_read_self, user_update_all, user_update_self, user_delete, user_customer, application_form_transit, application_form_read_history, application_form_delete, forum_delete, audit_user, audit_role, resource_manager, content_manager));
 		manager.getAuthorities().addAll(Arrays.asList(user_create_ordinary, user_create_special, user_enable, user_disable, user_grant_roles, user_read_all, user_read_self, user_update_self, user_customer, application_form_transit, application_form_read_history, audit_user, resource_manager, content_manager));
 		employee.getAuthorities().addAll(Arrays.asList(user_create_ordinary, user_enable, user_read_all, user_read_self, user_update_self, user_customer, application_form_transit, application_form_read_history, resource_manager, content_manager));
 		user.getAuthorities().addAll(Arrays.asList(user_create_ordinary, user_enable, user_read_self, user_update_self));

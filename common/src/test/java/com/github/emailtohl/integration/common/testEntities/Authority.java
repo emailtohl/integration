@@ -25,7 +25,7 @@ public class Authority extends BaseEntity {
 	/**
 	 * 权限配置的权限
 	 */
-	public static final String USER_ROLE_AUTHORITY_ALLOCATION = "user_role_authority_allocation";
+	public static final String ROLE_AUTHORITY_ALLOCATION = "role_authority_allocation";
 	/**
 	 * 创建普通账号，用于用户自行注册时
 	 */
