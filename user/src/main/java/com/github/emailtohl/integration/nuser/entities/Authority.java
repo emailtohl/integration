@@ -24,89 +24,95 @@ public class Authority extends BaseEntity {
 	private static final long serialVersionUID = 2353467451352218773L;
 	
 	/**
-	 * 用户管理的权限
+	 * 管理角色的权限
 	 */
-	public static final String USER_MANAGER = "user_manager";
+	public static final String ROLE = "role";
+	
 	/**
-	 * 权限配置的权限
+	 * 查询所有用户的权限
 	 */
-	public static final String USER_ROLE_AUTHORITY_ALLOCATION = "user_role_authority_allocation";
+	public static final String QUERY_ALL_USER = "query_all_user";
+	
 	/**
-	 * 创建普通账号，用于用户自行注册时
+	 * 管理内部人员的权限
 	 */
-	public static final String USER_CREATE_ORDINARY = "user_create_ordinary";
+	public static final String EMPLOYEE = "employee";
+	
 	/**
-	 * 创建有一定权限的账号，用于管理员创建时
+	 * 为内部人员授予角色的权限
 	 */
-	public static final String USER_CREATE_SPECIAL = "user_create_special";
+	public static final String EMPLOYEE_ROLE = "employee_role";
+	
 	/**
-	 * 激活账号
+	 * 为内部人员解锁的权限
 	 */
-	public static final String USER_ENABLE = "user_enable";
+	public static final String EMPLOYEE_LOCK = "employee_lock";
+	
 	/**
-	 * 禁用账号
+	 * 删除内部人员的权限
 	 */
-	public static final String USER_DISABLE = "user_disable";
+	public static final String EMPLOYEE_DELETE = "employee_delete";
+	
 	/**
-	 * 授予用户角色
+	 * 管理外部用户的权限
 	 */
-	public static final String USER_GRANT_ROLES = "user_grant_roles";
+	public static final String CUSTOMER = "customer";
+	
 	/**
-	 * 读取所有用户的权限
+	 * 为外部人员授予角色的权限
 	 */
-	public static final String USER_READ_ALL = "user_read_all";
+	public static final String CUSTOMER_ROLE = "customer_role";
+	
 	/**
-	 * 读取自己账号信息
+	 * 为内部人员解锁的权限
 	 */
-	public static final String USER_READ_SELF = "user_read_self";
+	public static final String CUSTOMER_LOCK = "customer_lock";
+	
 	/**
-	 * 修改所有用户的权限，用于管理员
+	 * 删除内部人员的权限
 	 */
-	public static final String USER_UPDATE_ALL = "user_update_all";
+	public static final String CUSTOMER_DELETE = "customer_delete";
+	
 	/**
-	 * 修改自己账号的权限，用于普通用户
+	 * 流程权限
 	 */
-	public static final String USER_UPDATE_SELF = "user_update_self";
-	/**
-	 * 删除用户的权限
-	 */
-	public static final String USER_DELETE = "user_delete";
-	/**
-	 * 客户管理的权限
-	 */
-	public static final String USER_CUSTOMER = "user_customer";
-	/**
-	 * 申请单状态的权限
-	 */
-	public static final String APPLICATION_FORM = "application_form";
+	public static final String FLOW = "flow";
+	
 	/**
 	 * 处理申请单状态的权限
 	 */
 	public static final String APPLICATION_FORM_TRANSIT = "application_form_transit";
+	
 	/**
 	 * 删除申请单
 	 */
 	public static final String APPLICATION_FORM_DELETE = "application_form_delete";
+	
 	/**
 	 * 查询申请单的处理历史
 	 */
 	public static final String APPLICATION_FORM_READ_HISTORY = "application_form_read_history";
+	
 	/**
 	 * 删除论坛帖子
 	 */
 	public static final String FORUM_DELETE = "forum_delete";
+	
 	/**
 	 * 审计修改用户信息
 	 */
 	public static final String AUDIT_USER = "audit_user";
+	
 	/**
 	 * 审计修改角色信息
 	 */
 	public static final String AUDIT_ROLE = "audit_role";
+	
 	/**
 	 * 资源管理，文件上传，目录创建、改名以及删除
 	 */
 	public static final String RESOURCE_MANAGER = "resource_manager";
+	
 	/**
 	 * 内容管理权限
 	 */

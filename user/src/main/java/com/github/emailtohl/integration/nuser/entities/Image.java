@@ -23,9 +23,14 @@ public class Image {
 	}
 	
 	public Image(String url, String filename) {
+		this(url, filename, null);
+	}
+	
+	public Image(String url, String filename, byte[] bin) {
 		super();
 		this.url = url;
 		this.filename = filename;
+		this.bin = bin;
 	}
 
 	@Column(name = "image_url")
