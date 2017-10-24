@@ -21,7 +21,7 @@ import org.springframework.validation.annotation.Validated;
 import com.github.emailtohl.integration.cms.entities.Article;
 import com.github.emailtohl.integration.cms.entities.Comment;
 import com.github.emailtohl.integration.cms.entities.Type;
-import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
+import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 
 /**
@@ -43,7 +43,7 @@ public interface CmsService {
 	 * @throws NotFoundException 由于缓存机制，返回一定不能为null，所以使用NotFoundException表示未找到文章
 	 */
 	@Cacheable(value = CACHE_NAME_ARTICLE, key = "#root.args[0]")
-	Article getArticle(long id) throws ResourceNotFoundException;
+	Article getArticle(long id) throws NotFoundException;
 	
 	/**
 	 * 全文搜索

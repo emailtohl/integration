@@ -29,7 +29,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
+import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.user.UserTestData;
 import com.github.emailtohl.integration.user.dao.CleanAuditData;
@@ -44,7 +44,6 @@ import com.github.emailtohl.integration.user.userTestConfig.DataSourceConfigurat
 import com.github.emailtohl.integration.user.userTestConfig.ServiceConfiguration;
 import com.google.gson.Gson;
 
-import javassist.NotFoundException;
 /**
  * 业务类测试
  * @author HeLei
@@ -223,7 +222,7 @@ public class UserServiceImplTest {
 			long id = userService.getUserByEmail(td.foo.getEmail()).getId();
 			userService.updateIconSrc(id, iconSrc);
 			userService.updateIcon(id, icon);
-		} catch (IOException | ResourceNotFoundException e) {
+		} catch (IOException | NotFoundException e) {
 			e.printStackTrace();
 			fail("不能出现异常");
 		}
@@ -250,14 +249,14 @@ public class UserServiceImplTest {
 			u = userService.getUserByEmail(td.foo.getEmail());
 			assertNotNull(u.getPublicKey());
 			userService.clearPublicKey(td.foo.getEmail());
-		} catch (ResourceNotFoundException e) {
+		} catch (NotFoundException e) {
 			e.printStackTrace();
 			fail("不能出现异常");
 		}
 	}
 	
 	@Test
-	public void testCache() throws ResourceNotFoundException {
+	public void testCache() throws NotFoundException {
 		UserTestData td = new UserTestData();
 		String email = td.foo.getEmail();
 		User u = userService.getUserByEmail(email);

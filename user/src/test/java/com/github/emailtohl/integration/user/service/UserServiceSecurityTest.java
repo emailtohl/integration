@@ -14,7 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
+import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.user.UserTestData;
 import com.github.emailtohl.integration.user.entities.Customer;
 import com.github.emailtohl.integration.user.entities.Employee;
@@ -42,7 +42,7 @@ public class UserServiceSecurityTest {
 	final Pageable pageable = new PageRequest(0, 20);
 	
 	@Before
-	public void setUp() throws ResourceNotFoundException {
+	public void setUp() throws NotFoundException {
 		securityContextManager.setEmailtohl();
 		td = new UserTestData();
 		employee = (Employee) userService.getUserByEmail(td.foo.getEmail());
@@ -189,17 +189,17 @@ public class UserServiceSecurityTest {
 	}
 	
 	@Test(expected = AuthenticationCredentialsNotFoundException.class)
-	public void testGetUserByEmail1() throws ResourceNotFoundException {
+	public void testGetUserByEmail1() throws NotFoundException {
 		SecurityContextHolder.clearContext();
 		try {
 			userService.getUserByEmail(customer.getEmail());
-		} catch (ResourceNotFoundException e) {
+		} catch (NotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	@Test(expected = AccessDeniedException.class)
-	public void testGetUserByEmail2() throws ResourceNotFoundException {
+	public void testGetUserByEmail2() throws NotFoundException {
 		securityContextManager.setBar();
 		User u = userService.getUserByEmail(employee.getEmail());
 		System.out.println(u);
@@ -211,7 +211,7 @@ public class UserServiceSecurityTest {
 	}
 
 	@Test
-	public void testGetUserByEmail3() throws ResourceNotFoundException {
+	public void testGetUserByEmail3() throws NotFoundException {
 		securityContextManager.setEmailtohl();
 		userService.getUserByEmail(customer.getEmail());
 	}

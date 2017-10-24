@@ -14,7 +14,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
+import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.user.UserTestData;
 import com.github.emailtohl.integration.user.dao.UserRepository;
 import com.github.emailtohl.integration.user.security.AuthenticationManagerImpl;
@@ -35,7 +35,7 @@ import com.github.emailtohl.integration.user.service.UserService;
 public class SecurityConfiguration {
 	
 	@Bean
-	public UserRepository userRepositoryMock() throws ResourceNotFoundException {
+	public UserRepository userRepositoryMock() throws NotFoundException {
 		UserRepository userRepository = mock(UserRepository.class,
 				withSettings().defaultAnswer(RETURNS_SMART_NULLS).name("cool mockie"));
 		UserTestData td = new UserTestData();
@@ -48,7 +48,7 @@ public class SecurityConfiguration {
 	}
 	
 	@Bean
-	public UserService userServiceMock() throws ResourceNotFoundException {
+	public UserService userServiceMock() throws NotFoundException {
 		UserService userService = mock(UserService.class,
 				withSettings().defaultAnswer(RETURNS_SMART_NULLS).name("cool mockie"));
 		UserTestData td = new UserTestData();

@@ -19,7 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
+import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.common.utils.BeanUtil;
@@ -197,10 +197,10 @@ public class UserServiceImpl implements UserService, Serializable {
 	}
 
 	@Override
-	public User getUserByEmail(String email) throws ResourceNotFoundException {
+	public User getUserByEmail(String email) throws NotFoundException {
 		User u = userRepository.findByEmail(email);
 		if (u == null)
-			throw new ResourceNotFoundException("未找到该用户：" + email);
+			throw new NotFoundException("未找到该用户：" + email);
 		return convert(u);
 	}
 	

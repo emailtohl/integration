@@ -44,7 +44,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
+import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.common.utils.UpDownloader;
@@ -96,12 +96,12 @@ public class UserCtrl {
 	 * 查询user/id下支持哪些方法
 	 * @param id
 	 * @return
-	 * @throws ResourceNotFoundException 
+	 * @throws NotFoundException 
 	 */
 	@RequestMapping(value = "{id}", method = OPTIONS)
-	public ResponseEntity<Void> discover(@PathVariable("id") long id) throws ResourceNotFoundException {
+	public ResponseEntity<Void> discover(@PathVariable("id") long id) throws NotFoundException {
 		if (userService.getUser(id) == null)
-			throw new ResourceNotFoundException("未找到此资源");
+			throw new NotFoundException("未找到此资源");
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Allow", "OPTIONS,HEAD,GET,PUT,DELETE");
 		return new ResponseEntity<Void>(null, headers, HttpStatus.NO_CONTENT);
@@ -128,15 +128,15 @@ public class UserCtrl {
 	 * 这里的解决方案是先序列化为JSON，然后以字符串形式返回到前端
 	 * @param id
 	 * @return
-	 * @throws ResourceNotFoundException 
+	 * @throws NotFoundException 
 	 */
 	@RequestMapping(value = "id/{id}", method = GET)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	public String getUserById(@PathVariable("id") Long id) throws ResourceNotFoundException {
+	public String getUserById(@PathVariable("id") Long id) throws NotFoundException {
 		User u = userService.getUser(id);
 		if (u == null) {
-			throw new ResourceNotFoundException("未找到此资源");
+			throw new NotFoundException("未找到此资源");
 		}
 		return gson.toJson(u);
 	}
@@ -149,12 +149,12 @@ public class UserCtrl {
 	 * 
 	 * @param email
 	 * @return
-	 * @throws ResourceNotFoundException 
+	 * @throws NotFoundException 
 	 */
 	@RequestMapping(value = "email", method = GET)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	public String getUserByEmail(@RequestParam String email) throws ResourceNotFoundException {
+	public String getUserByEmail(@RequestParam String email) throws NotFoundException {
 		User u = userService.getUserByEmail(email);
 		return gson.toJson(u);
 	}
