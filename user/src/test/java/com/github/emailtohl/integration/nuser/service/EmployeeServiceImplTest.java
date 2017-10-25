@@ -14,6 +14,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +36,7 @@ import com.github.emailtohl.integration.nuser.userTestConfig.ServiceConfiguratio
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceConfiguration.class)
 @ActiveProfiles(DataSourceConfiguration.DB_RAM_H2)
+//@Rollback(false)
 public class EmployeeServiceImplTest {
 	final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	ClassLoader cl = EmployeeServiceImplTest.class.getClassLoader();
@@ -99,12 +101,14 @@ public class EmployeeServiceImplTest {
 
 	@Test
 	public void testUpdate() {
-		Employee e = new Employee();
-		e.setDescription("update");
-		e.setDepartment(new UserTestData().qa);
-		Employee u = employeeService.update(id, e);
-		assertEquals(e.getDescription(), u.getDescription());
-		assertEquals(e.getDepartment(), u.getDepartment());
+		Employee src = employeeService.get(id);
+		Employee tar = new Employee();
+		BeanUtils.copyProperties(src, tar);
+		tar.setDescription("update");
+		tar.setDepartment(new UserTestData().qa);
+		Employee u = employeeService.update(id, tar);
+		assertEquals(tar.getDescription(), u.getDescription());
+		assertEquals(tar.getDepartment(), u.getDepartment());
 	}
 
 	@Test

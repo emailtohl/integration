@@ -197,6 +197,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	private Employee filter(Employee source) {
 		Employee target = new Employee();
 		BeanUtils.copyProperties(source, target, Employee.getIgnoreProperties("password"));
+		target.setId(source.getId());
 		return target;
 	}
 	

@@ -64,7 +64,7 @@ class InitDataSource {
 
 					em.persist(td.role_admin);
 					em.persist(td.role_manager);
-					em.persist(td.employee);
+					em.persist(td.role_staff);
 					em.persist(td.role_guest);
 
 					em.persist(td.company);

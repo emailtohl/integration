@@ -97,7 +97,7 @@ public class User extends BaseEntity {
 	}
 	
 	@org.hibernate.search.annotations.Field
-	@Column(nullable = false, unique = true)
+	@Column(unique = true)
 	public String getEmail() {
 		return email;
 	}
