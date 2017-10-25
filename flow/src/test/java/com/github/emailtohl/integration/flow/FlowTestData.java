@@ -17,7 +17,7 @@ import static com.github.emailtohl.integration.user.entities.Authority.USER_ENAB
 import static com.github.emailtohl.integration.user.entities.Authority.USER_GRANT_ROLES;
 import static com.github.emailtohl.integration.user.entities.Authority.USER_READ_ALL;
 import static com.github.emailtohl.integration.user.entities.Authority.USER_READ_SELF;
-import static com.github.emailtohl.integration.user.entities.Authority.USER_ROLE_AUTHORITY_ALLOCATION;
+import static com.github.emailtohl.integration.user.entities.Authority.ROLE_AUTHORITY_ALLOCATION;
 import static com.github.emailtohl.integration.user.entities.Authority.USER_UPDATE_ALL;
 import static com.github.emailtohl.integration.user.entities.Authority.USER_UPDATE_SELF;
 import static com.github.emailtohl.integration.user.entities.Role.ADMIN;
@@ -54,7 +54,7 @@ public class FlowTestData {
 	static final int HASHING_ROUNDS = 10;
 	
 	public final Authority
-			user_role_authority_allocation = new Authority(USER_ROLE_AUTHORITY_ALLOCATION, "对角色进行权限配置的权限"),
+			user_role_authority_allocation = new Authority(ROLE_AUTHORITY_ALLOCATION, "对角色进行权限配置的权限"),
 			user_create_ordinary = new Authority(USER_CREATE_ORDINARY, "创建普通账号，用于用户自行注册时"),
 			user_create_special = new Authority(USER_CREATE_SPECIAL, "创建有一定权限的账号，用于管理员创建时"),
 			user_enable = new Authority(USER_ENABLE, "激活账号"),

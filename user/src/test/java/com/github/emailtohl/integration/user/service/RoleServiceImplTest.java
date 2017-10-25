@@ -19,7 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
+import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.user.dao.AuthorityRepository;
 import com.github.emailtohl.integration.user.dao.CleanAuditData;
 import com.github.emailtohl.integration.user.entities.Authority;
@@ -113,7 +113,7 @@ public class RoleServiceImplTest {
 	}
 
 	@Test
-	public void testUpdateAndCache() throws ResourceNotFoundException {
+	public void testUpdateAndCache() throws NotFoundException {
 		// 先执行带缓存的方法，使其缓存上
 		User tu = userService.getUserByEmail(u.getEmail());
 		// 初创用户时，只有Employee权限

@@ -23,7 +23,7 @@ import com.github.emailtohl.integration.cms.dao.TypeRepository;
 import com.github.emailtohl.integration.cms.entities.Article;
 import com.github.emailtohl.integration.cms.entities.Comment;
 import com.github.emailtohl.integration.cms.entities.Type;
-import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
+import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.user.dao.UserRepository;
@@ -51,7 +51,7 @@ public class CmsServiceImpl implements CmsService {
 	UserRepository userRepository;
 
 	@Override
-	public Article getArticle(long id) throws ResourceNotFoundException {
+	public Article getArticle(long id) throws NotFoundException {
 		return articlefilter(articleRepository.findOne(id));
 	}
 

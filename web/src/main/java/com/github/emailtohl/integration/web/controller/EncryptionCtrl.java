@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
-import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
+import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.user.entities.User;
 import com.github.emailtohl.integration.user.service.UserService;
 import com.github.emailtohl.integration.web.filter.UserPasswordEncryptionFilter;
@@ -72,7 +72,7 @@ public class EncryptionCtrl {
 		try {
 			String email = CtrlUtil.getCurrentUsername();
 			u = userService.getUserByEmail(email);
-		} catch (ResourceNotFoundException e) {
+		} catch (NotFoundException e) {
 			return null;
 		}
 		if (u == null || u.getPublicKey() == null)
