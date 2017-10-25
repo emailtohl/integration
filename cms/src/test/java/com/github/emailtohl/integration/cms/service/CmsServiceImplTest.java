@@ -30,7 +30,7 @@ import com.github.emailtohl.integration.cms.dao.CleanAuditData;
 import com.github.emailtohl.integration.cms.entities.Article;
 import com.github.emailtohl.integration.cms.entities.Comment;
 import com.github.emailtohl.integration.cms.entities.Type;
-import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
+import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 
 /**
@@ -57,7 +57,7 @@ public class CmsServiceImplTest {
 	}
 
 	@Test
-	public void testFindArticle() throws ResourceNotFoundException {
+	public void testFindArticle() throws NotFoundException {
 		List<Article> ls = cmsService.recentArticles();
 		Article a = ls.get(0);
 		assertEquals(a, cmsService.getArticle(a.getId()));
@@ -77,7 +77,7 @@ public class CmsServiceImplTest {
 	}
 
 	@Test
-	public void testArticle() throws ResourceNotFoundException {
+	public void testArticle() throws NotFoundException {
 		CmsTestData td = new CmsTestData();
 		Article a = new Article("test", "test", "test", "summary");
 		long id = cmsService.saveArticle(td.emailtohl.getEmail(), a, td.subType.getName()).getId();

@@ -28,7 +28,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 
 import com.github.emailtohl.integration.common.Constant;
-import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
+import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.user.entities.Customer;
 import com.github.emailtohl.integration.user.entities.Employee;
@@ -147,11 +147,11 @@ public interface UserService {
 	 * 通过邮箱名查询用户，通过认证的均可调用
 	 * @param email
 	 * @return
-	 * @throws ResourceNotFoundException 由于应用了缓存策略，返回结果不能为null，所以若未找到资源，则抛此异常
+	 * @throws NotFoundException 由于应用了缓存策略，返回结果不能为null，所以若未找到资源，则抛此异常
 	 */
 	@Cacheable(value = CACHE_NAME_USER, key = "#root.args[0]")
 	@PostAuthorize("hasAuthority('" + USER_READ_ALL + "') || (hasAuthority('" + USER_READ_SELF + "') && #email == principal.username)")
-	User getUserByEmail(@NotNull @P("email") String email) throws ResourceNotFoundException;
+	User getUserByEmail(@NotNull @P("email") String email) throws NotFoundException;
 	
 	/**
 	 * 修改用户的头像地址

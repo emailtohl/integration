@@ -1,6 +1,6 @@
 package com.github.emailtohl.integration.user.service;
 
-import static com.github.emailtohl.integration.user.entities.Authority.USER_ROLE_AUTHORITY_ALLOCATION;
+import static com.github.emailtohl.integration.user.entities.Authority.ROLE_AUTHORITY_ALLOCATION;
 import static com.github.emailtohl.integration.user.service.UserService.CACHE_NAME_USER;
 import static com.github.emailtohl.integration.user.service.UserService.CACHE_NAME_USER_PAGE;
 
@@ -22,7 +22,7 @@ import com.github.emailtohl.integration.user.entities.Role;
  * @author HeLei
  * @date 2017.02.04
  */
-@PreAuthorize("hasAuthority('" + USER_ROLE_AUTHORITY_ALLOCATION + "')")
+@PreAuthorize("hasAuthority('" + ROLE_AUTHORITY_ALLOCATION + "')")
 @Transactional
 @Validated
 public interface RoleService {

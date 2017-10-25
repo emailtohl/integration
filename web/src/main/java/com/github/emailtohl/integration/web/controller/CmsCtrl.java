@@ -37,7 +37,7 @@ import com.github.emailtohl.integration.cms.entities.Article;
 import com.github.emailtohl.integration.cms.entities.Comment;
 import com.github.emailtohl.integration.cms.entities.Type;
 import com.github.emailtohl.integration.cms.service.CmsService;
-import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
+import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.web.dto.WebPage;
@@ -63,11 +63,11 @@ public class CmsCtrl {
 	 * 获取某文章
 	 * @param id
 	 * @return
-	 * @throws ResourceNotFoundException 
+	 * @throws NotFoundException 
 	 */
 	@RequestMapping(value = "cms/article/{id}", method = GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	public String findArticle(@PathVariable long id) throws ResourceNotFoundException {
+	public String findArticle(@PathVariable long id) throws NotFoundException {
 		Article article = cmsService.getArticle(id);
 		String json = gson.toJson(article);// 因Article有时间类型，用配置了时间格式的Gson解析
 		return json;
@@ -433,10 +433,10 @@ public class CmsCtrl {
 	 * @param response
 	 * @throws TemplateException
 	 * @throws IOException
-	 * @throws ResourceNotFoundException 
+	 * @throws NotFoundException 
 	 */
 	@RequestMapping(value = "detail", method = GET)
-	public void getDetail(@RequestParam long id, HttpServletRequest request, HttpServletResponse response) throws TemplateException, IOException, ResourceNotFoundException {
+	public void getDetail(@RequestParam long id, HttpServletRequest request, HttpServletResponse response) throws TemplateException, IOException, NotFoundException {
 		Article a = cmsService.getArticle(id);
 		Map<String, Object> model = new HashMap<>();
 		model.put("article", a);

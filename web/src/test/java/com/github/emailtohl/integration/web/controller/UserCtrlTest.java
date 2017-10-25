@@ -35,7 +35,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
+import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.user.dto.UserDto;
 import com.github.emailtohl.integration.user.entities.Role;
@@ -83,7 +83,7 @@ public class UserCtrlTest {
     	when(userService.getUser(anyLong())).thenReturn(td.emailtohl);
     	try {
 			when(userService.getUserByEmail(anyString())).thenReturn(td.emailtohl);
-		} catch (ResourceNotFoundException e) {
+		} catch (NotFoundException e) {
 		}
     	when(userService.updateIconSrc(anyLong(), anyString())).thenReturn(td.emailtohl);
     	when(userService.updateIcon(anyLong(), anyObject())).thenReturn(td.emailtohl);
@@ -144,7 +144,7 @@ public class UserCtrlTest {
 		.andExpect(status().isOk());
 		
 		String noExist = "aaa@test.com";
-		when(userService.getUserByEmail(noExist)).thenThrow(ResourceNotFoundException.class);
+		when(userService.getUserByEmail(noExist)).thenThrow(NotFoundException.class);
 		
 		mockMvc.perform(get("/user/email?email=" + noExist))
 		.andExpect(status().is(HttpStatus.NOT_FOUND.value()));

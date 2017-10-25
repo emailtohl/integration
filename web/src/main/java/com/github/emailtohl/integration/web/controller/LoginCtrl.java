@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.github.emailtohl.integration.common.exception.ResourceNotFoundException;
+import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.user.dto.UserDto;
 import com.github.emailtohl.integration.user.entities.Customer;
 import com.github.emailtohl.integration.user.entities.User;
@@ -132,12 +132,12 @@ public class LoginCtrl {
 	/**
 	 * 通过电子邮箱发送忘记密码的页面
 	 * @return
-	 * @throws ResourceNotFoundException 
+	 * @throws NotFoundException 
 	 */
 	@RequestMapping(value = "forgetPassword", method = RequestMethod.POST)
-	public void forgetPassword(HttpServletRequest requet, String email, String _csrf) throws ResourceNotFoundException {
+	public void forgetPassword(HttpServletRequest requet, String email, String _csrf) throws NotFoundException {
 		if (!userService.isExist(email)) {
-			throw new ResourceNotFoundException();
+			throw new NotFoundException();
 		}
 		String token = UUID.randomUUID().toString();
 		tokenMap.put(token, email);
@@ -235,7 +235,7 @@ public class LoginCtrl {
 						User u = userService.getUserByEmail(email);
 						iconSrc = u.getIconSrc();
 						iconSrcMap.put(email, iconSrc);// 先放入缓存供下次查询
-					} catch (IllegalArgumentException | NullPointerException | AccessDeniedException | ResourceNotFoundException e2) {
+					} catch (IllegalArgumentException | NullPointerException | AccessDeniedException | NotFoundException e2) {
 						// 这里是查询用户的头像，不涉及安全问题，当匿名用户访问时会被拒绝
 						logger.debug("可能是匿名用户，查询不到User，也可能是该用户未上传图片");
 					}
