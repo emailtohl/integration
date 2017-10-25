@@ -54,4 +54,29 @@ public class Employee extends User {
 		this.department = department;
 	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((empNum == null) ? 0 : empNum.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Employee other = (Employee) obj;
+		if (empNum == null) {
+			if (other.empNum != null)
+				return false;
+		} else if (!empNum.equals(other.empNum))
+			return false;
+		return true;
+	}
+	
 }

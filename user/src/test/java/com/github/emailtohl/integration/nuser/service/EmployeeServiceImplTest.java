@@ -18,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -35,8 +36,8 @@ import com.github.emailtohl.integration.nuser.userTestConfig.ServiceConfiguratio
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceConfiguration.class)
-@ActiveProfiles(DataSourceConfiguration.DB_RAM_H2)
-//@Rollback(false)
+@ActiveProfiles(DataSourceConfiguration.DB_CONFIG)
+@Rollback(false)
 public class EmployeeServiceImplTest {
 	final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	ClassLoader cl = EmployeeServiceImplTest.class.getClassLoader();
@@ -114,7 +115,8 @@ public class EmployeeServiceImplTest {
 	@Test
 	public void testGrandRoles() {
 		UserTestData td = new UserTestData();
-		employeeService.grandRoles(id, td.role_staff.getName(), td.role_guest.getName());
+		Employee e = employeeService.grandRoles(id, td.role_staff.getName(), td.role_guest.getName());
+		assertFalse(e.getRoles().isEmpty());
 	}
 
 	@Test

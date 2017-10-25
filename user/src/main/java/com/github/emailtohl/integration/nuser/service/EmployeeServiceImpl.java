@@ -164,6 +164,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 			Role r = roleRepository.findByName(name);
 			if (r != null) {
 				target.getRoles().add(r);
+				r.getUsers().add(target);
 			}
 		}
 		return filter(target);

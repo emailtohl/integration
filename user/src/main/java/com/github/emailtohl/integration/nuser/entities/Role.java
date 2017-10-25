@@ -72,7 +72,7 @@ public class Role extends BaseEntity {
 	}
 	
 	@ManyToMany
-	@JoinTable(name = "t_role_authority"
+	@JoinTable(name = "role_authority"
 	, joinColumns = { @JoinColumn(name = "role_id", referencedColumnName = "id") }
 	, inverseJoinColumns = { @JoinColumn(name = "authority_id", referencedColumnName = "id") })
 	public Set<Authority> getAuthorities() {

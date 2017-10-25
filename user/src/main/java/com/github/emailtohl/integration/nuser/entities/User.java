@@ -22,6 +22,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -41,10 +42,10 @@ import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
  */
 @org.hibernate.envers.Audited
 @Entity
-//@Table(name = "users")
+@Table(name = "users")
 @Access(AccessType.PROPERTY) // 实际上这就是默认的配置，Hibernate实现会根据@Id所在地方进行判断
 //考虑到不同用户的属性要求不一样，例如顾客必填项是电话号码，后台用户必填项是username，所以继承策略为不同用户不同表
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User extends BaseEntity {
 	private static final long serialVersionUID = -2648409468140926726L;
 	public enum Gender {
@@ -209,7 +210,7 @@ public class User extends BaseEntity {
 	}
 	
 	@ManyToMany
-	@JoinTable(name = "t_user_role"
+	@JoinTable(name = "users_role"
 	, joinColumns = { @JoinColumn(name = "user_id", referencedColumnName = "id") }
 	, inverseJoinColumns = { @JoinColumn(name = "role_id", referencedColumnName = "id") })
 	public Set<Role> getRoles() {
@@ -242,6 +243,31 @@ public class User extends BaseEntity {
 	}
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof User))
+			return false;
+		User other = (User) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 	
 }
