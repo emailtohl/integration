@@ -53,8 +53,8 @@ public class UserTestData {
 			resource_manager = new Authority(RESOURCE_MANAGER, "资源管理，文件上传，目录创建、改名以及删除", null),
 			content_manager = new Authority(CONTENT_MANAGER, "内容管理", null);
 	
-	public final Role admin = new Role("admin", "管理员"), manager = new Role("manager", "经理"),
-			staff = new Role("staff", "雇员"), guest = new Role("guest", "普通用户");
+	public final Role role_admin = new Role("admin", "管理员"), role_manager = new Role("manager", "经理"),
+			role_staff = new Role("staff", "雇员"), role_guest = new Role("guest", "普通用户");
 	
 	public final Customer emailtohl = new Customer();
 	public final Employee foo = new Employee();
@@ -66,36 +66,36 @@ public class UserTestData {
 	public final Department product = new Department(), qa = new Department();
 
 	{
-		role.getRoles().addAll(Arrays.asList(admin));
-		query_all_user.getRoles().addAll(Arrays.asList(admin, manager));
-		employee.getRoles().addAll(Arrays.asList(admin, manager, staff));
-		employee_role.getRoles().addAll(Arrays.asList(admin, manager));
-		employee_lock.getRoles().addAll(Arrays.asList(admin, manager));
-		employee_delete.getRoles().addAll(Arrays.asList(admin));
-		customer.getRoles().addAll(Arrays.asList(admin, manager, staff, guest));
-		customer_role.getRoles().addAll(Arrays.asList(admin, manager));
-		customer_lock.getRoles().addAll(Arrays.asList(admin, manager, staff));
-		customer_delete.getRoles().addAll(Arrays.asList(admin));
+		role.getRoles().addAll(Arrays.asList(role_admin));
+		query_all_user.getRoles().addAll(Arrays.asList(role_admin, role_manager));
+		employee.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff));
+		employee_role.getRoles().addAll(Arrays.asList(role_admin, role_manager));
+		employee_lock.getRoles().addAll(Arrays.asList(role_admin, role_manager));
+		employee_delete.getRoles().addAll(Arrays.asList(role_admin));
+		customer.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff, role_guest));
+		customer_role.getRoles().addAll(Arrays.asList(role_admin, role_manager));
+		customer_lock.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff));
+		customer_delete.getRoles().addAll(Arrays.asList(role_admin));
 		
-		flow.getRoles().addAll(Arrays.asList(admin, manager, staff));
-		application_form_transit.getRoles().addAll(Arrays.asList(admin, manager, staff));
-		application_form_read_history.getRoles().addAll(Arrays.asList(admin, manager, staff));
-		application_form_delete.getRoles().addAll(Arrays.asList(admin));
-		forum_delete.getRoles().addAll(Arrays.asList(admin));
-		audit_user.getRoles().addAll(Arrays.asList(admin, manager));
-		audit_role.getRoles().addAll(Arrays.asList(admin));
-		resource_manager.getRoles().addAll(Arrays.asList(admin, manager, staff));
-		content_manager.getRoles().addAll(Arrays.asList(admin, manager, staff));
+		flow.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff));
+		application_form_transit.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff));
+		application_form_read_history.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff));
+		application_form_delete.getRoles().addAll(Arrays.asList(role_admin));
+		forum_delete.getRoles().addAll(Arrays.asList(role_admin));
+		audit_user.getRoles().addAll(Arrays.asList(role_admin, role_manager));
+		audit_role.getRoles().addAll(Arrays.asList(role_admin));
+		resource_manager.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff));
+		content_manager.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff));
 		
-		admin.getAuthorities().addAll(Arrays.asList(role, query_all_user, employee, employee_role, employee_lock, employee_delete, customer, customer_role, customer_lock, customer_delete, flow, application_form_transit, application_form_read_history, application_form_delete, forum_delete, audit_user, audit_role, resource_manager, content_manager));
-		manager.getAuthorities().addAll(Arrays.asList(query_all_user, employee, employee_role, employee_lock, customer, customer_role, customer_lock, flow, application_form_transit, application_form_read_history, audit_user, resource_manager, content_manager));
-		staff.getAuthorities().addAll(Arrays.asList(role, employee, customer, customer_lock, flow, application_form_transit, application_form_read_history, resource_manager, content_manager));
-		guest.getAuthorities().addAll(Arrays.asList(customer, flow));
+		role_admin.getAuthorities().addAll(Arrays.asList(role, query_all_user, employee, employee_role, employee_lock, employee_delete, customer, customer_role, customer_lock, customer_delete, flow, application_form_transit, application_form_read_history, application_form_delete, forum_delete, audit_user, audit_role, resource_manager, content_manager));
+		role_manager.getAuthorities().addAll(Arrays.asList(query_all_user, employee, employee_role, employee_lock, customer, customer_role, customer_lock, flow, application_form_transit, application_form_read_history, audit_user, resource_manager, content_manager));
+		role_staff.getAuthorities().addAll(Arrays.asList(employee, customer, customer_lock, flow, application_form_transit, application_form_read_history, resource_manager, content_manager));
+		role_guest.getAuthorities().addAll(Arrays.asList(customer, flow));
 		
-		admin.getUsers().add(emailtohl);
-		manager.getUsers().add(foo);
-		staff.getUsers().add(bar);
-		guest.getUsers().addAll(Arrays.asList(emailtohl, baz, qux));
+		role_admin.getUsers().add(emailtohl);
+		role_manager.getUsers().add(foo);
+		role_staff.getUsers().add(bar);
+		role_guest.getUsers().addAll(Arrays.asList(emailtohl, baz, qux));
 		
 		String salt = BCrypt.gensalt(HASHING_ROUNDS, r);
 		ClassLoader cl = UserTestData.class.getClassLoader();
@@ -117,7 +117,7 @@ public class UserTestData {
 		company.setDepartments(new HashSet<Department>(Arrays.asList(product, qa)));
 		
 		emailtohl.setName("hl");
-		emailtohl.setUsername("emailtohl@163.com");
+		emailtohl.setNickname("hl");
 		emailtohl.setEmail("emailtohl@163.com");
 		emailtohl.setTelephone("69922113");
 		emailtohl.setAddress(new Address("重庆", "40000", "回龙路66号"));
@@ -126,7 +126,7 @@ public class UserTestData {
 		emailtohl.setDescription("developer");
 		emailtohl.setGender(Gender.MALE);
 		emailtohl.setLevel(Level.VIP);
-		emailtohl.getRoles().addAll(Arrays.asList(admin, guest));
+		emailtohl.getRoles().addAll(Arrays.asList(role_admin, role_guest));
 		// cl.getResourceAsStream方法返回的输入流已经是BufferedInputStream对象，无需再装饰
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-emailtohl.png")) {
 			emailtohl.setBirthday(sdf.parse("1982-02-12"));
@@ -138,14 +138,14 @@ public class UserTestData {
 		}
 
 		foo.setName("foo");
-		foo.setUsername("foo@test.com");
+		foo.setNickname("foo");
 		foo.setEmail("foo@test.com");
 		foo.setTelephone("40221199");
 		foo.setAccountNonLocked(true);
 		foo.setPassword(BCrypt.hashpw("123456", salt));
 		foo.setDescription("业务管理人员");
 		foo.setGender(Gender.MALE);
-		foo.getRoles().add(manager);
+		foo.getRoles().add(role_manager);
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-foo.jpg")) {
 			foo.setBirthday(sdf.parse("1990-12-13"));
 			icon = new byte[is.available()];
@@ -160,14 +160,14 @@ public class UserTestData {
 		foo.setDepartment(product);
 		
 		bar.setName("bar");
-		bar.setUsername("bar@test.com");
+		bar.setNickname("bar");
 		bar.setEmail("bar@test.com");
 		bar.setTelephone("67891234");
 		bar.setAccountNonLocked(true);
 		bar.setPassword(BCrypt.hashpw("123456", salt));
 		bar.setDescription("普通职员");
 		bar.setGender(Gender.FEMALE);
-		bar.getRoles().add(staff);
+		bar.getRoles().add(role_staff);
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-bar.jpg")) {
 			bar.setBirthday(sdf.parse("1991-10-24"));
 			icon = new byte[is.available()];
@@ -182,7 +182,7 @@ public class UserTestData {
 		bar.setDepartment(qa);
 		
 		baz.setName("baz");
-		baz.setUsername("baz@test.com");
+		baz.setNickname("baz");
 		baz.setEmail("baz@test.com");
 		baz.setTelephone("7722134");
 		baz.setAddress(new Address("成都", "", "新南路XX号"));
@@ -190,7 +190,7 @@ public class UserTestData {
 		baz.setPassword(BCrypt.hashpw("123456", salt));
 		baz.setDescription("普通客户");
 		baz.setGender(Gender.FEMALE);
-		baz.getRoles().add(guest);
+		baz.getRoles().add(role_guest);
 		baz.setLevel(Level.ORDINARY);
 		baz.setIdentification("10987654321");
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-baz.jpg")) {
@@ -202,7 +202,7 @@ public class UserTestData {
 			e.printStackTrace();
 		}
 		qux.setName("qux");
-		qux.setUsername("qux@test.com");
+		qux.setNickname("qux");
 		qux.setEmail("qux@test.com");
 		qux.setTelephone("98241562");
 		qux.setAddress(new Address("南京", "", "竹山路XX号"));
@@ -210,7 +210,7 @@ public class UserTestData {
 		qux.setPassword(BCrypt.hashpw("123456", salt));
 		qux.setDescription("高级客户");
 		qux.setGender(Gender.FEMALE);
-		qux.getRoles().add(guest);
+		qux.getRoles().add(role_guest);
 		qux.setLevel(Level.ORDINARY);
 		qux.setIdentification("1234567890");
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-qux.jpg")) {

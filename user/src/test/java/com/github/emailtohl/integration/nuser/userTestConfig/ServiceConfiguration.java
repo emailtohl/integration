@@ -15,7 +15,7 @@ import org.springframework.stereotype.Controller;
  * @date 2017.06.15
  */
 @Configuration
-@ComponentScan(basePackages = "com.github.emailtohl.integration.user", excludeFilters = @ComponentScan.Filter({
+@ComponentScan(basePackages = "com.github.emailtohl.integration.nuser", excludeFilters = @ComponentScan.Filter({
 	Controller.class, Configuration.class }))
 @EnableCaching
 @Import(JpaConfiguration.class)

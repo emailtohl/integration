@@ -51,7 +51,7 @@ public class User extends BaseEntity {
 		MALE, FEMALE, UNSPECIFIED
 	}
 	protected String name;
-	protected String username;
+	protected String nickname;// 可存储第三方昵称
 	@Pattern(// 校验
 		regexp = Constant.PATTERN_EMAIL,
 		flags = {Pattern.Flag.CASE_INSENSITIVE}
@@ -89,11 +89,11 @@ public class User extends BaseEntity {
 	}
 	
 	@org.hibernate.search.annotations.Field
-	public String getUsername() {
-		return username;
+	public String getNickname() {
+		return nickname;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 	
 	@org.hibernate.search.annotations.Field

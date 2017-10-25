@@ -2,7 +2,7 @@ package com.github.emailtohl.integration.nuser.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.github.emailtohl.integration.user.entities.Department;
+import com.github.emailtohl.integration.nuser.entities.Department;
 /**
  * 部门数据仓库
  * @author HeLei

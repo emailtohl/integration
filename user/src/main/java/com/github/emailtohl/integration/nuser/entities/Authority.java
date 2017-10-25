@@ -18,6 +18,7 @@ import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
  * @author HeLei
  * @date 2017.02.04
  */
+@org.hibernate.envers.Audited
 @Entity
 @Table(name = "authority")
 public class Authority extends BaseEntity {
@@ -142,6 +143,7 @@ public class Authority extends BaseEntity {
 		this.name = name;
 	}
 	
+	@org.hibernate.envers.NotAudited
 	@ManyToOne
 	@JoinColumn(name = "parent_id")
 	public Authority getParent() {

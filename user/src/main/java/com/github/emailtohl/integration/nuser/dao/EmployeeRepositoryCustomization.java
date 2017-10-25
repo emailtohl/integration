@@ -4,5 +4,8 @@ import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchableRepo
 import com.github.emailtohl.integration.nuser.entities.Employee;
 
 public interface EmployeeRepositoryCustomization extends SearchableRepository<Employee> {
-
+	/**
+	 * 获取最大的emp_no
+	 */
+	Integer getMaxEmpNo();
 }

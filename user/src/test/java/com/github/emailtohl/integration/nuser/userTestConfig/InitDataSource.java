@@ -5,7 +5,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import com.github.emailtohl.integration.user.UserTestData;
+import com.github.emailtohl.integration.nuser.UserTestData;
 
 /**
  * 初始化数据库
@@ -42,18 +42,17 @@ class InitDataSource {
 					EntityManager em = factory.createEntityManager();
 					em.getTransaction().begin();
 
-					em.persist(td.user_role_authority_allocation);
-					em.persist(td.user_create_ordinary);
-					em.persist(td.user_create_special);
-					em.persist(td.user_enable);
-					em.persist(td.user_disable);
-					em.persist(td.user_grant_roles);
-					em.persist(td.user_read_all);
-					em.persist(td.user_read_self);
-					em.persist(td.user_update_all);
-					em.persist(td.user_update_self);
-					em.persist(td.user_delete);
-					em.persist(td.user_customer);
+					em.persist(td.role);
+					em.persist(td.query_all_user);
+					em.persist(td.employee);
+					em.persist(td.employee_role);
+					em.persist(td.employee_lock);
+					em.persist(td.employee_delete);
+					em.persist(td.customer);
+					em.persist(td.customer_role);
+					em.persist(td.customer_lock);
+					em.persist(td.customer_delete);
+					em.persist(td.flow);
 					em.persist(td.application_form_transit);
 					em.persist(td.application_form_read_history);
 					em.persist(td.application_form_delete);
@@ -63,10 +62,10 @@ class InitDataSource {
 					em.persist(td.resource_manager);
 					em.persist(td.content_manager);
 
-					em.persist(td.admin);
-					em.persist(td.manager);
+					em.persist(td.role_admin);
+					em.persist(td.role_manager);
 					em.persist(td.employee);
-					em.persist(td.user);
+					em.persist(td.role_guest);
 
 					em.persist(td.company);
 					em.persist(td.product);
