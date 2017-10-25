@@ -43,6 +43,7 @@ public class Image {
 	}
 
 	@org.hibernate.envers.NotAudited
+	@Column(name = "image_bin")
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
 	public byte[] getBin() {
@@ -53,6 +54,7 @@ public class Image {
 		this.bin = bin;
 	}
 
+	@Column(name = "image_filename")
 	public String getFilename() {
 		return filename;
 	}
