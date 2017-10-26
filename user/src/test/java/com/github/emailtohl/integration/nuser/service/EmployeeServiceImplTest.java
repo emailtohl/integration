@@ -121,7 +121,12 @@ public class EmployeeServiceImplTest {
 
 	@Test
 	public void testUpdatePassword() {
-		ExecResult r = employeeService.updatePassword(id, "112233", "445566");
+		ExecResult r = employeeService.updatePassword(id, "00000", "445566");
+		assertFalse(r.ok);
+		r = employeeService.updatePassword(id, "112233", "445566");
+		assertTrue(r.ok);
+		Employee e = employeeService.get(id);
+		r = employeeService.login(e.getEmpNum(), "445566");
 		assertTrue(r.ok);
 	}
 

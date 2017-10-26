@@ -168,6 +168,9 @@ public class CustomerServiceImplTest {
 		assertFalse(r.ok);
 		r = customerService.updatePassword(id, "new password");
 		assertTrue(r.ok);
+		Customer c = customerService.get(id);
+		r = customerService.login(c.getCellPhone(), "new password");
+		assertTrue(r.ok);
 	}
 
 	@Test

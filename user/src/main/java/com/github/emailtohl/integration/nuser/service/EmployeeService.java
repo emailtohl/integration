@@ -24,7 +24,7 @@ public interface EmployeeService extends StandardService<Employee> {
 	 * @param password
 	 * @return
 	 */
-	@NotNull ExecResult login(String empNum, String password);
+	@NotNull ExecResult login(Integer empNum, String password);
 	
 	/**
 	 * 为内部人员授予角色
