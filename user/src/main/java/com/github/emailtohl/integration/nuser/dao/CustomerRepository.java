@@ -9,6 +9,6 @@ import com.github.emailtohl.integration.nuser.entities.Customer;
  * @author HeLei
  * @date 2017.02.04
  */
-public interface CustomerRepository extends JpaRepository<Customer, Long> {
+public interface CustomerRepository extends JpaRepository<Customer, Long>, CustomerRepositoryCustomization {
 	
 }

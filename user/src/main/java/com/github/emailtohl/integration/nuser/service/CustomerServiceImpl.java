@@ -3,6 +3,8 @@ package com.github.emailtohl.integration.nuser.service;
 import java.security.SecureRandom;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -13,105 +15,113 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import com.github.emailtohl.integration.common.Constant;
+import com.github.emailtohl.integration.common.exception.InvalidDataException;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.common.standard.ExecResult;
-import com.github.emailtohl.integration.nuser.dao.DepartmentRepository;
-import com.github.emailtohl.integration.nuser.dao.EmployeeRepository;
+import com.github.emailtohl.integration.nuser.dao.CustomerRepository;
 import com.github.emailtohl.integration.nuser.dao.RoleRepository;
-import com.github.emailtohl.integration.nuser.entities.Department;
-import com.github.emailtohl.integration.nuser.entities.Employee;
+import com.github.emailtohl.integration.nuser.entities.Customer;
+import com.github.emailtohl.integration.nuser.entities.Customer.Level;
 import com.github.emailtohl.integration.nuser.entities.Role;
 
 /**
- * 内部人员服务层的实现
- * 
+ * 外部人员的服务接口
  * @author HeLei
+ *
  */
 @Transactional
 @Service
-public class EmployeeServiceImpl implements EmployeeService {
+public class CustomerServiceImpl implements CustomerService {
+	public static final Pattern EMAIL_PATTERN = Pattern.compile(Constant.PATTERN_EMAIL);
 	private static final transient SecureRandom RANDOM = new SecureRandom();
 	private static final transient int HASHING_ROUNDS = 10;
 	private static final String DEFAULT_PASSWORD = "123456";
 	@Inject
-	EmployeeRepository employeeRepository;
+	CustomerRepository customerRepository;
 	@Inject
 	RoleRepository roleRepository;
-	@Inject
-	DepartmentRepository departmentRepository;
+	
+	 /**
+     * 用于匹配的邮箱的matcher
+     */
+	private ExampleMatcher emailMatcher = ExampleMatcher.matching().withMatcher("email",
+			GenericPropertyMatchers.caseSensitive());
+	/**
+	 * 用于匹配的电话的matcher
+	 */
+	private ExampleMatcher cellPhoneMatcher = ExampleMatcher.matching().withMatcher("cellPhone",
+			GenericPropertyMatchers.caseSensitive());
 
 	/**
 	 * 缓存名
 	 */
-	public static final String CACHE_NAME = "employee_cache";
-
+	public static final String CACHE_NAME = "customer_cache";
+	
 	@CachePut(value = CACHE_NAME, key = "#result.id")
 	@Override
-	public Employee create(@Valid Employee entity) {
-		Employee e = new Employee();
-		BeanUtils.copyProperties(entity, e, BaseEntity.getIgnoreProperties("roles", "accountNonLocked", "department"));
-		// 关于工号
-		synchronized (this) {
-			Integer max = employeeRepository.getMaxEmpNo();
-			if (max == null) {
-				max = 0;
-			}
-			e.setEmpNum(++max);
-		}
-		// 关于部门
-		if (entity.getDepartment() != null && entity.getDepartment().getName() != null) {
-			Department d = departmentRepository.findByName(entity.getDepartment().getName());
-			if (d != null) {
-				e.setDepartment(d);
-			}
-		}
-		// 创建雇员时，可以直接激活可用
-		e.setAccountNonLocked(true);
-		String pw = e.getPassword();
+	public Customer create(@Valid Customer entity) {
+		Customer c = new Customer();
+		BeanUtils.copyProperties(entity, c, BaseEntity.getIgnoreProperties("roles", "accountNonLocked", "level", "cards"));
+		c.setAccountNonLocked(true);
+		c.setLevel(Level.ORDINARY);
+		String pw = c.getPassword();
 		if (pw == null || pw.isEmpty()) {
-			pw = "123456";// 设置默认密码
+			throw new InvalidDataException("请输入密码");
 		}
 		pw = BCrypt.hashpw(pw, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
-		e.setPassword(pw);
-		e = employeeRepository.save(e);
-		return filter(e);
+		c.setPassword(pw);
+		c = customerRepository.save(c);
+		return filter(c);
 	}
 
 	@Override
-	public boolean exist(String propertyName, Object matcherValue) {
-		// 以工号为唯一识别，故始终为false
-		return false;
+	public boolean exist(String telOrEmail, Object matcherValue) {
+		Customer c = new Customer();
+		Example<Customer> example;
+		Matcher m = EMAIL_PATTERN.matcher(telOrEmail);
+		if (m.find()) {
+			c.setEmail(telOrEmail);
+			example = Example.<Customer> of(c, emailMatcher);
+		} else {
+			c.setCellPhone(telOrEmail);
+			example = Example.<Customer> of(c, cellPhoneMatcher);
+		}
+		return customerRepository.exists(example);
 	}
 
 	@Cacheable(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
-	public Employee get(Long id) {
-		Employee e = employeeRepository.findOne(id);
-		return filter(e);
+	public Customer get(Long id) {
+		Customer c = customerRepository.findOne(id);
+		return filter(c);
 	}
 
 	@Override
-	public Page<Employee> query(Employee params, Pageable pageable) {
-		Page<Employee> p = employeeRepository.queryForPage(params, pageable);
-		List<Employee> content = p.getContent().stream().map(this::filter).collect(Collectors.toList());
+	public Page<Customer> query(Customer params, Pageable pageable) {
+		Page<Customer> p = customerRepository.queryForPage(params, pageable);
+		List<Customer> content = p.getContent().stream().map(this::filter).collect(Collectors.toList());
 		return new PageImpl<>(content, pageable, p.getTotalElements());
 	}
 
 	@Override
-	public List<Employee> query(Employee params) {
-		return employeeRepository.queryForList(params).stream().map(this::filter).collect(Collectors.toList());
+	public List<Customer> query(Customer params) {
+		return customerRepository.queryForList(params).stream().map(this::filter).collect(Collectors.toList());
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
-	public Employee update(Long id, Employee newEntity) {
-		Employee target = employeeRepository.findOne(id);
+	public Customer update(Long id, Customer newEntity) {
+		Customer target = customerRepository.findOne(id);
 		if (target == null) {
 			return null;
 		}
@@ -121,38 +131,31 @@ public class EmployeeServiceImpl implements EmployeeService {
 		target.setGender(newEntity.getGender());
 		target.setImage(newEntity.getImage());
 		target.setName(newEntity.getName());
-		target.setPost(newEntity.getPost());
 		target.setPublicKey(newEntity.getPublicKey());
-		target.setSalary(newEntity.getSalary());
 		target.setTelephone(newEntity.getTelephone());
 		target.setNickname(newEntity.getNickname());
-		// 关于部门
-		if (newEntity.getDepartment() != null && newEntity.getDepartment().getName() != null) {
-			Department d = departmentRepository.findByName(newEntity.getDepartment().getName());
-			if (d != null) {
-				target.setDepartment(d);
-			}
-		}
+		target.setIdentification(newEntity.getIdentification());
+		target.setAddress(newEntity.getAddress());
 		return filter(target);
 	}
 
 	@CacheEvict(value = CACHE_NAME, key = "#root.args[0]")
 	@Override
 	public void delete(Long id) {
-		Employee target = employeeRepository.getOne(id);
+		Customer target = customerRepository.getOne(id);
 		// 解除双方关系
 		for (Iterator<Role> i = target.getRoles().iterator(); i.hasNext();) {
 			Role r = i.next();
 			r.getUsers().remove(target);
 			i.remove();
 		}
-		employeeRepository.delete(id);
+		customerRepository.delete(id);
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
-	public Employee grandRoles(Long id, String... roleNames) {
-		Employee target = employeeRepository.findOne(id);
+	public Customer grandRoles(Long id, String... roleNames) {
+		Customer target = customerRepository.findOne(id);
 		if (target == null) {
 			return null;
 		}
@@ -172,23 +175,31 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return filter(target);
 	}
 
+	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
-	public ExecResult updatePassword(Long id, String oldPassword, String newPassword) {
-		Employee target = employeeRepository.findOne(id);
+	public Customer grandLevel(Long id, Level level) {
+		Customer target = customerRepository.findOne(id);
+		if (target == null) {
+			return null;
+		}
+		target.setLevel(level);
+		return filter(target);
+	}
+
+	@Override
+	public ExecResult updatePassword(Long id, String newPassword) {
+		Customer target = customerRepository.findOne(id);
 		if (target == null) {
 			return new ExecResult(false, "没有此用户");
-		}
-		if (!BCrypt.checkpw(oldPassword, target.getPassword())) {
-			return new ExecResult(false, "原密码输入错误");
 		}
 		String hashPw = BCrypt.hashpw(newPassword, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		target.setPassword(hashPw);
 		return new ExecResult(true, "");
 	}
-
+	
 	@Override
 	public ExecResult resetPassword(Long id) {
-		Employee target = employeeRepository.findOne(id);
+		Customer target = customerRepository.findOne(id);
 		if (target == null) {
 			return new ExecResult(false, "没有此用户");
 		}
@@ -196,23 +207,22 @@ public class EmployeeServiceImpl implements EmployeeService {
 		target.setPassword(hashPw);
 		return new ExecResult(true, "");
 	}
-	
+
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
-	public Employee lock(Long id, boolean lock) {
-		Employee target = employeeRepository.findOne(id);
+	public Customer lock(Long id, boolean lock) {
+		Customer target = customerRepository.findOne(id);
 		if (target == null) {
 			return null;
 		}
 		target.setAccountNonLocked(lock);
 		return filter(target);
 	}
-	
-	private Employee filter(Employee source) {
-		Employee target = new Employee();
-		BeanUtils.copyProperties(source, target, Employee.getIgnoreProperties("password"));
+
+	private Customer filter(Customer source) {
+		Customer target = new Customer();
+		BeanUtils.copyProperties(source, target, Customer.getIgnoreProperties("password"));
 		target.setId(source.getId());
 		return target;
 	}
-	
 }

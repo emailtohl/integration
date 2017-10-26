@@ -36,6 +36,14 @@ public interface EmployeeService extends StandardService<Employee> {
 	@NotNull ExecResult updatePassword(Long id, String oldPassword, String newPassword);
 	
 	/**
+	 * 重置密码，用于忘记密码无法恢复时
+	 * @param id
+	 * @return
+	 */
+	@PreAuthorize("hasAuthority('" + EMPLOYEE_RESET_PASSWORD + "')")
+	@NotNull ExecResult resetPassword(Long id);
+	
+	/**
 	 * 是否锁定该内部人员的账号
 	 * @param id
 	 * @param lock

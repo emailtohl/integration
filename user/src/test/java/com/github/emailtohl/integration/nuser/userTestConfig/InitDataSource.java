@@ -50,6 +50,7 @@ class InitDataSource {
 					em.persist(td.employee_delete);
 					em.persist(td.customer);
 					em.persist(td.customer_role);
+					em.persist(td.customer_level);
 					em.persist(td.customer_lock);
 					em.persist(td.customer_delete);
 					em.persist(td.flow);

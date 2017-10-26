@@ -38,10 +38,13 @@ public class UserTestData {
 			employee = new Authority(EMPLOYEE, "管理内部人员的权限", null),
 			employee_role = new Authority(EMPLOYEE_ROLE, "为内部人员授予角色的权限", employee),
 			employee_lock = new Authority(EMPLOYEE_LOCK, "为内部人员解锁的权限", employee),
+			employee_reset_password = new Authority(EMPLOYEE_RESET_PASSWORD, "为内部人员重置密码的权限", employee),
 			employee_delete = new Authority(EMPLOYEE_DELETE, "删除内部人员的权限", employee),
 			customer = new Authority(CUSTOMER, "管理外部人员的权限", null),
 			customer_role = new Authority(CUSTOMER_ROLE, "为外部人员授予角色的权限", customer),
+			customer_level = new Authority(CUSTOMER_LEVEL, "为外部人员提升等级的权限", customer),
 			customer_lock = new Authority(CUSTOMER_LOCK, "为外部人员解锁的权限", customer),
+			customer_reset_password = new Authority(CUSTOMER_RESET_PASSWORD, "为外部人员重置密码的权限", customer),
 			customer_delete = new Authority(CUSTOMER_DELETE, "删除外部人员的权限", customer),
 			flow = new Authority(FLOW, "处理申请单的权限", null),
 			application_form_transit = new Authority(APPLICATION_FORM_TRANSIT, "处理申请单的权限", flow),
@@ -71,10 +74,13 @@ public class UserTestData {
 		employee.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff));
 		employee_role.getRoles().addAll(Arrays.asList(role_admin, role_manager));
 		employee_lock.getRoles().addAll(Arrays.asList(role_admin, role_manager));
+		employee_reset_password.getRoles().addAll(Arrays.asList(role_admin, role_manager));
 		employee_delete.getRoles().addAll(Arrays.asList(role_admin));
 		customer.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff, role_guest));
 		customer_role.getRoles().addAll(Arrays.asList(role_admin, role_manager));
+		customer_level.getRoles().addAll(Arrays.asList(role_admin, role_manager));
 		customer_lock.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff));
+		customer_reset_password.getRoles().addAll(Arrays.asList(role_admin, role_manager));
 		customer_delete.getRoles().addAll(Arrays.asList(role_admin));
 		
 		flow.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff));
@@ -87,8 +93,8 @@ public class UserTestData {
 		resource_manager.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff));
 		content_manager.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff));
 		
-		role_admin.getAuthorities().addAll(Arrays.asList(role, query_all_user, employee, employee_role, employee_lock, employee_delete, customer, customer_role, customer_lock, customer_delete, flow, application_form_transit, application_form_read_history, application_form_delete, forum_delete, audit_user, audit_role, resource_manager, content_manager));
-		role_manager.getAuthorities().addAll(Arrays.asList(query_all_user, employee, employee_role, employee_lock, customer, customer_role, customer_lock, flow, application_form_transit, application_form_read_history, audit_user, resource_manager, content_manager));
+		role_admin.getAuthorities().addAll(Arrays.asList(role, query_all_user, employee, employee_role, employee_lock, employee_reset_password, employee_delete, customer, customer_role, customer_lock, customer_reset_password, customer_delete, flow, application_form_transit, application_form_read_history, application_form_delete, forum_delete, audit_user, audit_role, resource_manager, content_manager));
+		role_manager.getAuthorities().addAll(Arrays.asList(query_all_user, employee, employee_role, customer_level, employee_lock, employee_reset_password, customer, customer_role, customer_lock, customer_reset_password, flow, application_form_transit, application_form_read_history, audit_user, resource_manager, content_manager));
 		role_staff.getAuthorities().addAll(Arrays.asList(employee, customer, customer_lock, flow, application_form_transit, application_form_read_history, resource_manager, content_manager));
 		role_guest.getAuthorities().addAll(Arrays.asList(customer, flow));
 		
