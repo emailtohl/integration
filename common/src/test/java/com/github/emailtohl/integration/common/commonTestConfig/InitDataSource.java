@@ -42,7 +42,7 @@ class InitDataSource {
 					EntityManager em = factory.createEntityManager();
 					em.getTransaction().begin();
 
-					em.persist(td.user_role_authority_allocation);
+					em.persist(td.role_authority_allocation);
 					em.persist(td.user_create_ordinary);
 					em.persist(td.user_create_special);
 					em.persist(td.user_enable);
