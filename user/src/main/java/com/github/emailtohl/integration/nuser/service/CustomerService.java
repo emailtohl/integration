@@ -24,6 +24,15 @@ import com.github.emailtohl.integration.nuser.entities.Customer;
  */
 @Validated
 public interface CustomerService extends StandardService<Customer> {
+	
+	/**
+	 * 外部用户登录
+	 * @param cellPhoneOrEmail
+	 * @param password
+	 * @return
+	 */
+	@NotNull ExecResult login(String cellPhoneOrEmail, String password);
+	
 	/**
 	 * 通过手机号码或者邮箱查找外部用户
 	 * @param cellPhoneOrEmail
@@ -64,6 +73,22 @@ public interface CustomerService extends StandardService<Customer> {
 	 */
 	@PreAuthorize("hasAuthority('" + CUSTOMER_RESET_PASSWORD + "')")
 	@NotNull ExecResult resetPassword(Long id);
+	
+	/**
+	 * 跟换手机号码
+	 * @param id
+	 * @param newCellPhone
+	 * @return
+	 */
+	Customer changeCellPhone(Long id, String newCellPhone);
+	
+	/**
+	 * 跟换电子邮箱
+	 * @param id
+	 * @param newEmail
+	 * @return
+	 */
+	Customer changeEmail(Long id, String newEmail);
 	
 	/**
 	 * 是否锁定该外部人员的账号

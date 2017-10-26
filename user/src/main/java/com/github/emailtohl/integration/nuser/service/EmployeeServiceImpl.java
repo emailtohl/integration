@@ -149,6 +149,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 		employeeRepository.delete(id);
 	}
 
+	@Override
+	public ExecResult login(String empNum, String password) {
+		return null;
+	}
+	
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Employee grandRoles(Long id, String... roleNames) {
@@ -176,25 +181,25 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public ExecResult updatePassword(Long id, String oldPassword, String newPassword) {
 		Employee target = employeeRepository.findOne(id);
 		if (target == null) {
-			return new ExecResult(false, "没有此用户");
+			return new ExecResult(false, "没有此用户", null);
 		}
 		if (!BCrypt.checkpw(oldPassword, target.getPassword())) {
-			return new ExecResult(false, "原密码输入错误");
+			return new ExecResult(false, "原密码输入错误", null);
 		}
 		String hashPw = BCrypt.hashpw(newPassword, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		target.setPassword(hashPw);
-		return new ExecResult(true, "");
+		return new ExecResult(true, "", null);
 	}
 
 	@Override
 	public ExecResult resetPassword(Long id) {
 		Employee target = employeeRepository.findOne(id);
 		if (target == null) {
-			return new ExecResult(false, "没有此用户");
+			return new ExecResult(false, "没有此用户", null);
 		}
 		String hashPw = BCrypt.hashpw(DEFAULT_PASSWORD, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		target.setPassword(hashPw);
-		return new ExecResult(true, "");
+		return new ExecResult(true, "", null);
 	}
 	
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")

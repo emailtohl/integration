@@ -21,18 +21,24 @@ public class Address {
 		this.zipcode = zipcode;
 		this.street = street;
 	}
+	
+	@org.hibernate.search.annotations.Field
 	public String getCity() {
 		return city;
 	}
 	public void setCity(String city) {
 		this.city = city;
 	}
+	
+	@org.hibernate.search.annotations.Field
 	public String getZipcode() {
 		return zipcode;
 	}
 	public void setZipcode(String zipcode) {
 		this.zipcode = zipcode;
 	}
+	
+	@org.hibernate.search.annotations.Field
 	public String getStreet() {
 		return street;
 	}

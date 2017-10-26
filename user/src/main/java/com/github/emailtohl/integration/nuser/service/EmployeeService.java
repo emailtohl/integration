@@ -17,6 +17,15 @@ import com.github.emailtohl.integration.nuser.entities.Employee;
  */
 @Validated
 public interface EmployeeService extends StandardService<Employee> {
+	
+	/**
+	 * 内部用户登录
+	 * @param empNum
+	 * @param password
+	 * @return
+	 */
+	@NotNull ExecResult login(String empNum, String password);
+	
 	/**
 	 * 为内部人员授予角色
 	 * @param id

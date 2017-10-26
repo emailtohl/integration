@@ -47,11 +47,13 @@ class InitDataSource {
 					em.persist(td.employee);
 					em.persist(td.employee_role);
 					em.persist(td.employee_lock);
+					em.persist(td.employee_reset_password);
 					em.persist(td.employee_delete);
 					em.persist(td.customer);
 					em.persist(td.customer_role);
 					em.persist(td.customer_level);
 					em.persist(td.customer_lock);
+					em.persist(td.customer_reset_password);
 					em.persist(td.customer_delete);
 					em.persist(td.flow);
 					em.persist(td.application_form_transit);

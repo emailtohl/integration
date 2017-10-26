@@ -8,10 +8,12 @@ package com.github.emailtohl.integration.common.standard;
 public class ExecResult {
 	public final boolean ok;
 	public final String cause;
+	public final Object attribute;
 
-	public ExecResult(boolean ok, String cause) {
+	public ExecResult(boolean ok, String cause, Object attribute) {
 		super();
 		this.ok = ok;
 		this.cause = cause;
+		this.attribute = attribute;
 	}
 }

@@ -188,6 +188,7 @@ public class UserTestData {
 		bar.setDepartment(qa);
 		
 		baz.setName("baz");
+		baz.setCellPhone("19012345678");
 		baz.setNickname("baz");
 		baz.setEmail("baz@test.com");
 		baz.setTelephone("7722134");
@@ -207,7 +208,9 @@ public class UserTestData {
 		} catch (ParseException | IOException e) {
 			e.printStackTrace();
 		}
+		
 		qux.setName("qux");
+		qux.setCellPhone("17809876543");
 		qux.setNickname("qux");
 		qux.setEmail("qux@test.com");
 		qux.setTelephone("98241562");

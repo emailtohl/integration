@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -13,6 +14,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
@@ -20,8 +22,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.emailtohl.integration.common.standard.ExecResult;
+import com.github.emailtohl.integration.nuser.UserTestData;
 import com.github.emailtohl.integration.nuser.entities.Address;
 import com.github.emailtohl.integration.nuser.entities.Customer;
+import com.github.emailtohl.integration.nuser.entities.Customer.Level;
 import com.github.emailtohl.integration.nuser.entities.Image;
 import com.github.emailtohl.integration.nuser.entities.User.Gender;
 import com.github.emailtohl.integration.nuser.userTestConfig.DataSourceConfiguration;
@@ -69,61 +74,100 @@ public class CustomerServiceImplTest {
 
 	@After
 	public void tearDown() throws Exception {
+		customerService.delete(id);
 	}
 
-	@Test
-	public void testCreate() {
-		fail("Not yet implemented");
-	}
 
 	@Test
 	public void testExist() {
-		fail("Not yet implemented");
+		UserTestData td = new UserTestData();
+		assertTrue(customerService.exist(null, td.baz.getEmail()));
+		assertTrue(customerService.exist(null, td.baz.getCellPhone()));
+		assertFalse(customerService.exist(null, td.foo.getEmail()));
 	}
 
 	@Test
 	public void testGet() {
-		fail("Not yet implemented");
+		Customer c = customerService.get(id);
+		assertNotNull(c);
 	}
 
 	@Test
 	public void testQueryCustomerPageable() {
-		fail("Not yet implemented");
+		UserTestData td = new UserTestData();
+		Page<Customer> p = customerService.query(null, pageable);
+		assertFalse(p.getContent().isEmpty());
+		Customer params = new Customer();
+		params.setCellPhone(td.baz.getCellPhone());
+		params.setEmail(td.baz.getEmail());
+		p = customerService.query(params, pageable);
+		assertFalse(p.getContent().isEmpty());
+		
+		params = new Customer();
+		params.setEmail(td.bar.getEmail());
+		p = customerService.query(params, pageable);
+		assertTrue(p.getContent().isEmpty());
 	}
 
 	@Test
 	public void testQueryCustomer() {
-		fail("Not yet implemented");
+		UserTestData td = new UserTestData();
+		Customer params = new Customer();
+		List<Customer> p = customerService.query(params);
+		assertFalse(p.isEmpty());
+		params.setCellPhone(td.baz.getCellPhone());
+		params.setEmail(td.baz.getEmail());
+		p = customerService.query(params);
+		assertFalse(p.isEmpty());
+		
+		params = new Customer();
+		params.setEmail(td.bar.getEmail());
+		p = customerService.query(params);
+		assertTrue(p.isEmpty());
 	}
 
 	@Test
 	public void testUpdate() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testDelete() {
-		fail("Not yet implemented");
+		Customer newEntity = new Customer();
+		newEntity.setDescription("update");
+		newEntity.setCellPhone("new Phone");
+		newEntity.setGender(Gender.FEMALE);
+		Customer c = customerService.update(id, newEntity);
+		c = customerService.get(id);
+		assertEquals("update", c.getDescription());
+		assertFalse("new Phone".equals(c.getCellPhone()));
+		
 	}
 
 	@Test
 	public void testFindByCellPhoneOrEmail() {
-		fail("Not yet implemented");
+		UserTestData td = new UserTestData();
+		Customer c = customerService.findByCellPhoneOrEmail(td.baz.getCellPhone());
+		assertNotNull(c);
+		c = customerService.findByCellPhoneOrEmail(td.baz.getEmail());
+		assertNotNull(c);
 	}
 
 	@Test
 	public void testGrandRoles() {
-		fail("Not yet implemented");
+		UserTestData td = new UserTestData();
+		Customer c = customerService.grandRoles(id, td.role_guest.getName());
+		assertFalse(c.getRoles().isEmpty());
 	}
 
 	@Test
 	public void testGrandLevel() {
-		fail("Not yet implemented");
+		Customer c = customerService.grandLevel(id, Level.VIP);
+		c = customerService.get(id);
+		assertEquals(Level.VIP, c.getLevel());
 	}
 
 	@Test
 	public void testUpdatePassword() {
-		fail("Not yet implemented");
+		ExecResult r = customerService.updatePassword(0L, "new password");
+		assertFalse(r.ok);
+		r = customerService.updatePassword(id, "new password");
+		assertTrue(r.ok);
 	}
 
 	@Test
@@ -131,6 +175,16 @@ public class CustomerServiceImplTest {
 		fail("Not yet implemented");
 	}
 
+	@Test
+	public void testChangeCellPhone() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void testChangeEmail() {
+		fail("Not yet implemented");
+	}
+	
 	@Test
 	public void testLock() {
 		fail("Not yet implemented");

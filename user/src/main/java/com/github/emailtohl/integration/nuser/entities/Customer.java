@@ -43,12 +43,8 @@ public class Customer extends User {
 	 * 注册的顾客，一般是以电话号码识别，所以号码不能为空，且号码具有唯一性
 	 * 若顾客更换手机，号码可以改变
 	 */
-	@Enumerated(EnumType.STRING)
-	public Level getLevel() {
-		return level;
-	}
-	
-	@Column(name = "cell_phone", nullable = false, unique = true, updatable = true)
+	@org.hibernate.search.annotations.Field
+	@Column(name = "cell_phone", /*nullable = false, */unique = true, updatable = true)
 	public String getCellPhone() {
 		return cellPhone;
 	}
@@ -56,10 +52,17 @@ public class Customer extends User {
 	public void setCellPhone(String cellPhone) {
 		this.cellPhone = cellPhone;
 	}
+	
+	@org.hibernate.search.annotations.Field
+	@Enumerated(EnumType.STRING)
+	public Level getLevel() {
+		return level;
+	}
 	public void setLevel(Level level) {
 		this.level = level;
 	}
 	
+	@org.hibernate.search.annotations.Field
 	@Embedded
 	public Address getAddress() {
 		return address;

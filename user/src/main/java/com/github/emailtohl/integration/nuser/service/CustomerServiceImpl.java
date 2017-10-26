@@ -92,15 +92,16 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public boolean exist(String cellPhoneOrEmail, Object matcherValue) {
+	public boolean exist(String propertyName, Object matcherValue) {
+		String _matcherValue = (String) matcherValue;
 		Customer c = new Customer();
 		Example<Customer> example;
-		Matcher m = EMAIL_PATTERN.matcher(cellPhoneOrEmail);
+		Matcher m = EMAIL_PATTERN.matcher(_matcherValue);
 		if (m.find()) {
-			c.setEmail(cellPhoneOrEmail);
+			c.setEmail(_matcherValue);
 			example = Example.<Customer> of(c, emailMatcher);
 		} else {
-			c.setCellPhone(cellPhoneOrEmail);
+			c.setCellPhone(_matcherValue);
 			example = Example.<Customer> of(c, cellPhoneMatcher);
 		}
 		return customerRepository.exists(example);
@@ -158,6 +159,24 @@ public class CustomerServiceImpl implements CustomerService {
 		}
 		customerRepository.delete(id);
 	}
+
+	@Override
+	public ExecResult login(String cellPhoneOrEmail, String password) {
+		Matcher m = EMAIL_PATTERN.matcher(cellPhoneOrEmail);
+		Customer c;
+		if (m.find()) {
+			c = customerRepository.findByEmail(cellPhoneOrEmail);
+		} else {
+			c = customerRepository.findByCellPhone(cellPhoneOrEmail);
+		}
+		if (c == null) {
+			return new ExecResult(false, LoginResult.notFound.name(), null);
+		}
+		if (!BCrypt.checkpw(password, c.getPassword())) {
+			return new ExecResult(false, LoginResult.badCredentials.name(), null);
+		}
+		return new ExecResult(true, LoginResult.success.name(), filter(c));
+	}
 	
 	@Override
 	public Customer findByCellPhoneOrEmail(String cellPhoneOrEmail) {
@@ -166,7 +185,7 @@ public class CustomerServiceImpl implements CustomerService {
 		if (m.find()) {
 			c = customerRepository.findByEmail(cellPhoneOrEmail);
 		} else {
-			c = customerRepository.findByEmail(cellPhoneOrEmail);
+			c = customerRepository.findByCellPhone(cellPhoneOrEmail);
 		}
 		return filter(c);
 	}
@@ -209,22 +228,44 @@ public class CustomerServiceImpl implements CustomerService {
 	public ExecResult updatePassword(Long id, String newPassword) {
 		Customer target = customerRepository.findOne(id);
 		if (target == null) {
-			return new ExecResult(false, "没有此用户");
+			return new ExecResult(false, "没有此用户", null);
 		}
 		String hashPw = BCrypt.hashpw(newPassword, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		target.setPassword(hashPw);
-		return new ExecResult(true, "");
+		return new ExecResult(true, "", null);
 	}
 	
 	@Override
 	public ExecResult resetPassword(Long id) {
 		Customer target = customerRepository.findOne(id);
 		if (target == null) {
-			return new ExecResult(false, "没有此用户");
+			return new ExecResult(false, "没有此用户", null);
 		}
 		String hashPw = BCrypt.hashpw(DEFAULT_PASSWORD, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		target.setPassword(hashPw);
-		return new ExecResult(true, "");
+		return new ExecResult(true, "", null);
+	}
+	
+	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
+	@Override
+	public Customer changeCellPhone(Long id, String newCellPhone) {
+		Customer target = customerRepository.findOne(id);
+		if (target == null) {
+			return null;
+		}
+		target.setCellPhone(newCellPhone);
+		return filter(target);
+	}
+
+	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
+	@Override
+	public Customer changeEmail(Long id, String newEmail) {
+		Customer target = customerRepository.findOne(id);
+		if (target == null) {
+			return null;
+		}
+		target.setEmail(newEmail);
+		return filter(target);
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
