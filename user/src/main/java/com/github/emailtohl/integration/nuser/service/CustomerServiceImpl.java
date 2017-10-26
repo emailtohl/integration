@@ -3,6 +3,7 @@ package com.github.emailtohl.integration.nuser.service;
 import java.security.SecureRandom;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.Constant;
 import com.github.emailtohl.integration.common.exception.InvalidDataException;
@@ -30,8 +32,10 @@ import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.common.standard.ExecResult;
 import com.github.emailtohl.integration.nuser.dao.CustomerRepository;
 import com.github.emailtohl.integration.nuser.dao.RoleRepository;
+import com.github.emailtohl.integration.nuser.entities.Card;
 import com.github.emailtohl.integration.nuser.entities.Customer;
 import com.github.emailtohl.integration.nuser.entities.Customer.Level;
+
 import com.github.emailtohl.integration.nuser.entities.Role;
 
 /**
@@ -70,6 +74,9 @@ public class CustomerServiceImpl implements CustomerService {
 	@CachePut(value = CACHE_NAME, key = "#result.id")
 	@Override
 	public Customer create(@Valid Customer entity) {
+		if (!StringUtils.hasText(entity.getCellPhone()) && !StringUtils.hasText(entity.getEmail())) {
+			throw new InvalidDataException("注册时既未填入手机号也未填入邮箱地址，不能注册");
+		}
 		Customer c = new Customer();
 		BeanUtils.copyProperties(entity, c, BaseEntity.getIgnoreProperties("roles", "accountNonLocked", "level", "cards"));
 		c.setAccountNonLocked(true);
@@ -85,15 +92,15 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public boolean exist(String telOrEmail, Object matcherValue) {
+	public boolean exist(String cellPhoneOrEmail, Object matcherValue) {
 		Customer c = new Customer();
 		Example<Customer> example;
-		Matcher m = EMAIL_PATTERN.matcher(telOrEmail);
+		Matcher m = EMAIL_PATTERN.matcher(cellPhoneOrEmail);
 		if (m.find()) {
-			c.setEmail(telOrEmail);
+			c.setEmail(cellPhoneOrEmail);
 			example = Example.<Customer> of(c, emailMatcher);
 		} else {
-			c.setCellPhone(telOrEmail);
+			c.setCellPhone(cellPhoneOrEmail);
 			example = Example.<Customer> of(c, cellPhoneMatcher);
 		}
 		return customerRepository.exists(example);
@@ -150,6 +157,18 @@ public class CustomerServiceImpl implements CustomerService {
 			i.remove();
 		}
 		customerRepository.delete(id);
+	}
+	
+	@Override
+	public Customer findByCellPhoneOrEmail(String cellPhoneOrEmail) {
+		Matcher m = EMAIL_PATTERN.matcher(cellPhoneOrEmail);
+		Customer c;
+		if (m.find()) {
+			c = customerRepository.findByEmail(cellPhoneOrEmail);
+		} else {
+			c = customerRepository.findByEmail(cellPhoneOrEmail);
+		}
+		return filter(c);
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
@@ -219,10 +238,45 @@ public class CustomerServiceImpl implements CustomerService {
 		return filter(target);
 	}
 
+	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
+	@Override
+	public Customer updateCards(Long id, Set<Card> cards) {
+		Customer target = customerRepository.findOne(id);
+		if (target == null) {
+			return null;
+		}
+		target.getCards().clear();
+		target.getCards().addAll(cards);
+		return filter(target);
+	}
+
+	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
+	@Override
+	public Customer addCard(Long id, Card card) {
+		Customer target = customerRepository.findOne(id);
+		if (target == null) {
+			return null;
+		}
+		target.getCards().add(card);
+		return filter(target);
+	}
+
+	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
+	@Override
+	public Customer removeCard(Long id, Card card) {
+		Customer target = customerRepository.findOne(id);
+		if (target == null) {
+			return null;
+		}
+		target.getCards().remove(card);
+		return filter(target);
+	}
+	
 	private Customer filter(Customer source) {
 		Customer target = new Customer();
 		BeanUtils.copyProperties(source, target, Customer.getIgnoreProperties("password"));
 		target.setId(source.getId());
 		return target;
 	}
+
 }

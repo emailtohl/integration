@@ -1,7 +1,13 @@
 package com.github.emailtohl.integration.nuser.service;
 
-import static com.github.emailtohl.integration.nuser.entities.Authority.*;
+import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER_LEVEL;
+import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER_LOCK;
+import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER_RESET_PASSWORD;
+import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER_ROLE;
 
+import java.util.Set;
+
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -9,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.github.emailtohl.integration.common.standard.ExecResult;
 import com.github.emailtohl.integration.common.standard.StandardService;
+import com.github.emailtohl.integration.nuser.entities.Card;
 import com.github.emailtohl.integration.nuser.entities.Customer;
 
 /**
@@ -17,6 +24,13 @@ import com.github.emailtohl.integration.nuser.entities.Customer;
  */
 @Validated
 public interface CustomerService extends StandardService<Customer> {
+	/**
+	 * 通过手机号码或者邮箱查找外部用户
+	 * @param cellPhoneOrEmail
+	 * @return
+	 */
+	Customer findByCellPhoneOrEmail(String cellPhoneOrEmail);
+	
 	/**
 	 * 为外部人员授予角色
 	 * @param id
@@ -59,4 +73,28 @@ public interface CustomerService extends StandardService<Customer> {
 	 */
 	@PreAuthorize("hasAuthority('" + CUSTOMER_LOCK + "')")
 	Customer lock(Long id, boolean lock);
+	
+	/**
+	 * 批量更新用户所属的卡
+	 * @param id
+	 * @param cards
+	 * @return
+	 */
+	Customer updateCards(Long id, Set<Card> cards);
+	
+	/**
+	 * 添加卡
+	 * @param id
+	 * @param card
+	 * @return
+	 */
+	Customer addCard(Long id, @Valid Card card);
+	
+	/**
+	 * 移除卡
+	 * @param id
+	 * @param card
+	 * @return
+	 */
+	Customer removeCard(Long id, @Valid Card card);
 }

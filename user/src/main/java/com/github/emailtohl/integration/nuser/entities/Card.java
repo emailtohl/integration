@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.NotNull;
 
 /**
  * 支付卡实体类
@@ -18,8 +19,10 @@ public class Card {
 		BankAccount, CreditCard
 	}
 	
+	@NotNull
 	private Type type;
 	
+	@NotNull
 	private String number;
 	
 	private Date expDate;
@@ -57,6 +60,34 @@ public class Card {
 
 	public void setExpDate(Date expDate) {
 		this.expDate = expDate;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((number == null) ? 0 : number.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Card other = (Card) obj;
+		if (number == null) {
+			if (other.number != null)
+				return false;
+		} else if (!number.equals(other.number))
+			return false;
+		if (type != other.type)
+			return false;
+		return true;
 	}
 	
 }
