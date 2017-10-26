@@ -71,6 +71,7 @@ public class Role extends BaseEntity {
 		this.users = users;
 	}
 	
+	@org.hibernate.envers.NotAudited
 	@ManyToMany
 	@JoinTable(name = "role_authority"
 	, joinColumns = { @JoinColumn(name = "role_id", referencedColumnName = "id") }

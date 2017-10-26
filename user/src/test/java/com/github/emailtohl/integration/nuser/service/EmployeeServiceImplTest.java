@@ -36,7 +36,7 @@ import com.github.emailtohl.integration.nuser.userTestConfig.ServiceConfiguratio
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceConfiguration.class)
-@ActiveProfiles(DataSourceConfiguration.DB_CONFIG)
+@ActiveProfiles(DataSourceConfiguration.DB_RAM_H2)
 @Rollback(false)
 public class EmployeeServiceImplTest {
 	final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

@@ -23,7 +23,7 @@ public class Employee extends User {
 	private Double salary;
 	private Department department;
 	
-	@Column(name = "emp_num", unique = true, nullable = false, updatable = false)
+	@Column(name = "emp_num", unique = true/*, nullable = false*/, updatable = false)
 	@Min(value = 1)
 	public Integer getEmpNum() {
 		return empNum;

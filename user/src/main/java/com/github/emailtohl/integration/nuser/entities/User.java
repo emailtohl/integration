@@ -44,8 +44,7 @@ import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 @Entity
 @Table(name = "users")
 @Access(AccessType.PROPERTY) // 实际上这就是默认的配置，Hibernate实现会根据@Id所在地方进行判断
-//考虑到不同用户的属性要求不一样，例如顾客必填项是电话号码，后台用户必填项是username，所以继承策略为不同用户不同表
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class User extends BaseEntity {
 	private static final long serialVersionUID = -2648409468140926726L;
 	public enum Gender {

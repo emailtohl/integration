@@ -18,7 +18,6 @@ import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
  * @author HeLei
  * @date 2017.02.04
  */
-@org.hibernate.envers.Audited
 @Entity
 @Table(name = "authority")
 public class Authority extends BaseEntity {
