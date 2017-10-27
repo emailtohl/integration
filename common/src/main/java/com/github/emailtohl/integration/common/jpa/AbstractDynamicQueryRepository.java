@@ -502,4 +502,14 @@ public abstract class AbstractDynamicQueryRepository<E extends Serializable> ext
 		String alias = m.group(aliasIndex).trim();
 		return new PredicateAndArgs(predicate, args, entityName, alias);
 	}
+	
+	/**
+	 * JpaRepository的findOne在查询不存在的id时会返回不为null的错误值，可用原始JPA接口代替
+	 * @param id
+	 * @return
+	 */
+	@Override
+	public E get(Long id) {
+		return entityManager.find(entityClass, id);
+	}
 }

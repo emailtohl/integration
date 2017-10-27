@@ -42,4 +42,11 @@ public interface DynamicQueryRepository<E extends Serializable> {
 	 * @return 一个Page对象，包含查询结果的列表、当前页、最大页、最大行等信息
 	 */
 	Paging<E> getPage(E entity, Integer pageNum, Integer pageSize, AccessType type);
+
+	/**
+	 * JpaRepository的findOne在查询不存在的id时会返回不为null的错误值，可用原始JPA接口代替
+	 * @param id
+	 * @return
+	 */
+	E get(Long id);
 }
