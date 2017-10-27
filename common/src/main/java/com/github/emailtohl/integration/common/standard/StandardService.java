@@ -30,11 +30,11 @@ public interface StandardService<E extends Serializable> {
 	
 	/**
 	 * 根据JavaBean属性名以及匹配的值来查找是否已存在
-	 * @param propertyName
+	 * @param uniquePropertyName
 	 * @param matcherValue
 	 * @return
 	 */
-	boolean exist(String propertyName, Object matcherValue);
+	boolean exist(String uniquePropertyName, Object matcherValue);
 	
 	/**
 	 * 根据ID获取实体
@@ -64,7 +64,7 @@ public interface StandardService<E extends Serializable> {
 	 * @param newEntity
 	 * @return 返回null表示没找到该实体
 	 */
-	E update(Long id, E newEntity);
+	E update(Long id, @Valid E newEntity);
 
 	/**
 	 * 根据ID删除实体

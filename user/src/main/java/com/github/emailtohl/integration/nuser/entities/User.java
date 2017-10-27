@@ -57,6 +57,7 @@ public class User extends BaseEntity {
 		flags = {Pattern.Flag.CASE_INSENSITIVE}
 	)
 	protected String email;
+	protected String cellPhone;
 	protected String telephone;
 	@Size(min = 6)
 	@Pattern(regexp = "^[^\\s&\"<>]+$")
@@ -103,6 +104,16 @@ public class User extends BaseEntity {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	@org.hibernate.search.annotations.Field
+	@Column(name = "cell_phone", /*nullable = false, */unique = true, updatable = true)
+	public String getCellPhone() {
+		return cellPhone;
+	}
+	
+	public void setCellPhone(String cellPhone) {
+		this.cellPhone = cellPhone;
 	}
 	
 	@Column(unique = true)

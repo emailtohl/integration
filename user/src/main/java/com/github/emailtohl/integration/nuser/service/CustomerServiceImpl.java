@@ -314,6 +314,9 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 	
 	private Customer filter(Customer source) {
+		if (source == null) {
+			return null;
+		}
 		Customer target = new Customer();
 		BeanUtils.copyProperties(source, target, Customer.getIgnoreProperties("password"));
 		target.setId(source.getId());

@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import com.github.emailtohl.integration.common.jpa.jpaCriterionQuery.AbstractCriterionQueryRepository;
 import com.github.emailtohl.integration.nuser.entities.Role;
 
 /**
@@ -26,7 +27,7 @@ import com.github.emailtohl.integration.nuser.entities.Role;
  * 
  * @author HeLei
  */
-public class RoleRepositoryImpl implements RoleRepositoryCustomization {
+public class RoleRepositoryImpl extends AbstractCriterionQueryRepository<Role> implements RoleRepositoryCustomization {
 	@PersistenceContext
 	EntityManager em;
 

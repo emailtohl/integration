@@ -153,6 +153,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public ExecResult login(String empNum, String password) {
 		return null;
 	}
+
+	@Override
+	public Employee getByEmpNum(Integer empNum) {
+		Employee target = employeeRepository.findByEmpNum(empNum);
+		return filter(target);
+	}
 	
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
@@ -214,6 +220,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 	
 	private Employee filter(Employee source) {
+		if (source == null) {
+			return null;
+		}
 		Employee target = new Employee();
 		BeanUtils.copyProperties(source, target, Employee.getIgnoreProperties("password"));
 		target.setId(source.getId());

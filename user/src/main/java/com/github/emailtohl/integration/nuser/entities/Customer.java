@@ -27,9 +27,7 @@ public class Customer extends User {
 	public enum Level {
 		ORDINARY, VIP
 	}
-	// 手机，重要识别标志
-	@NotNull
-	private String cellPhone;
+	
 	// 顾客等级
 	private Level level;
 	// 地址
@@ -42,15 +40,15 @@ public class Customer extends User {
 	/**
 	 * 注册的顾客，一般是以电话号码识别，所以号码不能为空，且号码具有唯一性
 	 * 若顾客更换手机，号码可以改变
+	 * 手机，重要识别标志
 	 */
-	@org.hibernate.search.annotations.Field
-	@Column(name = "cell_phone", /*nullable = false, */unique = true, updatable = true)
+	@NotNull
 	public String getCellPhone() {
-		return cellPhone;
+		return super.cellPhone;
 	}
 	
 	public void setCellPhone(String cellPhone) {
-		this.cellPhone = cellPhone;
+		super.cellPhone = cellPhone;
 	}
 	
 	@org.hibernate.search.annotations.Field

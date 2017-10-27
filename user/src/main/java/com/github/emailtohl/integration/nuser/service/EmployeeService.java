@@ -27,6 +27,13 @@ public interface EmployeeService extends StandardService<Employee> {
 	@NotNull ExecResult login(String empNum, String password);
 	
 	/**
+	 * 通过工号获取
+	 * @param empNum
+	 * @return
+	 */
+	Employee getByEmpNum(Integer empNum);
+	
+	/**
 	 * 为内部人员授予角色
 	 * @param id
 	 * @param roleNames
