@@ -60,7 +60,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		synchronized (this) {
 			Integer max = employeeRepository.getMaxEmpNo();
 			if (max == null) {
-				max = 0;
+				max = 999;
 			}
 			e.setEmpNum(++max);
 		}
@@ -150,8 +150,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public ExecResult login(String empNum, String password) {
-		return null;
+	public ExecResult login(Integer empNum, String password) {
+		Employee e = employeeRepository.findByEmpNum(empNum);
+		if (e == null) {
+			return new ExecResult(false, LoginResult.notFound.name(), null);
+		}
+		if (!BCrypt.checkpw(password, e.getPassword())) {
+			return new ExecResult(false, LoginResult.badCredentials.name(), null);
+		}
+		return new ExecResult(true, LoginResult.success.name(), filter(e));
 	}
 
 	@Override
