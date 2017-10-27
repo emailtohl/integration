@@ -112,7 +112,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Cacheable(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer get(Long id) {
-		Customer c = customerRepository.findOne(id);
+		Customer c = customerRepository.get(id);
 		c.getCards().size();// 关联查询
 		return filter(c);
 	}
@@ -132,7 +132,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer update(Long id, Customer newEntity) {
-		Customer target = customerRepository.findOne(id);
+		Customer target = customerRepository.get(id);
 		if (target == null) {
 			return null;
 		}
@@ -196,7 +196,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer grandRoles(Long id, String... roleNames) {
-		Customer target = customerRepository.findOne(id);
+		Customer target = customerRepository.get(id);
 		if (target == null) {
 			return null;
 		}
@@ -219,7 +219,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer grandLevel(Long id, Level level) {
-		Customer target = customerRepository.findOne(id);
+		Customer target = customerRepository.get(id);
 		if (target == null) {
 			return null;
 		}
@@ -229,7 +229,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public ExecResult updatePassword(Long id, String newPassword) {
-		Customer target = customerRepository.findOne(id);
+		Customer target = customerRepository.get(id);
 		if (target == null) {
 			return new ExecResult(false, "没有此用户", null);
 		}
@@ -240,7 +240,7 @@ public class CustomerServiceImpl implements CustomerService {
 	
 	@Override
 	public ExecResult resetPassword(Long id) {
-		Customer target = customerRepository.findOne(id);
+		Customer target = customerRepository.get(id);
 		if (target == null) {
 			return new ExecResult(false, "没有此用户", null);
 		}
@@ -252,7 +252,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer changeCellPhone(Long id, String newCellPhone) {
-		Customer target = customerRepository.findOne(id);
+		Customer target = customerRepository.get(id);
 		if (target == null) {
 			return null;
 		}
@@ -263,7 +263,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer changeEmail(Long id, String newEmail) {
-		Customer target = customerRepository.findOne(id);
+		Customer target = customerRepository.get(id);
 		if (target == null) {
 			return null;
 		}
@@ -274,7 +274,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer lock(Long id, boolean lock) {
-		Customer target = customerRepository.findOne(id);
+		Customer target = customerRepository.get(id);
 		if (target == null) {
 			return null;
 		}
@@ -285,7 +285,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer updateCards(Long id, Set<Card> cards) {
-		Customer target = customerRepository.findOne(id);
+		Customer target = customerRepository.get(id);
 		if (target == null) {
 			return null;
 		}
@@ -297,7 +297,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer addCard(Long id, Card card) {
-		Customer target = customerRepository.findOne(id);
+		Customer target = customerRepository.get(id);
 		if (target == null) {
 			return null;
 		}
@@ -308,7 +308,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer removeCard(Long id, Card card) {
-		Customer target = customerRepository.findOne(id);
+		Customer target = customerRepository.get(id);
 		if (target == null) {
 			return null;
 		}

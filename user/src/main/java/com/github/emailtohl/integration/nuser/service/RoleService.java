@@ -1,15 +1,9 @@
 package com.github.emailtohl.integration.nuser.service;
 
-import static com.github.emailtohl.integration.nuser.entities.Authority.*;
+import static com.github.emailtohl.integration.nuser.entities.Authority.ROLE;
 
 import java.util.List;
-import java.util.Set;
 
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 
@@ -21,8 +15,11 @@ import com.github.emailtohl.integration.nuser.entities.Role;
  * @author HeLei
  */
 @PreAuthorize("hasAuthority('" + ROLE + "')")
-@Transactional
 @Validated
 public interface RoleService extends StandardService<Role> {
-	
+	/**
+	 * 获取所有权限
+	 * @return
+	 */
+	List<Authority> getAuthorities();
 }

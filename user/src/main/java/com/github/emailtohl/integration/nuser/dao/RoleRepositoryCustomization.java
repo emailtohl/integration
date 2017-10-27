@@ -16,7 +16,7 @@ import com.github.emailtohl.integration.nuser.entities.Role;
  * @author HeLei
  */
 public interface RoleRepositoryCustomization extends CriterionQueryRepository<Role> {
-    /**
+	/**
      * 根据角色名和权限名组合查询
      * @param roleName
      * @param authorityName

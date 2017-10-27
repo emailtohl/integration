@@ -2,10 +2,13 @@ package com.github.emailtohl.integration.nuser.service;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,19 +23,33 @@ import com.github.emailtohl.integration.nuser.entities.User;
  * 角色管理服务的实现
  * @author HeLei
  */
+@Transactional
 @Service
 public class RoleServiceImpl implements RoleService {
+	private static final String CACHE_NAME_ROLE = "roleCache";
+	private static final String CACHE_NAME_AUTHORITY = "authorityListCache";
 	@Inject RoleRepository roleRepository;
 	@Inject AuthorityRepository authorityRepository;
 
+	@CachePut(value = CACHE_NAME_ROLE, key = "#result.id")
 	@Override
 	public Role create(Role entity) {
 		Role r = new Role();
 		r.setName(entity.getName());
 		r.setDescription(entity.getDescription());
-		r.getAuthorities().addAll(entity.getAuthorities());
-		addAuthorities(r, entity.getAuthorities());
-		return roleRepository.save(entity);
+		entity.getAuthorities().forEach(a -> {
+			Authority p = null;
+			if (a.getId() != null) {
+				p = authorityRepository.findOne(a.getId());
+			} else if (StringUtils.hasText(a.getName())) {
+				p = authorityRepository.findByName(a.getName());
+			}
+			if (p != null) {
+				r.getAuthorities().add(p);
+				p.getRoles().add(r);
+			}
+		});
+		return roleRepository.save(r);
 	}
 
 	@Override
@@ -40,9 +57,14 @@ public class RoleServiceImpl implements RoleService {
 		return roleRepository.exist(name);
 	}
 
+	@Cacheable(value = CACHE_NAME_ROLE, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Role get(Long id) {
-		return roleRepository.getOne(id);
+		Role r = roleRepository.get(id);
+		if (r != null) {
+			r.getAuthorities().isEmpty();// 关联查询
+		}
+		return r;
 	}
 
 	@Override
@@ -55,13 +77,16 @@ public class RoleServiceImpl implements RoleService {
 		return roleRepository.queryForList(params);
 	}
 
+	@CachePut(value = CACHE_NAME_ROLE, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Role update(Long id, Role newEntity) {
-		Role target = roleRepository.findOne(id);
+		Role target = roleRepository.get(id);
 		if (target == null) {
 			return null;
 		}
-		target.setName(newEntity.getName());
+		if (StringUtils.hasText(newEntity.getName())) {
+			target.setName(newEntity.getName());
+		}
 		target.setDescription(newEntity.getDescription());
 		// 先解除双方关系
 		for (Iterator<Authority> i = target.getAuthorities().iterator(); i.hasNext();) {
@@ -70,13 +95,25 @@ public class RoleServiceImpl implements RoleService {
 			i.remove();
 		}
 		// 再重新添加
-		addAuthorities(target, newEntity.getAuthorities());
+		newEntity.getAuthorities().forEach(a -> {
+			Authority p = null;
+			if (a.getId() != null) {
+				p = authorityRepository.findOne(a.getId());
+			} else if (StringUtils.hasText(a.getName())) {
+				p = authorityRepository.findByName(a.getName());
+			}
+			if (p != null) {
+				target.getAuthorities().add(p);
+				p.getRoles().add(target);
+			}
+		});
 		return target;
 	}
 
+	@CacheEvict(value = CACHE_NAME_ROLE, key = "#root.args[0]")
 	@Override
 	public void delete(Long id) {
-		Role target = roleRepository.findOne(id);
+		Role target = roleRepository.get(id);
 		if (target == null) {
 			return;
 		}
@@ -91,20 +128,13 @@ public class RoleServiceImpl implements RoleService {
 			a.getRoles().remove(target);
 			i.remove();
 		}
+		roleRepository.delete(id);
 	}
-	
-	private void addAuthorities(Role r, Set<Authority> authorities) {
-		authorities.stream().forEach(a -> {
-			Authority p = null;
-			if (a.getId() != null) {
-				p = authorityRepository.findOne(a.getId());
-			} else if (StringUtils.hasText(a.getName())) {
-				p = authorityRepository.findByName(a.getName());
-			}
-			if (p != null) {
-				r.getAuthorities().add(p);
-			}
-		});
+
+	@Cacheable(value = CACHE_NAME_AUTHORITY)
+	@Override
+	public List<Authority> getAuthorities() {
+		return authorityRepository.findAll();
 	}
 	
 }

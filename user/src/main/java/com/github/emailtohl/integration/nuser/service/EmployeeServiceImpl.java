@@ -94,7 +94,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Cacheable(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Employee get(Long id) {
-		Employee e = employeeRepository.findOne(id);
+		Employee e = employeeRepository.get(id);
 		return filter(e);
 	}
 
@@ -113,7 +113,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Employee update(Long id, Employee newEntity) {
-		Employee target = employeeRepository.findOne(id);
+		Employee target = employeeRepository.get(id);
 		if (target == null) {
 			return null;
 		}
@@ -172,7 +172,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Employee grandRoles(Long id, String... roleNames) {
-		Employee target = employeeRepository.findOne(id);
+		Employee target = employeeRepository.get(id);
 		if (target == null) {
 			return null;
 		}
@@ -194,7 +194,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public ExecResult updatePassword(Long id, String oldPassword, String newPassword) {
-		Employee target = employeeRepository.findOne(id);
+		Employee target = employeeRepository.get(id);
 		if (target == null) {
 			return new ExecResult(false, "没有此用户", null);
 		}
@@ -208,7 +208,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public ExecResult resetPassword(Long id) {
-		Employee target = employeeRepository.findOne(id);
+		Employee target = employeeRepository.get(id);
 		if (target == null) {
 			return new ExecResult(false, "没有此用户", null);
 		}
@@ -220,7 +220,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Employee lock(Long id, boolean lock) {
-		Employee target = employeeRepository.findOne(id);
+		Employee target = employeeRepository.get(id);
 		if (target == null) {
 			return null;
 		}
