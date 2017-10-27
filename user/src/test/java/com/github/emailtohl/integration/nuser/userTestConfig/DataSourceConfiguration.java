@@ -18,7 +18,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
  * @date 2017.06.12
  */
 @Configuration
-@PropertySource({ "classpath:database.properties" })
+@PropertySource({ "classpath:user.properties", "classpath:database.properties" })
 public class DataSourceConfiguration {
 	public static final String DB_CONFIG = "db_config";
 	public static final String DB_RAM_H2 = "db_ram_h2";

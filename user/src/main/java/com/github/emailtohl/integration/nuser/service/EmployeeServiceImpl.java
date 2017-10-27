@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -38,7 +39,8 @@ import com.github.emailtohl.integration.nuser.entities.Role;
 public class EmployeeServiceImpl implements EmployeeService {
 	private static final transient SecureRandom RANDOM = new SecureRandom();
 	private static final transient int HASHING_ROUNDS = 10;
-	private static final String DEFAULT_PASSWORD = "123456";
+	@Value("${employee.default.password}")
+	private String employeeDefaultPassword = "123456";
 	@Inject
 	EmployeeRepository employeeRepository;
 	@Inject
@@ -210,7 +212,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		if (target == null) {
 			return new ExecResult(false, "没有此用户", null);
 		}
-		String hashPw = BCrypt.hashpw(DEFAULT_PASSWORD, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
+		String hashPw = BCrypt.hashpw(employeeDefaultPassword, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		target.setPassword(hashPw);
 		return new ExecResult(true, "", null);
 	}
@@ -222,7 +224,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		if (target == null) {
 			return null;
 		}
-		target.setAccountNonLocked(lock);
+		target.setAccountNonLocked(!lock);
 		return filter(target);
 	}
 	

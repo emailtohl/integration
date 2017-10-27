@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -14,6 +17,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +29,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.github.emailtohl.integration.common.standard.ExecResult;
 import com.github.emailtohl.integration.nuser.UserTestData;
 import com.github.emailtohl.integration.nuser.entities.Address;
+import com.github.emailtohl.integration.nuser.entities.Card;
 import com.github.emailtohl.integration.nuser.entities.Customer;
 import com.github.emailtohl.integration.nuser.entities.Customer.Level;
 import com.github.emailtohl.integration.nuser.entities.Image;
@@ -46,6 +51,8 @@ public class CustomerServiceImplTest {
 	@Inject
 	CustomerService customerService;
 	Long id;
+	@Value("${customer.default.password}")
+	String customerDefaultPassword;
 
 	@Before
 	public void setUp() throws Exception {
@@ -175,37 +182,55 @@ public class CustomerServiceImplTest {
 
 	@Test
 	public void testResetPassword() {
-		fail("Not yet implemented");
+		ExecResult r = customerService.resetPassword(0L);
+		assertFalse(r.ok);
+		r = customerService.resetPassword(id);
+		assertTrue(r.ok);
+		Customer c = customerService.get(id);
+		r = customerService.login(c.getEmail(), customerDefaultPassword);
+		assertTrue(r.ok);
 	}
 
 	@Test
 	public void testChangeCellPhone() {
-		fail("Not yet implemented");
+		String newPhone = "77889900";
+		customerService.changeCellPhone(id, newPhone);
+		Customer c = customerService.findByCellPhoneOrEmail(newPhone);
+		assertNotNull(c);
 	}
 	
 	@Test
 	public void testChangeEmail() {
-		fail("Not yet implemented");
+		String newEmail = "newEmail@test.com";
+		customerService.changeEmail(id, newEmail);
+		Customer c = customerService.findByCellPhoneOrEmail(newEmail);
+		assertNotNull(c);
 	}
 	
 	@Test
 	public void testLock() {
-		fail("Not yet implemented");
+		customerService.lock(id, true);
+		Customer c = customerService.get(id);
+		assertFalse(c.getAccountNonLocked());
 	}
 
 	@Test
 	public void testUpdateCards() {
-		fail("Not yet implemented");
+		Set<Card> cards = new HashSet<Card>(Arrays.asList(new Card(Card.Type.BankAccount, "123"), new Card(Card.Type.BankAccount, "456")));
+		customerService.updateCards(id, cards);
+		Customer c = customerService.get(id);
+		assertEquals(2, c.getCards().size());
 	}
 
 	@Test
-	public void testAddCard() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testRemoveCard() {
-		fail("Not yet implemented");
+	public void testAddAndRemoveCard() {
+		Card card = new Card(Card.Type.BankAccount, "123");
+		customerService.addCard(id, card);
+		Customer c = customerService.get(id);
+		assertEquals(1, c.getCards().size());
+		customerService.removeCard(id, card);
+		c = customerService.get(id);
+		assertTrue(c.getCards().isEmpty());
 	}
 
 }

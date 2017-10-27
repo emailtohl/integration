@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -49,7 +50,8 @@ public class CustomerServiceImpl implements CustomerService {
 	public static final Pattern EMAIL_PATTERN = Pattern.compile(Constant.PATTERN_EMAIL);
 	private static final transient SecureRandom RANDOM = new SecureRandom();
 	private static final transient int HASHING_ROUNDS = 10;
-	private static final String DEFAULT_PASSWORD = "123456";
+	@Value("${customer.default.password}")
+	private String customerDefaultPassword;
 	@Inject
 	CustomerRepository customerRepository;
 	@Inject
@@ -111,6 +113,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public Customer get(Long id) {
 		Customer c = customerRepository.findOne(id);
+		c.getCards().size();// 关联查询
 		return filter(c);
 	}
 
@@ -241,7 +244,7 @@ public class CustomerServiceImpl implements CustomerService {
 		if (target == null) {
 			return new ExecResult(false, "没有此用户", null);
 		}
-		String hashPw = BCrypt.hashpw(DEFAULT_PASSWORD, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
+		String hashPw = BCrypt.hashpw(customerDefaultPassword, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		target.setPassword(hashPw);
 		return new ExecResult(true, "", null);
 	}
@@ -275,7 +278,7 @@ public class CustomerServiceImpl implements CustomerService {
 		if (target == null) {
 			return null;
 		}
-		target.setAccountNonLocked(lock);
+		target.setAccountNonLocked(!lock);
 		return filter(target);
 	}
 
