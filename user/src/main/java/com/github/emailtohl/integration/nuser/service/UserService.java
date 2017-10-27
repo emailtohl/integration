@@ -8,10 +8,14 @@ import org.springframework.validation.annotation.Validated;
 
 import com.github.emailtohl.integration.nuser.entities.User;
 
+/**
+ * 统一查询功能
+ * @author HeLei
+ */
 @Transactional
 @Validated
 public interface UserService {
 	
-	Page<User> queryForPage(User params, Pageable pageable);
+	Page<User> query(User params, Pageable pageable);
 	
 }
