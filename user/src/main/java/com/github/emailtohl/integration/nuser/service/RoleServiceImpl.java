@@ -54,7 +54,7 @@ public class RoleServiceImpl implements RoleService {
 
 	@Override
 	public boolean exist(String name, Object matcherValue) {
-		return roleRepository.exist(name);
+		return roleRepository.exist((String) matcherValue);
 	}
 
 	@Cacheable(value = CACHE_NAME_ROLE, key = "#root.args[0]", condition = "#result != null")

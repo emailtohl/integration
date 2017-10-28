@@ -1,6 +1,6 @@
 package com.github.emailtohl.integration.nuser.dao;
 
-import com.github.emailtohl.integration.common.jpa.jpaCriterionQuery.AbstractCriterionQueryRepository;
+import com.github.emailtohl.integration.common.jpa.fullTextSearch.AbstractSearchableRepository;
 import com.github.emailtohl.integration.nuser.entities.User;
 
 /**
@@ -10,6 +10,6 @@ import com.github.emailtohl.integration.nuser.entities.User;
  * @date 2017.02.04
  */
 //@Repository //不由spring管理，而是由spring data管理
-public class UserRepositoryImpl extends AbstractCriterionQueryRepository<User> implements UserRepositoryCustomization {
+public class UserRepositoryImpl extends AbstractSearchableRepository<User> implements UserRepositoryCustomization {
 
 }

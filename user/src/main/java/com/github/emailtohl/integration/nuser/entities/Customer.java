@@ -12,12 +12,14 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinTable;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
 /**
  * 系统外部使用人员，如顾客、商家、匿名访问者等等
  * 他们注册时需要手机号唯一识别
  * @author HeLei
  * @date 2017.02.04
  */
+@org.hibernate.search.annotations.Indexed
 @org.hibernate.envers.Audited
 @Entity
 @Table(name = "customer")
@@ -42,6 +44,7 @@ public class Customer extends User {
 	 * 若顾客更换手机，号码可以改变
 	 * 手机，重要识别标志
 	 */
+	@org.hibernate.search.annotations.Field
 	@NotNull
 	public String getCellPhone() {
 		return super.cellPhone;
@@ -60,7 +63,7 @@ public class Customer extends User {
 		this.level = level;
 	}
 	
-	@org.hibernate.search.annotations.Field
+//	@org.hibernate.search.annotations.IndexedEmbedded
 	@Embedded
 	public Address getAddress() {
 		return address;
@@ -69,6 +72,7 @@ public class Customer extends User {
 		this.address = address;
 	}
 	
+	@org.hibernate.search.annotations.Field
 	@Column(unique = true)
 	public String getIdentification() {
 		return identification;
@@ -118,3 +122,4 @@ public class Customer extends User {
 	}
 	
 }
+

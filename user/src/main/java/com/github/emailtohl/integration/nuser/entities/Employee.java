@@ -13,6 +13,7 @@ import javax.validation.constraints.Min;
  * @author HeLei
  * @date 2017.02.04
  */
+@org.hibernate.search.annotations.Indexed
 @org.hibernate.envers.Audited
 @Entity
 @Table(name = "employee")

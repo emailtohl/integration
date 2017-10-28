@@ -40,11 +40,12 @@ import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
  * @author HeLei
  * @date 2017.02.04
  */
+@org.hibernate.search.annotations.Indexed
 @org.hibernate.envers.Audited
 @Entity
 @Table(name = "users")
 @Access(AccessType.PROPERTY) // 实际上这就是默认的配置，Hibernate实现会根据@Id所在地方进行判断
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class User extends BaseEntity {
 	private static final long serialVersionUID = -2648409468140926726L;
 	public enum Gender {
@@ -116,6 +117,7 @@ public class User extends BaseEntity {
 		this.cellPhone = cellPhone;
 	}
 	
+	@org.hibernate.search.annotations.Field
 	@Column(unique = true)
 	public String getTelephone() {
 		return telephone;

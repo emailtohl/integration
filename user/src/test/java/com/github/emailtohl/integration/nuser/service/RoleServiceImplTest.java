@@ -3,13 +3,15 @@ package com.github.emailtohl.integration.nuser.service;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Inject;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -59,37 +61,36 @@ public class RoleServiceImplTest {
 
 	@Test
 	public void testExist() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGet() {
-		fail("Not yet implemented");
+		UserTestData td = new UserTestData();
+		boolean b = roleService.exist("name", td.role_guest.getName());
+		assertTrue(b);
+		b = roleService.exist("name", "foo");
+		assertFalse(b);
 	}
 
 	@Test
 	public void testQueryRolePageable() {
-		fail("Not yet implemented");
+		Pageable pageable = new PageRequest(0, 20);
+		Page<Role> p = roleService.query(null, pageable);
+		assertFalse(p.getContent().isEmpty());
+		UserTestData td = new UserTestData();
+		p = roleService.query(td.role_manager, pageable);
+		assertFalse(p.getContent().isEmpty());
 	}
 
 	@Test
 	public void testQueryRole() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testUpdate() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testDelete() {
-		fail("Not yet implemented");
+		List<Role> ls = roleService.query(null);
+		assertFalse(ls.isEmpty());
+		UserTestData td = new UserTestData();
+		ls = roleService.query(td.role_staff);
+		assertFalse(ls.isEmpty());
 	}
 
 	@Test
 	public void testGetAuthorities() {
-		fail("Not yet implemented");
+		List<Authority> ls = roleService.getAuthorities();
+		assertFalse(ls.isEmpty());
 	}
 
 }

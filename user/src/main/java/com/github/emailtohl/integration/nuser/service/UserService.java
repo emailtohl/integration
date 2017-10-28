@@ -15,7 +15,20 @@ import com.github.emailtohl.integration.nuser.entities.User;
 @Transactional
 @Validated
 public interface UserService {
+	/**
+	 * 全文搜索
+	 * @param fulltext
+	 * @param pageable
+	 * @return
+	 */
+	Page<User> search(String fulltext, Pageable pageable);
 	
+	/**
+	 * 根据域条件查询
+	 * @param params
+	 * @param pageable
+	 * @return
+	 */
 	Page<User> query(User params, Pageable pageable);
 	
 }
