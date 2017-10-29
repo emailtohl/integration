@@ -9,13 +9,13 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.jpa.envers.Tuple;
-import com.github.emailtohl.integration.common.utils.BeanUtil;
 import com.github.emailtohl.integration.nuser.dao.RoleAudit;
 import com.github.emailtohl.integration.nuser.dao.UserAudit;
 import com.github.emailtohl.integration.nuser.entities.Role;
@@ -39,12 +39,16 @@ public class AuditedServiceImpl implements AuditedService {
 		Map<String, Object> propertyNameValueMap = new HashMap<>();
 		propertyNameValueMap.put("id", id);
 		Page<Tuple<User>> p = userAudit.getEntityRevision(propertyNameValueMap, pageable);
-		List<User> ls = p.getContent().stream().map(t -> convert(t.getEntity())).collect(toList());
+		List<User> ls = p.getContent().stream().map(t -> t.getEntity()).collect(toList());
 		return new PageImpl<>(ls, pageable, p.getNumberOfElements());
 	}
 	@Override
 	public User getUserAtRevision(Long id, int revision) {
-		return convert(userAudit.getEntityAtRevision(id, revision));
+		User source = userAudit.getEntityAtRevision(id, revision);
+		User target = new User();
+		BeanUtils.copyProperties(source, target, User.getIgnoreProperties("roles", "password"));
+		source.getRoles().forEach(r -> target.getRoles().add(new Role(r.getName(), r.getDescription())));
+		return target;
 	}
 	@Override
 	public Page<Role> getRoleRevision(String name, Pageable pageable) {
@@ -65,10 +69,4 @@ public class AuditedServiceImpl implements AuditedService {
 		return roleAudit.getEntityAtRevision(roleId, revision);
 	}
 
-	private User convert(User src) {
-		User target = BeanUtil.deepCopy(src);
-		target.setPassword(null);
-		return target;
-	}
-	
 }
