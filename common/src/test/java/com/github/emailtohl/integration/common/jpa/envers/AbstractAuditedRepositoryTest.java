@@ -121,7 +121,7 @@ public class AbstractAuditedRepositoryTest {
 	public void test() {
 		Number origin = null;
 		
-		Map<String, String> propertyNameValueMap = new HashMap<>();
+		Map<String, Object> propertyNameValueMap = new HashMap<>();
 		propertyNameValueMap.put("name", "forAuditTest");
 		// test getEntityRevision
 		Page<Tuple<User>> page = audRepos.getEntityRevision(propertyNameValueMap, pageable);

@@ -318,8 +318,6 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 		return predicates;
 	}
 	
-	
-	
 	public AbstractCriterionQueryRepository() {
 		super();
 	}

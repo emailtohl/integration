@@ -7,7 +7,6 @@ import javax.persistence.Embeddable;
  * @author HeLei
  * @date 2017.10.17
  */
-@org.hibernate.search.annotations.Indexed
 @Embeddable
 public class Address {
 	private String city;

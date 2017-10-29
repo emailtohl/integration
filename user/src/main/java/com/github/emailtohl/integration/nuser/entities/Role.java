@@ -78,6 +78,12 @@ public class Role extends BaseEntity {
 		this.authorities = authorities;
 	}
 
+	public Set<String> authorityNames() {
+		Set<String> names = new HashSet<String>();
+		getAuthorities().forEach(a -> names.addAll(a.authorityNames()));
+		return names;
+	}
+	
 	@Override
 	public String toString() {
 		return "Role [name=" + name + ", authorities=" + authorities + "]";

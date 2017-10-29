@@ -37,7 +37,7 @@ public class AuditedServiceImpl implements AuditedService {
 
 	@Override
 	public Paging<UserDto> getUserRevision(String email, Pageable pageable) {
-		Map<String, String> propertyNameValueMap = new HashMap<>();
+		Map<String, Object> propertyNameValueMap = new HashMap<>();
 		propertyNameValueMap.put("email", email);
 		Page<Tuple<User>> page = userAudit.getEntityRevision(propertyNameValueMap, pageable);
 		List<UserDto> ls = page.getContent().stream().map(this::convert).collect(toList());
@@ -46,7 +46,7 @@ public class AuditedServiceImpl implements AuditedService {
 
 	@Override
 	public Paging<UserDto> getUsersAtRevision(int revision, String email, Pageable pageable) {
-		Map<String, String> propertyNameValueMap = new HashMap<>();
+		Map<String, Object> propertyNameValueMap = new HashMap<>();
 		propertyNameValueMap.put("email", email);
 		Page<User> page = userAudit.getEntitiesAtRevision(revision, propertyNameValueMap, pageable);
 		List<UserDto> ls = page.getContent().stream().map(this::convert).collect(toList());
@@ -60,7 +60,7 @@ public class AuditedServiceImpl implements AuditedService {
 
 	@Override
 	public Paging<RoleDto> getRoleRevision(String name, Pageable pageable) {
-		Map<String, String> propertyNameValueMap = new HashMap<>();
+		Map<String, Object> propertyNameValueMap = new HashMap<>();
 		propertyNameValueMap.put("name", name);
 		Page<Tuple<Role>> page = roleAudit.getEntityRevision(propertyNameValueMap, pageable);
 		List<RoleDto> ls = page.getContent().stream().map(this::convertRole).collect(toList());
@@ -69,7 +69,7 @@ public class AuditedServiceImpl implements AuditedService {
 
 	@Override
 	public Paging<RoleDto> getRolesAtRevision(int revision, String name, Pageable pageable) {
-		Map<String, String> propertyNameValueMap = new HashMap<>();
+		Map<String, Object> propertyNameValueMap = new HashMap<>();
 		propertyNameValueMap.put("name", name);
 		Page<Role> page = roleAudit.getEntitiesAtRevision(revision, propertyNameValueMap, pageable);
 		List<RoleDto> ls = page.getContent().stream().map(this::convert).collect(toList());

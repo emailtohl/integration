@@ -61,14 +61,18 @@ public abstract class AbstractAuditedRepository<E extends Serializable> implemen
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Page<Tuple<E>> getEntityRevision(Map<String, String> propertyNameValueMap, Pageable pageable) {
+	public Page<Tuple<E>> getEntityRevision(Map<String, Object> propertyNameValueMap, Pageable pageable) {
 		AuditReader auditReader = AuditReaderFactory.get(entityManager);
 		AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(entityClass, false, false);
 		if (propertyNameValueMap != null) {
-			for (Entry<String, String> e : propertyNameValueMap.entrySet()) {
-				String v = e.getValue();
-				if (v != null && !v.isEmpty()) {
-					query.add(AuditEntity.property(e.getKey()).like(v.trim(), MatchMode.START));
+			for (Entry<String, Object> e : propertyNameValueMap.entrySet()) {
+				Object v = e.getValue();
+				if (v != null) {
+					if (v instanceof String && !((String)v).isEmpty()) {
+						query.add(AuditEntity.property(e.getKey()).like(((String)v).trim(), MatchMode.START));
+					} else {
+						query.add(AuditEntity.property(e.getKey()).eq(v));
+					}
 				}
 			}
 		}
@@ -116,13 +120,17 @@ public abstract class AbstractAuditedRepository<E extends Serializable> implemen
 	 * @return 
 	 */
 	@Override
-	public Page<E> getEntitiesAtRevision(Number revision, Map<String, String> propertyNameValueMap, Pageable pageable) {
+	public Page<E> getEntitiesAtRevision(Number revision, Map<String, Object> propertyNameValueMap, Pageable pageable) {
 		AuditReader auditReader = AuditReaderFactory.get(entityManager);
 		AuditQuery query = auditReader.createQuery().forEntitiesAtRevision(entityClass, revision);
-		for (Entry<String, String> e : propertyNameValueMap.entrySet()) {
-			String v = e.getValue();
-			if (v != null && !v.isEmpty()) {
-				query.add(AuditEntity.property(e.getKey()).like(v.trim(), MatchMode.START));
+		for (Entry<String, Object> e : propertyNameValueMap.entrySet()) {
+			Object v = e.getValue();
+			if (v != null) {
+				if (v instanceof String && !((String)v).isEmpty()) {
+					query.add(AuditEntity.property(e.getKey()).like(((String)v).trim(), MatchMode.START));
+				} else {
+					query.add(AuditEntity.property(e.getKey()).eq(v));
+				}
 			}
 		}
 		Sort sort = pageable.getSort();

@@ -63,7 +63,7 @@ public class Customer extends User {
 		this.level = level;
 	}
 	
-//	@org.hibernate.search.annotations.IndexedEmbedded
+	@org.hibernate.search.annotations.IndexedEmbedded(depth = 1)
 	@Embedded
 	public Address getAddress() {
 		return address;

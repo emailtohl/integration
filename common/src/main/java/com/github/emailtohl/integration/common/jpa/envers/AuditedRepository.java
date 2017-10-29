@@ -20,7 +20,7 @@ public interface AuditedRepository<E extends Serializable> {
 	 * @param pageable
 	 * @return 分页的元组列表，元组中包含版本详情，实体在该版本时的状态以及该版本的操作（增、改、删）
 	 */
-	Page<Tuple<E>> getEntityRevision(Map<String, String> propertyNameValueMap, Pageable pageable);
+	Page<Tuple<E>> getEntityRevision(Map<String, Object> propertyNameValueMap, Pageable pageable);
 	
 	/**
 	 * 查询某个修订版下，该实体类的所有的历史记录，但不包括删除时的
@@ -30,7 +30,7 @@ public interface AuditedRepository<E extends Serializable> {
 	 * @param pageable
 	 * @return
 	 */
-	Page<E> getEntitiesAtRevision(Number revision, Map<String, String> propertyNameValueMap, Pageable pageable);
+	Page<E> getEntitiesAtRevision(Number revision, Map<String, Object> propertyNameValueMap, Pageable pageable);
 	
 	/**
 	 * 查询某个实体在某个修订版时的历史记录
