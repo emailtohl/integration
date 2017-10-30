@@ -222,7 +222,8 @@ public class AbstractCriterionQueryRepositoryTest {
 	
 	@Test
 	public void testQueryForPage() {
-		Employee params = new CommonTestData().foo;
+		CommonTestData td = new CommonTestData();
+		Employee params = td.foo;
 		params.setAge(null);
 		params.setBirthday(null);
 		params.setCreateDate(null);
@@ -233,6 +234,12 @@ public class AbstractCriterionQueryRepositoryTest {
 		System.out.println(p.getContent());
 		
 		params = null;
+		p = employeeRepository.queryForPage(params, new PageRequest(0, 20));
+		assertFalse(p.getContent().isEmpty());
+		System.out.println(p.getContent());
+		
+		params = new Employee();
+		params.setName(td.bar.getName().toUpperCase());
 		p = employeeRepository.queryForPage(params, new PageRequest(0, 20));
 		assertFalse(p.getContent().isEmpty());
 		System.out.println(p.getContent());

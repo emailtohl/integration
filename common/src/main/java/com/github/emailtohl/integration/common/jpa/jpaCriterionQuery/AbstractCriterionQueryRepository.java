@@ -33,6 +33,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.query.QueryUtils;
 
 import com.github.emailtohl.integration.common.jpa.AbstractDynamicQueryRepository;
+import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.common.utils.BeanUtil;
 
 /**
@@ -201,7 +202,7 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 								path = prefix.get(name);
 							}
 							if (value instanceof String && isFuzzy) {
-								predicates.add(b.like((Path<String>) path, ((String) value).trim()));
+								predicates.add(b.like(b.lower((Path<String>) path), ((String) value).trim().toLowerCase()));
 							} else {
 								predicates.add(b.equal(path, value));
 							}
@@ -242,7 +243,7 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 					clz = entityClass;
 				} else {// 否则找到嵌入类或者其他实体类为止
 					clz = o.getClass();
-					while (clz != null && clz != Object.class) {
+					while (clz != null && clz != BaseEntity.class && clz != Object.class) {
 						Embeddable eb = clz.getAnnotation(Embeddable.class);
 						Entity et = clz.getAnnotation(Entity.class);
 						if (eb != null || et != null) {
@@ -280,7 +281,7 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 								path = prefix.get(name);
 							}
 							if (value instanceof String && isFuzzy) {
-								predicates.add(b.like((Path<String>) path, ((String) value).trim()));
+								predicates.add(b.like(b.lower((Path<String>) path), ((String) value).trim().toLowerCase()));
 							} else {
 								predicates.add(b.equal(path, value));
 							}

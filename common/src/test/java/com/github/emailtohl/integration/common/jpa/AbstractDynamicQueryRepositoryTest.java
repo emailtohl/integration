@@ -76,6 +76,7 @@ public class AbstractDynamicQueryRepositoryTest {
 		role_user = roleRepository.findByName(USER);
 		
 		u = new TestUser();
+		u.setName("hl");
 		u.setRoles(new HashSet<Role>(Arrays.asList(role_admin, role_employee)));
 		u.setEnabled(true);
 		u.setEmail("emailtohl@163.com");
@@ -88,7 +89,7 @@ public class AbstractDynamicQueryRepositoryTest {
 		// 附加属性，查询时不会将其分析出来
 		c.setExtendsPropery("hello world");
 		c.setLanguage("zh");
-		
+		u.setSubsidiary(c);
 	}
 	
 	@Test
@@ -131,6 +132,16 @@ public class AbstractDynamicQueryRepositoryTest {
 		for (User user : ls) {
 			logger.debug(user);
 		}
+		
+		String name = u.getName();
+		u.setName(u.getName().toUpperCase());
+		pu = concrete.getPage(u, 0, 5, AccessType.PROPERTY);
+		ls = pu.getContent();
+		assertFalse(ls.isEmpty());
+		for (User user : ls) {
+			logger.debug(user);
+		}
+		u.setName(name);
 	}
 
 	@Test
