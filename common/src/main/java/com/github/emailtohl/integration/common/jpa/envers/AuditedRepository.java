@@ -1,6 +1,7 @@
 package com.github.emailtohl.integration.common.jpa.envers;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
@@ -14,6 +15,15 @@ import org.springframework.data.domain.Pageable;
  * @param <E> 实体类型
  */
 public interface AuditedRepository<E extends Serializable> {
+	
+	/**
+	 * 查询某实体所有的历史记录，并根据谓词进行筛选
+	 * @param propertyNameValueMap 查询的谓词，使用AND关系过滤查询结果，可为空
+	 * @param pageable
+	 * @return 分页的元组列表，元组中包含版本详情，实体在该版本时的状态以及该版本的操作（增、改、删）
+	 */
+	List<Tuple<E>> getEntityRevision(Map<String, Object> propertyNameValueMap);
+	
 	/**
 	 * 查询某实体所有的历史记录，并根据谓词进行筛选
 	 * @param propertyNameValueMap 查询的谓词，使用AND关系过滤查询结果，可为空
@@ -21,6 +31,16 @@ public interface AuditedRepository<E extends Serializable> {
 	 * @return 分页的元组列表，元组中包含版本详情，实体在该版本时的状态以及该版本的操作（增、改、删）
 	 */
 	Page<Tuple<E>> getEntityRevision(Map<String, Object> propertyNameValueMap, Pageable pageable);
+	
+	/**
+	 * 查询某个修订版下，该实体类的所有的历史记录，但不包括删除时的
+	 * 例如创建一批用户，这是“增加”类型的修订版，该版本就关联着这一批用户实体
+	 * @param revision 版本号，通过AuditReader#getRevisions(Entity.class, ID)获得
+	 * @param propertyNameValueMap 查询的谓词，使用AND关系过滤查询结果，可为空
+	 * @param pageable
+	 * @return
+	 */
+	List<E> getEntitiesAtRevision(Number revision, Map<String, Object> propertyNameValueMap);
 	
 	/**
 	 * 查询某个修订版下，该实体类的所有的历史记录，但不包括删除时的
