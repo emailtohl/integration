@@ -3,6 +3,7 @@ package com.github.emailtohl.integration.common.jpa.envers;
 import static org.junit.Assert.assertFalse;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -159,6 +160,17 @@ public class AbstractAuditedRepositoryTest {
 //			logger.debug(bygone.getRoles());
 			
 		}
+		
+		List<Tuple<User>> ls = audRepos.getEntityRevision(propertyNameValueMap);
+		assertFalse(ls.isEmpty());
+		ls.forEach(t -> {
+			System.out.println(t);
+			if (t.getRevisionType() == RevisionType.ADD) {
+				int rev = t.getDefaultRevisionEntity().getId();
+				audRepos.getEntitiesAtRevision(rev, propertyNameValueMap).forEach(u -> System.out.println(u));
+			}
+		});
+		
 	}
 
 }

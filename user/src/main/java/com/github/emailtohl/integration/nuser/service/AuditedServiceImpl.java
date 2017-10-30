@@ -30,10 +30,16 @@ import com.github.emailtohl.integration.nuser.entities.User;
 public class AuditedServiceImpl implements AuditedService {
 	@Inject UserAudit userAudit;
 	@Inject RoleAudit roleAudit;
+	
 	@Override
 	public Page<User> getUserRevision(Long id, Pageable pageable) {
-		return null;
+		Map<String, Object> propertyNameValueMap = new HashMap<>();
+		propertyNameValueMap.put("id", id);
+		Page<Tuple<User>> p = userAudit.getEntityRevision(propertyNameValueMap, pageable);
+		List<User> ls = p.getContent().stream().map(t -> t.getEntity()).collect(toList());
+		return new PageImpl<>(ls, pageable, p.getNumberOfElements());
 	}
+	
 	@Override
 	public Page<User> getUsersAtRevision(int revision, Long id, Pageable pageable) {
 		Map<String, Object> propertyNameValueMap = new HashMap<>();
@@ -42,6 +48,7 @@ public class AuditedServiceImpl implements AuditedService {
 		List<User> ls = p.getContent().stream().map(t -> t.getEntity()).collect(toList());
 		return new PageImpl<>(ls, pageable, p.getNumberOfElements());
 	}
+	
 	@Override
 	public User getUserAtRevision(Long id, int revision) {
 		User source = userAudit.getEntityAtRevision(id, revision);
@@ -50,6 +57,7 @@ public class AuditedServiceImpl implements AuditedService {
 		source.getRoles().forEach(r -> target.getRoles().add(new Role(r.getName(), r.getDescription())));
 		return target;
 	}
+	
 	@Override
 	public Page<Role> getRoleRevision(String name, Pageable pageable) {
 		Map<String, Object> propertyNameValueMap = new HashMap<>();
@@ -58,12 +66,14 @@ public class AuditedServiceImpl implements AuditedService {
 		List<Role> ls = p.getContent().stream().map(t -> t.getEntity()).collect(toList());
 		return new PageImpl<>(ls, pageable, p.getNumberOfElements());
 	}
+	
 	@Override
 	public Page<Role> getRolesAtRevision(int revision, String name, Pageable pageable) {
 		Map<String, Object> propertyNameValueMap = new HashMap<>();
 		propertyNameValueMap.put("name", name);
 		return roleAudit.getEntitiesAtRevision(revision, propertyNameValueMap, pageable);
 	}
+	
 	@Override
 	public Role getRoleAtRevision(long roleId, int revision) {
 		return roleAudit.getEntityAtRevision(roleId, revision);
