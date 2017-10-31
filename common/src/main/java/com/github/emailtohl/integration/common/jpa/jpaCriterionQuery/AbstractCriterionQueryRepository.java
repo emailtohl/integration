@@ -33,18 +33,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.query.QueryUtils;
 
 import com.github.emailtohl.integration.common.jpa.AbstractDynamicQueryRepository;
-import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.common.utils.BeanUtil;
 
 /**
  * 提供标准查询的基类
  * 
+ * 注意：基本类型有默认值，会被分析作为参数，所以实体类最好别用基本类型，而是用其包装类
  * 注意：调用者需根据业务情况明确事务边界，添加上@javax.transaction.Transactional
  * 
  * @param <E>
  *            实体类
  * @author HeLei
- * @date 2017.02.04
  */
 public abstract class AbstractCriterionQueryRepository<E extends Serializable> extends AbstractDynamicQueryRepository<E>
 		implements CriterionQueryRepository<E> {
@@ -243,7 +242,7 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 					clz = entityClass;
 				} else {// 否则找到嵌入类或者其他实体类为止
 					clz = o.getClass();
-					while (clz != null && clz != BaseEntity.class && clz != Object.class) {
+					while (clz != null && clz != Object.class) {
 						Embeddable eb = clz.getAnnotation(Embeddable.class);
 						Entity et = clz.getAnnotation(Entity.class);
 						if (eb != null || et != null) {

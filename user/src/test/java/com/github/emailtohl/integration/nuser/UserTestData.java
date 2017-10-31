@@ -1,6 +1,27 @@
 package com.github.emailtohl.integration.nuser;
 
-import static com.github.emailtohl.integration.nuser.entities.Authority.*;
+import static com.github.emailtohl.integration.nuser.entities.Authority.APPLICATION_FORM_DELETE;
+import static com.github.emailtohl.integration.nuser.entities.Authority.APPLICATION_FORM_READ_HISTORY;
+import static com.github.emailtohl.integration.nuser.entities.Authority.APPLICATION_FORM_TRANSIT;
+import static com.github.emailtohl.integration.nuser.entities.Authority.AUDIT_ROLE;
+import static com.github.emailtohl.integration.nuser.entities.Authority.AUDIT_USER;
+import static com.github.emailtohl.integration.nuser.entities.Authority.CONTENT_MANAGER;
+import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER;
+import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER_DELETE;
+import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER_LEVEL;
+import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER_LOCK;
+import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER_RESET_PASSWORD;
+import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER_ROLE;
+import static com.github.emailtohl.integration.nuser.entities.Authority.EMPLOYEE;
+import static com.github.emailtohl.integration.nuser.entities.Authority.EMPLOYEE_DELETE;
+import static com.github.emailtohl.integration.nuser.entities.Authority.EMPLOYEE_LOCK;
+import static com.github.emailtohl.integration.nuser.entities.Authority.EMPLOYEE_RESET_PASSWORD;
+import static com.github.emailtohl.integration.nuser.entities.Authority.EMPLOYEE_ROLE;
+import static com.github.emailtohl.integration.nuser.entities.Authority.FLOW;
+import static com.github.emailtohl.integration.nuser.entities.Authority.FORUM_DELETE;
+import static com.github.emailtohl.integration.nuser.entities.Authority.QUERY_ALL_USER;
+import static com.github.emailtohl.integration.nuser.entities.Authority.RESOURCE_MANAGER;
+import static com.github.emailtohl.integration.nuser.entities.Authority.ROLE;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +33,7 @@ import java.util.HashSet;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import com.github.emailtohl.integration.common.jpa.entity.Image;
 import com.github.emailtohl.integration.nuser.entities.Address;
 import com.github.emailtohl.integration.nuser.entities.Authority;
 import com.github.emailtohl.integration.nuser.entities.Company;
@@ -19,7 +41,6 @@ import com.github.emailtohl.integration.nuser.entities.Customer;
 import com.github.emailtohl.integration.nuser.entities.Customer.Level;
 import com.github.emailtohl.integration.nuser.entities.Department;
 import com.github.emailtohl.integration.nuser.entities.Employee;
-import com.github.emailtohl.integration.nuser.entities.Image;
 import com.github.emailtohl.integration.nuser.entities.Role;
 import com.github.emailtohl.integration.nuser.entities.User.Gender;
 /**

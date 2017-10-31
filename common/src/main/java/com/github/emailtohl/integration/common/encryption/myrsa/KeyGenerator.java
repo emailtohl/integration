@@ -24,7 +24,6 @@ import org.apache.logging.log4j.Logger;
  * 解密：m = c^d % n
  * 
  * @author HeLei
- * @date 2017.01.23
  */
 public class KeyGenerator {
 	private static final Logger log = LogManager.getLogger();

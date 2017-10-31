@@ -20,7 +20,6 @@ import javax.persistence.Version;
  * 注意：依赖本基类的equals和hashCode方法会使你的实体对象在瞬时状态（没有id）时不能正确地存入集合（如HashSet）中
  * 
  * @author HeLei
- * @date 2017.02.04
  */
 @EntityListeners(EntityListener.class)
 /*
@@ -74,7 +73,7 @@ public abstract class BaseEntity implements Serializable {
 	 * 若jdbc返回0，要么item不存在，要么不再有版本0，此时会抛javax.persistence.OptimisticLockException异常
 	 * 需捕获此异常给用户适当提示。
 	 */
-	protected int version;
+	protected Integer version;
 	
 	/**
 	 * 获取ID
@@ -135,11 +134,11 @@ public abstract class BaseEntity implements Serializable {
 	}
 	
 	@Version
-	protected int getVersion() {
+	protected Integer getVersion() {
 		return version;
 	}
 
-	protected void setVersion(int version) {
+	protected void setVersion(Integer version) {
 		this.version = version;
 	}
 

@@ -8,7 +8,6 @@ import javax.persistence.AccessType;
 /**
  * 动态查询接口
  * @author HeLei
- * @date 2017.02.04
  *
  * @param <E>
  */

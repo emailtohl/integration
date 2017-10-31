@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * 在web层将异常转成http状态码
  * @author HeLei
- * @date 2017.03.12
  */
 @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 public class RestException extends RuntimeException {

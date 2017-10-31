@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
  * 但该接口的实现可能会在JSON序列化时有问题，故可先转成本分页对象再进行JSON序列化
  * 
  * @author HeLei
- * @date 2017.02.04
  *************************************************
  */
 public class Paging<T> implements Serializable {

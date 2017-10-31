@@ -11,7 +11,6 @@ import com.github.emailtohl.integration.common.Constant;
  * 前端zTree的数据模型
  * 
  * @author HeLei
- * @date 2017.02.04
  */
 public class FileNode extends ZtreeNode<File> {
 	private static final long serialVersionUID = -1932148922352477076L;

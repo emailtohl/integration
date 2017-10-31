@@ -17,10 +17,9 @@ import org.apache.logging.log4j.Logger;
  * 创建日期、修改日期处理
  * 
  * @author HeLei
- * @date 2017.02.04
  */
 public class EntityListener {
-	private static final Logger log = LogManager.getLogger();
+	private static final Logger LOG = LogManager.getLogger();
 
 	/**
 	 * 保存前处理
@@ -45,26 +44,26 @@ public class EntityListener {
 
 	@PostLoad
 	void readTrigger(BaseEntity entity) {
-		log.debug("entity read.");
+		LOG.debug("entity read.");
 	}
 
 	@PostPersist
 	void afterInsertTrigger(BaseEntity entity) {
-		log.debug("entity inserted into database.");
+		LOG.debug("entity inserted into database.");
 	}
 
 	@PostUpdate
 	void afterUpdateTrigger(BaseEntity entity) {
-		log.debug("entity just updated in the database.");
+		LOG.debug("entity just updated in the database.");
 	}
 
 	@PreRemove
 	void beforeDeleteTrigger(BaseEntity entity) {
-		log.debug("entity about to be deleted.");
+		LOG.debug("entity about to be deleted.");
 	}
 
 	@PostRemove
 	void afterDeleteTrigger(BaseEntity entity) {
-		log.debug("entity about deleted from database.");
+		LOG.debug("entity about deleted from database.");
 	}
 }

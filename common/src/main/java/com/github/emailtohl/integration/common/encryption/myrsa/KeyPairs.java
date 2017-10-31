@@ -6,7 +6,6 @@ import java.math.BigInteger;
  * 存放公钥，私钥以及模的对象
  * 
  * @author HeLei
- * @date 2017.01.23
  */
 public class KeyPairs implements Serializable {
 	private static final long serialVersionUID = -2084519818830906566L;

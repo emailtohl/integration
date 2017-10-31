@@ -25,7 +25,6 @@ import com.google.gson.Gson;
  * 另外cryptico.js库可直接创建出RSA的密钥对，由于cryptico加解密协议是私有实现不能与后台通信，且不能加解密中文编码，故只使用其生成RSA密钥的方法
  * 
  * @author HeLei
- * @date 2017.01.24
  */
 public class Encipher {
 	KeyGenerator kg = new KeyGenerator();

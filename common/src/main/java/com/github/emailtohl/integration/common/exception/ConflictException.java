@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * 冲突异常
  * @author HeLei
- * @date 2017.03.12
  */
 @ResponseStatus(HttpStatus.CONFLICT)
 public class ConflictException extends RestException {

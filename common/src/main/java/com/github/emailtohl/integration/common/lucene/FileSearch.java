@@ -66,7 +66,6 @@ import org.springframework.data.domain.Pageable;
  * 本工具只是适应本项目中轻量级的对文件系统建立索引，查询文本内容，更多应用还需借助成熟的开源框架。
  * 
  * @author HeLei
- * @date 2017.02.15
  */
 public class FileSearch implements AutoCloseable {
 	private static final Logger logger = LogManager.getLogger();

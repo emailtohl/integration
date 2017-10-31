@@ -1,6 +1,9 @@
 package com.github.emailtohl.integration.nuser.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,13 +29,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.emailtohl.integration.common.jpa.entity.Image;
 import com.github.emailtohl.integration.common.standard.ExecResult;
 import com.github.emailtohl.integration.nuser.UserTestData;
 import com.github.emailtohl.integration.nuser.entities.Address;
 import com.github.emailtohl.integration.nuser.entities.Card;
 import com.github.emailtohl.integration.nuser.entities.Customer;
 import com.github.emailtohl.integration.nuser.entities.Customer.Level;
-import com.github.emailtohl.integration.nuser.entities.Image;
 import com.github.emailtohl.integration.nuser.entities.User.Gender;
 import com.github.emailtohl.integration.nuser.userTestConfig.DataSourceConfiguration;
 import com.github.emailtohl.integration.nuser.userTestConfig.ServiceConfiguration;

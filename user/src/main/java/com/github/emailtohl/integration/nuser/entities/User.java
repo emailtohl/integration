@@ -34,6 +34,7 @@ import javax.validation.constraints.Size;
 
 import com.github.emailtohl.integration.common.Constant;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
+import com.github.emailtohl.integration.common.jpa.entity.Image;
 /**
  * 用户实体类
  * javax校验的注解在field上，JPA约束的注解写在JavaBean属性上

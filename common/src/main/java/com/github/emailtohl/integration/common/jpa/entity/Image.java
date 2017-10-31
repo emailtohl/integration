@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.nuser.entities;
+package com.github.emailtohl.integration.common.jpa.entity;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -10,7 +10,6 @@ import javax.validation.constraints.Size;
 /**
  * 图片嵌入类，一般图片存储的名字会用Uuid等方式，所以需保存一个原始名
  * @author HeLei
- * @date 2017.10.17
  */
 @Embeddable
 public class Image {

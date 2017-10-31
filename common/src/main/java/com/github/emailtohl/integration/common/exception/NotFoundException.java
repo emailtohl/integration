@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * 资源未找到异常
  * @author HeLei
- * @date 2017.03.12
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class NotFoundException extends RestException {

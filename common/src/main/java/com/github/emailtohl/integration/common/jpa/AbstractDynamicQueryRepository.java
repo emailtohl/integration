@@ -39,12 +39,12 @@ import com.github.emailtohl.integration.common.utils.BeanUtil;
  * 应用程序既可以直接继承以Spring data的提供的JpaRepository作为BaseRepository，也可以自定义BaseRepository
  * 本方案基于JPQL，提供分页查询功能
  * 
+ * 注意：基本类型有默认值，会被分析作为参数，所以实体类最好别用基本类型，而是用其包装类
  * 注意：不支持JPQL：嵌套、GROUP BY [HAVING ...]、排序
  * 注意：调用者需根据业务情况明确事务边界，添加上@javax.transaction.Transactional
  * 
  * @param <E> 实体类，ID统一为Long型
  * @author HeLei
- * @date 2016.09.08
  */
 public abstract class AbstractDynamicQueryRepository<E extends Serializable> extends AbstractJpaRepository<Long, E> implements DynamicQueryRepository<E> {
 	/**
