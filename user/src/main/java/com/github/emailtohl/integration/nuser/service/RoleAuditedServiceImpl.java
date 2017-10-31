@@ -10,31 +10,32 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.jpa.envers.Tuple;
-import com.github.emailtohl.integration.nuser.dao.EmployeeAudit;
-import com.github.emailtohl.integration.nuser.entities.Employee;
+import com.github.emailtohl.integration.nuser.dao.RoleAudit;
+import com.github.emailtohl.integration.nuser.entities.Role;
 /**
- * 审计内部账户的历史记录
+ * 审计角色的历史记录
  * @author HeLei
  */
 @Transactional
 @Service
-public class EmployeeAuditedServiceImpl implements EmployeeAuditedService {
-	@Inject EmployeeAudit employeeAudit;
-
+public class RoleAuditedServiceImpl implements RoleAuditedService {
+	@Inject RoleAudit roleAudit;
+	
 	@Override
-	public List<Tuple<Employee>> getEmployeeRevision(Long id) {
+	public List<Tuple<Role>> getRoleRevision(Long id) {
 		Map<String, Object> propertyNameValueMap = new HashMap<>();
 		propertyNameValueMap.put("id", id);
-		return employeeAudit.getAllRevisionInfo(propertyNameValueMap);
+		return roleAudit.getAllRevisionInfo(propertyNameValueMap);
 	}
 
 	@Override
-	public Employee getEmployeeAtRevision(Long id, Number revision) {
-		return employeeAudit.getEntityAtRevision(id, revision);
+	public Role getRoleAtRevision(Long id, Number revision) {
+		return roleAudit.getEntityAtRevision(id, revision);
 	}
 
 	@Override
 	public void rollback(Long id, Number revision) {
-		employeeAudit.rollback(id, revision);
+		roleAudit.rollback(id, revision);
 	}
+
 }
