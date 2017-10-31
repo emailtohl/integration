@@ -138,14 +138,29 @@ public class CustomerServiceImplTest {
 
 	@Test
 	public void testUpdate() {
-		Customer newEntity = new Customer();
-		newEntity.setDescription("update");
-		newEntity.setCellPhone("new Phone");
-		newEntity.setGender(Gender.FEMALE);
-		Customer c = customerService.update(id, newEntity);
+		Customer e = new Customer();
+		e.setName("bar");
+		e.setNickname("bar");
+		e.setPassword("212233");
+		e.setEmail("_haha@test.com");
+		e.setTelephone("212342513514");
+		e.setDescription("_测试人员");
+		e.setGender(Gender.FEMALE);
+		try (InputStream is = cl.getResourceAsStream("img/icon-head-bar.jpg")) {
+			e.setBirthday(sdf.parse("1990-12-22"));
+			byte[] icon = new byte[is.available()];
+			is.read(icon);
+			e.setImage(new Image("icon-head-bar.jpg", "download/img/icon-head-bar.jpg", icon));
+		} catch (ParseException | IOException exception) {
+			exception.printStackTrace();
+		}
+		e.setCellPhone("13345678906");
+		e.setIdentification("510111111111111111");
+		e.setAddress(new Address("重庆", "400000", "回龙路"));
+		Customer c = customerService.update(id, e);
 		c = customerService.get(id);
-		assertEquals("update", c.getDescription());
-		assertFalse("new Phone".equals(c.getCellPhone()));
+		assertEquals(e.getDescription(), c.getDescription());
+		assertFalse(e.getCellPhone().equals(c.getCellPhone()));
 		
 	}
 
@@ -237,4 +252,14 @@ public class CustomerServiceImplTest {
 		assertTrue(c.getCards().isEmpty());
 	}
 
+	@Test
+	public void testLogin() {
+		ExecResult r = customerService.login("lalala", "123");
+		assertFalse(r.ok);
+		UserTestData td = new UserTestData();
+		r = customerService.login(td.baz.getCellPhone(), "123");
+		assertFalse(r.ok);
+		r = customerService.login(td.baz.getCellPhone(), "123456");
+		assertTrue(r.ok);
+	}
 }

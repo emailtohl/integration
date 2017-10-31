@@ -1,6 +1,7 @@
 package com.github.emailtohl.integration.nuser.service;
 
 import java.security.SecureRandom;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -117,17 +118,28 @@ public class EmployeeServiceImpl implements EmployeeService {
 		if (source == null) {
 			return null;
 		}
-		source.setBirthday(newEntity.getBirthday());
-		source.setDescription(newEntity.getDescription());
-		source.setEmail(newEntity.getEmail());
-		source.setGender(newEntity.getGender());
-		source.setImage(newEntity.getImage());
-		source.setName(newEntity.getName());
-		source.setPost(newEntity.getPost());
-		source.setPublicKey(newEntity.getPublicKey());
-		source.setSalary(newEntity.getSalary());
-		source.setTelephone(newEntity.getTelephone());
-		source.setNickname(newEntity.getNickname());
+		if (newEntity.getBirthday() != null)
+			source.setBirthday(newEntity.getBirthday());
+		if (newEntity.getDescription() != null)
+			source.setDescription(newEntity.getDescription());
+		if (newEntity.getEmail() != null)
+			source.setEmail(newEntity.getEmail());
+		if (newEntity.getGender() != null)
+			source.setGender(newEntity.getGender());
+		if (newEntity.getImage() != null)
+			source.setImage(newEntity.getImage());
+		if (newEntity.getName() != null)
+			source.setName(newEntity.getName());
+		if (newEntity.getPost() != null)
+			source.setPost(newEntity.getPost());
+		if (newEntity.getPublicKey() != null)
+			source.setPublicKey(newEntity.getPublicKey());
+		if (newEntity.getSalary() != null)
+			source.setSalary(newEntity.getSalary());
+		if (newEntity.getTelephone() != null)
+			source.setTelephone(newEntity.getTelephone());
+		if (newEntity.getNickname() != null)
+			source.setNickname(newEntity.getNickname());
 		// 关于部门
 		if (newEntity.getDepartment() != null && newEntity.getDepartment().getName() != null) {
 			Department d = departmentRepository.findByName(newEntity.getDepartment().getName());
@@ -160,7 +172,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 		if (!BCrypt.checkpw(password, source.getPassword())) {
 			return new ExecResult(false, LoginResult.badCredentials.name(), null);
 		}
-		return new ExecResult(true, LoginResult.success.name(), toTransient(source));
+		source.setLastLoginTime(new Date());
+		return new ExecResult(true, LoginResult.success.name(), transientDetail(source));
 	}
 
 	@Override

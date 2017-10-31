@@ -17,7 +17,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -105,14 +104,29 @@ public class EmployeeServiceImplTest {
 
 	@Test
 	public void testUpdate() {
-		Employee src = employeeService.get(id);
-		Employee tar = new Employee();
-		BeanUtils.copyProperties(src, tar);
-		tar.setDescription("update");
-		tar.setDepartment(new UserTestData().qa);
-		Employee u = employeeService.update(id, tar);
-		assertEquals(tar.getDescription(), u.getDescription());
-		assertEquals(tar.getDepartment(), u.getDepartment());
+		Employee e = new Employee();
+		e.setName("lala");
+		e.setNickname("bar");
+		e.setPassword("556677");
+		e.setEmail("barbar@test.com");
+		e.setTelephone("998877");
+		e.setDescription("质量人员");
+		e.setGender(Gender.MALE);
+		try (InputStream is = cl.getResourceAsStream("img/icon-head-bar.jpg")) {
+			e.setBirthday(sdf.parse("1990-12-22"));
+			byte[] icon = new byte[is.available()];
+			is.read(icon);
+			e.setImage(new Image("icon-head-bar.jpg", "download/img/icon-head-bar.jpg", icon));
+		} catch (ParseException | IOException exception) {
+			exception.printStackTrace();
+		}
+		e.setEmpNum(1);
+		e.setPost("系统分析师");
+		e.setSalary(10000.00);
+		e.setDepartment(new UserTestData().qa);
+		Employee u = employeeService.update(id, e);
+		assertEquals(e.getDescription(), u.getDescription());
+		assertEquals(e.getDepartment(), u.getDepartment());
 	}
 
 	@Test
@@ -136,6 +150,17 @@ public class EmployeeServiceImplTest {
 	@Test
 	public void testLock() {
 		employeeService.lock(id, false);
+	}
+	
+	@Test
+	public void testLogin() {
+		ExecResult r = employeeService.login(0, "123");
+		assertFalse(r.ok);
+		UserTestData td = new UserTestData();
+		r = employeeService.login(td.bar.getEmpNum(), "123");
+		assertFalse(r.ok);
+		r = employeeService.login(td.bar.getEmpNum(), "123456");
+		assertTrue(r.ok);
 	}
 
 }

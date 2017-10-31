@@ -67,7 +67,8 @@ public class User extends BaseEntity {
 	protected Boolean accountNonExpired = true;
 	protected Boolean credentialsNonExpired = true;
 	protected Boolean accountNonLocked = true;
-	@Past// 校验，日期相对于当前较早
+	protected Date lastLoginTime; // 最后一次登录时间
+	@Past // 校验，日期相对于当前较早
 	protected Date birthday;
 	@Min(value = 1)
 	@Max(value = 120)
@@ -152,6 +153,14 @@ public class User extends BaseEntity {
 	}
 	public void setAccountNonLocked(Boolean accountNonLocked) {
 		this.accountNonLocked = accountNonLocked;
+	}
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getLastLoginTime() {
+		return lastLoginTime;
+	}
+	public void setLastLoginTime(Date lastLoginTime) {
+		this.lastLoginTime = lastLoginTime;
 	}
 	
 	@org.hibernate.envers.NotAudited

@@ -29,13 +29,25 @@ public class Customer extends User {
 		ORDINARY, VIP
 	}
 	
-	// 顾客等级
+	/**
+	 * 顾客等级
+	 */
 	private Level level;
-	// 地址
+	/**
+	 * 地址
+	 */
 	private Address address;
-	// 身份证号码
+	/**
+	 * 身份证号码
+	 */
 	private String identification;
-	// 拥有的卡
+	/**
+	 * 积分
+	 */
+	private Integer points;
+	/**
+	 * 拥有的卡
+	 */
 	private Set<Card> cards = new HashSet<Card>();
 	
 	/**
@@ -80,6 +92,14 @@ public class Customer extends User {
 		this.identification = identification;
 	}
 	
+	public Integer getPoints() {
+		return points;
+	}
+
+	public void setPoints(Integer points) {
+		this.points = points;
+	}
+
 	@ElementCollection
 	@JoinTable(name = "t_customer_card")
 	public Set<Card> getCards() {

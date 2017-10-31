@@ -1,6 +1,7 @@
 package com.github.emailtohl.integration.nuser.service;
 
 import java.security.SecureRandom;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -135,17 +136,28 @@ public class CustomerServiceImpl implements CustomerService {
 		if (source == null) {
 			return null;
 		}
-		source.setBirthday(newEntity.getBirthday());
-		source.setDescription(newEntity.getDescription());
-		source.setEmail(newEntity.getEmail());
-		source.setGender(newEntity.getGender());
-		source.setImage(newEntity.getImage());
-		source.setName(newEntity.getName());
-		source.setPublicKey(newEntity.getPublicKey());
-		source.setTelephone(newEntity.getTelephone());
-		source.setNickname(newEntity.getNickname());
-		source.setIdentification(newEntity.getIdentification());
-		source.setAddress(newEntity.getAddress());
+		if (newEntity.getBirthday() != null)
+			source.setBirthday(newEntity.getBirthday());
+		if (newEntity.getDescription() != null)
+			source.setDescription(newEntity.getDescription());
+		if (newEntity.getEmail() != null)
+			source.setEmail(newEntity.getEmail());
+		if (newEntity.getGender() != null)
+			source.setGender(newEntity.getGender());
+		if (newEntity.getImage() != null)
+			source.setImage(newEntity.getImage());
+		if (newEntity.getName() != null)
+			source.setName(newEntity.getName());
+		if (newEntity.getPublicKey() != null)
+			source.setPublicKey(newEntity.getPublicKey());
+		if (newEntity.getTelephone() != null)
+			source.setTelephone(newEntity.getTelephone());
+		if (newEntity.getNickname() != null)
+			source.setNickname(newEntity.getNickname());
+		if (newEntity.getIdentification() != null)
+			source.setIdentification(newEntity.getIdentification());
+		if (newEntity.getAddress() != null)
+			source.setAddress(newEntity.getAddress());
 		return transientDetail(source);
 	}
 
@@ -177,7 +189,8 @@ public class CustomerServiceImpl implements CustomerService {
 		if (!BCrypt.checkpw(password, c.getPassword())) {
 			return new ExecResult(false, LoginResult.badCredentials.name(), null);
 		}
-		return new ExecResult(true, LoginResult.success.name(), toTransient(c));
+		c.setLastLoginTime(new Date());
+		return new ExecResult(true, LoginResult.success.name(), transientDetail(c));
 	}
 	
 	@Override
