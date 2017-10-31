@@ -82,7 +82,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		pw = BCrypt.hashpw(pw, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		e.setPassword(pw);
 		e = employeeRepository.save(e);
-		return filter(e);
+		return transientDetail(e);
 	}
 
 	@Override
@@ -94,58 +94,58 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Cacheable(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Employee get(Long id) {
-		Employee e = employeeRepository.get(id);
-		return filter(e);
+		Employee source = employeeRepository.get(id);
+		return transientDetail(source);
 	}
 
 	@Override
 	public Page<Employee> query(Employee params, Pageable pageable) {
 		Page<Employee> p = employeeRepository.queryForPage(params, pageable);
-		List<Employee> content = p.getContent().stream().map(this::filter).collect(Collectors.toList());
+		List<Employee> content = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
 		return new PageImpl<>(content, pageable, p.getTotalElements());
 	}
 
 	@Override
 	public List<Employee> query(Employee params) {
-		return employeeRepository.queryForList(params).stream().map(this::filter).collect(Collectors.toList());
+		return employeeRepository.queryForList(params).stream().map(this::toTransient).collect(Collectors.toList());
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Employee update(Long id, Employee newEntity) {
-		Employee target = employeeRepository.get(id);
-		if (target == null) {
+		Employee source = employeeRepository.get(id);
+		if (source == null) {
 			return null;
 		}
-		target.setBirthday(newEntity.getBirthday());
-		target.setDescription(newEntity.getDescription());
-		target.setEmail(newEntity.getEmail());
-		target.setGender(newEntity.getGender());
-		target.setImage(newEntity.getImage());
-		target.setName(newEntity.getName());
-		target.setPost(newEntity.getPost());
-		target.setPublicKey(newEntity.getPublicKey());
-		target.setSalary(newEntity.getSalary());
-		target.setTelephone(newEntity.getTelephone());
-		target.setNickname(newEntity.getNickname());
+		source.setBirthday(newEntity.getBirthday());
+		source.setDescription(newEntity.getDescription());
+		source.setEmail(newEntity.getEmail());
+		source.setGender(newEntity.getGender());
+		source.setImage(newEntity.getImage());
+		source.setName(newEntity.getName());
+		source.setPost(newEntity.getPost());
+		source.setPublicKey(newEntity.getPublicKey());
+		source.setSalary(newEntity.getSalary());
+		source.setTelephone(newEntity.getTelephone());
+		source.setNickname(newEntity.getNickname());
 		// 关于部门
 		if (newEntity.getDepartment() != null && newEntity.getDepartment().getName() != null) {
 			Department d = departmentRepository.findByName(newEntity.getDepartment().getName());
 			if (d != null) {
-				target.setDepartment(d);
+				source.setDepartment(d);
 			}
 		}
-		return filter(target);
+		return transientDetail(source);
 	}
 
 	@CacheEvict(value = CACHE_NAME, key = "#root.args[0]")
 	@Override
 	public void delete(Long id) {
-		Employee target = employeeRepository.getOne(id);
+		Employee source = employeeRepository.getOne(id);
 		// 解除双方关系
-		for (Iterator<Role> i = target.getRoles().iterator(); i.hasNext();) {
+		for (Iterator<Role> i = source.getRoles().iterator(); i.hasNext();) {
 			Role r = i.next();
-			r.getUsers().remove(target);
+			r.getUsers().remove(source);
 			i.remove();
 		}
 		employeeRepository.delete(id);
@@ -153,88 +153,97 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public ExecResult login(Integer empNum, String password) {
-		Employee e = employeeRepository.findByEmpNum(empNum);
-		if (e == null) {
+		Employee source = employeeRepository.findByEmpNum(empNum);
+		if (source == null) {
 			return new ExecResult(false, LoginResult.notFound.name(), null);
 		}
-		if (!BCrypt.checkpw(password, e.getPassword())) {
+		if (!BCrypt.checkpw(password, source.getPassword())) {
 			return new ExecResult(false, LoginResult.badCredentials.name(), null);
 		}
-		return new ExecResult(true, LoginResult.success.name(), filter(e));
+		return new ExecResult(true, LoginResult.success.name(), toTransient(source));
 	}
 
 	@Override
 	public Employee getByEmpNum(Integer empNum) {
-		Employee target = employeeRepository.findByEmpNum(empNum);
-		return filter(target);
+		Employee source = employeeRepository.findByEmpNum(empNum);
+		return transientDetail(source);
 	}
 	
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Employee grandRoles(Long id, String... roleNames) {
-		Employee target = employeeRepository.get(id);
-		if (target == null) {
+		Employee source = employeeRepository.get(id);
+		if (source == null) {
 			return null;
 		}
 		// 解除双方关系
-		for (Iterator<Role> i = target.getRoles().iterator(); i.hasNext();) {
+		for (Iterator<Role> i = source.getRoles().iterator(); i.hasNext();) {
 			Role r = i.next();
-			r.getUsers().remove(target);
+			r.getUsers().remove(source);
 			i.remove();
 		}
 		for (String name : roleNames) {
 			Role r = roleRepository.findByName(name);
 			if (r != null) {
-				target.getRoles().add(r);
-				r.getUsers().add(target);
+				source.getRoles().add(r);
+				r.getUsers().add(source);
 			}
 		}
-		return filter(target);
+		return transientDetail(source);
 	}
 
 	@Override
 	public ExecResult updatePassword(Long id, String oldPassword, String newPassword) {
-		Employee target = employeeRepository.get(id);
-		if (target == null) {
+		Employee source = employeeRepository.get(id);
+		if (source == null) {
 			return new ExecResult(false, "没有此用户", null);
 		}
-		if (!BCrypt.checkpw(oldPassword, target.getPassword())) {
+		if (!BCrypt.checkpw(oldPassword, source.getPassword())) {
 			return new ExecResult(false, "原密码输入错误", null);
 		}
 		String hashPw = BCrypt.hashpw(newPassword, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
-		target.setPassword(hashPw);
+		source.setPassword(hashPw);
 		return new ExecResult(true, "", null);
 	}
 
 	@Override
 	public ExecResult resetPassword(Long id) {
-		Employee target = employeeRepository.get(id);
-		if (target == null) {
+		Employee source = employeeRepository.get(id);
+		if (source == null) {
 			return new ExecResult(false, "没有此用户", null);
 		}
 		String hashPw = BCrypt.hashpw(employeeDefaultPassword, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
-		target.setPassword(hashPw);
+		source.setPassword(hashPw);
 		return new ExecResult(true, "", null);
 	}
 	
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Employee lock(Long id, boolean lock) {
-		Employee target = employeeRepository.get(id);
-		if (target == null) {
+		Employee source = employeeRepository.get(id);
+		if (source == null) {
 			return null;
 		}
-		target.setAccountNonLocked(!lock);
-		return filter(target);
+		source.setAccountNonLocked(!lock);
+		return transientDetail(source);
 	}
 	
-	private Employee filter(Employee source) {
+	private Employee toTransient(Employee source) {
 		if (source == null) {
 			return null;
 		}
 		Employee target = new Employee();
-		BeanUtils.copyProperties(source, target, Employee.getIgnoreProperties("password"));
-		target.setId(source.getId());
+		BeanUtils.copyProperties(source, target, "password", "roles");
+		return target;
+	}
+	
+	private Employee transientDetail(Employee source) {
+		if (source == null) {
+			return null;
+		}
+		Employee target = new Employee();
+		BeanUtils.copyProperties(source, target, "password", "roles");
+		source.getRoles().forEach(role -> target.getRoles().add(new Role(role.getName(), role.getDescription())));
 		return target;
 	}
 	

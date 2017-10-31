@@ -49,4 +49,12 @@ public class UserServiceImplTest {
 		assertFalse(p.getContent().isEmpty());
 	}
 
+	@Test
+	public void testGet() {
+		Page<User> p = userService.query(null, pageable);
+		p.getContent().forEach(u -> {
+			User uu = userService.get(u.getId());
+			assertNotNull(uu);
+		});
+	}
 }

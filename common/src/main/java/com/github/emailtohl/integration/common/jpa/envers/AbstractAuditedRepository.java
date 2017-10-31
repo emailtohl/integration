@@ -53,14 +53,13 @@ public abstract class AbstractAuditedRepository<E extends Serializable> implemen
 	protected Class<E> entityClass;
 	
 	/**
-	 * 查询某实体所有的历史记录，并根据谓词进行筛选
+	 * 根据实体的属性查询所有的修订记录，例如查询User实体中name属性为"foo"相关的所有修订记录
 	 * @param propertyNameValueMap 查询的谓词，使用AND关系过滤查询结果，可为空
-	 * @param pageable
-	 * @return 分页的元组列表，元组中包含版本详情，实体在该版本时的状态以及该版本的操作（增、改、删）
+	 * @return 元组列表，元组中包含版本详情，实体在该版本时的状态以及该版本的操作（增、改、删）
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Tuple<E>> getEntityRevision(Map<String, Object> propertyNameValueMap) {
+	public List<Tuple<E>> getAllRevisionInfo(Map<String, Object> propertyNameValueMap) {
 		AuditReader auditReader = AuditReaderFactory.get(entityManager);
 		AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(entityClass, false, false);
 		if (propertyNameValueMap != null) {
@@ -88,14 +87,14 @@ public abstract class AbstractAuditedRepository<E extends Serializable> implemen
 	}
 	
 	/**
-	 * 查询某实体所有的历史记录，并根据谓词进行筛选
+	 * 根据实体的属性，分页查询所有修订记录，例如查询User实体中name属性为"foo"相关的所有修订记录
 	 * @param propertyNameValueMap 查询的谓词，使用AND关系过滤查询结果，可为空
 	 * @param pageable
 	 * @return 分页的元组列表，元组中包含版本详情，实体在该版本时的状态以及该版本的操作（增、改、删）
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Page<Tuple<E>> getEntityRevision(Map<String, Object> propertyNameValueMap, Pageable pageable) {
+	public Page<Tuple<E>> getRevisionInfoPage(Map<String, Object> propertyNameValueMap, Pageable pageable) {
 		AuditReader auditReader = AuditReaderFactory.get(entityManager);
 		AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(entityClass, false, false);
 		if (propertyNameValueMap != null) {
@@ -146,12 +145,11 @@ public abstract class AbstractAuditedRepository<E extends Serializable> implemen
 	}
 
 	/**
-	 * 查询某个修订版下，该实体类的所有的历史记录，但不包括删除时的
-	 * 例如创建一批用户，这是“增加”类型的修订版，该版本就关联着这一批用户实体
+	 * 查询某个修订版下（“新增”时或“修改”时的）并且与条件相匹配的历史记录
+	 * 例如批量修改一批用户的版本号（revision）是5，该接口将查询这次修改的所有账户（当然要与propertyNameValueMap匹配的）
 	 * @param revision 版本号，通过AuditReader#getRevisions(Entity.class, ID)获得
 	 * @param propertyNameValueMap 查询的谓词，使用AND关系过滤查询结果，可为空
-	 * @param pageable
-	 * @return 
+	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -172,12 +170,12 @@ public abstract class AbstractAuditedRepository<E extends Serializable> implemen
 	}
 	
 	/**
-	 * 查询某个修订版下，该实体类的所有的历史记录，但不包括删除时的
-	 * 例如创建一批用户，这是“增加”类型的修订版，该版本就关联着这一批用户实体
+	 * 查询某个修订版下（“新增”时或“修改”时的）并且与条件相匹配的历史记录
+	 * 例如批量修改一批用户的版本号（revision）是5，该接口将查询这次修改的所有账户（当然要与propertyNameValueMap匹配的）
 	 * @param revision 版本号，通过AuditReader#getRevisions(Entity.class, ID)获得
 	 * @param propertyNameValueMap 查询的谓词，使用AND关系过滤查询结果，可为空
 	 * @param pageable
-	 * @return 
+	 * @return
 	 */
 	@Override
 	public Page<E> getEntitiesAtRevision(Number revision, Map<String, Object> propertyNameValueMap, Pageable pageable) {
@@ -222,7 +220,7 @@ public abstract class AbstractAuditedRepository<E extends Serializable> implemen
 	}
 
 	/**
-	 * 查询某个实体在某个修订版时的历史记录
+	 * 精确查询某个实体在某个修订版时的历史记录
 	 * @param id 实体的id
 	 * @param revision 版本号，通过AuditReader#getRevisions(Entity.class, ID)获得
 	 * @return
@@ -234,7 +232,7 @@ public abstract class AbstractAuditedRepository<E extends Serializable> implemen
 	}
 	
 	/**
-	 * 回滚到某历史版本上
+	 * 将实体回滚到某历史版本上
 	 */
 	@Override
 	public void rollback(Long id, Number revision) {

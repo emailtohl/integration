@@ -20,7 +20,6 @@ import javax.validation.constraints.NotNull;
  * @date 2017.02.04
  */
 @org.hibernate.search.annotations.Indexed
-@org.hibernate.envers.Audited
 @Entity
 @Table(name = "customer")
 public class Customer extends User {

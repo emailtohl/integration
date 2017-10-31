@@ -1,10 +1,10 @@
 package com.github.emailtohl.integration.nuser.dao;
 
 import com.github.emailtohl.integration.common.jpa.envers.AuditedRepository;
-import com.github.emailtohl.integration.nuser.entities.User;
+import com.github.emailtohl.integration.nuser.entities.Employee;
 /**
- * User的历史信息
+ * Employee的历史信息
  * @author HeLei
  */
-public interface UserAudit extends AuditedRepository<User> {
+public interface EmployeeAudit extends AuditedRepository<Employee> {
 }

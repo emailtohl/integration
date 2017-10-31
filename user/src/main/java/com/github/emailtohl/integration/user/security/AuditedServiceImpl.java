@@ -39,7 +39,7 @@ public class AuditedServiceImpl implements AuditedService {
 	public Paging<UserDto> getUserRevision(String email, Pageable pageable) {
 		Map<String, Object> propertyNameValueMap = new HashMap<>();
 		propertyNameValueMap.put("email", email);
-		Page<Tuple<User>> page = userAudit.getEntityRevision(propertyNameValueMap, pageable);
+		Page<Tuple<User>> page = userAudit.getRevisionInfoPage(propertyNameValueMap, pageable);
 		List<UserDto> ls = page.getContent().stream().map(this::convert).collect(toList());
 		return new Paging<>(ls, page.getTotalElements(), page.getNumber(), page.getSize());
 	}
@@ -62,7 +62,7 @@ public class AuditedServiceImpl implements AuditedService {
 	public Paging<RoleDto> getRoleRevision(String name, Pageable pageable) {
 		Map<String, Object> propertyNameValueMap = new HashMap<>();
 		propertyNameValueMap.put("name", name);
-		Page<Tuple<Role>> page = roleAudit.getEntityRevision(propertyNameValueMap, pageable);
+		Page<Tuple<Role>> page = roleAudit.getRevisionInfoPage(propertyNameValueMap, pageable);
 		List<RoleDto> ls = page.getContent().stream().map(this::convertRole).collect(toList());
 		return new Paging<>(ls, page.getTotalElements(), page.getNumber(), page.getSize());
 	}

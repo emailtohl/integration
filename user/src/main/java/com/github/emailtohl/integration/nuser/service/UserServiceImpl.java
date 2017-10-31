@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
 import com.github.emailtohl.integration.nuser.dao.UserRepository;
-import com.github.emailtohl.integration.nuser.entities.Customer;
 import com.github.emailtohl.integration.nuser.entities.User;
 
 /**
@@ -37,14 +36,31 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Page<User> query(User params, Pageable pageable) {
 		Page<User> p = userRepository.queryForPage(params, pageable);
-		List<User> ls = p.getContent().stream().map(this::filter).collect(Collectors.toList());
+		List<User> ls = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
 		return new PageImpl<>(ls, pageable, p.getTotalElements());
 	}
 
-	private User filter(User source) {
+	@Override
+	public User get(Long id) {
+		User source = userRepository.get(id);
+		return transientDetail(source);
+	}
+	
+	private User toTransient(User source) {
+		if (source == null) {
+			return null;
+		}
 		User target = new User();
-		BeanUtils.copyProperties(source, target, Customer.getIgnoreProperties("password"));
-		target.setId(source.getId());
+		BeanUtils.copyProperties(source, target, "password", "roles");
+		return target;
+	}
+	
+	private User transientDetail(User source) {
+		if (source == null) {
+			return null;
+		}
+		User target = new User();
+		BeanUtils.copyProperties(source, target, "password", "roles", "cards");
 		return target;
 	}
 

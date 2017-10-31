@@ -125,7 +125,7 @@ public class AbstractAuditedRepositoryTest {
 		Map<String, Object> propertyNameValueMap = new HashMap<>();
 		propertyNameValueMap.put("name", "forAuditTest");
 		// test getEntityRevision
-		Page<Tuple<User>> page = audRepos.getEntityRevision(propertyNameValueMap, pageable);
+		Page<Tuple<User>> page = audRepos.getRevisionInfoPage(propertyNameValueMap, pageable);
 		for (Tuple<User> tuple : page.getContent()) {
 			logger.debug(tuple.getEntity());
 			logger.debug(tuple.getDefaultRevisionEntity());
@@ -161,7 +161,7 @@ public class AbstractAuditedRepositoryTest {
 			
 		}
 		
-		List<Tuple<User>> ls = audRepos.getEntityRevision(propertyNameValueMap);
+		List<Tuple<User>> ls = audRepos.getAllRevisionInfo(propertyNameValueMap);
 		assertFalse(ls.isEmpty());
 		ls.forEach(t -> {
 			System.out.println(t);

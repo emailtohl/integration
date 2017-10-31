@@ -215,6 +215,8 @@ public class User extends BaseEntity {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	@org.hibernate.envers.NotAudited
 	@Lob
 	public String getPublicKey() {
 		return publicKey;

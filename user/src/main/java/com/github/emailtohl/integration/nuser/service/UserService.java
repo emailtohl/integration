@@ -31,4 +31,10 @@ public interface UserService {
 	 */
 	Page<User> query(User params, Pageable pageable);
 	
+	/**
+	 * 查看该User
+	 * @param id
+	 * @return
+	 */
+	User get(Long id);
 }

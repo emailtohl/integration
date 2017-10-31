@@ -162,6 +162,7 @@ public class CustomerServiceImplTest {
 	public void testGrandRoles() {
 		UserTestData td = new UserTestData();
 		Customer c = customerService.grandRoles(id, td.role_guest.getName());
+		c = customerService.get(id);
 		assertFalse(c.getRoles().isEmpty());
 	}
 

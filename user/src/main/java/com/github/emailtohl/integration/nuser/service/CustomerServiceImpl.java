@@ -90,7 +90,7 @@ public class CustomerServiceImpl implements CustomerService {
 		pw = BCrypt.hashpw(pw, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		c.setPassword(pw);
 		c = customerRepository.save(c);
-		return filter(c);
+		return transientDetail(c);
 	}
 
 	@Override
@@ -112,52 +112,51 @@ public class CustomerServiceImpl implements CustomerService {
 	@Cacheable(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer get(Long id) {
-		Customer c = customerRepository.get(id);
-		c.getCards().size();// 关联查询
-		return filter(c);
+		Customer source = customerRepository.get(id);
+		return transientDetail(source);
 	}
 
 	@Override
 	public Page<Customer> query(Customer params, Pageable pageable) {
 		Page<Customer> p = customerRepository.queryForPage(params, pageable);
-		List<Customer> content = p.getContent().stream().map(this::filter).collect(Collectors.toList());
+		List<Customer> content = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
 		return new PageImpl<>(content, pageable, p.getTotalElements());
 	}
 
 	@Override
 	public List<Customer> query(Customer params) {
-		return customerRepository.queryForList(params).stream().map(this::filter).collect(Collectors.toList());
+		return customerRepository.queryForList(params).stream().map(this::toTransient).collect(Collectors.toList());
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer update(Long id, Customer newEntity) {
-		Customer target = customerRepository.get(id);
-		if (target == null) {
+		Customer source = customerRepository.get(id);
+		if (source == null) {
 			return null;
 		}
-		target.setBirthday(newEntity.getBirthday());
-		target.setDescription(newEntity.getDescription());
-		target.setEmail(newEntity.getEmail());
-		target.setGender(newEntity.getGender());
-		target.setImage(newEntity.getImage());
-		target.setName(newEntity.getName());
-		target.setPublicKey(newEntity.getPublicKey());
-		target.setTelephone(newEntity.getTelephone());
-		target.setNickname(newEntity.getNickname());
-		target.setIdentification(newEntity.getIdentification());
-		target.setAddress(newEntity.getAddress());
-		return filter(target);
+		source.setBirthday(newEntity.getBirthday());
+		source.setDescription(newEntity.getDescription());
+		source.setEmail(newEntity.getEmail());
+		source.setGender(newEntity.getGender());
+		source.setImage(newEntity.getImage());
+		source.setName(newEntity.getName());
+		source.setPublicKey(newEntity.getPublicKey());
+		source.setTelephone(newEntity.getTelephone());
+		source.setNickname(newEntity.getNickname());
+		source.setIdentification(newEntity.getIdentification());
+		source.setAddress(newEntity.getAddress());
+		return transientDetail(source);
 	}
 
 	@CacheEvict(value = CACHE_NAME, key = "#root.args[0]")
 	@Override
 	public void delete(Long id) {
-		Customer target = customerRepository.getOne(id);
+		Customer source = customerRepository.getOne(id);
 		// 解除双方关系
-		for (Iterator<Role> i = target.getRoles().iterator(); i.hasNext();) {
+		for (Iterator<Role> i = source.getRoles().iterator(); i.hasNext();) {
 			Role r = i.next();
-			r.getUsers().remove(target);
+			r.getUsers().remove(source);
 			i.remove();
 		}
 		customerRepository.delete(id);
@@ -178,7 +177,7 @@ public class CustomerServiceImpl implements CustomerService {
 		if (!BCrypt.checkpw(password, c.getPassword())) {
 			return new ExecResult(false, LoginResult.badCredentials.name(), null);
 		}
-		return new ExecResult(true, LoginResult.success.name(), filter(c));
+		return new ExecResult(true, LoginResult.success.name(), toTransient(c));
 	}
 	
 	@Override
@@ -190,139 +189,149 @@ public class CustomerServiceImpl implements CustomerService {
 		} else {
 			c = customerRepository.findByCellPhone(cellPhoneOrEmail);
 		}
-		return filter(c);
+		return transientDetail(c);
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer grandRoles(Long id, String... roleNames) {
-		Customer target = customerRepository.get(id);
-		if (target == null) {
+		Customer source = customerRepository.get(id);
+		if (source == null) {
 			return null;
 		}
 		// 解除双方关系
-		for (Iterator<Role> i = target.getRoles().iterator(); i.hasNext();) {
+		for (Iterator<Role> i = source.getRoles().iterator(); i.hasNext();) {
 			Role r = i.next();
-			r.getUsers().remove(target);
+			r.getUsers().remove(source);
 			i.remove();
 		}
 		for (String name : roleNames) {
 			Role r = roleRepository.findByName(name);
 			if (r != null) {
-				target.getRoles().add(r);
-				r.getUsers().add(target);
+				source.getRoles().add(r);
+				r.getUsers().add(source);
 			}
 		}
-		return filter(target);
+		return transientDetail(source);
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer grandLevel(Long id, Level level) {
-		Customer target = customerRepository.get(id);
-		if (target == null) {
+		Customer source = customerRepository.get(id);
+		if (source == null) {
 			return null;
 		}
-		target.setLevel(level);
-		return filter(target);
+		source.setLevel(level);
+		return transientDetail(source);
 	}
 
 	@Override
 	public ExecResult updatePassword(Long id, String newPassword) {
-		Customer target = customerRepository.get(id);
-		if (target == null) {
+		Customer source = customerRepository.get(id);
+		if (source == null) {
 			return new ExecResult(false, "没有此用户", null);
 		}
 		String hashPw = BCrypt.hashpw(newPassword, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
-		target.setPassword(hashPw);
+		source.setPassword(hashPw);
 		return new ExecResult(true, "", null);
 	}
 	
 	@Override
 	public ExecResult resetPassword(Long id) {
-		Customer target = customerRepository.get(id);
-		if (target == null) {
+		Customer source = customerRepository.get(id);
+		if (source == null) {
 			return new ExecResult(false, "没有此用户", null);
 		}
 		String hashPw = BCrypt.hashpw(customerDefaultPassword, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
-		target.setPassword(hashPw);
+		source.setPassword(hashPw);
 		return new ExecResult(true, "", null);
 	}
 	
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer changeCellPhone(Long id, String newCellPhone) {
-		Customer target = customerRepository.get(id);
-		if (target == null) {
+		Customer source = customerRepository.get(id);
+		if (source == null) {
 			return null;
 		}
-		target.setCellPhone(newCellPhone);
-		return filter(target);
+		source.setCellPhone(newCellPhone);
+		return transientDetail(source);
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer changeEmail(Long id, String newEmail) {
-		Customer target = customerRepository.get(id);
-		if (target == null) {
+		Customer source = customerRepository.get(id);
+		if (source == null) {
 			return null;
 		}
-		target.setEmail(newEmail);
-		return filter(target);
+		source.setEmail(newEmail);
+		return transientDetail(source);
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer lock(Long id, boolean lock) {
-		Customer target = customerRepository.get(id);
-		if (target == null) {
+		Customer source = customerRepository.get(id);
+		if (source == null) {
 			return null;
 		}
-		target.setAccountNonLocked(!lock);
-		return filter(target);
+		source.setAccountNonLocked(!lock);
+		return transientDetail(source);
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer updateCards(Long id, Set<Card> cards) {
-		Customer target = customerRepository.get(id);
-		if (target == null) {
+		Customer source = customerRepository.get(id);
+		if (source == null) {
 			return null;
 		}
-		target.getCards().clear();
-		target.getCards().addAll(cards);
-		return filter(target);
+		source.getCards().clear();
+		source.getCards().addAll(cards);
+		return transientDetail(source);
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer addCard(Long id, Card card) {
-		Customer target = customerRepository.get(id);
-		if (target == null) {
+		Customer source = customerRepository.get(id);
+		if (source == null) {
 			return null;
 		}
-		target.getCards().add(card);
-		return filter(target);
+		source.getCards().add(card);
+		return transientDetail(source);
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer removeCard(Long id, Card card) {
-		Customer target = customerRepository.get(id);
-		if (target == null) {
+		Customer source = customerRepository.get(id);
+		if (source == null) {
 			return null;
 		}
-		target.getCards().remove(card);
-		return filter(target);
+		source.getCards().remove(card);
+		return transientDetail(source);
 	}
 	
-	private Customer filter(Customer source) {
+	private Customer toTransient(Customer source) {
 		if (source == null) {
 			return null;
 		}
 		Customer target = new Customer();
-		BeanUtils.copyProperties(source, target, Customer.getIgnoreProperties("password"));
-		target.setId(source.getId());
+		BeanUtils.copyProperties(source, target, "password", "roles", "cards");
+		return target;
+	}
+	
+	private Customer transientDetail(Customer source) {
+		if (source == null) {
+			return null;
+		}
+		Customer target = new Customer();
+		BeanUtils.copyProperties(source, target, "password", "roles", "cards");
+		source.getCards().forEach(card -> target.getCards().add(card));
+		source.getRoles().forEach(role -> target.getRoles().add(new Role(role.getName(), role.getDescription())));
 		return target;
 	}
 

@@ -18,6 +18,7 @@ import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
  * @author HeLei
  * @date 2017.02.04
  */
+@org.hibernate.envers.Audited
 @org.hibernate.annotations.BatchSize(size = 10)// 因n+1查询问题，盲猜优化，一次性加载size个代理
 @Entity
 @Table(name = "authority")
@@ -158,7 +159,6 @@ public class Authority extends BaseEntity {
 		this.name = name;
 	}
 	
-	@org.hibernate.envers.NotAudited
 	@ManyToOne
 	@JoinColumn(name = "parent_id")
 	public Authority getParent() {
@@ -174,6 +174,7 @@ public class Authority extends BaseEntity {
 		this.description = description;
 	}
 	
+	@org.hibernate.envers.NotAudited
 	@org.hibernate.annotations.Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	@ManyToMany(mappedBy = "authorities")
 	public Set<Role> getRoles() {
