@@ -11,7 +11,6 @@ import javax.validation.constraints.Min;
 /**
  * 系统内部使用人员，他们有工号唯一识别
  * @author HeLei
- * @date 2017.02.04
  */
 @org.hibernate.search.annotations.Indexed
 @org.hibernate.envers.Audited
@@ -24,6 +23,7 @@ public class Employee extends User {
 	private Double salary;
 	private Department department;
 	
+	@org.hibernate.envers.NotAudited
 	@Column(name = "emp_num", unique = true/*, nullable = false*/, updatable = false)
 	@Min(value = 1)
 	public Integer getEmpNum() {
@@ -32,12 +32,14 @@ public class Employee extends User {
 	public void setEmpNum(Integer empNum) {
 		this.empNum = empNum;
 	}
+	
 	public String getPost() {
 		return post;
 	}
 	public void setPost(String post) {
 		this.post = post;
 	}
+	
 	public Double getSalary() {
 		return salary;
 	}

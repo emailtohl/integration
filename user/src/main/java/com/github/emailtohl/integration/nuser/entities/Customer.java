@@ -17,7 +17,6 @@ import javax.validation.constraints.NotNull;
  * 系统外部使用人员，如顾客、商家、匿名访问者等等
  * 他们注册时需要手机号唯一识别
  * @author HeLei
- * @date 2017.02.04
  */
 @org.hibernate.search.annotations.Indexed
 @Entity

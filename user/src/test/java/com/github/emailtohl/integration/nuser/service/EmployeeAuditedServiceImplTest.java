@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -13,7 +14,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
@@ -21,6 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.jpa.entity.Image;
+import com.github.emailtohl.integration.common.jpa.envers.Tuple;
 import com.github.emailtohl.integration.nuser.UserTestData;
 import com.github.emailtohl.integration.nuser.entities.Employee;
 import com.github.emailtohl.integration.nuser.entities.User.Gender;
@@ -44,7 +45,7 @@ public class EmployeeAuditedServiceImplTest {
 	
 	Long id;
 	int revision;
-
+	
 	@Before
 	public void setUp() throws Exception {
 		Employee e = new Employee();
@@ -53,7 +54,7 @@ public class EmployeeAuditedServiceImplTest {
 		e.setPassword("112233");
 		e.setEmail("haha@test.com");
 		e.setTelephone("112342513514");
-		e.setDescription("测试人员");
+		e.setDescription("系统分析人员");
 		e.setGender(Gender.MALE);
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-foo.jpg")) {
 			e.setBirthday(sdf.parse("1990-12-13"));
@@ -70,15 +71,12 @@ public class EmployeeAuditedServiceImplTest {
 		e = employeeService.create(e);
 		id = e.getId();
 		
-		Employee src = employeeService.get(id);
 		Employee tar = new Employee();
-		BeanUtils.copyProperties(src, tar);
 		tar.setDescription("update");
 		tar.setDepartment(new UserTestData().qa);
 		Employee u = employeeService.update(id, tar);
 		assertEquals(tar.getDescription(), u.getDescription());
 		assertEquals(tar.getDepartment(), u.getDepartment());
-		
 	}
 
 	@After
@@ -87,31 +85,20 @@ public class EmployeeAuditedServiceImplTest {
 	}
 
 	@Test
-	public void testGetUserRevision() {
+	public void testGetEmployeeRevision() {
+		List<Tuple<Employee>> ls = auditedService.getEmployeeRevision(id);
+		assertTrue(ls.size() == 2);// 一个新增、一个修改
+		assertEquals(ls.get(0).getEntity().getDescription(), "系统分析人员");
+		assertEquals(ls.get(1).getEntity().getDescription(), "update");
 	}
 
 	@Test
-	public void testGetUsersAtRevision() {
+	public void testGetEmployeeAtRevision() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	public void testGetUserAtRevision() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetRoleRevision() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetRolesAtRevision() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetRoleAtRevision() {
+	public void testRollback() {
 		fail("Not yet implemented");
 	}
 
