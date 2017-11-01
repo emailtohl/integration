@@ -7,6 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 
 /**
  * 系统内部使用人员，他们有工号唯一识别
@@ -18,6 +19,12 @@ import javax.validation.constraints.Min;
 @Table(name = "employee")
 public class Employee extends User {
 	private static final long serialVersionUID = 3500096827826710751L;
+	/**
+	 * 4-7位数字默认为工号
+	 */
+	public static final String PATTERN_EMP_NUM = "^\\d\\d{2,5}\\d$";
+	
+	@Pattern(regexp = PATTERN_EMP_NUM)
 	private Integer empNum;
 	private String post;
 	private Double salary;

@@ -1,6 +1,9 @@
 package com.github.emailtohl.integration.nuser.entities;
 
 import javax.persistence.Embeddable;
+import javax.validation.constraints.Pattern;
+
+import com.github.emailtohl.integration.common.Constant;
 
 /**
  * 地址嵌入类
@@ -10,6 +13,8 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Address {
 	private String city;
+	
+	@Pattern(regexp = Constant.PATTERN_ZIPCODE)
 	private String zipcode;
 	private String street;
 	

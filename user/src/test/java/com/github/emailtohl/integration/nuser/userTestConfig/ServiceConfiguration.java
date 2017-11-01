@@ -9,6 +9,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Controller;
 
+import com.github.emailtohl.integration.common.Constant;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 /**
  * 业务层的配置
  * @author HeLei
@@ -27,5 +31,10 @@ public class ServiceConfiguration {
 	@Bean
 	public CacheManager cacheManager() {
 		return new ConcurrentMapCacheManager();
+	}
+	
+	@Bean
+	public Gson gson() {
+		return new GsonBuilder().setDateFormat(Constant.DATE_FORMAT).create();
 	}
 }

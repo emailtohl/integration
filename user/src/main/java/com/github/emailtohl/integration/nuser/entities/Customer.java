@@ -12,6 +12,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinTable;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
+import com.github.emailtohl.integration.common.Constant;
 
 /**
  * 系统外部使用人员，如顾客、商家、匿名访问者等等
@@ -40,6 +43,7 @@ public class Customer extends User {
 	/**
 	 * 身份证号码
 	 */
+	@Pattern(regexp = Constant.PATTERN_IDENTIFICATION)
 	private String identification;
 	/**
 	 * 积分
