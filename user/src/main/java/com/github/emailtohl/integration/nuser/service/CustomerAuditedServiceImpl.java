@@ -33,9 +33,4 @@ public class CustomerAuditedServiceImpl implements CustomerAuditedService {
 		return customerAudit.getEntityAtRevision(id, revision);
 	}
 
-	@Override
-	public void rollback(Long id, Number revision) {
-		customerAudit.rollback(id, revision);
-	}
-
 }

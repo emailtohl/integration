@@ -31,8 +31,4 @@ public interface CustomerAuditedService {
 	 */
 	Customer getCustomerAtRevision(Long id, Number revision);
 	
-	/**
-	 * 将内部账户回滚到某历史版本上
-	 */
-	void rollback(Long id, Number revision);
 }

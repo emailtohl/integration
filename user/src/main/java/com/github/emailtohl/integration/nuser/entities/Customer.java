@@ -19,6 +19,7 @@ import javax.validation.constraints.NotNull;
  * @author HeLei
  */
 @org.hibernate.search.annotations.Indexed
+@org.hibernate.envers.Audited
 @Entity
 @Table(name = "customer")
 public class Customer extends User {

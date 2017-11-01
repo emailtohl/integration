@@ -1,6 +1,7 @@
 package com.github.emailtohl.integration.nuser.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,8 +24,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.jpa.entity.Image;
 import com.github.emailtohl.integration.common.jpa.envers.Tuple;
-import com.github.emailtohl.integration.nuser.UserTestData;
-import com.github.emailtohl.integration.nuser.entities.Employee;
+import com.github.emailtohl.integration.nuser.entities.Address;
+import com.github.emailtohl.integration.nuser.entities.Customer;
 import com.github.emailtohl.integration.nuser.entities.User.Gender;
 import com.github.emailtohl.integration.nuser.userTestConfig.DataSourceConfiguration;
 import com.github.emailtohl.integration.nuser.userTestConfig.ServiceConfiguration;
@@ -35,72 +36,72 @@ import com.github.emailtohl.integration.nuser.userTestConfig.ServiceConfiguratio
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceConfiguration.class)
 @ActiveProfiles(DataSourceConfiguration.DB_RAM_H2)
-public class EmployeeAuditedServiceImplTest {
+public class CustomerAuditedServiceImplTest {
 	final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-	ClassLoader cl = EmployeeServiceImplTest.class.getClassLoader();
+	ClassLoader cl = CustomerServiceImplTest.class.getClassLoader();
 	Pageable pageable = new PageRequest(0, 20);
 	@Inject
-	EmployeeService employeeService;
+	CustomerService customerService;
 	@Inject
-	EmployeeAuditedService auditedService;
+	CustomerAuditedService auditedService;
 	
 	Long id;
 	
 	@Before
 	public void setUp() throws Exception {
-		Employee e = new Employee();
-		e.setName("haha");
-		e.setNickname("haha");
-		e.setPassword("112233");
-		e.setEmail("haha@test.com");
-		e.setTelephone("112342513514");
-		e.setDescription("系统分析人员");
-		e.setGender(Gender.MALE);
+		Customer c = new Customer();
+		c.setName("haha");
+		c.setNickname("haha");
+		c.setPassword("112233");
+		c.setEmail("haha@test.com");
+		c.setTelephone("112342513514");
+		c.setDescription("某客户");
+		c.setGender(Gender.MALE);
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-foo.jpg")) {
-			e.setBirthday(sdf.parse("1990-12-13"));
+			c.setBirthday(sdf.parse("1990-12-13"));
 			byte[] icon = new byte[is.available()];
 			is.read(icon);
-			e.setImage(new Image("icon-head-foo.jpg", "download/img/icon-head-foo.jpg", icon));
+			c.setImage(new Image("icon-head-foo.jpg", "download/img/icon-head-foo.jpg", icon));
 		} catch (ParseException | IOException exception) {
 			exception.printStackTrace();
 		}
-		e.setEmpNum(1);
-		e.setPost("系统分析师");
-		e.setSalary(10000.00);
-		e.setDepartment(new UserTestData().product);
-		e = employeeService.create(e);
-		id = e.getId();
+		c.setLevel(Customer.Level.ORDINARY);
+		c.setAddress(new Address("成都", "12345", "xx街道"));
+		c.setIdentification("534263456345645");
+		c = customerService.create(c);
+		id = c.getId();
 		
-		Employee tar = new Employee();
+		Customer tar = new Customer();
 		tar.setDescription("update");
-		tar.setDepartment(new UserTestData().qa);
-		Employee u = employeeService.update(id, tar);
+		tar.setAddress(new Address("重庆", "40000", "xx街道"));
+		Customer u = customerService.update(id, tar);
 		assertEquals(tar.getDescription(), u.getDescription());
-		assertEquals(tar.getDepartment(), u.getDepartment());
+		assertEquals(tar.getAddress(), u.getAddress());
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		employeeService.delete(id);
+		customerService.delete(id);
 	}
 
 	@Test
-	public void testGetEmployeeRevision() {
-		List<Tuple<Employee>> ls = auditedService.getEmployeeRevision(id);
+	public void testGetCustomerRevision() {
+		List<Tuple<Customer>> ls = auditedService.getCustomerRevision(id);
 		assertTrue(ls.size() == 2);// 一个新增、一个修改
-		assertEquals(ls.get(0).getEntity().getDescription(), "系统分析人员");
+		assertEquals(ls.get(0).getEntity().getDescription(), "某客户");
 		assertEquals(ls.get(0).getRevisionType(), RevisionType.ADD);
 		assertEquals(ls.get(1).getEntity().getDescription(), "update");
+		assertEquals(ls.get(1).getEntity().getAddress(), new Address("重庆", "40000", "xx街道"));
 		assertEquals(ls.get(1).getRevisionType(), RevisionType.MOD);
-		
 	}
 
 	@Test
-	public void testGetEmployeeAtRevision() {
-		List<Tuple<Employee>> ls = auditedService.getEmployeeRevision(id);
+	public void testGetCustomerAtRevision() {
+		List<Tuple<Customer>> ls = auditedService.getCustomerRevision(id);
 		Integer revision = ls.get(0).getDefaultRevisionEntity().getId();
-		Employee e = auditedService.getEmployeeAtRevision(id, revision);
-		assertEquals("系统分析人员", e.getDescription());
+		Customer e = auditedService.getCustomerAtRevision(id, revision);
+		assertEquals("某客户", e.getDescription());
+		assertEquals(new Address("成都", "12345", "xx街道"), e.getAddress());
 	}
 
 }

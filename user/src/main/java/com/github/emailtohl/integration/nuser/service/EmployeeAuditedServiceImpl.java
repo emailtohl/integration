@@ -33,8 +33,4 @@ public class EmployeeAuditedServiceImpl implements EmployeeAuditedService {
 		return employeeAudit.getEntityAtRevision(id, revision);
 	}
 
-	@Override
-	public void rollback(Long id, Number revision) {
-		employeeAudit.rollback(id, revision);
-	}
 }
