@@ -67,7 +67,7 @@ public class CustomerAuditedServiceImplTest {
 		}
 		c.setLevel(Customer.Level.ORDINARY);
 		c.setAddress(new Address("成都", "12345", "xx街道"));
-		c.setIdentification("534263456345645");
+		c.setIdentification("120101199901012579");
 		c = customerService.create(c);
 		id = c.getId();
 		

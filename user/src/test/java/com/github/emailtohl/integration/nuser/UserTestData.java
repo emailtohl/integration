@@ -220,7 +220,7 @@ public class UserTestData {
 		baz.setGender(Gender.FEMALE);
 		baz.getRoles().add(role_guest);
 		baz.setLevel(Level.ORDINARY);
-		baz.setIdentification("10987654321");
+		baz.setIdentification("510104199901013338");
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-baz.jpg")) {
 			baz.setBirthday(sdf.parse("1995-11-20"));
 			icon = new byte[is.available()];
@@ -242,7 +242,7 @@ public class UserTestData {
 		qux.setGender(Gender.FEMALE);
 		qux.getRoles().add(role_guest);
 		qux.setLevel(Level.ORDINARY);
-		qux.setIdentification("1234567890");
+		qux.setIdentification("510104199901016176");
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-qux.jpg")) {
 			qux.setBirthday(sdf.parse("1992-07-17"));
 			icon = new byte[is.available()];

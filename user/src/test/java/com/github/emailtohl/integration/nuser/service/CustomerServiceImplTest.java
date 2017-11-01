@@ -76,7 +76,7 @@ public class CustomerServiceImplTest {
 			exception.printStackTrace();
 		}
 		e.setCellPhone("18712309876");
-		e.setIdentification("510111111111111111");
+		e.setIdentification("510104199901019991");
 		e.setAddress(new Address("重庆", "400000", "回龙路"));
 		e = customerService.create(e);
 		id = e.getId();
@@ -155,7 +155,7 @@ public class CustomerServiceImplTest {
 			exception.printStackTrace();
 		}
 		e.setCellPhone("13345678906");
-		e.setIdentification("510111111111111111");
+		e.setIdentification("510104199901017718");
 		e.setAddress(new Address("重庆", "400000", "回龙路"));
 		Customer c = customerService.update(id, e);
 		c = customerService.get(id);

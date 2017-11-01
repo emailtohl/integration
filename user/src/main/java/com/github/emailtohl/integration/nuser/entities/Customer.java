@@ -27,7 +27,10 @@ import com.github.emailtohl.integration.common.Constant;
 @Table(name = "customer")
 public class Customer extends User {
 	private static final long serialVersionUID = -1136305533524407299L;
-	
+	/**
+	 * 外部用户的等级
+	 * @author HeLei
+	 */
 	public enum Level {
 		ORDINARY, VIP
 	}
