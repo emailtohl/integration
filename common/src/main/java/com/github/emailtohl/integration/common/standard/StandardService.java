@@ -6,9 +6,10 @@ import java.util.List;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
+
+import com.github.emailtohl.integration.common.jpa.Paging;
 
 /**
  * 抽象的服务接口，主要就是增删改查功能
@@ -47,9 +48,10 @@ public interface StandardService<E extends Serializable> {
 	 * 分页查询
 	 * @param params
 	 * @param pageable
-	 * @return
+	 * @return Paging封装的分页信息，一般JPA底层返回的是Page对象，但该对象不利于JSON等序列化。
+	 * 所以在将持久化状态的实体转瞬态时，同时改变分页对象
 	 */
-	Page<E> query(E params, Pageable pageable);
+	Paging<E> query(E params, Pageable pageable);
 
 	/**
 	 * 查询列表

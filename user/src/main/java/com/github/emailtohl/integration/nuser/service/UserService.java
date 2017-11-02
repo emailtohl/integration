@@ -2,10 +2,10 @@ package com.github.emailtohl.integration.nuser.service;
 
 import javax.transaction.Transactional;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.nuser.entities.User;
 
 /**
@@ -21,7 +21,7 @@ public interface UserService {
 	 * @param pageable
 	 * @return
 	 */
-	Page<User> search(String fulltext, Pageable pageable);
+	Paging<User> search(String fulltext, Pageable pageable);
 	
 	/**
 	 * 根据域条件查询
@@ -29,7 +29,7 @@ public interface UserService {
 	 * @param pageable
 	 * @return
 	 */
-	Page<User> query(User params, Pageable pageable);
+	Paging<User> query(User params, Pageable pageable);
 	
 	/**
 	 * 查看该User

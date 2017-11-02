@@ -81,6 +81,10 @@ public class Paging<T> implements Serializable {
 		this.totalPages = (int) ((this.totalElements + this.pageSize - 1) / this.pageSize);
 	}
 	
+	public Paging(List<T> content, Pageable pageable, long total) {
+		this(content, total, pageable.getPageNumber(), pageable.getPageSize());
+	}
+	
 	public Paging(org.springframework.data.domain.Page<T> page) {
 		this.content = page.getContent();
 		this.totalElements = page.getTotalElements();

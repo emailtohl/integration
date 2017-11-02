@@ -16,11 +16,11 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.common.standard.ExecResult;
 import com.github.emailtohl.integration.nuser.dao.DepartmentRepository;
@@ -100,10 +100,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public Page<Employee> query(Employee params, Pageable pageable) {
+	public Paging<Employee> query(Employee params, Pageable pageable) {
 		Page<Employee> p = employeeRepository.queryForPage(params, pageable);
 		List<Employee> content = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
-		return new PageImpl<>(content, pageable, p.getTotalElements());
+		return new Paging<>(content, pageable, p.getTotalElements());
 	}
 
 	@Override

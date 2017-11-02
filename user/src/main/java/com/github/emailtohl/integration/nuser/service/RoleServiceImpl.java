@@ -12,11 +12,11 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.nuser.dao.AuthorityRepository;
 import com.github.emailtohl.integration.nuser.dao.RoleRepository;
 import com.github.emailtohl.integration.nuser.entities.Authority;
@@ -71,10 +71,10 @@ public class RoleServiceImpl implements RoleService {
 	}
 
 	@Override
-	public Page<Role> query(Role params, Pageable pageable) {
+	public Paging<Role> query(Role params, Pageable pageable) {
 		Page<Role> p = roleRepository.queryForPage(params, pageable);
 		List<Role> ls = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
-		return new PageImpl<>(ls, pageable, p.getTotalElements());
+		return new Paging<>(ls, pageable, p.getTotalElements());
 	}
 
 	@Override

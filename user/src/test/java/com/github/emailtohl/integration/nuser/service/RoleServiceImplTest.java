@@ -1,6 +1,9 @@
 package com.github.emailtohl.integration.nuser.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -9,18 +12,19 @@ import javax.inject.Inject;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.nuser.UserTestData;
 import com.github.emailtohl.integration.nuser.entities.Authority;
 import com.github.emailtohl.integration.nuser.entities.Role;
 import com.github.emailtohl.integration.nuser.userTestConfig.DataSourceConfiguration;
 import com.github.emailtohl.integration.nuser.userTestConfig.ServiceConfiguration;
+import com.google.gson.Gson;
 
 /**
  * 业务类测试
@@ -32,6 +36,8 @@ import com.github.emailtohl.integration.nuser.userTestConfig.ServiceConfiguratio
 public class RoleServiceImplTest {
 	@Inject
 	RoleService roleService;
+	@Inject
+	Gson gson;
 
 	@Test
 	public void testCRUD() {
@@ -71,11 +77,12 @@ public class RoleServiceImplTest {
 	@Test
 	public void testQueryRolePageable() {
 		Pageable pageable = new PageRequest(0, 20);
-		Page<Role> p = roleService.query(null, pageable);
+		Paging<Role> p = roleService.query(null, pageable);
 		assertFalse(p.getContent().isEmpty());
 		UserTestData td = new UserTestData();
 		p = roleService.query(td.role_manager, pageable);
 		assertFalse(p.getContent().isEmpty());
+		System.out.println(gson.toJson(p));
 	}
 
 	@Test
@@ -85,12 +92,14 @@ public class RoleServiceImplTest {
 		UserTestData td = new UserTestData();
 		ls = roleService.query(td.role_staff);
 		assertFalse(ls.isEmpty());
+		System.out.println(gson.toJson(ls));
 	}
 
 	@Test
 	public void testGetAuthorities() {
 		List<Authority> ls = roleService.getAuthorities();
 		assertFalse(ls.isEmpty());
+		System.out.println(gson.toJson(ls));
 	}
 
 }

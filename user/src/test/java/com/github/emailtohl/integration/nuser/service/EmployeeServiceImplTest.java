@@ -17,7 +17,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
@@ -25,6 +24,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.Image;
 import com.github.emailtohl.integration.common.standard.ExecResult;
 import com.github.emailtohl.integration.nuser.UserTestData;
@@ -32,6 +32,7 @@ import com.github.emailtohl.integration.nuser.entities.Employee;
 import com.github.emailtohl.integration.nuser.entities.User.Gender;
 import com.github.emailtohl.integration.nuser.userTestConfig.DataSourceConfiguration;
 import com.github.emailtohl.integration.nuser.userTestConfig.ServiceConfiguration;
+import com.google.gson.Gson;
 /**
  * 业务类测试
  * @author HeLei
@@ -46,6 +47,8 @@ public class EmployeeServiceImplTest {
 	Pageable pageable = new PageRequest(0, 20);
 	@Inject
 	EmployeeService employeeService;
+	@Inject
+	Gson gson;
 	Long id;
 
 	@Before
@@ -88,18 +91,21 @@ public class EmployeeServiceImplTest {
 	public void testGet() {
 		Employee e = employeeService.get(id);
 		assertNotNull(e);
+		System.out.println(gson.toJson(e));
 	}
 
 	@Test
 	public void testQueryEmployeePageable() {
-		Page<Employee> p = employeeService.query(new Employee(), pageable);
+		Paging<Employee> p = employeeService.query(new Employee(), pageable);
 		assertFalse(p.getContent().isEmpty());
+		System.out.println(gson.toJson(p));
 	}
 
 	@Test
 	public void testQueryEmployee() {
 		List<Employee> ls = employeeService.query(new Employee());
 		assertFalse(ls.isEmpty());
+		System.out.println(gson.toJson(ls));
 	}
 
 	@Test

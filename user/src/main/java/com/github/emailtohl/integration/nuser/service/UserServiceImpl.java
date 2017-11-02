@@ -8,10 +8,10 @@ import javax.inject.Inject;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
 import com.github.emailtohl.integration.nuser.dao.UserRepository;
 import com.github.emailtohl.integration.nuser.entities.User;
@@ -26,18 +26,18 @@ public class UserServiceImpl implements UserService {
 	UserRepository userRepository;
 
 	@Override
-	public Page<User> search(String fulltext, Pageable pageable) {
+	public Paging<User> search(String fulltext, Pageable pageable) {
 		Page<SearchResult<User>> p = userRepository.search(fulltext, pageable);
 		List<User> ls = new ArrayList<>();
-		p.forEach(r -> ls.add(r.getEntity()));
-		return new PageImpl<>(ls, pageable, p.getTotalElements());
+		p.forEach(r -> ls.add(toTransient(r.getEntity())));
+		return new Paging<>(ls, pageable, p.getTotalElements());
 	}
 	
 	@Override
-	public Page<User> query(User params, Pageable pageable) {
+	public Paging<User> query(User params, Pageable pageable) {
 		Page<User> p = userRepository.queryForPage(params, pageable);
 		List<User> ls = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
-		return new PageImpl<>(ls, pageable, p.getTotalElements());
+		return new Paging<>(ls, pageable, p.getTotalElements());
 	}
 
 	@Override

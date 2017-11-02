@@ -21,7 +21,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
@@ -29,6 +28,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.Image;
 import com.github.emailtohl.integration.common.standard.ExecResult;
 import com.github.emailtohl.integration.nuser.UserTestData;
@@ -54,11 +54,11 @@ public class CustomerServiceImplTest {
 	Pageable pageable = new PageRequest(0, 20);
 	@Inject
 	CustomerService customerService;
-	Long id;
 	@Value("${customer.default.password}")
 	String customerDefaultPassword;
 	@Inject
 	Gson gson;
+	Long id;
 
 	@Before
 	public void setUp() throws Exception {
@@ -109,14 +109,14 @@ public class CustomerServiceImplTest {
 	@Test
 	public void testQueryCustomerPageable() {
 		UserTestData td = new UserTestData();
-		Page<Customer> p = customerService.query(null, pageable);
-		System.out.println(gson.toJson(p));
+		Paging<Customer> p = customerService.query(null, pageable);
 		assertFalse(p.getContent().isEmpty());
 		Customer params = new Customer();
 		params.setCellPhone(td.baz.getCellPhone());
 		params.setEmail(td.baz.getEmail());
 		p = customerService.query(params, pageable);
 		assertFalse(p.getContent().isEmpty());
+		System.out.println(gson.toJson(p));
 		
 		params = new Customer();
 		params.setEmail(td.bar.getEmail());

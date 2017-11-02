@@ -22,7 +22,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -30,6 +29,7 @@ import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.Constant;
 import com.github.emailtohl.integration.common.exception.InvalidDataException;
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.common.standard.ExecResult;
 import com.github.emailtohl.integration.nuser.dao.CustomerRepository;
@@ -37,7 +37,6 @@ import com.github.emailtohl.integration.nuser.dao.RoleRepository;
 import com.github.emailtohl.integration.nuser.entities.Card;
 import com.github.emailtohl.integration.nuser.entities.Customer;
 import com.github.emailtohl.integration.nuser.entities.Customer.Level;
-
 import com.github.emailtohl.integration.nuser.entities.Role;
 
 /**
@@ -118,10 +117,10 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Page<Customer> query(Customer params, Pageable pageable) {
+	public Paging<Customer> query(Customer params, Pageable pageable) {
 		Page<Customer> p = customerRepository.queryForPage(params, pageable);
 		List<Customer> content = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
-		return new PageImpl<>(content, pageable, p.getTotalElements());
+		return new Paging<>(content, pageable, p.getTotalElements());
 	}
 
 	@Override
