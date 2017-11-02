@@ -59,12 +59,20 @@ public interface CustomerService extends StandardService<Customer> {
 	Customer grandLevel(Long id, Customer.Level level);
 	
 	/**
+	 * 用户忘记密码时，通过邮箱或短信获取token令牌，以证明是被修改密码的账号拥有者
+	 * @param cellPhoneOrEmail
+	 * @return
+	 */
+	String getToken(String cellPhoneOrEmail);
+	
+	/**
 	 * 更新外部人员的密码，一般是用户忘记密码后，通过邮箱确认后自行修改，所以不需要输入原密码
-	 * @param id
+	 * @param cellPhoneOrEmail
 	 * @param newPassword
+	 * @param token 通过邮箱或短信或其他方式获取的令牌，该令牌证明确实是该账号拥有者在修改密码
 	 * @return ExecResult
 	 */
-	@NotNull ExecResult updatePassword(Long id, String newPassword);
+	@NotNull ExecResult updatePassword(String cellPhoneOrEmail, String newPassword, String token);
 	
 	/**
 	 * 重置密码，用于忘记密码无法恢复时

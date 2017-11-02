@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -23,6 +25,7 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -41,6 +44,7 @@ import com.github.emailtohl.integration.nuser.entities.Role;
 
 /**
  * 外部人员的服务接口
+ * 
  * @author HeLei
  *
  */
@@ -50,16 +54,21 @@ public class CustomerServiceImpl implements CustomerService {
 	public static final Pattern EMAIL_PATTERN = Pattern.compile(Constant.PATTERN_EMAIL);
 	private static final transient SecureRandom RANDOM = new SecureRandom();
 	private static final transient int HASHING_ROUNDS = 10;
+	private static final transient ConcurrentHashMap<String, String> TOKEN_MAP = new ConcurrentHashMap<String, String>();
 	@Value("${customer.default.password}")
 	private String customerDefaultPassword;
+	@Value("${token.expire}")
+	private int tokenExpire;
 	@Inject
 	CustomerRepository customerRepository;
 	@Inject
 	RoleRepository roleRepository;
-	
-	 /**
-     * 用于匹配的邮箱的matcher
-     */
+	@Inject
+	ThreadPoolTaskScheduler taskScheduler;
+
+	/**
+	 * 用于匹配的邮箱的matcher
+	 */
 	private ExampleMatcher emailMatcher = ExampleMatcher.matching().withMatcher("email",
 			GenericPropertyMatchers.caseSensitive());
 	/**
@@ -72,7 +81,7 @@ public class CustomerServiceImpl implements CustomerService {
 	 * 缓存名
 	 */
 	public static final String CACHE_NAME = "customer_cache";
-	
+
 	@CachePut(value = CACHE_NAME, key = "#result.id")
 	@Override
 	public Customer create(@Valid Customer entity) {
@@ -80,7 +89,8 @@ public class CustomerServiceImpl implements CustomerService {
 			throw new InvalidDataException("注册时既未填入手机号也未填入邮箱地址，不能注册");
 		}
 		Customer c = new Customer();
-		BeanUtils.copyProperties(entity, c, BaseEntity.getIgnoreProperties("roles", "accountNonLocked", "level", "cards"));
+		BeanUtils.copyProperties(entity, c,
+				BaseEntity.getIgnoreProperties("roles", "accountNonLocked", "level", "cards"));
 		c.setAccountNonLocked(true);
 		c.setLevel(Level.ORDINARY);
 		String pw = c.getPassword();
@@ -101,10 +111,10 @@ public class CustomerServiceImpl implements CustomerService {
 		Matcher m = EMAIL_PATTERN.matcher(_matcherValue);
 		if (m.find()) {
 			c.setEmail(_matcherValue);
-			example = Example.<Customer> of(c, emailMatcher);
+			example = Example.<Customer>of(c, emailMatcher);
 		} else {
 			c.setCellPhone(_matcherValue);
-			example = Example.<Customer> of(c, cellPhoneMatcher);
+			example = Example.<Customer>of(c, cellPhoneMatcher);
 		}
 		return customerRepository.exists(example);
 	}
@@ -175,13 +185,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public ExecResult login(String cellPhoneOrEmail, String password) {
-		Matcher m = EMAIL_PATTERN.matcher(cellPhoneOrEmail);
-		Customer c;
-		if (m.find()) {
-			c = customerRepository.findByEmail(cellPhoneOrEmail);
-		} else {
-			c = customerRepository.findByCellPhone(cellPhoneOrEmail);
-		}
+		Customer c = find(cellPhoneOrEmail);
 		if (c == null) {
 			return new ExecResult(false, LoginResult.notFound.name(), null);
 		}
@@ -191,17 +195,10 @@ public class CustomerServiceImpl implements CustomerService {
 		c.setLastLoginTime(new Date());
 		return new ExecResult(true, LoginResult.success.name(), transientDetail(c));
 	}
-	
+
 	@Override
 	public Customer findByCellPhoneOrEmail(String cellPhoneOrEmail) {
-		Matcher m = EMAIL_PATTERN.matcher(cellPhoneOrEmail);
-		Customer c;
-		if (m.find()) {
-			c = customerRepository.findByEmail(cellPhoneOrEmail);
-		} else {
-			c = customerRepository.findByCellPhone(cellPhoneOrEmail);
-		}
-		return transientDetail(c);
+		return transientDetail(find(cellPhoneOrEmail));
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
@@ -239,16 +236,34 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public ExecResult updatePassword(Long id, String newPassword) {
-		Customer source = customerRepository.get(id);
+	public String getToken(String cellPhoneOrEmail) {
+		final String key = UUID.randomUUID().toString();
+		TOKEN_MAP.put(key, cellPhoneOrEmail);
+		taskScheduler.schedule(() -> TOKEN_MAP.remove(key), new Date(System.currentTimeMillis() + tokenExpire));
+		return key;
+	}
+
+	@Override
+	public ExecResult updatePassword(String cellPhoneOrEmail, String newPassword, String token) {
+		if (token == null) {
+			return new ExecResult(false, "没有token", null);
+		}
+		String s = TOKEN_MAP.get(token);
+		if (s == null) {
+			return new ExecResult(false, "token无效或过期", null);
+		}
+		Customer source = find(cellPhoneOrEmail);
 		if (source == null) {
-			return new ExecResult(false, "没有此用户", null);
+			return new ExecResult(false, "没有此用户:" + cellPhoneOrEmail, null);
+		}
+		if (!s.equals(source.getCellPhone()) && !s.equals(source.getEmail())) {
+			return new ExecResult(false, "token无效或过期", null);
 		}
 		String hashPw = BCrypt.hashpw(newPassword, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		source.setPassword(hashPw);
 		return new ExecResult(true, "", null);
 	}
-	
+
 	@Override
 	public ExecResult resetPassword(Long id) {
 		Customer source = customerRepository.get(id);
@@ -259,7 +274,7 @@ public class CustomerServiceImpl implements CustomerService {
 		source.setPassword(hashPw);
 		return new ExecResult(true, "", null);
 	}
-	
+
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer changeCellPhone(Long id, String newCellPhone) {
@@ -326,7 +341,22 @@ public class CustomerServiceImpl implements CustomerService {
 		source.getCards().remove(card);
 		return transientDetail(source);
 	}
-	
+
+	/**
+	 * @param cellPhoneOrEmail
+	 * @return 持久化的Customer
+	 */
+	private Customer find(String cellPhoneOrEmail) {
+		Matcher m = EMAIL_PATTERN.matcher(cellPhoneOrEmail);
+		Customer c;
+		if (m.find()) {
+			c = customerRepository.findByEmail(cellPhoneOrEmail);
+		} else {
+			c = customerRepository.findByCellPhone(cellPhoneOrEmail);
+		}
+		return c;
+	}
+
 	private Customer toTransient(Customer source) {
 		if (source == null) {
 			return null;
@@ -335,7 +365,7 @@ public class CustomerServiceImpl implements CustomerService {
 		BeanUtils.copyProperties(source, target, "password", "roles", "cards");
 		return target;
 	}
-	
+
 	private Customer transientDetail(Customer source) {
 		if (source == null) {
 			return null;

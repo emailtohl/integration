@@ -195,13 +195,16 @@ public class CustomerServiceImplTest {
 
 	@Test
 	public void testUpdatePassword() {
-		ExecResult r = customerService.updatePassword(0L, "new password");
-		assertFalse(r.ok);
-		r = customerService.updatePassword(id, "new password");
-		assertTrue(r.ok);
 		Customer c = customerService.get(id);
-		r = customerService.login(c.getCellPhone(), "new password");
+		String token = customerService.getToken(c.getCellPhone());
+		Thread.yield();
+		ExecResult r = customerService.updatePassword(c.getCellPhone(), "new password", token);
 		assertTrue(r.ok);
+		/*r = customerService.updatePassword(id, "new password");
+		assertTrue(r.ok);
+		c = customerService.get(id);
+		r = customerService.login(c.getCellPhone(), "new password");
+		assertTrue(r.ok);*/
 	}
 
 	@Test
