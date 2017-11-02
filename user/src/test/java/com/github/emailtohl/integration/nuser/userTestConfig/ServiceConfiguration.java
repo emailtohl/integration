@@ -9,7 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Controller;
 
-import com.github.emailtohl.integration.common.Constant;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -35,6 +36,20 @@ public class ServiceConfiguration {
 	
 	@Bean
 	public Gson gson() {
-		return new GsonBuilder().setDateFormat(Constant.DATE_FORMAT).create();
+		return new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
+			
+			@Override
+			public boolean shouldSkipField(FieldAttributes f) {
+				return false;
+			}
+
+			@Override
+			public boolean shouldSkipClass(Class<?> clazz) {
+				if (clazz == byte[].class) {
+					return true;
+				}
+				return false;
+			}
+		})/*.setDateFormat(Constant.DATE_FORMAT)*/.create();
 	}
 }

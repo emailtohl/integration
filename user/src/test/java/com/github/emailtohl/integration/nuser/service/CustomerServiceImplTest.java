@@ -39,6 +39,7 @@ import com.github.emailtohl.integration.nuser.entities.Customer.Level;
 import com.github.emailtohl.integration.nuser.entities.User.Gender;
 import com.github.emailtohl.integration.nuser.userTestConfig.DataSourceConfiguration;
 import com.github.emailtohl.integration.nuser.userTestConfig.ServiceConfiguration;
+import com.google.gson.Gson;
 /**
  * 业务类测试
  * @author HeLei
@@ -56,6 +57,8 @@ public class CustomerServiceImplTest {
 	Long id;
 	@Value("${customer.default.password}")
 	String customerDefaultPassword;
+	@Inject
+	Gson gson;
 
 	@Before
 	public void setUp() throws Exception {
@@ -100,12 +103,14 @@ public class CustomerServiceImplTest {
 	public void testGet() {
 		Customer c = customerService.get(id);
 		assertNotNull(c);
+		System.out.println(gson.toJson(c));
 	}
 
 	@Test
 	public void testQueryCustomerPageable() {
 		UserTestData td = new UserTestData();
 		Page<Customer> p = customerService.query(null, pageable);
+		System.out.println(gson.toJson(p));
 		assertFalse(p.getContent().isEmpty());
 		Customer params = new Customer();
 		params.setCellPhone(td.baz.getCellPhone());
