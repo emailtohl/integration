@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -200,11 +201,21 @@ public class CustomerServiceImplTest {
 		Thread.yield();
 		ExecResult r = customerService.updatePassword(c.getCellPhone(), "new password", token);
 		assertTrue(r.ok);
-		/*r = customerService.updatePassword(id, "new password");
+		r = customerService.login(c.getEmail(), "new password");
 		assertTrue(r.ok);
-		c = customerService.get(id);
-		r = customerService.login(c.getCellPhone(), "new password");
-		assertTrue(r.ok);*/
+		r = customerService.updatePassword(c.getEmail(), "new password again", token);
+		assertTrue(r.ok);
+		r = customerService.login(c.getCellPhone(), "new password again");
+		assertTrue(r.ok);
+		
+		r = customerService.updatePassword(c.getCellPhone(), "again again", null);
+		assertFalse(r.ok);
+		r = customerService.updatePassword(null, "again again", token);
+		assertFalse(r.ok);
+		r = customerService.updatePassword("test@aaa.com", "again again", token);
+		assertFalse(r.ok);
+		r = customerService.updatePassword(c.getCellPhone(), "again again", UUID.randomUUID().toString());
+		assertFalse(r.ok);
 	}
 
 	@Test

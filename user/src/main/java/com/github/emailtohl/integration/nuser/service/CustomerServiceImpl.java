@@ -46,7 +46,6 @@ import com.github.emailtohl.integration.nuser.entities.Role;
  * 外部人员的服务接口
  * 
  * @author HeLei
- *
  */
 @Transactional
 @Service
@@ -347,6 +346,9 @@ public class CustomerServiceImpl implements CustomerService {
 	 * @return 持久化的Customer
 	 */
 	private Customer find(String cellPhoneOrEmail) {
+		if (cellPhoneOrEmail == null) {
+			return null;
+		}
 		Matcher m = EMAIL_PATTERN.matcher(cellPhoneOrEmail);
 		Customer c;
 		if (m.find()) {
