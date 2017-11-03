@@ -17,15 +17,15 @@ import com.github.emailtohl.integration.nuser.entities.Customer;
 public interface CustomerAuditedService {
 	
 	/**
-	 * 查询内部账户所有的历史记录
-	 * @param id 内部账户id
+	 * 查询客户所有的历史记录
+	 * @param id 平台账号id
 	 * @return 元组列表，元组中包含版本详情，实体在该版本时的状态以及该版本的操作（增、改、删）
 	 */
 	List<Tuple<Customer>> getCustomerRevision(Long id);
 	
 	/**
-	 * 查询内部账户在某个修订版时的历史记录
-	 * @param id 内部账户的id
+	 * 查询客户在某个修订版时的历史记录
+	 * @param id 客户的id
 	 * @param revision 版本号，通过AuditReader#getRevisions(Customer.class, ID)获得
 	 * @return
 	 */

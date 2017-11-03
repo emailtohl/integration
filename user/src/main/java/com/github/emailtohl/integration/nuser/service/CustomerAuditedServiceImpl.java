@@ -13,7 +13,7 @@ import com.github.emailtohl.integration.common.jpa.envers.Tuple;
 import com.github.emailtohl.integration.nuser.dao.CustomerAudit;
 import com.github.emailtohl.integration.nuser.entities.Customer;
 /**
- * 审计内部账户的历史记录
+ * 审计平台账号的历史记录
  * @author HeLei
  */
 @Transactional

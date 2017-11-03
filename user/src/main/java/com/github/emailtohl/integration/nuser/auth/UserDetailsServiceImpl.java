@@ -36,7 +36,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			Integer empNum = Integer.parseInt(username);
 			Employee e = employeeRepository.findByEmpNum(empNum);
 			if (e == null) {
-				throw new UsernameNotFoundException("查不到此工号的内部账号");
+				throw new UsernameNotFoundException("查不到此平台账号");
 			}
 			return new UserDetailsImpl(e);
 		}

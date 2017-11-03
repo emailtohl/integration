@@ -12,14 +12,14 @@ import com.github.emailtohl.integration.common.standard.StandardService;
 import com.github.emailtohl.integration.nuser.entities.Employee;
 
 /**
- * 内部用户的服务层
+ * 平台账号的服务层
  * @author HeLei
  */
 @Validated
 public interface EmployeeService extends StandardService<Employee> {
 	
 	/**
-	 * 内部用户登录
+	 * 平台账号登录
 	 * @param empNum
 	 * @param password
 	 * @return
@@ -34,7 +34,7 @@ public interface EmployeeService extends StandardService<Employee> {
 	Employee getByEmpNum(Integer empNum);
 	
 	/**
-	 * 为内部人员授予角色
+	 * 为平台账号授予角色
 	 * @param id
 	 * @param roleNames
 	 * @return
@@ -43,7 +43,7 @@ public interface EmployeeService extends StandardService<Employee> {
 	Employee grandRoles(Long id, String... roleNames);
 	
 	/**
-	 * 更新内部人员的密码
+	 * 更新平台账号的密码
 	 * @param id
 	 * @param oldPassword
 	 * @param newPassword
@@ -60,7 +60,7 @@ public interface EmployeeService extends StandardService<Employee> {
 	@NotNull ExecResult resetPassword(Long id);
 	
 	/**
-	 * 是否锁定该内部人员的账号
+	 * 是否锁定该平台账号
 	 * @param id
 	 * @param lock
 	 * @return

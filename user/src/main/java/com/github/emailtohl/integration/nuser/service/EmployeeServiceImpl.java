@@ -31,7 +31,7 @@ import com.github.emailtohl.integration.nuser.entities.Employee;
 import com.github.emailtohl.integration.nuser.entities.Role;
 
 /**
- * 内部人员服务层的实现
+ * 平台账号服务层的实现
  * 
  * @author HeLei
  */

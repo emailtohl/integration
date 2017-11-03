@@ -10,7 +10,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 
 /**
- * 系统内部使用人员，他们有工号唯一识别
+ * 系统平台账号，他们有工号唯一识别
  * @author HeLei
  */
 @org.hibernate.search.annotations.Indexed

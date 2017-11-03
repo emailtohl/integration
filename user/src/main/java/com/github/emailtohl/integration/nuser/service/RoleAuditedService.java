@@ -17,14 +17,14 @@ import com.github.emailtohl.integration.nuser.entities.Role;
 public interface RoleAuditedService {
 	/**
 	 * 查询角色所有的历史记录
-	 * @param id 内部账户id
+	 * @param id 角色
 	 * @return 元组列表，元组中包含版本详情，实体在该版本时的状态以及该版本的操作（增、改、删）
 	 */
 	List<Tuple<Role>> getRoleRevision(Long id);
 	
 	/**
 	 * 查询角色在某个修订版时的历史记录
-	 * @param id 内部账户的id
+	 * @param id 角色id
 	 * @param revision 版本号，通过AuditReader#getRevisions(Employee.class, ID)获得
 	 * @return
 	 */

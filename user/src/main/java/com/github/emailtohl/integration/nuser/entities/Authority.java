@@ -36,27 +36,27 @@ public class Authority extends BaseEntity {
 	public static final String QUERY_ALL_USER = "query_all_user";
 	
 	/**
-	 * 管理内部人员的权限
+	 * 管理平台账号的权限
 	 */
 	public static final String EMPLOYEE = "employee";
 	
 	/**
-	 * 为内部人员授予角色的权限
+	 * 为平台账号授予角色的权限
 	 */
 	public static final String EMPLOYEE_ROLE = "employee_role";
 	
 	/**
-	 * 为内部人员解锁的权限
+	 * 为平台账号解锁的权限
 	 */
 	public static final String EMPLOYEE_LOCK = "employee_lock";
 	
 	/**
-	 * 为内部人员重置密码的权限
+	 * 为平台账号重置密码的权限
 	 */
 	public static final String EMPLOYEE_RESET_PASSWORD = "employee_reset_password";
 	
 	/**
-	 * 删除内部人员的权限
+	 * 删除平台账号的权限
 	 */
 	public static final String EMPLOYEE_DELETE = "employee_delete";
 	
