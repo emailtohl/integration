@@ -8,7 +8,6 @@ import com.github.emailtohl.integration.common.Constant;
 /**
  * 地址嵌入类
  * @author HeLei
- * @date 2017.10.17
  */
 @Embeddable
 public class Address {

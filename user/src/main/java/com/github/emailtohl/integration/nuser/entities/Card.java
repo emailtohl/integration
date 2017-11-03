@@ -11,7 +11,6 @@ import javax.validation.constraints.NotNull;
 /**
  * 支付卡实体类
  * @author HeLei
- * @date 2017.10.17
  */
 @Embeddable
 public class Card {

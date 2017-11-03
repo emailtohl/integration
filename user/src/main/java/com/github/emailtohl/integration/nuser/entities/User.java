@@ -39,7 +39,6 @@ import com.github.emailtohl.integration.common.jpa.entity.Image;
  * 用户实体类
  * javax校验的注解在field上，JPA约束的注解写在JavaBean属性上
  * @author HeLei
- * @date 2017.02.04
  */
 @org.hibernate.search.annotations.Indexed
 @org.hibernate.envers.Audited
@@ -159,6 +158,7 @@ public class User extends BaseEntity {
 		this.accountNonLocked = accountNonLocked;
 	}
 	
+	@org.hibernate.envers.NotAudited
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getLastLoginTime() {
 		return lastLoginTime;
@@ -176,6 +176,7 @@ public class User extends BaseEntity {
 		this.password = password;
 	}
 	
+	@org.hibernate.envers.NotAudited
 	@Temporal(TemporalType.DATE)
 	public Date getBirthday() {
 		return birthday;
@@ -205,6 +206,7 @@ public class User extends BaseEntity {
 		this.age = age;
 	}
 	
+	@org.hibernate.envers.NotAudited
 	// 枚举存入数据库默认为序号，这里指明将枚举名以字符串存入数据库
 	@Enumerated(EnumType.STRING)
 	public Gender getGender() {
@@ -214,6 +216,7 @@ public class User extends BaseEntity {
 		this.gender = gender;
 	}
 	
+	@org.hibernate.envers.NotAudited
 	public Image getImage() {
 		return image;
 	}
@@ -221,6 +224,7 @@ public class User extends BaseEntity {
 		this.image = image;
 	}
 	
+	@org.hibernate.envers.NotAudited
 	@org.hibernate.search.annotations.Field
 	public String getDescription() {
 		return description;

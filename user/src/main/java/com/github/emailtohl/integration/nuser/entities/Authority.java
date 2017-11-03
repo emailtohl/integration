@@ -16,7 +16,6 @@ import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 /**
  * 角色关联的授权
  * @author HeLei
- * @date 2017.02.04
  */
 @org.hibernate.envers.Audited
 @org.hibernate.annotations.BatchSize(size = 10)// 因n+1查询问题，盲猜优化，一次性加载size个代理
