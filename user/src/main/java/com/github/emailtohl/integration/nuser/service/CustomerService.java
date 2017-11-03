@@ -19,14 +19,14 @@ import com.github.emailtohl.integration.nuser.entities.Card;
 import com.github.emailtohl.integration.nuser.entities.Customer;
 
 /**
- * 外部用户的服务层
+ * 客户的服务层
  * @author HeLei
  */
 @Validated
 public interface CustomerService extends StandardService<Customer> {
 	
 	/**
-	 * 外部用户登录
+	 * 客户登录
 	 * @param cellPhoneOrEmail
 	 * @param password
 	 * @return
@@ -34,14 +34,14 @@ public interface CustomerService extends StandardService<Customer> {
 	@NotNull ExecResult login(String cellPhoneOrEmail, String password);
 	
 	/**
-	 * 通过手机号码或者邮箱查找外部用户
+	 * 通过手机号码或者邮箱查找客户
 	 * @param cellPhoneOrEmail
 	 * @return
 	 */
 	Customer findByCellPhoneOrEmail(String cellPhoneOrEmail);
 	
 	/**
-	 * 为外部人员授予角色
+	 * 为客户授予角色
 	 * @param id
 	 * @param roleNames
 	 * @return
@@ -50,7 +50,7 @@ public interface CustomerService extends StandardService<Customer> {
 	Customer grandRoles(Long id, String... roleNames);
 	
 	/**
-	 * 为外部人员提升等级的权限
+	 * 为客户提升等级的权限
 	 * @param id
 	 * @param roleNames
 	 * @return
@@ -66,7 +66,7 @@ public interface CustomerService extends StandardService<Customer> {
 	String getToken(String cellPhoneOrEmail);
 	
 	/**
-	 * 更新外部人员的密码，一般是用户忘记密码后，通过邮箱确认后自行修改，所以不需要输入原密码
+	 * 更新客户的密码，一般是用户忘记密码后，通过邮箱确认后自行修改，所以不需要输入原密码
 	 * @param cellPhoneOrEmail
 	 * @param newPassword
 	 * @param token 通过邮箱或短信或其他方式获取的令牌，该令牌证明确实是该账号拥有者在修改密码
@@ -99,7 +99,7 @@ public interface CustomerService extends StandardService<Customer> {
 	Customer changeEmail(Long id, String newEmail);
 	
 	/**
-	 * 是否锁定该外部人员的账号
+	 * 是否锁定该客户的账号
 	 * @param id
 	 * @param lock
 	 * @return

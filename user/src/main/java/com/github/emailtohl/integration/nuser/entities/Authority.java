@@ -61,32 +61,32 @@ public class Authority extends BaseEntity {
 	public static final String EMPLOYEE_DELETE = "employee_delete";
 	
 	/**
-	 * 管理外部用户的权限
+	 * 管理客户的权限
 	 */
 	public static final String CUSTOMER = "customer";
 	
 	/**
-	 * 为外部人员授予角色的权限
+	 * 为客户授予角色的权限
 	 */
 	public static final String CUSTOMER_ROLE = "customer_role";
 	
 	/**
-	 * 为外部人员提升等级的权限
+	 * 为客户提升等级的权限
 	 */
 	public static final String CUSTOMER_LEVEL = "customer_level";
 	
 	/**
-	 * 为外部人员解锁的权限
+	 * 为客户解锁的权限
 	 */
 	public static final String CUSTOMER_LOCK = "customer_lock";
 	
 	/**
-	 * 为外部人员重置密码的权限
+	 * 为客户重置密码的权限
 	 */
 	public static final String CUSTOMER_RESET_PASSWORD = "customer_reset_password";
 	
 	/**
-	 * 删除外部人员的权限
+	 * 删除客户的权限
 	 */
 	public static final String CUSTOMER_DELETE = "customer_delete";
 	

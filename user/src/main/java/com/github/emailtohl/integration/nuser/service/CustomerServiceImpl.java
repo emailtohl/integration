@@ -43,7 +43,7 @@ import com.github.emailtohl.integration.nuser.entities.Customer.Level;
 import com.github.emailtohl.integration.nuser.entities.Role;
 
 /**
- * 外部人员的服务接口
+ * 客户的服务接口
  * 
  * @author HeLei
  */

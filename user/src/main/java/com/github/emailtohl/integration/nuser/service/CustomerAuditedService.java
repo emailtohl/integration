@@ -10,7 +10,7 @@ import com.github.emailtohl.integration.common.jpa.envers.Tuple;
 import com.github.emailtohl.integration.nuser.entities.Customer;
 
 /**
- * 查询被审计的外部账户的历史记录
+ * 查询被审计的客户的历史记录
  * @author HeLei
  */
 @PreAuthorize("hasAuthority('" + AUDIT_USER + "')")

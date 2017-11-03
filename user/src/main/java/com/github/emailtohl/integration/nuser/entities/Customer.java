@@ -17,7 +17,7 @@ import javax.validation.constraints.Pattern;
 import com.github.emailtohl.integration.common.Constant;
 
 /**
- * 系统外部使用人员，如顾客、商家、匿名访问者等等
+ * 客户，如顾客、商家、匿名访问者等等
  * 他们注册时需要手机号唯一识别
  * @author HeLei
  */
@@ -28,7 +28,7 @@ import com.github.emailtohl.integration.common.Constant;
 public class Customer extends User {
 	private static final long serialVersionUID = -1136305533524407299L;
 	/**
-	 * 外部用户的等级
+	 * 客户的等级
 	 * @author HeLei
 	 */
 	public enum Level {
