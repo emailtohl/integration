@@ -27,9 +27,9 @@ public interface Constant {
 	String PATTERN_URL = "[a-zA-z]+://[^\\s]*";
 	
 	/**
-	 * 匹配手机号码的正则表达式
+	 * 匹配手机号码的正则表达式，默认首位是1的11位数字是手机号码
 	 */
-	String PATTERN_CELL_PHONE = "^1(3[0-9]|4[57]|5[0-35-9]|7[0135678]|8[0-9])\\d{8}$";
+	String PATTERN_CELL_PHONE = "^1\\d{10}$";
 	
 	/**
 	 * 匹配国内电话号码的正则匹配式

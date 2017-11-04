@@ -50,6 +50,7 @@ import com.github.emailtohl.integration.nuser.entities.Role;
 @Transactional
 @Service
 public class CustomerServiceImpl implements CustomerService {
+	public static final Pattern PATTERN_CELL_PHONE = Pattern.compile(Constant.PATTERN_CELL_PHONE);
 	public static final Pattern EMAIL_PATTERN = Pattern.compile(Constant.PATTERN_EMAIL);
 	private static final transient SecureRandom RANDOM = new SecureRandom();
 	private static final transient int HASHING_ROUNDS = 10;
@@ -349,12 +350,16 @@ public class CustomerServiceImpl implements CustomerService {
 		if (cellPhoneOrEmail == null) {
 			return null;
 		}
-		Matcher m = EMAIL_PATTERN.matcher(cellPhoneOrEmail);
-		Customer c;
+		Customer c = null;
+		Matcher m = PATTERN_CELL_PHONE.matcher(cellPhoneOrEmail);
 		if (m.find()) {
-			c = customerRepository.findByEmail(cellPhoneOrEmail);
-		} else {
 			c = customerRepository.findByCellPhone(cellPhoneOrEmail);
+		}
+		if (c == null) {
+			m = EMAIL_PATTERN.matcher(cellPhoneOrEmail);
+			if (m.find()) {
+				c = customerRepository.findByEmail(cellPhoneOrEmail);
+			}
 		}
 		return c;
 	}

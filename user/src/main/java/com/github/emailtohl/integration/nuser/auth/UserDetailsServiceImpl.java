@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import com.github.emailtohl.integration.common.Constant;
 import com.github.emailtohl.integration.nuser.dao.CustomerRepository;
 import com.github.emailtohl.integration.nuser.dao.EmployeeRepository;
-import com.github.emailtohl.integration.nuser.entities.Customer;
 import com.github.emailtohl.integration.nuser.entities.Employee;
+import com.github.emailtohl.integration.nuser.entities.User;
 /**
  * 本类实现了UserDetailsService
  * @author HeLei
@@ -24,33 +24,39 @@ import com.github.emailtohl.integration.nuser.entities.Employee;
 @Transactional
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-	private static Pattern pattern_email = Pattern.compile(Constant.PATTERN_EMAIL);
-	private static Pattern pattern_emNum = Pattern.compile(Employee.PATTERN_EMP_NUM);
-	@Inject EmployeeRepository employeeRepository;
-	@Inject CustomerRepository customerRepository;
-	
+	public static final Pattern PATTEN_EMAIL = Pattern.compile(Constant.PATTERN_EMAIL);
+	public static final Pattern PATTERN_CELL_PHONE = Pattern.compile(Constant.PATTERN_CELL_PHONE);
+	public static final Pattern PATTEN_EMP_NUM = Pattern.compile(Employee.PATTERN_EMP_NUM);
+	@Inject
+	CustomerRepository customerRepository;
+	@Inject
+	EmployeeRepository employeeRepository;
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Matcher m = pattern_emNum.matcher(username);
+		User u = null;
+		Matcher m = PATTERN_CELL_PHONE.matcher(username);
 		if (m.find()) {
-			Integer empNum = Integer.parseInt(username);
-			Employee e = employeeRepository.findByEmpNum(empNum);
-			if (e == null) {
-				throw new UsernameNotFoundException("查不到此平台账号");
+			u = customerRepository.findByCellPhone(username);
+		}
+		if (u == null) {
+			m = PATTEN_EMAIL.matcher(username);
+			if (m.find()) {
+				u = customerRepository.findByEmail(username);
 			}
-			return new UserDetailsImpl(e);
 		}
-		Customer c;
-		m = pattern_email.matcher(username);
-		if (m.find()) {
-			c = customerRepository.findByEmail(username);
-		} else {
-			c = customerRepository.findByCellPhone(username);
+		if (u == null) {
+			m = PATTEN_EMP_NUM.matcher(username);
+			if (m.find()) {
+				Integer empNum = Integer.parseInt(username);
+				u = employeeRepository.findByEmpNum(empNum);
+			}
 		}
-		if (c == null) {
-			throw new UsernameNotFoundException("查不到此账号");
+		if (u == null) {
+			throw new UsernameNotFoundException("没有此用户：" + username);
 		}
-		return new UserDetailsImpl(c);
+		UserDetails d = new UserDetailsImpl(u);
+		return d;
 	}
 
 }
