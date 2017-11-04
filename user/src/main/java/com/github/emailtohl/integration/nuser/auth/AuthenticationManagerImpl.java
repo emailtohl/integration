@@ -1,8 +1,6 @@
 package com.github.emailtohl.integration.nuser.auth;
 
 import java.io.Serializable;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -19,11 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.integration.common.Constant;
 import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
-import com.github.emailtohl.integration.nuser.dao.CustomerRepository;
-import com.github.emailtohl.integration.nuser.dao.EmployeeRepository;
-import com.github.emailtohl.integration.nuser.entities.Employee;
 import com.github.emailtohl.integration.nuser.entities.User;
 
 /**
@@ -33,13 +27,8 @@ import com.github.emailtohl.integration.nuser.entities.User;
 @Service
 public class AuthenticationManagerImpl implements AuthenticationManager {
 	protected static final transient Logger LOG = LogManager.getLogger();
-	protected static final Pattern PATTERN_EMAIL = Pattern.compile(Constant.PATTERN_EMAIL);
-	protected static final Pattern PATTERN_CELL_PHONE = Pattern.compile(Constant.PATTERN_CELL_PHONE);
-	protected static final Pattern PATTERN_EMP_NUM = Pattern.compile(Employee.PATTERN_EMP_NUM);
 	@Inject
-	EmployeeRepository employeeRepository;
-	@Inject
-	CustomerRepository customerRepository;
+	protected LoadUser loadUser;
 	protected Encipher encipher = new Encipher();
 	protected String privateKey;
 
@@ -58,24 +47,7 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 	}
 
 	public Authentication authenticate(String username, String password) throws AuthenticationException {
-		User u = null;
-		Matcher m = PATTERN_CELL_PHONE.matcher(username);
-		if (m.find()) {
-			u = customerRepository.findByCellPhone(username);
-		}
-		if (u == null) {
-			m = PATTERN_EMAIL.matcher(username);
-			if (m.find()) {
-				u = customerRepository.findByEmail(username);
-			}
-		}
-		if (u == null) {
-			m = PATTERN_EMP_NUM.matcher(username);
-			if (m.find()) {
-				Integer empNum = Integer.parseInt(username);
-				u = employeeRepository.findByEmpNum(empNum);
-			}
-		}
+		User u = loadUser.load(username);
 		if (u == null) {
 			LOG.warn("Authentication failed for non-existent user {}.", username);
 			throw new UsernameNotFoundException("没有此用户");
