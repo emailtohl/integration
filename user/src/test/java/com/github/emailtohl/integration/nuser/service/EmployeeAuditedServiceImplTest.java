@@ -90,7 +90,6 @@ public class EmployeeAuditedServiceImplTest {
 		assertTrue(ls.size() == 2);// 一个新增、一个修改
 		assertEquals(ls.get(0).getEntity().getDescription(), "系统分析人员");
 		assertEquals(ls.get(0).getRevisionType(), RevisionType.ADD);
-		assertEquals(ls.get(1).getEntity().getDescription(), "update");
 		assertEquals(ls.get(1).getRevisionType(), RevisionType.MOD);
 		
 	}

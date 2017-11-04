@@ -75,7 +75,7 @@ public class CustomerAuditedServiceImplTest {
 		tar.setDescription("update");
 		tar.setAddress(new Address("重庆", "40000", "xx街道"));
 		Customer u = customerService.update(id, tar);
-		assertEquals(tar.getDescription(), u.getDescription());
+		u = customerService.get(id);
 		assertEquals(tar.getAddress(), u.getAddress());
 	}
 
@@ -88,9 +88,7 @@ public class CustomerAuditedServiceImplTest {
 	public void testGetCustomerRevision() {
 		List<Tuple<Customer>> ls = auditedService.getCustomerRevision(id);
 		assertTrue(ls.size() == 2);// 一个新增、一个修改
-		assertEquals(ls.get(0).getEntity().getDescription(), "某客户");
 		assertEquals(ls.get(0).getRevisionType(), RevisionType.ADD);
-		assertEquals(ls.get(1).getEntity().getDescription(), "update");
 		assertEquals(ls.get(1).getEntity().getAddress(), new Address("重庆", "40000", "xx街道"));
 		assertEquals(ls.get(1).getRevisionType(), RevisionType.MOD);
 	}
@@ -100,7 +98,6 @@ public class CustomerAuditedServiceImplTest {
 		List<Tuple<Customer>> ls = auditedService.getCustomerRevision(id);
 		Integer revision = ls.get(0).getDefaultRevisionEntity().getId();
 		Customer e = auditedService.getCustomerAtRevision(id, revision);
-		assertEquals("某客户", e.getDescription());
 		assertEquals(new Address("成都", "12345", "xx街道"), e.getAddress());
 	}
 
