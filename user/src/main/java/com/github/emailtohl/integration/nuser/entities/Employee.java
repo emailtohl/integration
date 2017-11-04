@@ -24,6 +24,11 @@ public class Employee extends User {
 	 */
 	public static final String PATTERN_EMP_NUM = "^\\d\\d{2,5}\\d$";
 	
+	/**
+	 * 最低序号
+	 */
+	public static final int NO1 = 1000;
+	
 	@Pattern(regexp = PATTERN_EMP_NUM)
 	private Integer empNum;
 	private String post;

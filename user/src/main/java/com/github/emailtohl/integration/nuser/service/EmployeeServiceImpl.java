@@ -63,9 +63,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 		synchronized (this) {
 			Integer max = employeeRepository.getMaxEmpNo();
 			if (max == null) {
-				max = 999;
+				max = Employee.NO1;
 			}
-			e.setEmpNum(++max);
+			e.setEmpNum(max++);
 		}
 		// 关于部门
 		if (entity.getDepartment() != null && entity.getDepartment().getName() != null) {
@@ -78,7 +78,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		e.setAccountNonLocked(true);
 		String pw = e.getPassword();
 		if (pw == null || pw.isEmpty()) {
-			pw = "123456";// 设置默认密码
+			pw = employeeDefaultPassword;// 设置默认密码
 		}
 		pw = BCrypt.hashpw(pw, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		e.setPassword(pw);

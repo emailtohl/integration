@@ -77,7 +77,7 @@ public class UserTestData {
 			resource_manager = new Authority(RESOURCE_MANAGER, "资源管理，文件上传，目录创建、改名以及删除", null),
 			content_manager = new Authority(CONTENT_MANAGER, "内容管理", null);
 	
-	public final Role role_admin = new Role("admin", "管理员"), role_manager = new Role("manager", "经理"),
+	public final Role role_admin = new Role(Role.ADMIN, "超级管理员"), role_manager = new Role("manager", "经理"),
 			role_staff = new Role("staff", "雇员"), role_guest = new Role("guest", "普通用户");
 	
 	public final Customer emailtohl = new Customer();
@@ -181,7 +181,7 @@ public class UserTestData {
 		} catch (ParseException | IOException e) {
 			e.printStackTrace();
 		}
-		foo.setEmpNum(1);
+		foo.setEmpNum(Employee.NO1 + 1);
 		foo.setPost("系统分析师");
 		foo.setSalary(10000.00);
 		foo.setDepartment(product);
@@ -203,7 +203,7 @@ public class UserTestData {
 		} catch (ParseException | IOException e) {
 			e.printStackTrace();
 		}
-		bar.setEmpNum(2);
+		bar.setEmpNum(Employee.NO1 + 2);
 		bar.setPost("QA人员");
 		bar.setSalary(6000.00);
 		bar.setDepartment(qa);

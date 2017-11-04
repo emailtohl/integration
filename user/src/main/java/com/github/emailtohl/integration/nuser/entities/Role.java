@@ -22,6 +22,10 @@ import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 @Table(name = "role")
 public class Role extends BaseEntity {
 	private static final long serialVersionUID = 5715974372158270885L;
+	/**
+	 * 系统内置超级管理员
+	 */
+	public static final String ADMIN = "admin";
 	
 	public Role() {
 		super();
