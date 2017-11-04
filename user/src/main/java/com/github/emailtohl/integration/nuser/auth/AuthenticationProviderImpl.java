@@ -5,9 +5,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Service;
 
 /**
- * 本类实现了AuthenticationManager
+ * 本类实现了AuthenticationProvider，它是一个AuthenticationManager，可被外部使用
+ * 用于spring security配置AuthenticationManagerBuilder中
  * @author HeLei
- * @date 2017.06.15
  */
 @Service
 public class AuthenticationProviderImpl extends AuthenticationManagerImpl implements AuthenticationProvider {

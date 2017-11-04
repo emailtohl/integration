@@ -28,15 +28,14 @@ import com.github.emailtohl.integration.nuser.entities.User;
 
 /**
  * 本类实现了AuthenticationManager
- * 
  * @author HeLei
- * @date 2017.06.15
  */
 @Service
 public class AuthenticationManagerImpl implements AuthenticationManager {
 	protected static final transient Logger LOG = LogManager.getLogger();
-	protected static Pattern pattern_email = Pattern.compile(Constant.PATTERN_EMAIL);
-	protected static Pattern pattern_emNum = Pattern.compile(Employee.PATTERN_EMP_NUM);
+	protected static final Pattern PATTERN_EMAIL = Pattern.compile(Constant.PATTERN_EMAIL);
+	protected static final Pattern PATTERN_CELL_PHONE = Pattern.compile(Constant.PATTERN_CELL_PHONE);
+	protected static final Pattern PATTERN_EMP_NUM = Pattern.compile(Employee.PATTERN_EMP_NUM);
 	@Inject
 	EmployeeRepository employeeRepository;
 	@Inject
@@ -59,17 +58,23 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 	}
 
 	public Authentication authenticate(String username, String password) throws AuthenticationException {
-		User u;
-		Matcher m = pattern_emNum.matcher(username);
+		User u = null;
+		Matcher m = PATTERN_CELL_PHONE.matcher(username);
 		if (m.find()) {
-			Integer empNum = Integer.parseInt(username);
-			u = employeeRepository.findByEmpNum(empNum);
-		}
-		m = pattern_email.matcher(username);
-		if (m.find()) {
-			u = customerRepository.findByEmail(username);
-		} else {
 			u = customerRepository.findByCellPhone(username);
+		}
+		if (u == null) {
+			m = PATTERN_EMAIL.matcher(username);
+			if (m.find()) {
+				u = customerRepository.findByEmail(username);
+			}
+		}
+		if (u == null) {
+			m = PATTERN_EMP_NUM.matcher(username);
+			if (m.find()) {
+				Integer empNum = Integer.parseInt(username);
+				u = employeeRepository.findByEmpNum(empNum);
+			}
 		}
 		if (u == null) {
 			LOG.warn("Authentication failed for non-existent user {}.", username);

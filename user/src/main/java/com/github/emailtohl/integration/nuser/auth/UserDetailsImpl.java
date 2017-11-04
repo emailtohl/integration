@@ -7,13 +7,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.github.emailtohl.integration.nuser.entities.Customer;
 import com.github.emailtohl.integration.nuser.entities.Employee;
 import com.github.emailtohl.integration.nuser.entities.User;
 
 /**
  * org.springframework.security.core.userdetails.UserDetailsService接口需要返回的实例
  * @author HeLei
- * @date 2017.06.16
  */
 public class UserDetailsImpl implements UserDetails {
 	private static final long serialVersionUID = 1635134127318665555L;
@@ -26,7 +26,8 @@ public class UserDetailsImpl implements UserDetails {
 	private String nickname;
 	private String cellPhone;
 	private String email;
-	private Integer empNum;
+	private Integer empNum; // 跟平台账号相关
+	private Customer.Level level; // 跟客户账号相关
 	private Set<String> authorities;
 	private String password;
 	private String iconSrc;// 额外携带用户图片信息
@@ -63,8 +64,9 @@ public class UserDetailsImpl implements UserDetails {
 		if (u instanceof Employee) {
 			this.userType = UserType.Employee;
 			this.empNum = ((Employee) u).getEmpNum();
-		} else {
+		} else if (u instanceof Customer) {
 			this.userType = UserType.Customer;
+			this.level = ((Customer) u).getLevel();
 		}
 		this.authorities = u.authorities();
 		this.password = u.getPassword();
@@ -88,13 +90,14 @@ public class UserDetailsImpl implements UserDetails {
 
 	@Override
 	public String getUsername() {
-		if (empNum != null)
+		if (userType == UserType.Employee) {
 			return empNum.toString();
-		if (email != null) {
-			return email;
 		}
 		if (cellPhone != null) {
 			return cellPhone;
+		}
+		if (email != null) {
+			return email;
 		}
 		throw new IllegalStateException("未存储用户的标识");
 	}
@@ -139,9 +142,10 @@ public class UserDetailsImpl implements UserDetails {
 	@Override
 	public String toString() {
 		return "UserDetailsImpl [id=" + id + ", userType=" + userType + ", nickname=" + nickname + ", cellPhone="
-				+ cellPhone + ", email=" + email + ", empNum=" + empNum + ", authorities=" + authorities + ", password="
-				+ password + ", iconSrc=" + iconSrc + ", accountNonLocked=" + accountNonLocked + ", accountNonExpired="
-				+ accountNonExpired + ", credentialsNonExpired=" + credentialsNonExpired + "]";
+				+ cellPhone + ", email=" + email + ", empNum=" + empNum + ", level=" + level + ", authorities="
+				+ authorities + ", password=" + password + ", iconSrc=" + iconSrc + ", accountNonLocked="
+				+ accountNonLocked + ", accountNonExpired=" + accountNonExpired + ", credentialsNonExpired="
+				+ credentialsNonExpired + "]";
 	}
 
 }

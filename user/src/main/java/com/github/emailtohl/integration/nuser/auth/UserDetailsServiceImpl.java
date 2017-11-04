@@ -17,9 +17,8 @@ import com.github.emailtohl.integration.nuser.dao.EmployeeRepository;
 import com.github.emailtohl.integration.nuser.entities.Employee;
 import com.github.emailtohl.integration.nuser.entities.User;
 /**
- * 本类实现了UserDetailsService
+ * 本类实现了UserDetailsService，用于spring security配置AuthenticationManagerBuilder中
  * @author HeLei
- * @date 2017.06.15
  */
 @Transactional
 @Service
