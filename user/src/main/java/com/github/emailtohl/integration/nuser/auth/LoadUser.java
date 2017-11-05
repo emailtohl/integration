@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Component;
 
@@ -32,6 +33,7 @@ public class LoadUser {
 	 * @param username 在Spring Security中用户唯一性的标识，本系统中可以是平台工号、客户手机或客户邮箱
 	 * @return 若没查找到则返回null
 	 */
+	@Transactional
 	public User load(String username) {
 		if (username == null) {
 			return null;
@@ -53,6 +55,9 @@ public class LoadUser {
 				Integer empNum = Integer.parseInt(username);
 				u = employeeRepository.findByEmpNum(empNum);
 			}
+		}
+		if (u != null) {
+			u.authorities();// 加载角色与权限
 		}
 		return u;
 	}

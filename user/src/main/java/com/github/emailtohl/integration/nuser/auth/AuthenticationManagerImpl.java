@@ -3,7 +3,6 @@ package com.github.emailtohl.integration.nuser.auth;
 import java.io.Serializable;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +34,6 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 	/**
 	 * 下面是实现AuthenticationProvider，可以供Spring Security框架使用
 	 */
-	@Transactional
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		UsernamePasswordAuthenticationToken credentials = (UsernamePasswordAuthenticationToken) authentication;

@@ -49,6 +49,7 @@ import com.github.emailtohl.integration.nuser.entities.User.Gender;
  * @date 2017.06.12
  */
 public class UserTestData {
+	public final static String TEST_PASSWORD = "123456";
 	static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	static final SecureRandom r = new SecureRandom();
 	static final int HASHING_ROUNDS = 10;
@@ -149,7 +150,7 @@ public class UserTestData {
 		emailtohl.setTelephone("69922113");
 		emailtohl.setAddress(new Address("重庆", "40000", "回龙路66号"));
 		emailtohl.setAccountNonLocked(true);
-		emailtohl.setPassword(BCrypt.hashpw("123456", salt));
+		emailtohl.setPassword(BCrypt.hashpw(TEST_PASSWORD, salt));
 		emailtohl.setDescription("developer");
 		emailtohl.setGender(Gender.MALE);
 		emailtohl.setLevel(Level.VIP);
@@ -169,7 +170,7 @@ public class UserTestData {
 		foo.setEmail("foo@test.com");
 		foo.setTelephone("40221199");
 		foo.setAccountNonLocked(true);
-		foo.setPassword(BCrypt.hashpw("123456", salt));
+		foo.setPassword(BCrypt.hashpw(TEST_PASSWORD, salt));
 		foo.setDescription("业务管理人员");
 		foo.setGender(Gender.MALE);
 		foo.getRoles().add(role_manager);
@@ -191,7 +192,7 @@ public class UserTestData {
 		bar.setEmail("bar@test.com");
 		bar.setTelephone("67891234");
 		bar.setAccountNonLocked(true);
-		bar.setPassword(BCrypt.hashpw("123456", salt));
+		bar.setPassword(BCrypt.hashpw(TEST_PASSWORD, salt));
 		bar.setDescription("普通职员");
 		bar.setGender(Gender.FEMALE);
 		bar.getRoles().add(role_staff);
@@ -215,7 +216,7 @@ public class UserTestData {
 		baz.setTelephone("7722134");
 		baz.setAddress(new Address("成都", "", "新南路XX号"));
 		baz.setAccountNonLocked(true);
-		baz.setPassword(BCrypt.hashpw("123456", salt));
+		baz.setPassword(BCrypt.hashpw(TEST_PASSWORD, salt));
 		baz.setDescription("普通客户");
 		baz.setGender(Gender.FEMALE);
 		baz.getRoles().add(role_guest);
@@ -237,7 +238,7 @@ public class UserTestData {
 		qux.setTelephone("98241562");
 		qux.setAddress(new Address("南京", "", "竹山路XX号"));
 		qux.setAccountNonLocked(true);
-		qux.setPassword(BCrypt.hashpw("123456", salt));
+		qux.setPassword(BCrypt.hashpw(TEST_PASSWORD, salt));
 		qux.setDescription("高级客户");
 		qux.setGender(Gender.FEMALE);
 		qux.getRoles().add(role_guest);
