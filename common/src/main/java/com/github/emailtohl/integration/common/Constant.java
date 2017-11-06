@@ -32,11 +32,6 @@ public interface Constant {
 	String PATTERN_CELL_PHONE = "^1\\d{10}$";
 	
 	/**
-	 * 匹配国内电话号码的正则匹配式
-	 */
-	String PATTERN_DOMESTIC_TEL = "\\d{3}-\\d{8}|\\d{4}-\\{7,8}";
-	
-	/**
 	 * 匹配腾讯QQ号的正则匹配式
 	 */
 	String PATTERN_QQ = "[1-9][0-9]{4,}";

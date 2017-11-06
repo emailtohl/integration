@@ -7,7 +7,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
 
 /**
  * 系统平台账号，他们有工号唯一识别
@@ -29,7 +28,6 @@ public class Employee extends User {
 	 */
 	public static final int NO1 = 1000;
 	
-	@Pattern(regexp = PATTERN_EMP_NUM)
 	private Integer empNum;
 	private String post;
 	private Double salary;

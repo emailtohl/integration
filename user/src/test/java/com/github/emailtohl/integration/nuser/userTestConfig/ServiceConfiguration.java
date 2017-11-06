@@ -46,26 +46,34 @@ public class ServiceConfiguration {
 		return new ConcurrentMapCacheManager();
 	}
 	
-	/*@Bean
+	/**
+	 * LocalValidatorFactoryBean同时支持javax.validation.Validator和org.springframework.validation.Validator两个接口
+	 * 前者是Java EE规范的一个校验接口，后者是前者的门面，它不仅提供统一的报错机制，还可以应用于Spring MVC的验证中
+	 * @return
+	 */
+	@Bean
 	public LocalValidatorFactoryBean localValidatorFactoryBean() {
 		LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
 		// LocalValidatorFactoryBean会自动在classpath下搜索Bean Validation的实现
 		// 我们主要用的实现是HibernateValidator，但若在JAVA EE容器里面有多个提供者就不可预测，故还是手动设置提供类
 		validator.setProviderClass(HibernateValidator.class);
 		return validator;
-	}*/
+	}
 	
 	/**
 	 * MethodValidationPostProcessor会寻找标注了@org.springframework.validation.annotation.Validated
 	 * 和@javax.validation.executable.ValidateOnExecution的类，并为其创建校验的代理
+	 * 需要<groupId>javax.el</groupId><artifactId>javax.el-api</artifactId>和
+	 * <groupId>org.glassfish.web</groupId><artifactId>el-impl</artifactId>包支持
+	 * 
 	 * @return
 	 */
-	/*@Bean
+	@Bean
 	public MethodValidationPostProcessor methodValidationPostProcessor(LocalValidatorFactoryBean validator) {
 		MethodValidationPostProcessor processor = new MethodValidationPostProcessor();
 		processor.setValidator(validator);
 		return processor;
-	}*/
+	}
 	
 	@Bean
 	public ThreadPoolTaskScheduler taskScheduler() {

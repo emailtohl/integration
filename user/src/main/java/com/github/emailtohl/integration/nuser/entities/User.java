@@ -61,7 +61,6 @@ public class User extends BaseEntity {
 	@Pattern(regexp = Constant.PATTERN_CELL_PHONE)
 	protected String cellPhone;
 	
-	@Pattern(regexp = Constant.PATTERN_DOMESTIC_TEL)
 	protected String telephone;
 	@Size(min = 6)
 	@Pattern(regexp = "^[^\\s&\"<>]+$")
