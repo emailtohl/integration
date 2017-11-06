@@ -231,7 +231,7 @@ public class CustomerServiceImplTest {
 
 	@Test
 	public void testChangeCellPhone() {
-		String newPhone = "77889900";
+		String newPhone = "1779876543";
 		customerService.changeCellPhone(id, newPhone);
 		Customer c = customerService.findByCellPhoneOrEmail(newPhone);
 		assertNotNull(c);

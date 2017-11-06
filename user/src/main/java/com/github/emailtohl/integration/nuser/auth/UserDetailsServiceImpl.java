@@ -1,7 +1,6 @@
 package com.github.emailtohl.integration.nuser.auth;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,7 +12,6 @@ import com.github.emailtohl.integration.nuser.entities.User;
  * 本类实现了UserDetailsService，用于spring security配置AuthenticationManagerBuilder中
  * @author HeLei
  */
-@Transactional
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 	@Inject

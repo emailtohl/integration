@@ -9,10 +9,12 @@ import java.util.Set;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 
+import com.github.emailtohl.integration.common.Constant;
 import com.github.emailtohl.integration.common.standard.ExecResult;
 import com.github.emailtohl.integration.common.standard.StandardService;
 import com.github.emailtohl.integration.nuser.entities.Card;
@@ -88,7 +90,7 @@ public interface CustomerService extends StandardService<Customer> {
 	 * @param newCellPhone
 	 * @return
 	 */
-	Customer changeCellPhone(Long id, String newCellPhone);
+	Customer changeCellPhone(Long id, @Pattern(regexp = Constant.PATTERN_CELL_PHONE) String newCellPhone);
 	
 	/**
 	 * 跟换电子邮箱

@@ -1,5 +1,7 @@
 package com.github.emailtohl.integration.nuser.auth;
 
+import javax.inject.Named;
+
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
  * @author HeLei
  */
 @Service
+@Named("authenticationProvider")
 public class AuthenticationProviderImpl extends AuthenticationManagerImpl implements AuthenticationProvider {
 
 	@Override

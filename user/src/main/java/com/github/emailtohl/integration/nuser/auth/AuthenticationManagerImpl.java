@@ -3,6 +3,7 @@ package com.github.emailtohl.integration.nuser.auth;
 import java.io.Serializable;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,6 +25,7 @@ import com.github.emailtohl.integration.nuser.entities.User;
  * @author HeLei
  */
 @Service
+@Named("authenticationManager")
 public class AuthenticationManagerImpl implements AuthenticationManager {
 	protected static final transient Logger LOG = LogManager.getLogger();
 	@Inject
