@@ -9,7 +9,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.github.emailtohl.integration.common.exception.InvalidDataException;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * 为了让前后端在加解密的规则上达成一致协议，设计本类。
@@ -98,7 +100,12 @@ public class Encipher {
 	 */
 	public String decrypt(String ciphertext, String privateKey) {
 		String json = new String(decoder.decode(ciphertext));
-		Model cm = gson.fromJson(json, Model.class);// 密文数据模型
+		Model cm;
+		try {
+			cm = gson.fromJson(json, Model.class);// 密文数据模型
+		} catch (JsonSyntaxException e) {
+			throw new InvalidDataException("密文格式不正确", e);
+		}
 		Model pm = new Model();// 明文数据模型
 		json = new String(decoder.decode(privateKey));
 		KeyPairs key = gson.fromJson(json, KeyPairs.class);

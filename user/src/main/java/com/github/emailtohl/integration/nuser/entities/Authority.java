@@ -193,6 +193,7 @@ public class Authority extends BaseEntity {
 		Authority p = getParent();
 		while (p != null) {
 			names.add(p.getName());
+			p = p.getParent();
 		}
 		return names;
 	}

@@ -66,7 +66,7 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 		// ...
 		UserDetails principal = new UserDetailsImpl(u);
 
-		AuthenticationImpl a = new AuthenticationImpl(u.getName(), u.getPassword(), u.authorities(), d, principal,
+		AuthenticationImpl a = new AuthenticationImpl(u.getName(), u.getPassword(), u.authorityNames(), d, principal,
 				true);
 		// 构造器已经设置完成，为了表达逻辑，所以下面三条语句冗余
 		a.setAuthenticated(true);

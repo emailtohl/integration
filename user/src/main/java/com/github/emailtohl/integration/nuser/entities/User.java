@@ -8,7 +8,6 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -257,10 +256,10 @@ public class User extends BaseEntity {
 	 * 由于多对多关系，可通过本方法直接获取该用户的授权
 	 * @return
 	 */
-	public Set<String> authorities() {
-		Set<Authority> set = new HashSet<Authority>();
-		roles.forEach(r -> set.addAll(r.getAuthorities()));
-		return set.stream().map(a -> a.getName()).collect(Collectors.toSet());
+	public Set<String> authorityNames() {
+		Set<String> names = new HashSet<String>();
+		getRoles().forEach(r -> names.addAll(r.authorityNames()));
+		return names;
 	}
 	
 	@Transient

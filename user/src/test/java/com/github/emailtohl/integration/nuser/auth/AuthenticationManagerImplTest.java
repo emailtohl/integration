@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ActiveProfiles;
@@ -15,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
+import com.github.emailtohl.integration.common.exception.InvalidDataException;
 import com.github.emailtohl.integration.nuser.UserTestData;
 import com.github.emailtohl.integration.nuser.userTestConfig.DataSourceConfiguration;
 import com.github.emailtohl.integration.nuser.userTestConfig.ServiceConfiguration;
@@ -58,5 +60,16 @@ public class AuthenticationManagerImplTest {
 		authenticationManager.authenticate(token);
 	}
 	
+	@Test(expected = InvalidDataException.class)
+	public void testInvalidDataException() {
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(td.bar.getEmpNum().toString(), "123");
+		authenticationManager.authenticate(token);
+	}
+	
+	@Test(expected = BadCredentialsException.class)
+	public void testBadCredentialsException() {
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(td.bar.getEmpNum().toString(), encipher.encrypt("123", publicKey));
+		authenticationManager.authenticate(token);
+	}
 
 }

@@ -68,7 +68,7 @@ public class UserDetailsImpl implements UserDetails {
 			this.userType = UserType.Customer;
 			this.level = ((Customer) u).getLevel();
 		}
-		this.authorities = u.authorities();
+		this.authorities = u.authorityNames();
 		this.password = u.getPassword();
 		if (u.getImage() != null) {
 			this.iconSrc = u.getImage().getUrl();

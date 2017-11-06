@@ -57,7 +57,7 @@ public class LoadUser {
 			}
 		}
 		if (u != null) {
-			u.authorities();// 加载角色与权限
+			u.authorityNames();// 加载角色与权限
 		}
 		return u;
 	}
