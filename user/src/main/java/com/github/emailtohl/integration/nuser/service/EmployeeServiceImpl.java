@@ -65,7 +65,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 			if (max == null) {
 				max = Employee.NO1;
 			}
-			e.setEmpNum(max++);
+			e.setEmpNum(++max);
 		}
 		// 关于部门
 		if (entity.getDepartment() != null && entity.getDepartment().getName() != null) {

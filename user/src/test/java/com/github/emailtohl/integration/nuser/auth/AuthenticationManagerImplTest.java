@@ -29,7 +29,7 @@ import com.github.emailtohl.integration.nuser.userTestConfig.ServiceConfiguratio
 @ActiveProfiles(DataSourceConfiguration.DB_RAM_H2)
 public class AuthenticationManagerImplTest {
 	@Inject
-	@Named("authenticationProviderImpl")
+	@Named("authenticationManager")
 	AuthenticationManager authenticationManager;
 	UserTestData td = new UserTestData();
 	Encipher encipher = new Encipher();
@@ -40,7 +40,7 @@ public class AuthenticationManagerImplTest {
 		String[] pair = encipher.getKeyPairs(256);
 		publicKey = pair[0];
 		privateKey = pair[1];
-		((AuthenticationProviderImpl) authenticationManager).setPrivateKey(privateKey);
+		((AuthenticationManagerImpl) authenticationManager).setPrivateKey(privateKey);
 	}
 
 	@After

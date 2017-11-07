@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 
 import com.github.emailtohl.integration.nuser.userTestConfig.ServiceConfiguration;
@@ -21,6 +22,11 @@ import com.github.emailtohl.integration.nuser.userTestConfig.ServiceConfiguratio
 @EnableGlobalMethodSecurity(prePostEnabled = true, order = 0, mode = AdviceMode.PROXY, proxyTargetClass = false)
 @Import(ServiceConfiguration.class)
 class SecurityConfiguration {
+	/*
+	@Bean
+	public AuthenticationProvider authenticationProvider() {
+		
+	}*/
 	
 	// AuthenticationManager来源于com.github.emailtohl.integration.user.auth
 	@Bean

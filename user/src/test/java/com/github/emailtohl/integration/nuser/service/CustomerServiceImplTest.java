@@ -60,13 +60,14 @@ public class CustomerServiceImplTest {
 	@Inject
 	Gson gson;
 	Long id;
+	String password = "112233";
 
 	@Before
 	public void setUp() throws Exception {
 		Customer e = new Customer();
 		e.setName("haha");
 		e.setNickname("haha");
-		e.setPassword("112233");
+		e.setPassword(password);
 		e.setEmail("haha@test.com");
 		e.setTelephone("112342513514");
 		e.setDescription("测试人员");
@@ -231,10 +232,11 @@ public class CustomerServiceImplTest {
 
 	@Test
 	public void testChangeCellPhone() {
-		String newPhone = "1779876543";
+		String newPhone = "19089023456";
 		customerService.changeCellPhone(id, newPhone);
-		Customer c = customerService.findByCellPhoneOrEmail(newPhone);
-		assertNotNull(c);
+		customerService.findByCellPhoneOrEmail(newPhone);
+		ExecResult r = customerService.login(newPhone, password);
+		assertTrue(r.ok);
 	}
 	
 	@Test

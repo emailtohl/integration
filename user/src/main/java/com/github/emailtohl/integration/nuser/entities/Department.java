@@ -19,6 +19,7 @@ import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
  * 
  * @author HeLei
  */
+@org.hibernate.envers.Audited
 @Entity
 @Table(name = "department")
 public class Department extends BaseEntity {
@@ -33,44 +34,43 @@ public class Department extends BaseEntity {
 	public String getName() {
 		return name;
 	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	@org.hibernate.envers.NotAudited
 	public String getDescription() {
 		return description;
 	}
-
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
+	@org.hibernate.envers.NotAudited
 	@OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	public Set<Employee> getEmployees() {
 		return employees;
 	}
-
 	public void setEmployees(Set<Employee> employees) {
 		this.employees = employees;
 	}
 
+	@org.hibernate.envers.NotAudited
 	@ManyToOne
 	@JoinColumn(name = "parent_id")
 	public Department getParent() {
 		return parent;
 	}
-
 	public void setParent(Department parent) {
 		this.parent = parent;
 	}
 
+	@org.hibernate.envers.NotAudited
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "company_id")
 	public Company getCompany() {
 		return company;
 	}
-
 	public void setCompany(Company company) {
 		this.company = company;
 	}

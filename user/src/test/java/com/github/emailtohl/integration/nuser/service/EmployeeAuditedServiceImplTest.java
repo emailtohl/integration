@@ -53,7 +53,7 @@ public class EmployeeAuditedServiceImplTest {
 		e.setNickname("haha");
 		e.setPassword("112233");
 		e.setEmail("haha@test.com");
-		e.setTelephone("112342513514");
+		e.setTelephone("13534567230");
 		e.setDescription("系统分析人员");
 		e.setGender(Gender.MALE);
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-foo.jpg")) {
@@ -64,7 +64,6 @@ public class EmployeeAuditedServiceImplTest {
 		} catch (ParseException | IOException exception) {
 			exception.printStackTrace();
 		}
-		e.setEmpNum(1);
 		e.setPost("系统分析师");
 		e.setSalary(10000.00);
 		e.setDepartment(new UserTestData().product);
@@ -99,7 +98,7 @@ public class EmployeeAuditedServiceImplTest {
 		List<Tuple<Employee>> ls = auditedService.getEmployeeRevision(id);
 		Integer revision = ls.get(0).getDefaultRevisionEntity().getId();
 		Employee e = auditedService.getEmployeeAtRevision(id, revision);
-		assertEquals("系统分析人员", e.getDescription());
+		assertEquals(new UserTestData().qa, e.getDepartment());
 	}
 
 }

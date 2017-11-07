@@ -58,8 +58,8 @@ public class EmployeeServiceImplTest {
 		e.setNickname("haha");
 		e.setPassword("112233");
 		e.setEmail("haha@test.com");
-		e.setTelephone("112342513514");
-		e.setDescription("测试人员");
+		e.setTelephone("17812345678");
+		e.setDescription("做单元测试");
 		e.setGender(Gender.MALE);
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-foo.jpg")) {
 			e.setBirthday(sdf.parse("1990-12-13"));
@@ -69,7 +69,6 @@ public class EmployeeServiceImplTest {
 		} catch (ParseException | IOException exception) {
 			exception.printStackTrace();
 		}
-		e.setEmpNum(1);
 		e.setPost("系统分析师");
 		e.setSalary(10000.00);
 		e.setDepartment(new UserTestData().product);
@@ -126,7 +125,6 @@ public class EmployeeServiceImplTest {
 		} catch (ParseException | IOException exception) {
 			exception.printStackTrace();
 		}
-		e.setEmpNum(1);
 		e.setPost("系统分析师");
 		e.setSalary(10000.00);
 		e.setDepartment(new UserTestData().qa);

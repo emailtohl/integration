@@ -35,7 +35,7 @@ public class Employee extends User {
 	
 	@org.hibernate.envers.NotAudited
 	@Column(name = "emp_num", unique = true/*, nullable = false*/, updatable = false)
-	@Min(value = 1)
+	@Min(value = NO1)
 	public Integer getEmpNum() {
 		return empNum;
 	}
@@ -57,7 +57,6 @@ public class Employee extends User {
 		this.salary = salary;
 	}
 	
-	@org.hibernate.envers.NotAudited
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "department_id")
 	public Department getDepartment() {
