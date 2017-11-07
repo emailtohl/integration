@@ -11,10 +11,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinTable;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import com.github.emailtohl.integration.common.Constant;
+import com.github.emailtohl.integration.common.ConstantPattern;
 
 /**
  * 客户，如顾客、商家、匿名访问者等等
@@ -46,7 +45,7 @@ public class Customer extends User {
 	/**
 	 * 身份证号码
 	 */
-	@Pattern(regexp = Constant.PATTERN_IDENTIFICATION)
+	@Pattern(regexp = ConstantPattern.IDENTIFICATION)
 	private String identification;
 	/**
 	 * 积分
@@ -56,21 +55,6 @@ public class Customer extends User {
 	 * 拥有的卡
 	 */
 	private Set<Card> cards = new HashSet<Card>();
-	
-	/**
-	 * 注册的顾客，一般是以电话号码识别，所以号码不能为空，且号码具有唯一性
-	 * 若顾客更换手机，号码可以改变
-	 * 手机，重要识别标志
-	 */
-	@org.hibernate.search.annotations.Field
-	@NotNull
-	public String getCellPhone() {
-		return super.cellPhone;
-	}
-	
-	public void setCellPhone(String cellPhone) {
-		super.cellPhone = cellPhone;
-	}
 	
 	@org.hibernate.search.annotations.Field
 	@Enumerated(EnumType.STRING)

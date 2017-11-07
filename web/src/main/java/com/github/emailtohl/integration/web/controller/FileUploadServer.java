@@ -1,6 +1,6 @@
 package com.github.emailtohl.integration.web.controller;
 
-import static com.github.emailtohl.integration.common.Constant.PATTERN_SEPARATOR;
+import static com.github.emailtohl.integration.common.ConstantPattern.SEPARATOR;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -68,7 +68,7 @@ public class FileUploadServer {
 		// 对cms目录下创建索引
 		fileSearch.index(cmsRoot);
 		// 正则式，匹配CMS_DIR目录，用于判断是否cms目录
-		cmsRoot_pattern = Pattern.compile("(^" + PATTERN_SEPARATOR + cmsRoot.getName() + PATTERN_SEPARATOR + "?)|(^cms_dir" + PATTERN_SEPARATOR + "?)");
+		cmsRoot_pattern = Pattern.compile("(^" + SEPARATOR + cmsRoot.getName() + SEPARATOR + "?)|(^cms_dir" + SEPARATOR + "?)");
 		logger.debug(cmsRoot_pattern.matcher(cmsRoot.getName()));
 	}
 	

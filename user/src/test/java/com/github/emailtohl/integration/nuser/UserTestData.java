@@ -148,7 +148,6 @@ public class UserTestData {
 		emailtohl.setNickname("hl");
 		emailtohl.setEmail("emailtohl@163.com");
 		emailtohl.setCellPhone("17712356789");
-		emailtohl.setCellPhone("13987762071");
 		emailtohl.setTelephone("69922113");
 		emailtohl.setAddress(new Address("重庆", "40000", "回龙路66号"));
 		emailtohl.setAccountNonLocked(true);
@@ -171,7 +170,6 @@ public class UserTestData {
 		foo.setNickname("foo");
 		foo.setEmail("foo@test.com");
 		foo.setCellPhone("18900987678");
-		foo.setCellPhone("13823456732");
 		foo.setTelephone("40221199");
 		foo.setAccountNonLocked(true);
 		foo.setPassword(BCrypt.hashpw(TEST_PASSWORD, salt));

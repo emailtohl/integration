@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.integration.common.Constant;
+import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.user.dao.UserRepository;
 import com.github.emailtohl.integration.user.entities.User;
 /**
@@ -27,7 +27,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		this.userRepository = userRepository;
 	}
 	
-	private transient Pattern p = Pattern.compile(Constant.PATTERN_EMAIL);
+	private transient Pattern p = Pattern.compile(ConstantPattern.EMAIL);
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

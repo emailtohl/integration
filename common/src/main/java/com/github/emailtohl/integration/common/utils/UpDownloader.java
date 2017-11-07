@@ -1,6 +1,6 @@
 package com.github.emailtohl.integration.common.utils;
 
-import static com.github.emailtohl.integration.common.Constant.PATTERN_SEPARATOR;
+import static com.github.emailtohl.integration.common.ConstantPattern.SEPARATOR;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -212,7 +212,7 @@ public class UpDownloader {
 			replacement = "\\\\";
 		else
 			replacement = "/";
-		return path.replaceAll(PATTERN_SEPARATOR, replacement);
+		return path.replaceAll(SEPARATOR, replacement);
 	}
 	
 	/**
@@ -244,7 +244,7 @@ public class UpDownloader {
 		}
 		int i = path.lastIndexOf(File.separator) + 1;
 		path = absolutePath.substring(i);
-		path = path.replaceAll(PATTERN_SEPARATOR, "/");
+		path = path.replaceAll(SEPARATOR, "/");
 		return path;
 	}
 	

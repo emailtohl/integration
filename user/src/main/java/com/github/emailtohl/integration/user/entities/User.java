@@ -40,7 +40,7 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import com.github.emailtohl.integration.common.Constant;
+import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 /**
  * 用户实体类
@@ -67,7 +67,7 @@ public class User extends BaseEntity {
 	protected String username;
 	@NotNull// 校验
 	@Pattern(// 校验
-		regexp = Constant.PATTERN_EMAIL,
+		regexp = ConstantPattern.EMAIL,
 		flags = {Pattern.Flag.CASE_INSENSITIVE}
 	)
 	protected String email;

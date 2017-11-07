@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.github.emailtohl.integration.common.Constant;
+import com.github.emailtohl.integration.common.ConstantPattern;
 
 /**
  * 前端zTree的数据模型
@@ -65,7 +65,7 @@ public class FileNode extends ZtreeNode<File> {
 	 */
 	public void setOpen(String path) {
 		LinkedList<String> queue = new LinkedList<String>();
-		for (String name : path.split(Constant.PATTERN_SEPARATOR)) {
+		for (String name : path.split(ConstantPattern.SEPARATOR)) {
 			queue.add(name);
 		}
 		Set<FileNode> nodes = new TreeSet<FileNode>();

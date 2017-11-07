@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 
-import com.github.emailtohl.integration.common.Constant;
+import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
 import com.github.emailtohl.integration.conference.dto.ForumPostDto;
@@ -75,7 +75,7 @@ public interface ForumPostService {
 	 * @param title
 	 * @return
 	 */
-	List<ForumPostDto> findByUserEmail(@Pattern(regexp = Constant.PATTERN_EMAIL, flags = { Pattern.Flag.CASE_INSENSITIVE }) String userEmail);
+	List<ForumPostDto> findByUserEmail(@Pattern(regexp = ConstantPattern.EMAIL, flags = { Pattern.Flag.CASE_INSENSITIVE }) String userEmail);
 	
 	/**
 	 * 保存帖子

@@ -8,7 +8,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Component;
 
-import com.github.emailtohl.integration.common.Constant;
+import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.nuser.dao.CustomerRepository;
 import com.github.emailtohl.integration.nuser.dao.EmployeeRepository;
 import com.github.emailtohl.integration.nuser.entities.Employee;
@@ -20,8 +20,8 @@ import com.github.emailtohl.integration.nuser.entities.User;
  */
 @Component
 public class LoadUser {
-	public static final Pattern PATTEN_EMAIL = Pattern.compile(Constant.PATTERN_EMAIL);
-	public static final Pattern PATTERN_CELL_PHONE = Pattern.compile(Constant.PATTERN_CELL_PHONE);
+	public static final Pattern PATTEN_EMAIL = Pattern.compile(ConstantPattern.EMAIL);
+	public static final Pattern PATTERN_CELL_PHONE = Pattern.compile(ConstantPattern.CELL_PHONE);
 	public static final Pattern PATTEN_EMP_NUM = Pattern.compile(Employee.PATTERN_EMP_NUM);
 	@Inject
 	CustomerRepository customerRepository;

@@ -27,7 +27,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 
-import com.github.emailtohl.integration.common.Constant;
+import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.user.entities.Customer;
@@ -217,7 +217,7 @@ public interface UserService {
 	 * @param email
 	 * @return
 	 */
-	boolean isExist(@Pattern(regexp = Constant.PATTERN_EMAIL, flags = { Pattern.Flag.CASE_INSENSITIVE }) String email);
+	boolean isExist(@Pattern(regexp = ConstantPattern.EMAIL, flags = { Pattern.Flag.CASE_INSENSITIVE }) String email);
 	
 	/**
 	 * 通过用户邮箱名和角色名组合查询Page

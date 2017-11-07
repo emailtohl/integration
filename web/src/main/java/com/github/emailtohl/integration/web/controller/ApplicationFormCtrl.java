@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.github.emailtohl.integration.common.Constant;
+import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.flow.entities.ApplicationForm;
@@ -166,7 +166,7 @@ public class ApplicationFormCtrl {
 		public String cause;
 	}
 	
-	private final Pattern p = Pattern.compile(Constant.PATTERN_DATE);
+	private final Pattern p = Pattern.compile(ConstantPattern.DATE);
 	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	/**
 	 * 查看申请表处理历史

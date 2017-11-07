@@ -31,7 +31,7 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import com.github.emailtohl.integration.common.Constant;
+import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.common.jpa.entity.Image;
 /**
@@ -53,12 +53,12 @@ public class User extends BaseEntity {
 	protected String name;
 	protected String nickname;// 可存储第三方昵称
 	@Pattern(// 校验
-		regexp = Constant.PATTERN_EMAIL,
+		regexp = ConstantPattern.EMAIL,
 		flags = {Pattern.Flag.CASE_INSENSITIVE}
 	)
 	protected String email;
 	
-	@Pattern(regexp = Constant.PATTERN_CELL_PHONE)
+	@Pattern(regexp = ConstantPattern.CELL_PHONE)
 	protected String cellPhone;
 	
 	protected String telephone;
