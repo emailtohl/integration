@@ -91,6 +91,9 @@ public class EmployeeServiceImplTest {
 		Employee e = employeeService.get(id);
 		assertNotNull(e);
 		System.out.println(gson.toJson(e));
+		List<Employee> ls = employeeService.findByName(e.getName());
+		assertFalse(ls.isEmpty());
+		System.out.println(ls);
 	}
 
 	@Test

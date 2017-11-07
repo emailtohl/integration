@@ -28,6 +28,14 @@ public class LoadUser {
 	@Inject
 	EmployeeRepository employeeRepository;
 	
+	public LoadUser() {}
+
+	public LoadUser(CustomerRepository customerRepository, EmployeeRepository employeeRepository) {
+		super();
+		this.customerRepository = customerRepository;
+		this.employeeRepository = employeeRepository;
+	}
+
 	/**
 	 * 返回持久化状态的用户实例
 	 * @param username 在Spring Security中用户唯一性的标识，本系统中可以是平台工号、客户手机或客户邮箱
@@ -61,4 +69,5 @@ public class LoadUser {
 		}
 		return u;
 	}
+
 }

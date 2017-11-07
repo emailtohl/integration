@@ -33,17 +33,23 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 	protected Encipher encipher = new Encipher();
 	protected String privateKey;
 
+	public AuthenticationManagerImpl() {}
+	
+	public AuthenticationManagerImpl(LoadUser loadUser) {
+		this.loadUser = loadUser;
+	}
+
 	/**
 	 * 下面是实现AuthenticationProvider，可以供Spring Security框架使用
 	 */
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		UsernamePasswordAuthenticationToken credentials = (UsernamePasswordAuthenticationToken) authentication;
-		String email = credentials.getPrincipal().toString();
+		String principal = credentials.getPrincipal().toString();
 		String password = credentials.getCredentials().toString();
 		// 用户名和密码用完后，记得擦除
 		credentials.eraseCredentials();
-		return authenticate(email, password);
+		return authenticate(principal, password);
 	}
 
 	public Authentication authenticate(String username, String password) throws AuthenticationException {
@@ -108,8 +114,8 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 		}
 	}
 
-	public String getPrivateKey() {
-		return privateKey;
+	public Encipher getEncipher() {
+		return encipher;
 	}
 
 	public void setPrivateKey(String privateKey) {

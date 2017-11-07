@@ -181,6 +181,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 		Employee source = employeeRepository.findByEmpNum(empNum);
 		return transientDetail(source);
 	}
+
+	@Override
+	public List<Employee> findByName(String name) {
+		return employeeRepository.findByNameLike(name).stream().map(this::toTransient).collect(Collectors.toList());
+	}
 	
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override

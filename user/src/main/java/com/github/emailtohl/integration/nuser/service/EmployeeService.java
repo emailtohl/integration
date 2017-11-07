@@ -2,6 +2,8 @@ package com.github.emailtohl.integration.nuser.service;
 
 import static com.github.emailtohl.integration.nuser.entities.Authority.*;
 
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,6 +34,13 @@ public interface EmployeeService extends StandardService<Employee> {
 	 * @return
 	 */
 	Employee getByEmpNum(Integer empNum);
+	
+	/**
+	 * 根据姓名查询平台账号
+	 * @param name 真实姓名
+	 * @return
+	 */
+	List<Employee> findByName(String name);
 	
 	/**
 	 * 为平台账号授予角色
