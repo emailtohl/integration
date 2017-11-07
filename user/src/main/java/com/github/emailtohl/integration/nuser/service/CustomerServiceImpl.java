@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -84,7 +83,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@CachePut(value = CACHE_NAME, key = "#result.id")
 	@Override
-	public Customer create(@Valid Customer entity) {
+	public Customer create(Customer entity) {
 		if (!StringUtils.hasText(entity.getCellPhone()) && !StringUtils.hasText(entity.getEmail())) {
 			throw new InvalidDataException("注册时既未填入手机号也未填入邮箱地址，不能注册");
 		}

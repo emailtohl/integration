@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,7 +55,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@CachePut(value = CACHE_NAME, key = "#result.id")
 	@Override
-	public Employee create(@Valid Employee entity) {
+	public Employee create(Employee entity) {
 		Employee e = new Employee();
 		BeanUtils.copyProperties(entity, e, BaseEntity.getIgnoreProperties("roles", "accountNonLocked", "department"));
 		// 关于工号

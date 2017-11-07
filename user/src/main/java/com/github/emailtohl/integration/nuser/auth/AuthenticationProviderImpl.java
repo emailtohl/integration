@@ -15,6 +15,14 @@ import org.springframework.stereotype.Service;
 @Named("authenticationProvider")
 public class AuthenticationProviderImpl extends AuthenticationManagerImpl implements AuthenticationProvider {
 
+	public AuthenticationProviderImpl() {
+		super();
+	}
+
+	public AuthenticationProviderImpl(LoadUser loadUser) {
+		super(loadUser);
+	}
+
 	@Override
 	public boolean supports(Class<?> authentication) {
 		return authentication == UsernamePasswordAuthenticationToken.class;

@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 
 import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.standard.ExecResult;
@@ -24,7 +23,6 @@ import com.github.emailtohl.integration.nuser.entities.Customer;
  * 客户的服务层
  * @author HeLei
  */
-@Validated
 public interface CustomerService extends StandardService<Customer> {
 	
 	/**
