@@ -1,7 +1,7 @@
 package com.github.emailtohl.integration.nuser.service;
 
 import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER_LEVEL;
-import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER_LOCK;
+import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER_ENABLED;
 import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER_RESET_PASSWORD;
 import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER_ROLE;
 
@@ -103,11 +103,11 @@ public interface CustomerService extends StandardService<Customer> {
 	/**
 	 * 是否锁定该客户的账号
 	 * @param id
-	 * @param lock
+	 * @param enabled
 	 * @return
 	 */
-	@PreAuthorize("hasAuthority('" + CUSTOMER_LOCK + "')")
-	Customer lock(Long id, boolean lock);
+	@PreAuthorize("hasAuthority('" + CUSTOMER_ENABLED + "')")
+	Customer enabled(Long id, boolean enabled);
 	
 	/**
 	 * 批量更新用户所属的卡

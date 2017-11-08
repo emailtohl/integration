@@ -31,8 +31,10 @@ import com.github.emailtohl.integration.nuser.entities.User;
 public class UserServiceImpl implements UserService {
 	private static final transient Logger LOG = LogManager.getLogger();
 	
-	@Value("${user.expire.month}")
-	int userExpireMonth;
+	@Value("${account.expire.month}")
+	int accountExpireMonth;
+	@Value("${credentials.expire.month}")
+	int credentialsExpireMonth;
 	@Inject
 	UserRepository userRepository;
 
@@ -76,22 +78,27 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void accountExpired() {
+	public void accountStatus() {
 		LocalDate today = LocalDate.now();
 		userRepository.findAll().stream().forEach(u -> {
 			Date d = u.getLastLoginTime();
 			if (d == null) {
-				LOG.debug("lastLoginTime: null " + u.getId() + "accountNonExpired : false");
+				LOG.debug("lastLoginTime: null {} accountNonExpired : false", u.getId());
 				u.setAccountNonExpired(false);
+				u.setCredentialsNonExpired(false);
 				return;
 			}
 			Instant instant = d.toInstant();
 			ZoneId zoneId = ZoneId.systemDefault();
 			LocalDate lastLoginTime = instant.atZone(zoneId).toLocalDate();
 			// 过期了
-			if (today.minusMonths(6).isAfter(lastLoginTime)) {
-				LOG.debug( "today: " + today + "lastLoginTime: " + lastLoginTime + "  " + u.getId() + "accountNonExpired : false");
+			if (today.minusMonths(accountExpireMonth).isAfter(lastLoginTime)) {
+				LOG.debug( "today: {} lastLoginTime: {} {} accountNonExpired : false", today, lastLoginTime, u.getId());
 				u.setAccountNonExpired(false);
+			}
+			if (today.minusMonths(credentialsExpireMonth).isAfter(lastLoginTime)) {
+				LOG.debug( "today: {} lastLoginTime: {}  {} credentialsNonExpired : false", today, lastLoginTime, u.getId());
+				u.setCredentialsNonExpired(false);
 			}
 		});
 	}

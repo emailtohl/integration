@@ -113,7 +113,7 @@ class SecurityConfiguration {
 		when(service.grandRoles(anyLong(), anyVararg())).thenReturn(td.baz);
 		when(service.grandLevel(anyLong(), any(Customer.Level.class))).thenReturn(td.baz);
 		when(service.resetPassword(anyLong())).thenReturn(new ExecResult(true, "", null));
-		when(service.lock(anyLong(), anyBoolean())).thenReturn(td.baz);
+		when(service.enabled(anyLong(), anyBoolean())).thenReturn(td.baz);
 		when(service.updatePassword(anyString(), anyString(), anyString())).thenReturn(new ExecResult(true, "", null));
 		return service;
 	}
@@ -123,7 +123,7 @@ class SecurityConfiguration {
 		EmployeeService service = mock(EmployeeService.class);
 		when(service.grandRoles(anyLong(), anyVararg())).thenReturn(td.bar);
 		when(service.resetPassword(anyLong())).thenReturn(new ExecResult(true, "", null));
-		when(service.lock(anyLong(), anyBoolean())).thenReturn(td.bar);
+		when(service.enabled(anyLong(), anyBoolean())).thenReturn(td.bar);
 		when(service.updatePassword(any(), anyString(), anyString())).thenReturn(new ExecResult(true, "", null));
 		return service;
 	}

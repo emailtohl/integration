@@ -248,10 +248,10 @@ public class CustomerServiceImplTest {
 	}
 	
 	@Test
-	public void testLock() {
-		customerService.lock(id, true);
+	public void testEnabled() {
+		customerService.enabled(id, true);
 		Customer c = customerService.get(id);
-		assertFalse(c.getAccountNonLocked());
+		assertTrue(c.getEnabled());
 	}
 
 	@Test

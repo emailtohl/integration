@@ -74,9 +74,9 @@ public interface EmployeeService extends StandardService<Employee> {
 	/**
 	 * 是否锁定该平台账号
 	 * @param id
-	 * @param lock
+	 * @param enabled
 	 * @return
 	 */
-	@PreAuthorize("hasAuthority('" + EMPLOYEE_LOCK + "')")
-	Employee lock(Long id, boolean lock);
+	@PreAuthorize("hasAuthority('" + EMPLOYEE_ENABLED + "')")
+	Employee enabled(Long id, boolean enabled);
 }

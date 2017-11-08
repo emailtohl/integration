@@ -7,8 +7,11 @@ import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -67,15 +70,27 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 		User u = loadUser.load(username);
 		if (u == null) {
 			LOG.warn("Authentication failed for non-existent user {}.", username);
-			throw new UsernameNotFoundException("没有此用户");
+			throw new UsernameNotFoundException("没有此账号");
+		}
+		if (u.getEnabled() != null && !u.getEnabled()) {
+			LOG.warn("Authentication enable for user {}.", username);
+			throw new DisabledException("账号未启用");
 		}
 		if (u.getAccountNonLocked() != null && !u.getAccountNonLocked()) {
 			LOG.warn("Authentication locked for user {}.", username);
-			throw new LockedException("密码错误");
+			throw new LockedException("账号被锁住");
+		}
+		if (u.getAccountNonExpired() != null && !u.getAccountNonExpired()) {
+			LOG.warn("Authentication account expired for user {}.", username);
+			throw new AccountExpiredException("账号已过期");
+		}
+		if (u.getCredentialsNonExpired() != null && !u.getCredentialsNonExpired()) {
+			LOG.warn("Authentication credentials expired for user {}.", username);
+			throw new CredentialsExpiredException("密码过期");
 		}
 		String userPassword;
-		if (privateKey != null) {
-			userPassword = encipher.decrypt(password, privateKey);
+		if (this.privateKey != null) {
+			userPassword = encipher.decrypt(password, this.privateKey);
 		} else {
 			userPassword = password;
 		}
@@ -90,8 +105,8 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 		// ...
 		UserDetails principal = new UserDetailsImpl(u);
 
-		AuthenticationImpl a = new AuthenticationImpl(getUniqueName(u), u.getPassword(), u.authorityNames(), d, principal,
-				true);
+		AuthenticationImpl a = new AuthenticationImpl(getUniqueName(u), u.getPassword(), u.authorityNames(), d,
+				principal, true);
 		// 构造器已经设置完成，为了表达逻辑，所以下面三条语句冗余
 		a.setAuthenticated(true);
 		a.eraseCredentials();

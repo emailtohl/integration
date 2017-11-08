@@ -156,8 +156,10 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void testLock() {
-		employeeService.lock(id, false);
+	public void testEnabled() {
+		employeeService.enabled(id, false);
+		Employee e = employeeService.get(id);
+		assertFalse(e.getEnabled());
 	}
 	
 	@Test

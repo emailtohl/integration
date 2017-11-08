@@ -43,5 +43,5 @@ public interface UserService {
 	 * 账号过期的维护
 	 */
 	@Scheduled(fixedRate = 3600 * 24/*每天执行一次*/)
-	void accountExpired();
+	void accountStatus();
 }

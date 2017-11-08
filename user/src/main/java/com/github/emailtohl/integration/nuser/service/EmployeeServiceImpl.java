@@ -169,6 +169,18 @@ public class EmployeeServiceImpl implements EmployeeService {
 		if (source == null) {
 			return new ExecResult(false, LoginResult.notFound.name(), null);
 		}
+		if (source.getEnabled() != null && !source.getEnabled()) {
+			return new ExecResult(false, LoginResult.disabled.name(), null);
+		}
+		if (source.getAccountNonLocked() != null && !source.getAccountNonLocked()) {
+			return new ExecResult(false, LoginResult.locked.name(), null);
+		}
+		if (source.getAccountNonExpired() != null && !source.getAccountNonExpired()) {
+			return new ExecResult(false, LoginResult.accountExpired.name(), null);
+		}
+		if (source.getCredentialsNonExpired() != null && !source.getCredentialsNonExpired()) {
+			return new ExecResult(false, LoginResult.credentialsExpired.name(), null);
+		}
 		if (!BCrypt.checkpw(password, source.getPassword())) {
 			return new ExecResult(false, LoginResult.badCredentials.name(), null);
 		}
@@ -237,12 +249,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 	
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
-	public Employee lock(Long id, boolean lock) {
+	public Employee enabled(Long id, boolean enabled) {
 		Employee source = employeeRepository.get(id);
 		if (source == null) {
 			return null;
 		}
-		source.setAccountNonLocked(!lock);
+		source.setEnabled(enabled);
 		return transientDetail(source);
 	}
 	

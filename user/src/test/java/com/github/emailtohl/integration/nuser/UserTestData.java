@@ -9,12 +9,12 @@ import static com.github.emailtohl.integration.nuser.entities.Authority.CONTENT_
 import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER;
 import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER_DELETE;
 import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER_LEVEL;
-import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER_LOCK;
+import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER_ENABLED;
 import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER_RESET_PASSWORD;
 import static com.github.emailtohl.integration.nuser.entities.Authority.CUSTOMER_ROLE;
 import static com.github.emailtohl.integration.nuser.entities.Authority.EMPLOYEE;
 import static com.github.emailtohl.integration.nuser.entities.Authority.EMPLOYEE_DELETE;
-import static com.github.emailtohl.integration.nuser.entities.Authority.EMPLOYEE_LOCK;
+import static com.github.emailtohl.integration.nuser.entities.Authority.EMPLOYEE_ENABLED;
 import static com.github.emailtohl.integration.nuser.entities.Authority.EMPLOYEE_RESET_PASSWORD;
 import static com.github.emailtohl.integration.nuser.entities.Authority.EMPLOYEE_ROLE;
 import static com.github.emailtohl.integration.nuser.entities.Authority.FLOW;
@@ -59,13 +59,13 @@ public class UserTestData {
 			query_all_user = new Authority(QUERY_ALL_USER, "查询所有用户的权限", null),
 			employee = new Authority(EMPLOYEE, "管理平台账号的权限", null),
 			employee_role = new Authority(EMPLOYEE_ROLE, "为平台账号授予角色的权限", employee),
-			employee_lock = new Authority(EMPLOYEE_LOCK, "为平台账号解锁的权限", employee),
+			employee_lock = new Authority(EMPLOYEE_ENABLED, "为平台账号解锁的权限", employee),
 			employee_reset_password = new Authority(EMPLOYEE_RESET_PASSWORD, "为平台账号重置密码的权限", employee),
 			employee_delete = new Authority(EMPLOYEE_DELETE, "删除平台账号的权限", employee),
 			customer = new Authority(CUSTOMER, "管理客户的权限", null),
 			customer_role = new Authority(CUSTOMER_ROLE, "为客户授予角色的权限", customer),
 			customer_level = new Authority(CUSTOMER_LEVEL, "为客户提升等级的权限", customer),
-			customer_lock = new Authority(CUSTOMER_LOCK, "为客户解锁的权限", customer),
+			customer_lock = new Authority(CUSTOMER_ENABLED, "为客户解锁的权限", customer),
 			customer_reset_password = new Authority(CUSTOMER_RESET_PASSWORD, "为客户重置密码的权限", customer),
 			customer_delete = new Authority(CUSTOMER_DELETE, "删除客户的权限", customer),
 			flow = new Authority(FLOW, "处理申请单的权限", null),

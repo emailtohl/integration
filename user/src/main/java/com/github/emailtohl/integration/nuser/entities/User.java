@@ -65,6 +65,7 @@ public class User extends BaseEntity {
 	@Size(min = 6)
 	@Pattern(regexp = "^[^\\s&\"<>]+$")
 	protected transient String password;
+	protected Boolean enabled = true;
 	protected Boolean accountNonExpired = true;
 	protected Boolean credentialsNonExpired = true;
 	protected Boolean accountNonLocked = true;
@@ -128,6 +129,23 @@ public class User extends BaseEntity {
 	public void setTelephone(String telephone) {
 		this.telephone = telephone;
 	}
+
+	@org.hibernate.envers.NotAudited
+	@Column(nullable = false)
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	@org.hibernate.envers.NotAudited
+	public Boolean getEnabled() {
+		return enabled;
+	}
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
 	
 	@org.hibernate.envers.NotAudited
 	@Column(name = "account_non_expired")
@@ -163,15 +181,6 @@ public class User extends BaseEntity {
 	}
 	public void setLastLoginTime(Date lastLoginTime) {
 		this.lastLoginTime = lastLoginTime;
-	}
-	
-	@org.hibernate.envers.NotAudited
-	@Column(nullable = false)
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
 	}
 	
 	@org.hibernate.envers.NotAudited

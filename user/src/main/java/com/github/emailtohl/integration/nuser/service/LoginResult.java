@@ -4,5 +4,5 @@ package com.github.emailtohl.integration.nuser.service;
  * @author HeLei
  */
 public enum LoginResult {
-	success, notFound, badCredentials,
+	success, notFound, disabled, locked, badCredentials, accountExpired, credentialsExpired
 }

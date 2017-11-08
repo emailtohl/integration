@@ -189,6 +189,18 @@ public class CustomerServiceImpl implements CustomerService {
 		if (c == null) {
 			return new ExecResult(false, LoginResult.notFound.name(), null);
 		}
+		if (c.getEnabled() != null && !c.getEnabled()) {
+			return new ExecResult(false, LoginResult.disabled.name(), null);
+		}
+		if (c.getAccountNonLocked() != null && !c.getAccountNonLocked()) {
+			return new ExecResult(false, LoginResult.locked.name(), null);
+		}
+		if (c.getAccountNonExpired() != null && !c.getAccountNonExpired()) {
+			return new ExecResult(false, LoginResult.accountExpired.name(), null);
+		}
+		if (c.getCredentialsNonExpired() != null && !c.getCredentialsNonExpired()) {
+			return new ExecResult(false, LoginResult.credentialsExpired.name(), null);
+		}
 		if (!BCrypt.checkpw(password, c.getPassword())) {
 			return new ExecResult(false, LoginResult.badCredentials.name(), null);
 		}
@@ -299,12 +311,12 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
-	public Customer lock(Long id, boolean lock) {
+	public Customer enabled(Long id, boolean enabled) {
 		Customer source = customerRepository.get(id);
 		if (source == null) {
 			return null;
 		}
-		source.setAccountNonLocked(!lock);
+		source.setEnabled(enabled);
 		return transientDetail(source);
 	}
 

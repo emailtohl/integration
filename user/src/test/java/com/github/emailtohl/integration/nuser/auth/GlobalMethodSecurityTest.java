@@ -93,7 +93,7 @@ public class GlobalMethodSecurityTest {
 		}
 		assertNull(r);
 		try {
-			bar = employeeService.lock(1L, true);
+			bar = employeeService.enabled(1L, true);
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
@@ -110,7 +110,7 @@ public class GlobalMethodSecurityTest {
 		assertNotNull(bar);
 		r = employeeService.resetPassword(1L);
 		assertTrue(r.ok);
-		bar = employeeService.lock(1L, false);
+		bar = employeeService.enabled(1L, false);
 		try {
 			r = employeeService.updatePassword(1002, "678901", "token");
 		} catch (Exception e) {
@@ -129,7 +129,7 @@ public class GlobalMethodSecurityTest {
 			assertTrue(e instanceof AccessDeniedException);
 		}
 		try {
-			bar = employeeService.lock(1L, false);
+			bar = employeeService.enabled(1L, false);
 		} catch (Exception e) {
 			assertTrue(e instanceof AccessDeniedException);
 		}
@@ -163,7 +163,7 @@ public class GlobalMethodSecurityTest {
 		}
 		assertNull(r);
 		try {
-			baz = customerService.lock(1L, true);
+			baz = customerService.enabled(1L, true);
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
@@ -181,7 +181,7 @@ public class GlobalMethodSecurityTest {
 		assertNotNull(baz);
 		r = employeeService.resetPassword(1L);
 		assertTrue(r.ok);
-		baz = customerService.lock(1L, false);
+		baz = customerService.enabled(1L, false);
 		try {
 			r = customerService.updatePassword(td.baz.getEmail(), "678901", "token");
 		} catch (Exception e) {
@@ -205,7 +205,7 @@ public class GlobalMethodSecurityTest {
 			assertTrue(e instanceof AccessDeniedException);
 		}
 		try {
-			baz = customerService.lock(1L, false);
+			baz = customerService.enabled(1L, false);
 		} catch (Exception e) {
 			assertTrue(e instanceof AccessDeniedException);
 		}
