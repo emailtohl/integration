@@ -1,12 +1,19 @@
 package com.github.emailtohl.integration.nuser.service;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,6 +29,10 @@ import com.github.emailtohl.integration.nuser.entities.User;
  */
 @Service
 public class UserServiceImpl implements UserService {
+	private static final transient Logger LOG = LogManager.getLogger();
+	
+	@Value("${user.expire.month}")
+	int userExpireMonth;
 	@Inject
 	UserRepository userRepository;
 
@@ -62,6 +73,27 @@ public class UserServiceImpl implements UserService {
 		User target = new User();
 		BeanUtils.copyProperties(source, target, "password", "roles", "cards");
 		return target;
+	}
+
+	@Override
+	public void accountExpired() {
+		LocalDate today = LocalDate.now();
+		userRepository.findAll().stream().forEach(u -> {
+			Date d = u.getLastLoginTime();
+			if (d == null) {
+				LOG.debug("lastLoginTime: null " + u.getId() + "accountNonExpired : false");
+				u.setAccountNonExpired(false);
+				return;
+			}
+			Instant instant = d.toInstant();
+			ZoneId zoneId = ZoneId.systemDefault();
+			LocalDate lastLoginTime = instant.atZone(zoneId).toLocalDate();
+			// 过期了
+			if (today.minusMonths(6).isAfter(lastLoginTime)) {
+				LOG.debug( "today: " + today + "lastLoginTime: " + lastLoginTime + "  " + u.getId() + "accountNonExpired : false");
+				u.setAccountNonExpired(false);
+			}
+		});
 	}
 
 }

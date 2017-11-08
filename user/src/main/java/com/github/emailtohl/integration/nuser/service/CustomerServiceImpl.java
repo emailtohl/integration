@@ -98,6 +98,7 @@ public class CustomerServiceImpl implements CustomerService {
 		}
 		pw = BCrypt.hashpw(pw, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		c.setPassword(pw);
+		c.setLastLoginTime(new Date());
 		c = customerRepository.save(c);
 		return transientDetail(c);
 	}

@@ -1,11 +1,16 @@
 package com.github.emailtohl.integration.nuser.userTestConfig;
 
+import java.lang.reflect.Method;
+import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
+
+import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.validator.HibernateValidator;
+import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
@@ -13,8 +18,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.scheduling.annotation.AsyncConfigurer;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.TransactionManagementConfigurer;
 import org.springframework.util.ErrorHandler;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
@@ -29,11 +40,12 @@ import com.google.gson.GsonBuilder;
  * @author HeLei
  */
 @Configuration
+@EnableScheduling
 @ComponentScan(basePackages = "com.github.emailtohl.integration.nuser", excludeFilters = @ComponentScan.Filter({
 		Controller.class, Configuration.class }))
 @EnableCaching
 @Import(JpaConfiguration.class)
-public class ServiceConfiguration {
+public class ServiceConfiguration implements TransactionManagementConfigurer, AsyncConfigurer, SchedulingConfigurer {
 	private static final Logger LOG = LogManager.getLogger();
 
 	/**
@@ -115,5 +127,38 @@ public class ServiceConfiguration {
 				return false;
 			}
 		})/* .setDateFormat(Constant.DATE_FORMAT) */.create();
+	}
+
+	/**
+	 * 让任务管理器共享同一个线程执行器
+	 */
+	@Override
+	public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+		taskRegistrar.setTaskScheduler(taskScheduler());
+	}
+
+	/**
+	 * 让异步执行器共享同一个线程执行器
+	 */
+	@Override
+	public Executor getAsyncExecutor() {
+		return taskScheduler();
+	}
+
+	@Override
+	public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+		return (Throwable ex, Method method, Object... params) -> LOG.error("调用异步任务出错了, message : " + method, ex);
+	}
+
+	/**
+	 * 默认情况下，Spring总是使用ID为annotationDrivenTransactionManager的事务管理器
+	 * 若实现了TransactionManagementConfigurer接口，则可以自定义提供事务管理器
+	 * 注意：如果没有实现接口TransactionManagementConfigurer，且事务管理器的名字不是默认的annotationDrivenTransactionManager，可在注解 @Transactional的value指定。
+	 */
+	@Inject
+	PlatformTransactionManager jpaTransactionManager;
+	@Override
+	public PlatformTransactionManager annotationDrivenTransactionManager() {
+		return jpaTransactionManager;
 	}
 }

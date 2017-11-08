@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -67,6 +68,10 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 		if (u == null) {
 			LOG.warn("Authentication failed for non-existent user {}.", username);
 			throw new UsernameNotFoundException("没有此用户");
+		}
+		if (u.getAccountNonLocked() != null && !u.getAccountNonLocked()) {
+			LOG.warn("Authentication locked for user {}.", username);
+			throw new LockedException("密码错误");
 		}
 		String userPassword;
 		if (privateKey != null) {

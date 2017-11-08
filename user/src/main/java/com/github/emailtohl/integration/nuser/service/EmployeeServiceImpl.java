@@ -81,6 +81,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		}
 		pw = BCrypt.hashpw(pw, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		e.setPassword(pw);
+		e.setLastLoginTime(new Date());
 		e = employeeRepository.save(e);
 		return transientDetail(e);
 	}
