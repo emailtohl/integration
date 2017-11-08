@@ -16,8 +16,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
+import com.github.emailtohl.integration.common.exception.InnerDataStateException;
+import com.github.emailtohl.integration.nuser.entities.Customer;
+import com.github.emailtohl.integration.nuser.entities.Employee;
 import com.github.emailtohl.integration.nuser.entities.User;
 
 /**
@@ -28,6 +32,12 @@ import com.github.emailtohl.integration.nuser.entities.User;
 @Named("authenticationManager")
 public class AuthenticationManagerImpl implements AuthenticationManager {
 	protected static final transient Logger LOG = LogManager.getLogger();
+	
+	public static final String EMP_NUM_PREFIX = "emp_num:";
+	public static final String CELL_PHONE_PREFIX = "cell_phone:";
+	public static final String EMAIL_PREFIX = "email:";
+	public static final String ID_PREFIX = "id:";
+	
 	@Inject
 	protected LoadUser loadUser;
 	protected Encipher encipher = new Encipher();
@@ -70,11 +80,12 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 		}
 		LOG.debug("User {} successfully authenticated.", username);
 
+		// 这是辅助的一些信息
 		Details d = new Details();
 		// ...
 		UserDetails principal = new UserDetailsImpl(u);
 
-		AuthenticationImpl a = new AuthenticationImpl(u.getName(), u.getPassword(), u.authorityNames(), d, principal,
+		AuthenticationImpl a = new AuthenticationImpl(getUniqueName(u), u.getPassword(), u.authorityNames(), d, principal,
 				true);
 		// 构造器已经设置完成，为了表达逻辑，所以下面三条语句冗余
 		a.setAuthenticated(true);
@@ -122,4 +133,27 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 		this.privateKey = privateKey;
 	}
 
+	/**
+	 * 在安全上下文中获取全局唯一识别的用户名
+	 * @param u
+	 * @return
+	 */
+	private String getUniqueName(User u) {
+		String uniqueName = null;
+		if (u instanceof Employee) {
+			uniqueName = EMP_NUM_PREFIX.concat(((Employee) u).getEmpNum().toString());
+		} else if (u instanceof Customer) {
+			if (StringUtils.hasText(u.getCellPhone())) {
+				uniqueName = CELL_PHONE_PREFIX.concat(u.getCellPhone());
+			} else if (StringUtils.hasText(u.getEmail())) {
+				uniqueName = EMAIL_PREFIX.concat(u.getEmail());
+			}
+		} else if (u.getId() != null){
+			uniqueName = ID_PREFIX.concat(u.getId().toString());
+		}
+		if (uniqueName == null) {
+			throw new InnerDataStateException("未获取到用户唯一标识");
+		}
+		return uniqueName;
+	}
 }

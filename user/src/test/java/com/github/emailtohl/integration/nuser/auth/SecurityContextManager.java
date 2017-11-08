@@ -56,7 +56,7 @@ class SecurityContextManager {
 	
 	public void setBaz() {
 		SecurityContextHolder.clearContext();
-		String name = td.baz.getEmail();
+		String name = td.baz.getCellPhone();
 		Authentication token = new UsernamePasswordAuthenticationToken(name, password);
 		Authentication authentication = authenticationManager.authenticate(token);
 		SecurityContextHolder.getContext().setAuthentication(authentication);

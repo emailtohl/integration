@@ -10,10 +10,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.standard.ExecResult;
+import com.github.emailtohl.integration.nuser.UserTestData;
 import com.github.emailtohl.integration.nuser.entities.Customer;
 import com.github.emailtohl.integration.nuser.entities.Employee;
 import com.github.emailtohl.integration.nuser.service.CustomerAuditedService;
@@ -29,6 +31,7 @@ import com.github.emailtohl.integration.nuser.service.RoleService;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SecurityConfiguration.class)
 public class GlobalMethodSecurityTest {
+	UserTestData td = new UserTestData();
 	@Inject
 	SecurityContextManager scm;
 	@Inject
@@ -144,6 +147,11 @@ public class GlobalMethodSecurityTest {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
 		assertNull(baz);
+		try {
+			r = customerService.updatePassword(td.baz.getEmail(), "678901", "token");
+		} catch (Exception e) {
+			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
+		}
 		
 		scm.setEmailtohl();
 		baz = customerService.grandRoles(1L, "a", "b", "c");
@@ -153,8 +161,13 @@ public class GlobalMethodSecurityTest {
 		r = employeeService.resetPassword(1L);
 		assertTrue(r.ok);
 		baz = customerService.lock(1L, false);
+		try {
+			r = customerService.updatePassword(td.baz.getEmail(), "678901", "token");
+		} catch (Exception e) {
+			assertTrue(e instanceof AccessDeniedException);
+		}
 		
-		scm.setBar();
+		scm.setBaz();
 		try {
 			baz = customerService.grandRoles(1L, "a", "b", "c");
 		} catch (Exception e) {
@@ -175,6 +188,9 @@ public class GlobalMethodSecurityTest {
 		} catch (Exception e) {
 			assertTrue(e instanceof AccessDeniedException);
 		}
+		System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
+		r = customerService.updatePassword(td.baz.getCellPhone(), "678901", "token");
+		assertTrue(r.ok);
 	}
 	
 }

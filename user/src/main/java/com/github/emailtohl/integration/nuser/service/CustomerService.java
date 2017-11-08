@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.github.emailtohl.integration.common.ConstantPattern;
@@ -72,7 +73,8 @@ public interface CustomerService extends StandardService<Customer> {
 	 * @param token 通过邮箱或短信或其他方式获取的令牌，该令牌证明确实是该账号拥有者在修改密码
 	 * @return ExecResult
 	 */
-	@NotNull ExecResult updatePassword(String cellPhoneOrEmail, String newPassword, String token);
+	@PreAuthorize("#cellPhoneOrEmail matches authentication.principal.username")
+	@NotNull ExecResult updatePassword(@P("cellPhoneOrEmail") String cellPhoneOrEmail, String newPassword, String token);
 	
 	/**
 	 * 重置密码，用于忘记密码无法恢复时

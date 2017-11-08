@@ -18,6 +18,7 @@ import com.github.emailtohl.integration.nuser.entities.Employee;
  * @author HeLei
  */
 @Validated
+@PreAuthorize("isAuthenticated()")
 public interface EmployeeService extends StandardService<Employee> {
 	
 	/**
