@@ -210,8 +210,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public ExecResult updatePassword(Long id, String oldPassword, String newPassword) {
-		Employee source = employeeRepository.get(id);
+	public ExecResult updatePassword(Integer empNum, String oldPassword, String newPassword) {
+		Employee source = employeeRepository.findByEmpNum(empNum);
 		if (source == null) {
 			return new ExecResult(false, "没有此用户", null);
 		}

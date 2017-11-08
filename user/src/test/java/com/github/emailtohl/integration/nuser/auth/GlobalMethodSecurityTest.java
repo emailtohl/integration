@@ -98,6 +98,12 @@ public class GlobalMethodSecurityTest {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
 		assertNull(bar);
+		try {
+			r = employeeService.updatePassword(1002, "678901", "token");
+		} catch (Exception e) {
+			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
+		}
+		
 		
 		scm.setEmailtohl();
 		bar = employeeService.grandRoles(1L, "a", "b", "c");
@@ -105,6 +111,11 @@ public class GlobalMethodSecurityTest {
 		r = employeeService.resetPassword(1L);
 		assertTrue(r.ok);
 		bar = employeeService.lock(1L, false);
+		try {
+			r = employeeService.updatePassword(1002, "678901", "token");
+		} catch (Exception e) {
+			assertTrue(e instanceof AccessDeniedException);
+		}
 		
 		scm.setBar();
 		try {
@@ -122,6 +133,10 @@ public class GlobalMethodSecurityTest {
 		} catch (Exception e) {
 			assertTrue(e instanceof AccessDeniedException);
 		}
+		
+		System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
+		r = employeeService.updatePassword(1002, "678901", "token");
+		assertTrue(r.ok);
 	}
 
 	@Test

@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 
@@ -54,12 +55,13 @@ public interface EmployeeService extends StandardService<Employee> {
 	
 	/**
 	 * 更新平台账号的密码
-	 * @param id
+	 * @param empNum
 	 * @param oldPassword
 	 * @param newPassword
 	 * @return ExecResult
 	 */
-	@NotNull ExecResult updatePassword(Long id, String oldPassword, String newPassword);
+	@PreAuthorize("#empNum.toString() matches authentication.principal.username")
+	@NotNull ExecResult updatePassword(@P("empNum") Integer empNum, String oldPassword, String newPassword);
 	
 	/**
 	 * 重置密码，用于忘记密码无法恢复时
