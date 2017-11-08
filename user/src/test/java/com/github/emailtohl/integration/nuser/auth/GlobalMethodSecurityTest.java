@@ -1,6 +1,10 @@
 package com.github.emailtohl.integration.nuser.auth;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -14,10 +18,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.emailtohl.integration.common.jpa.envers.Tuple;
 import com.github.emailtohl.integration.common.standard.ExecResult;
 import com.github.emailtohl.integration.nuser.UserTestData;
 import com.github.emailtohl.integration.nuser.entities.Customer;
 import com.github.emailtohl.integration.nuser.entities.Employee;
+import com.github.emailtohl.integration.nuser.entities.Role;
 import com.github.emailtohl.integration.nuser.service.CustomerAuditedService;
 import com.github.emailtohl.integration.nuser.service.CustomerService;
 import com.github.emailtohl.integration.nuser.service.EmployeeAuditedService;
@@ -193,4 +199,117 @@ public class GlobalMethodSecurityTest {
 		assertTrue(r.ok);
 	}
 	
+	@Test
+	public void testCustomerAuditedService() {
+		Customer baz = null;
+		List<Tuple<Customer>> ls = null;
+		scm.clearContext();
+		try {
+			baz = customerAuditedService.getCustomerAtRevision(1L, 1);
+		} catch (Exception e) {
+			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
+		}
+		assertNull(baz);
+		try {
+			ls = customerAuditedService.getCustomerRevision(1L);
+		} catch (Exception e) {
+			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
+		}
+		assertNull(ls);
+		
+		scm.setBaz();
+		try {
+			baz = customerAuditedService.getCustomerAtRevision(1L, 1);
+		} catch (Exception e) {
+			assertTrue(e instanceof AccessDeniedException);
+		}
+		assertNull(baz);
+		try {
+			ls = customerAuditedService.getCustomerRevision(1L);
+		} catch (Exception e) {
+			assertTrue(e instanceof AccessDeniedException);
+		}
+		
+		scm.setEmailtohl();
+		baz = customerAuditedService.getCustomerAtRevision(1L, 1);
+		assertNotNull(baz);
+		ls = customerAuditedService.getCustomerRevision(1L);
+		assertNotNull(ls);
+	}
+	
+	@Test
+	public void testEmployeeAuditedService() {
+		Employee bar = null;
+		List<Tuple<Employee>> ls = null;
+		scm.clearContext();
+		try {
+			bar = employeeAuditedService.getEmployeeAtRevision(1L, 1);
+		} catch (Exception e) {
+			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
+		}
+		assertNull(bar);
+		try {
+			ls = employeeAuditedService.getEmployeeRevision(1L);
+		} catch (Exception e) {
+			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
+		}
+		assertNull(ls);
+		
+		scm.setBaz();
+		try {
+			bar = employeeAuditedService.getEmployeeAtRevision(1L, 1);
+		} catch (Exception e) {
+			assertTrue(e instanceof AccessDeniedException);
+		}
+		assertNull(bar);
+		try {
+			ls = employeeAuditedService.getEmployeeRevision(1L);
+		} catch (Exception e) {
+			assertTrue(e instanceof AccessDeniedException);
+		}
+		
+		scm.setEmailtohl();
+		bar = employeeAuditedService.getEmployeeAtRevision(1L, 1);
+		assertNotNull(bar);
+		ls = employeeAuditedService.getEmployeeRevision(1L);
+		assertNotNull(ls);
+	}
+	
+	@Test
+	public void testRoleAuditedService() {
+		Role role = null;
+		List<Tuple<Role>> ls = null;
+		scm.clearContext();
+		try {
+			role = roleAuditedService.getRoleAtRevision(1L, 1);
+		} catch (Exception e) {
+			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
+		}
+		assertNull(role);
+		try {
+			ls = roleAuditedService.getRoleRevision(1L);
+		} catch (Exception e) {
+			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
+		}
+		assertNull(ls);
+		
+		scm.setBaz();
+		try {
+			role = roleAuditedService.getRoleAtRevision(1L, 1);
+		} catch (Exception e) {
+			assertTrue(e instanceof AccessDeniedException);
+		}
+		assertNull(role);
+		try {
+			ls = roleAuditedService.getRoleRevision(1L);
+		} catch (Exception e) {
+			assertTrue(e instanceof AccessDeniedException);
+		}
+		
+		scm.setEmailtohl();
+		role = roleAuditedService.getRoleAtRevision(1L, 1);
+		assertNotNull(role);
+		ls = roleAuditedService.getRoleRevision(1L);
+		assertNotNull(ls);
+	}
 }

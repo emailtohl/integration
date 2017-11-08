@@ -2,6 +2,8 @@ package com.github.emailtohl.integration.nuser.auth;
 
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
+
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
@@ -12,12 +14,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 
+import com.github.emailtohl.integration.common.jpa.envers.Tuple;
 import com.github.emailtohl.integration.common.standard.ExecResult;
 import com.github.emailtohl.integration.nuser.UserTestData;
 import com.github.emailtohl.integration.nuser.dao.CustomerRepository;
 import com.github.emailtohl.integration.nuser.dao.EmployeeRepository;
 import com.github.emailtohl.integration.nuser.entities.Customer;
 import com.github.emailtohl.integration.nuser.entities.Employee;
+import com.github.emailtohl.integration.nuser.entities.Role;
 import com.github.emailtohl.integration.nuser.service.CustomerAuditedService;
 import com.github.emailtohl.integration.nuser.service.CustomerService;
 import com.github.emailtohl.integration.nuser.service.EmployeeAuditedService;
@@ -98,6 +102,8 @@ class SecurityConfiguration {
 	@Bean
 	public RoleAuditedService roleAuditedServiceMock() {
 		RoleAuditedService service = mock(RoleAuditedService.class);
+		when(service.getRoleAtRevision(anyLong(), any())).thenReturn(td.role_guest);
+		when(service.getRoleRevision(anyLong())).thenReturn(Arrays.asList(new Tuple<Role>()));
 		return service;
 	}
 	
@@ -124,12 +130,16 @@ class SecurityConfiguration {
 	@Bean
 	public CustomerAuditedService customerAuditedServiceMock() {
 		CustomerAuditedService service = mock(CustomerAuditedService.class);
+		when(service.getCustomerAtRevision(anyLong(), any())).thenReturn(td.baz);
+		when(service.getCustomerRevision(anyLong())).thenReturn(Arrays.asList(new Tuple<Customer>()));
 		return service;
 	}
 	
 	@Bean
 	public EmployeeAuditedService employeeAuditedServiceMock() {
 		EmployeeAuditedService service = mock(EmployeeAuditedService.class);
+		when(service.getEmployeeAtRevision(anyLong(), any())).thenReturn(td.bar);
+		when(service.getEmployeeRevision(anyLong())).thenReturn(Arrays.asList(new Tuple<Employee>()));
 		return service;
 	}
 }

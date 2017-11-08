@@ -139,21 +139,25 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 	 * @return
 	 */
 	private String getUniqueName(User u) {
-		String uniqueName = null;
+		StringBuilder uniqueName = new StringBuilder();
 		if (u instanceof Employee) {
-			uniqueName = EMP_NUM_PREFIX.concat(((Employee) u).getEmpNum().toString());
+			uniqueName.append(EMP_NUM_PREFIX).append(((Employee) u).getEmpNum().toString());
 		} else if (u instanceof Customer) {
 			if (StringUtils.hasText(u.getCellPhone())) {
-				uniqueName = CELL_PHONE_PREFIX.concat(u.getCellPhone());
-			} else if (StringUtils.hasText(u.getEmail())) {
-				uniqueName = EMAIL_PREFIX.concat(u.getEmail());
+				uniqueName.append(CELL_PHONE_PREFIX).append(u.getCellPhone());
+			}
+			if (StringUtils.hasText(u.getEmail())) {
+				if (uniqueName.length() > 0) {
+					uniqueName.append(';');
+				}
+				uniqueName.append(EMAIL_PREFIX).append(u.getEmail());
 			}
 		} else if (u.getId() != null){
-			uniqueName = ID_PREFIX.concat(u.getId().toString());
+			uniqueName.append(ID_PREFIX).append(u.getId().toString());
 		}
-		if (uniqueName == null) {
+		if (uniqueName.length() == 0) {
 			throw new InnerDataStateException("未获取到用户唯一标识");
 		}
-		return uniqueName;
+		return uniqueName.toString();
 	}
 }
