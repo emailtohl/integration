@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -272,9 +273,22 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 	
 	@Value("${account.expire.month}")
-	int accountExpireMonth;
+	Integer accountExpireMonth;
 	@Value("${credentials.expire.month}")
-	int credentialsExpireMonth;
+	Integer credentialsExpireMonth;
+	/**
+	 * 若没有配置，则表示没有过期时间
+	 */
+	@PostConstruct
+	public void init() {
+		if (accountExpireMonth == null) {
+			accountExpireMonth = Integer.MAX_VALUE;
+		}
+		if (credentialsExpireMonth == null) {
+			credentialsExpireMonth = Integer.MAX_VALUE;
+		}
+	}
+	
 	@Override
 	public void accountStatus() {
 		final LocalDate today = LocalDate.now();
