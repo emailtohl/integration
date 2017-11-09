@@ -1,6 +1,9 @@
 package com.github.emailtohl.integration.nuser.service;
 
 import java.security.SecureRandom;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -9,6 +12,8 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
@@ -20,7 +25,6 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.common.standard.ExecResult;
 import com.github.emailtohl.integration.nuser.dao.DepartmentRepository;
 import com.github.emailtohl.integration.nuser.dao.EmployeeRepository;
@@ -37,6 +41,7 @@ import com.github.emailtohl.integration.nuser.entities.Role;
 @Transactional
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
+	private static final transient Logger LOG = LogManager.getLogger();
 	private static final transient SecureRandom RANDOM = new SecureRandom();
 	private static final transient int HASHING_ROUNDS = 10;
 	@Value("${employee.default.password}")
@@ -57,7 +62,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public Employee create(Employee entity) {
 		Employee e = new Employee();
-		BeanUtils.copyProperties(entity, e, BaseEntity.getIgnoreProperties("roles", "accountNonLocked", "department"));
+		BeanUtils.copyProperties(entity, e, Employee.getIgnoreProperties("roles", "enabled", "credentialsNonExpired",
+				"accountNonLocked", "lastLogin", "lastChangeCredentials", "department"));
 		// 关于工号
 		synchronized (this) {
 			Integer max = employeeRepository.getMaxEmpNo();
@@ -81,7 +87,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 		}
 		pw = BCrypt.hashpw(pw, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		e.setPassword(pw);
-		e.setLastLoginTime(new Date());
+		Date now = new Date();
+		e.setLastLogin(now);
+		e.setLastChangeCredentials(now);
 		e = employeeRepository.save(e);
 		return transientDetail(e);
 	}
@@ -184,7 +192,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		if (!BCrypt.checkpw(password, source.getPassword())) {
 			return new ExecResult(false, LoginResult.badCredentials.name(), null);
 		}
-		source.setLastLoginTime(new Date());
+		source.setLastLogin(new Date());
 		return new ExecResult(true, LoginResult.success.name(), transientDetail(source));
 	}
 
@@ -233,6 +241,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		}
 		String hashPw = BCrypt.hashpw(newPassword, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		source.setPassword(hashPw);
+		source.setLastChangeCredentials(new Date());
 		return new ExecResult(true, "", null);
 	}
 
@@ -244,6 +253,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		}
 		String hashPw = BCrypt.hashpw(employeeDefaultPassword, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		source.setPassword(hashPw);
+		source.setLastChangeCredentials(new Date());
 		return new ExecResult(true, "", null);
 	}
 	
@@ -255,7 +265,50 @@ public class EmployeeServiceImpl implements EmployeeService {
 			return null;
 		}
 		source.setEnabled(enabled);
+		if (enabled) {// 同时解锁
+			source.setAccountNonLocked(true);
+		}
 		return transientDetail(source);
+	}
+	
+	@Value("${account.expire.month}")
+	int accountExpireMonth;
+	@Value("${credentials.expire.month}")
+	int credentialsExpireMonth;
+	@Override
+	public void accountStatus() {
+		final LocalDate today = LocalDate.now();
+		employeeRepository.findAll().stream().peek(u -> {
+			Date d = u.getLastLogin();
+			if (d == null) {
+				LOG.debug("lastLoginTime: null {} accountNonExpired : false", u.getId());
+				u.setAccountNonExpired(false);
+				return;
+			}
+			Instant instant = d.toInstant();
+			ZoneId zoneId = ZoneId.systemDefault();
+			LocalDate lastLogin = instant.atZone(zoneId).toLocalDate();
+			// 过期了
+			if (today.minusMonths(accountExpireMonth).isAfter(lastLogin)) {
+				LOG.debug( "today: {} lastLogin: {} {} accountNonExpired : false", today, lastLogin, u.getId());
+				u.setAccountNonExpired(false);
+			}
+		})
+		.peek(u ->  {
+			Date d = u.getLastChangeCredentials();
+			if (d == null) {
+				LOG.debug("lastChangeCredentials: null {} credentialsNonExpired : false", u.getId());
+				u.setCredentialsNonExpired(false);
+				return;
+			}
+			Instant instant = d.toInstant();
+			ZoneId zoneId = ZoneId.systemDefault();
+			LocalDate lastChangeCredentials = instant.atZone(zoneId).toLocalDate();
+			if (today.minusMonths(credentialsExpireMonth).isAfter(lastChangeCredentials)) {
+				LOG.debug( "today: {} lastChangeCredentials: {}  {} credentialsNonExpired : false", today, lastChangeCredentials, u.getId());
+				u.setCredentialsNonExpired(false);
+			}
+		});
 	}
 	
 	private Employee toTransient(Employee source) {

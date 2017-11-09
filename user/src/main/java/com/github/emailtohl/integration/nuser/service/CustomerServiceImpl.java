@@ -32,7 +32,6 @@ import org.springframework.util.StringUtils;
 import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.exception.InvalidDataException;
 import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.common.standard.ExecResult;
 import com.github.emailtohl.integration.nuser.dao.CustomerRepository;
 import com.github.emailtohl.integration.nuser.dao.RoleRepository;
@@ -88,8 +87,8 @@ public class CustomerServiceImpl implements CustomerService {
 			throw new InvalidDataException("注册时既未填入手机号也未填入邮箱地址，不能注册");
 		}
 		Customer c = new Customer();
-		BeanUtils.copyProperties(entity, c,
-				BaseEntity.getIgnoreProperties("roles", "accountNonLocked", "level", "cards"));
+		BeanUtils.copyProperties(entity, c, Customer.getIgnoreProperties("roles", "enabled", "credentialsNonExpired",
+				"accountNonLocked", "lastLogin", "lastChangeCredentials", "level", "cards"));
 		c.setAccountNonLocked(true);
 		c.setLevel(Level.ORDINARY);
 		String pw = c.getPassword();
@@ -98,7 +97,9 @@ public class CustomerServiceImpl implements CustomerService {
 		}
 		pw = BCrypt.hashpw(pw, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		c.setPassword(pw);
-		c.setLastLoginTime(new Date());
+		Date now = new Date();
+		c.setLastLogin(now);
+		c.setLastChangeCredentials(now);
 		c = customerRepository.save(c);
 		return transientDetail(c);
 	}
@@ -204,7 +205,7 @@ public class CustomerServiceImpl implements CustomerService {
 		if (!BCrypt.checkpw(password, c.getPassword())) {
 			return new ExecResult(false, LoginResult.badCredentials.name(), null);
 		}
-		c.setLastLoginTime(new Date());
+		c.setLastLogin(new Date());
 		return new ExecResult(true, LoginResult.success.name(), transientDetail(c));
 	}
 
@@ -273,6 +274,7 @@ public class CustomerServiceImpl implements CustomerService {
 		}
 		String hashPw = BCrypt.hashpw(newPassword, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		source.setPassword(hashPw);
+		source.setLastChangeCredentials(new Date());
 		return new ExecResult(true, "", null);
 	}
 
@@ -284,6 +286,7 @@ public class CustomerServiceImpl implements CustomerService {
 		}
 		String hashPw = BCrypt.hashpw(customerDefaultPassword, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		source.setPassword(hashPw);
+		source.setLastChangeCredentials(new Date());
 		return new ExecResult(true, "", null);
 	}
 
@@ -317,6 +320,9 @@ public class CustomerServiceImpl implements CustomerService {
 			return null;
 		}
 		source.setEnabled(enabled);
+		if (enabled) {// 同时解锁
+			source.setAccountNonLocked(true);
+		}
 		return transientDetail(source);
 	}
 

@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -79,4 +80,10 @@ public interface EmployeeService extends StandardService<Employee> {
 	 */
 	@PreAuthorize("hasAuthority('" + EMPLOYEE_ENABLED + "')")
 	Employee enabled(Long id, boolean enabled);
+	
+	/**
+	 * 账号过期的维护
+	 */
+	@Scheduled(fixedRate = 3600 * 24/*每天执行一次*/)
+	void accountStatus();
 }

@@ -3,7 +3,6 @@ package com.github.emailtohl.integration.nuser.service;
 import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.validation.annotation.Validated;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
@@ -39,9 +38,4 @@ public interface UserService {
 	 */
 	User get(Long id);
 	
-	/**
-	 * 账号过期的维护
-	 */
-	@Scheduled(fixedRate = 3600 * 24/*每天执行一次*/)
-	void accountStatus();
 }
