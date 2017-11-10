@@ -1,10 +1,12 @@
-package com.github.emailtohl.integration.core.user.userTestConfig;
+package com.github.emailtohl.integration.core.config;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.sql.DataSource;
 
 import org.hibernate.dialect.PostgreSQL9Dialect;
@@ -24,15 +26,14 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import com.github.emailtohl.integration.core.config.DataSourceConfiguration;
 
 /**
  * 测试的spring上下文配置
  * @author HeLei
- * @date 2017.06.12
  */
 @Configuration
 //启用注解式事务管理，配置类通常要实现TransactionManagementConfigurer接口，确定使用哪个事务管理器
@@ -47,7 +48,6 @@ import com.github.emailtohl.integration.core.config.DataSourceConfiguration;
 @Import(DataSourceConfiguration.class)
 class JpaConfiguration {
 	public static final String[] ENTITIES_PACKAGE = {"com.github.emailtohl.integration.core"};
-	
 	/*
 	hibernate.hbm2ddl.auto参数的作用主要用于：自动创建|更新|验证数据库表结构。如果不是此方面的需求建议set value="none"。
 	create：
@@ -59,22 +59,12 @@ class JpaConfiguration {
 	validate ：
 	每次加载hibernate时，验证创建数据库表结构，只会和数据库中的表进行比较，不会创建新表，但是会插入新值。
 	*/
-	public static final String hibernate_hbm2ddl_auto = "create-drop";
+	public static final String hibernate_hbm2ddl_auto = "update";
 	
 	@Inject
 	DataSource dataSource;
 	@Inject
 	Environment env;
-	
-	
-	/**
-	 * 创造测试数据
-	 * @return
-	 */
-	@Bean
-	public InitDataSource initEmbeddedDataSource() {
-		return new InitDataSource(entityManagerFactory().getObject());
-	}
 	
 	@Bean
 	public JdbcTemplate jdbcTemplate() {
@@ -104,17 +94,9 @@ class JpaConfiguration {
 		return adapter;
 	}
 	
-	/*
-	hibernate.hbm2ddl.auto参数的作用主要用于：自动创建|更新|验证数据库表结构。如果不是此方面的需求建议set value="none"。
-	create：
-	每次加载hibernate时都会删除上一次的生成的表，然后根据你的model类再重新来生成新表，哪怕两次没有任何改变也要这样执行，这就是导致数据库表数据丢失的一个重要原因。
-	create-drop ：
-	每次加载hibernate时根据model类生成表，但是sessionFactory一关闭,表就自动删除。
-	update：
-	最常用的属性，第一次加载hibernate时根据model类会自动建立起表的结构（前提是先建立好数据库），以后加载hibernate时根据 model类自动更新表结构，即使表结构改变了但表中的行仍然存在不会删除以前的行。要注意的是当部署到服务器后，表结构是不会被马上建立起来的，是要等 应用第一次运行起来后才会。
-	validate ：
-	每次加载hibernate时，验证创建数据库表结构，只会和数据库中的表进行比较，不会创建新表，但是会插入新值。
-	*/
+	@Inject
+	@Named("indexBase")
+	File indexBase;
 	@Bean(name = "entityManagerFactory")
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		LocalContainerEntityManagerFactoryBean emfb = new LocalContainerEntityManagerFactoryBean();
@@ -127,7 +109,7 @@ class JpaConfiguration {
 		properties.put("hibernate.format_sql", "true");
 		// hibernate.search.default.directory_provider默认是filesystem
 		// 设置hibernate.search.default.indexBase可指定索引目录
-		properties.put("hibernate.search.default.directory_provider", "ram");
+		properties.put("hibernate.search.default.directory_provider", indexBase.getAbsolutePath());
 		emfb.setJpaPropertyMap(properties);
 		return emfb;
 	}
@@ -150,7 +132,14 @@ class JpaConfiguration {
 	@Bean(name = "auditorAware")
 	public AuditorAware<String> auditorAwareImpl() {
 		// getCurrentAuditor
-		return () -> "tester";
+		return () -> {
+			String name = "anonymous";
+			Authentication a = SecurityContextHolder.getContext().getAuthentication();
+			if (a != null) {
+				name = a.getName();
+			}
+			return name;
+		};
 	}
 	
 	/**
@@ -182,4 +171,6 @@ class JpaConfiguration {
 	public boolean contains(String envName) {
 		return Arrays.stream(env.getActiveProfiles()).anyMatch(s -> envName.equals(s));
 	}
+	
 }
+
