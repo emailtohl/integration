@@ -7,6 +7,7 @@ import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -44,6 +45,8 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 	
 	@Inject
 	protected LoadUser loadUser;
+	@Inject
+	protected ApplicationEventPublisher publisher;
 	protected Encipher encipher = new Encipher();
 	protected String privateKey;
 
@@ -111,6 +114,9 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 		a.setAuthenticated(true);
 		a.eraseCredentials();
 		a.setDetails(d);
+		if (publisher != null) {
+			publisher.publishEvent(new LoginEvent(a));
+		}
 		return a;
 	}
 
@@ -152,7 +158,7 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 	public void setPrivateKey(String privateKey) {
 		this.privateKey = privateKey;
 	}
-
+	
 	/**
 	 * 在安全上下文中获取全局唯一识别的用户名
 	 * @param u
