@@ -1,5 +1,11 @@
 package com.github.emailtohl.integration.core.config;
 
+import static com.github.emailtohl.integration.core.Profiles.DB_CONFIG;
+import static com.github.emailtohl.integration.core.Profiles.DB_JNDI;
+import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
+import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
+import static com.github.emailtohl.integration.core.Profiles.ENV_SERVLET;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -34,13 +40,6 @@ import org.springframework.util.StringUtils;
 @PropertySource({ "classpath:database.properties", "classpath:config.properties" })
 public class DataSourceConfiguration {
 	private static final Logger LOG = LogManager.getLogger();
-	public static final String DB_JNDI = "db_jndi";
-	public static final String DB_CONFIG = "db_config";
-	public static final String DB_RAM_H2 = "db_ram_h2";
-	// 在容器中的环境
-	public static final String ENV_SERVLET = "env_servlet";
-	// 在容器中的环境
-	public static final String ENV_NO_SERVLET = "env_no_servlet";
 	
 	/**
 	 * 静态配置方法，该方法将在最早执行，这样才能读取properties配置

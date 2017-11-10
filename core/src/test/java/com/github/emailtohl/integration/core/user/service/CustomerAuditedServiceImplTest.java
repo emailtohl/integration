@@ -1,5 +1,7 @@
 package com.github.emailtohl.integration.core.user.service;
 
+import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
+import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -24,7 +26,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.jpa.entity.Image;
 import com.github.emailtohl.integration.common.jpa.envers.Tuple;
-import com.github.emailtohl.integration.core.config.DataSourceConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.user.entities.Address;
 import com.github.emailtohl.integration.core.user.entities.Customer;
@@ -35,7 +36,7 @@ import com.github.emailtohl.integration.core.user.entities.User.Gender;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = CoreTestConfiguration.class)
-@ActiveProfiles({ DataSourceConfiguration.DB_RAM_H2, DataSourceConfiguration.ENV_NO_SERVLET })
+@ActiveProfiles({ DB_RAM_H2, ENV_NO_SERVLET })
 public class CustomerAuditedServiceImplTest {
 	final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	ClassLoader cl = CustomerServiceImplTest.class.getClassLoader();

@@ -1,5 +1,7 @@
 package com.github.emailtohl.integration.core.config;
 
+import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -77,7 +79,7 @@ class JpaConfiguration {
 	@Bean
 	public JpaVendorAdapter jpaVendorAdapter() {
 		HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
-		if (contains(DataSourceConfiguration.DB_RAM_H2)) {
+		if (contains(DB_RAM_H2)) {
 			adapter.setDatabase(Database.H2);
 			adapter.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
 		} else {
@@ -109,7 +111,7 @@ class JpaConfiguration {
 		properties.put("hibernate.format_sql", "true");
 		// hibernate.search.default.directory_provider默认是filesystem
 		// 设置hibernate.search.default.indexBase可指定索引目录
-		if (contains(DataSourceConfiguration.DB_RAM_H2)) // 使用内存数据库一般是测试环境，可以使用内存来做索引的存储空间
+		if (contains(DB_RAM_H2)) // 使用内存数据库一般是测试环境，可以使用内存来做索引的存储空间
 			properties.put("hibernate.search.default.directory_provider", "ram");
 		else
 			properties.put("hibernate.search.default.directory_provider", indexBase.getAbsolutePath());
@@ -154,7 +156,7 @@ class JpaConfiguration {
 	public LocalSessionFactoryBuilder sessionFactory() {
 		LocalSessionFactoryBuilder builder = new LocalSessionFactoryBuilder(dataSource);
 		builder.scanPackages(ENTITIES_PACKAGE);
-		if (contains(DataSourceConfiguration.DB_RAM_H2)) {
+		if (contains(DB_RAM_H2)) {
 			builder.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
 		} else {
 			builder.setProperty("hibernate.dialect", PostgreSQL9Dialect.class.getCanonicalName());
@@ -162,7 +164,7 @@ class JpaConfiguration {
 		builder.setProperty("hibernate.hbm2ddl.auto", hibernate_hbm2ddl_auto);
 		// hibernate.search.default.directory_provider默认是filesystem
 		// 设置hibernate.search.default.indexBase可指定索引目录
-		if (contains(DataSourceConfiguration.DB_RAM_H2)) // 使用内存数据库一般是测试环境，可以使用内存来做索引的存储空间
+		if (contains(DB_RAM_H2)) // 使用内存数据库一般是测试环境，可以使用内存来做索引的存储空间
 			builder.setProperty("hibernate.search.default.directory_provider", "ram");
 		else
 			builder.setProperty("hibernate.search.default.directory_provider", indexBase.getAbsolutePath());

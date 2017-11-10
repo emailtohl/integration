@@ -1,5 +1,7 @@
 package com.github.emailtohl.integration.core.user.service;
 
+import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
+import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
@@ -14,7 +16,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.core.config.DataSourceConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.user.entities.User;
@@ -26,7 +27,7 @@ import com.google.gson.Gson;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = CoreTestConfiguration.class)
-@ActiveProfiles({ DataSourceConfiguration.DB_RAM_H2, DataSourceConfiguration.ENV_NO_SERVLET })
+@ActiveProfiles({ DB_RAM_H2, ENV_NO_SERVLET })
 public class UserServiceImplTest {
 	@Inject
 	UserService userService;
