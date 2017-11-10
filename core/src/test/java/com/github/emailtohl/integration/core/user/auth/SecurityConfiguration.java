@@ -16,7 +16,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 
 import com.github.emailtohl.integration.common.jpa.envers.Tuple;
 import com.github.emailtohl.integration.common.standard.ExecResult;
-import com.github.emailtohl.integration.core.user.UserTestData;
+import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.user.auth.AuthenticationManagerImpl;
 import com.github.emailtohl.integration.core.user.auth.AuthenticationProviderImpl;
 import com.github.emailtohl.integration.core.user.auth.LoadUser;
@@ -42,7 +42,7 @@ import com.github.emailtohl.integration.core.user.service.RoleService;
 // 这时候spring会在调用Bean方法时再添加一个切面，执行spring security的安全检查
 @EnableGlobalMethodSecurity(prePostEnabled = true, order = 0, mode = AdviceMode.PROXY, proxyTargetClass = false)
 class SecurityConfiguration {
-	private UserTestData td = new UserTestData();
+	private CoreTestData td = new CoreTestData();
 	/**
 	 * 简单的缓存管理器的实现
 	 * 

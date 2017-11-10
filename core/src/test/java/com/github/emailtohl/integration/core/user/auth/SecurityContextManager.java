@@ -7,7 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.github.emailtohl.integration.core.user.UserTestData;
+import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 
 /**
  * 用于测试的安全管理器
@@ -17,7 +17,7 @@ class SecurityContextManager {
 	private static final Logger LOG = LogManager.getLogger();
 	AuthenticationManager authenticationManager;
 	private final String password = "123456";
-	final UserTestData td = new UserTestData();
+	final CoreTestData td = new CoreTestData();
 	
 	public SecurityContextManager(AuthenticationManager authenticationManager) {
 		this.authenticationManager = authenticationManager;

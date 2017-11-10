@@ -30,6 +30,7 @@ import org.springframework.util.StringUtils;
  * @author HeLei
  */
 @Configuration
+// 注意：main和test目录下各有一个resource目录，若有同样文件名的配置，maven会在测试环境下使用test目录下的配置
 @PropertySource({ "classpath:database.properties", "classpath:config.properties" })
 public class DataSourceConfiguration {
 	private static final Logger LOG = LogManager.getLogger();

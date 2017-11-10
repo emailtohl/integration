@@ -1,6 +1,8 @@
 package com.github.emailtohl.integration.core.user.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,20 +24,18 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.jpa.entity.Image;
 import com.github.emailtohl.integration.common.jpa.envers.Tuple;
-import com.github.emailtohl.integration.core.user.UserTestData;
+import com.github.emailtohl.integration.core.config.DataSourceConfiguration;
+import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
+import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.User.Gender;
-import com.github.emailtohl.integration.core.user.service.EmployeeAuditedService;
-import com.github.emailtohl.integration.core.user.service.EmployeeService;
-import com.github.emailtohl.integration.core.user.userTestConfig.DataSourceConfiguration;
-import com.github.emailtohl.integration.core.user.userTestConfig.ServiceConfiguration;
 /**
  * 业务类测试
  * @author HeLei
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = ServiceConfiguration.class)
-@ActiveProfiles(DataSourceConfiguration.DB_RAM_H2)
+@ContextConfiguration(classes = CoreTestConfiguration.class)
+@ActiveProfiles({ DataSourceConfiguration.DB_RAM_H2, DataSourceConfiguration.ENV_NO_SERVLET })
 public class EmployeeAuditedServiceImplTest {
 	final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	ClassLoader cl = EmployeeServiceImplTest.class.getClassLoader();
@@ -67,13 +67,13 @@ public class EmployeeAuditedServiceImplTest {
 		}
 		e.setPost("系统分析师");
 		e.setSalary(10000.00);
-		e.setDepartment(new UserTestData().product);
+		e.setDepartment(new CoreTestData().product);
 		e = employeeService.create(e);
 		id = e.getId();
 		
 		Employee tar = new Employee();
 		tar.setDescription("update");
-		tar.setDepartment(new UserTestData().qa);
+		tar.setDepartment(new CoreTestData().qa);
 		Employee u = employeeService.update(id, tar);
 		assertEquals(tar.getDescription(), u.getDescription());
 		assertEquals(tar.getDepartment(), u.getDepartment());

@@ -65,6 +65,9 @@ class JpaConfiguration {
 	DataSource dataSource;
 	@Inject
 	Environment env;
+	@Inject
+	@Named("indexBase")
+	File indexBase;
 	
 	@Bean
 	public JdbcTemplate jdbcTemplate() {
@@ -94,9 +97,6 @@ class JpaConfiguration {
 		return adapter;
 	}
 	
-	@Inject
-	@Named("indexBase")
-	File indexBase;
 	@Bean(name = "entityManagerFactory")
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		LocalContainerEntityManagerFactoryBean emfb = new LocalContainerEntityManagerFactoryBean();
@@ -109,7 +109,10 @@ class JpaConfiguration {
 		properties.put("hibernate.format_sql", "true");
 		// hibernate.search.default.directory_provider默认是filesystem
 		// 设置hibernate.search.default.indexBase可指定索引目录
-		properties.put("hibernate.search.default.directory_provider", indexBase.getAbsolutePath());
+		if (contains(DataSourceConfiguration.DB_RAM_H2)) // 使用内存数据库一般是测试环境，可以使用内存来做索引的存储空间
+			properties.put("hibernate.search.default.directory_provider", "ram");
+		else
+			properties.put("hibernate.search.default.directory_provider", indexBase.getAbsolutePath());
 		emfb.setJpaPropertyMap(properties);
 		return emfb;
 	}
@@ -159,7 +162,10 @@ class JpaConfiguration {
 		builder.setProperty("hibernate.hbm2ddl.auto", hibernate_hbm2ddl_auto);
 		// hibernate.search.default.directory_provider默认是filesystem
 		// 设置hibernate.search.default.indexBase可指定索引目录
-		builder.setProperty("hibernate.search.default.directory_provider", "ram");
+		if (contains(DataSourceConfiguration.DB_RAM_H2)) // 使用内存数据库一般是测试环境，可以使用内存来做索引的存储空间
+			builder.setProperty("hibernate.search.default.directory_provider", "ram");
+		else
+			builder.setProperty("hibernate.search.default.directory_provider", indexBase.getAbsolutePath());
 		return builder;
 	}
 	

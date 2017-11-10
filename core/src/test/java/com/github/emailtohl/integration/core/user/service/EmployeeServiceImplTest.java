@@ -27,20 +27,19 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.Image;
 import com.github.emailtohl.integration.common.standard.ExecResult;
-import com.github.emailtohl.integration.core.user.UserTestData;
+import com.github.emailtohl.integration.core.config.DataSourceConfiguration;
+import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
+import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.User.Gender;
-import com.github.emailtohl.integration.core.user.service.EmployeeService;
-import com.github.emailtohl.integration.core.user.userTestConfig.DataSourceConfiguration;
-import com.github.emailtohl.integration.core.user.userTestConfig.ServiceConfiguration;
 import com.google.gson.Gson;
 /**
  * 业务类测试
  * @author HeLei
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = ServiceConfiguration.class)
-@ActiveProfiles(DataSourceConfiguration.DB_RAM_H2)
+@ContextConfiguration(classes = CoreTestConfiguration.class)
+@ActiveProfiles({ DataSourceConfiguration.DB_RAM_H2, DataSourceConfiguration.ENV_NO_SERVLET })
 @Rollback(false)
 public class EmployeeServiceImplTest {
 	final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -72,7 +71,7 @@ public class EmployeeServiceImplTest {
 		}
 		e.setPost("系统分析师");
 		e.setSalary(10000.00);
-		e.setDepartment(new UserTestData().product);
+		e.setDepartment(new CoreTestData().product);
 		e = employeeService.create(e);
 		id = e.getId();
 	}
@@ -131,7 +130,7 @@ public class EmployeeServiceImplTest {
 		}
 		e.setPost("系统分析师");
 		e.setSalary(10000.00);
-		e.setDepartment(new UserTestData().qa);
+		e.setDepartment(new CoreTestData().qa);
 		Employee u = employeeService.update(id, e);
 		assertEquals(e.getDescription(), u.getDescription());
 		assertEquals(e.getDepartment(), u.getDepartment());
@@ -139,7 +138,7 @@ public class EmployeeServiceImplTest {
 
 	@Test
 	public void testGrandRoles() {
-		UserTestData td = new UserTestData();
+		CoreTestData td = new CoreTestData();
 		Employee e = employeeService.grandRoles(id, td.role_staff.getName(), td.role_guest.getName());
 		assertFalse(e.getRoles().isEmpty());
 	}
@@ -167,7 +166,7 @@ public class EmployeeServiceImplTest {
 	public void testLogin() {
 		ExecResult r = employeeService.login(0, "123");
 		assertFalse(r.ok);
-		UserTestData td = new UserTestData();
+		CoreTestData td = new CoreTestData();
 		r = employeeService.login(td.bar.getEmpNum(), "123");
 		assertFalse(r.ok);
 		r = employeeService.login(td.bar.getEmpNum(), "123456");

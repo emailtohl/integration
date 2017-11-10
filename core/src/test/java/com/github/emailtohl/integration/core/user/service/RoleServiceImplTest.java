@@ -19,12 +19,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.core.user.UserTestData;
+import com.github.emailtohl.integration.core.config.DataSourceConfiguration;
+import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
+import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.user.entities.Authority;
 import com.github.emailtohl.integration.core.user.entities.Role;
-import com.github.emailtohl.integration.core.user.service.RoleService;
-import com.github.emailtohl.integration.core.user.userTestConfig.DataSourceConfiguration;
-import com.github.emailtohl.integration.core.user.userTestConfig.ServiceConfiguration;
 import com.google.gson.Gson;
 
 /**
@@ -32,8 +31,8 @@ import com.google.gson.Gson;
  * @author HeLei
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = ServiceConfiguration.class)
-@ActiveProfiles(DataSourceConfiguration.DB_RAM_H2)
+@ContextConfiguration(classes = CoreTestConfiguration.class)
+@ActiveProfiles({ DataSourceConfiguration.DB_RAM_H2, DataSourceConfiguration.ENV_NO_SERVLET })
 public class RoleServiceImplTest {
 	@Inject
 	RoleService roleService;
@@ -42,7 +41,7 @@ public class RoleServiceImplTest {
 
 	@Test
 	public void testCRUD() {
-		UserTestData td = new UserTestData();
+		CoreTestData td = new CoreTestData();
 		Role r = new Role("test_role", "for test");
 		r.getAuthorities().addAll(Arrays.asList(
 			new Authority("not exist", "不存在的权限", null),
@@ -68,7 +67,7 @@ public class RoleServiceImplTest {
 
 	@Test
 	public void testExist() {
-		UserTestData td = new UserTestData();
+		CoreTestData td = new CoreTestData();
 		boolean b = roleService.exist("name", td.role_guest.getName());
 		assertTrue(b);
 		b = roleService.exist("name", "foo");
@@ -80,7 +79,7 @@ public class RoleServiceImplTest {
 		Pageable pageable = new PageRequest(0, 20);
 		Paging<Role> p = roleService.query(null, pageable);
 		assertFalse(p.getContent().isEmpty());
-		UserTestData td = new UserTestData();
+		CoreTestData td = new CoreTestData();
 		p = roleService.query(td.role_manager, pageable);
 		assertFalse(p.getContent().isEmpty());
 		System.out.println(gson.toJson(p));
@@ -90,7 +89,7 @@ public class RoleServiceImplTest {
 	public void testQueryRole() {
 		List<Role> ls = roleService.query(null);
 		assertFalse(ls.isEmpty());
-		UserTestData td = new UserTestData();
+		CoreTestData td = new CoreTestData();
 		ls = roleService.query(td.role_staff);
 		assertFalse(ls.isEmpty());
 		System.out.println(gson.toJson(ls));

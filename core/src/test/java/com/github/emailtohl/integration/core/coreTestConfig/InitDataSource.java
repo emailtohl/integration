@@ -1,11 +1,9 @@
-package com.github.emailtohl.integration.core.user.userTestConfig;
+package com.github.emailtohl.integration.core.coreTestConfig;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-
-import com.github.emailtohl.integration.core.user.UserTestData;
 
 /**
  * 初始化数据库
@@ -38,7 +36,7 @@ class InitDataSource {
 		if (!isInit) {
 			synchronized (InitDataSource.class) {
 				if (!isInit) {
-					UserTestData td = new UserTestData();
+					CoreTestData td = new CoreTestData();
 					EntityManager em = factory.createEntityManager();
 					em.getTransaction().begin();
 

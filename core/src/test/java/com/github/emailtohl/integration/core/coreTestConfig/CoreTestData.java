@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.user;
+package com.github.emailtohl.integration.core.coreTestConfig;
 
 import static com.github.emailtohl.integration.core.user.entities.Authority.APPLICATION_FORM_DELETE;
 import static com.github.emailtohl.integration.core.user.entities.Authority.APPLICATION_FORM_READ_HISTORY;
@@ -48,7 +48,7 @@ import com.github.emailtohl.integration.core.user.entities.User.Gender;
  * @author HeLei
  * @date 2017.06.12
  */
-public class UserTestData {
+public class CoreTestData {
 	public final static String TEST_PASSWORD = "123456";
 	static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	static final SecureRandom r = new SecureRandom();
@@ -126,7 +126,7 @@ public class UserTestData {
 		role_guest.getUsers().addAll(Arrays.asList(emailtohl, baz, qux));
 		
 		String salt = BCrypt.gensalt(HASHING_ROUNDS, r);
-		ClassLoader cl = UserTestData.class.getClassLoader();
+		ClassLoader cl = CoreTestData.class.getClassLoader();
 		byte[] icon;
 
 		/*

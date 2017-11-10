@@ -32,23 +32,22 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.Image;
 import com.github.emailtohl.integration.common.standard.ExecResult;
-import com.github.emailtohl.integration.core.user.UserTestData;
+import com.github.emailtohl.integration.core.config.DataSourceConfiguration;
+import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
+import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.user.entities.Address;
 import com.github.emailtohl.integration.core.user.entities.Card;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Customer.Level;
 import com.github.emailtohl.integration.core.user.entities.User.Gender;
-import com.github.emailtohl.integration.core.user.service.CustomerService;
-import com.github.emailtohl.integration.core.user.userTestConfig.DataSourceConfiguration;
-import com.github.emailtohl.integration.core.user.userTestConfig.ServiceConfiguration;
 import com.google.gson.Gson;
 /**
  * 业务类测试
  * @author HeLei
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = ServiceConfiguration.class)
-@ActiveProfiles(DataSourceConfiguration.DB_RAM_H2)
+@ContextConfiguration(classes = CoreTestConfiguration.class)
+@ActiveProfiles({ DataSourceConfiguration.DB_RAM_H2, DataSourceConfiguration.ENV_NO_SERVLET })
 @Rollback(false)
 public class CustomerServiceImplTest {
 	final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -96,7 +95,7 @@ public class CustomerServiceImplTest {
 
 	@Test
 	public void testExist() {
-		UserTestData td = new UserTestData();
+		CoreTestData td = new CoreTestData();
 		assertTrue(customerService.exist(null, td.baz.getEmail()));
 		assertTrue(customerService.exist(null, td.baz.getCellPhone()));
 		assertFalse(customerService.exist(null, td.foo.getEmail()));
@@ -111,7 +110,7 @@ public class CustomerServiceImplTest {
 
 	@Test
 	public void testQueryCustomerPageable() {
-		UserTestData td = new UserTestData();
+		CoreTestData td = new CoreTestData();
 		Paging<Customer> p = customerService.query(null, pageable);
 		assertFalse(p.getContent().isEmpty());
 		Customer params = new Customer();
@@ -129,7 +128,7 @@ public class CustomerServiceImplTest {
 
 	@Test
 	public void testQueryCustomer() {
-		UserTestData td = new UserTestData();
+		CoreTestData td = new CoreTestData();
 		Customer params = new Customer();
 		List<Customer> p = customerService.query(params);
 		assertFalse(p.isEmpty());
@@ -174,7 +173,7 @@ public class CustomerServiceImplTest {
 
 	@Test
 	public void testFindByCellPhoneOrEmail() {
-		UserTestData td = new UserTestData();
+		CoreTestData td = new CoreTestData();
 		Customer c = customerService.findByCellPhoneOrEmail(td.baz.getCellPhone());
 		assertNotNull(c);
 		c = customerService.findByCellPhoneOrEmail(td.baz.getEmail());
@@ -183,7 +182,7 @@ public class CustomerServiceImplTest {
 
 	@Test
 	public void testGrandRoles() {
-		UserTestData td = new UserTestData();
+		CoreTestData td = new CoreTestData();
 		Customer c = customerService.grandRoles(id, td.role_guest.getName());
 		c = customerService.get(id);
 		assertFalse(c.getRoles().isEmpty());
@@ -278,7 +277,7 @@ public class CustomerServiceImplTest {
 	public void testLogin() {
 		ExecResult r = customerService.login("lalala", "123");
 		assertFalse(r.ok);
-		UserTestData td = new UserTestData();
+		CoreTestData td = new CoreTestData();
 		r = customerService.login(td.baz.getCellPhone(), "123");
 		assertFalse(r.ok);
 		r = customerService.login(td.baz.getCellPhone(), "123456");
