@@ -21,7 +21,6 @@
 	<modules>
 		<module>common</module>
 		<module>core</module>
-		<module>usercenter</module>
 		<module>message</module>
 		<module>user</module>
 		<module>cms</module>

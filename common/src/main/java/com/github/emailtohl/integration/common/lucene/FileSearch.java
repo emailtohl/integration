@@ -344,7 +344,13 @@ public class FileSearch implements AutoCloseable {
 		fName.setBoost(1.2F);
 		Field fContent = new TextField(FILE_CONTENT, content, Store.NO);
 		// StringField被索引不被分词，整个值被看作为一个单独的token而被索引
-		Field fPath = new StringField(FILE_PATH, file.getPath(), Store.YES);
+		// 这里使用file.getCanonicalPath()，获取的是文件绝对路径，getCanonicalPath和getAbsolutePath的不同在于：
+		//	File file = new File("..\\src\\test1.txt");
+		//	System.out.println(file.getAbsolutePath());
+		//	D:\workspace\test\..\src\test1.txt
+		//	System.out.println(file.getCanonicalPath());
+		//	D:\workspace\src\test1.txt
+		Field fPath = new StringField(FILE_PATH, file.getCanonicalPath(), Store.YES);
 		Field fTime = new LongField(FILE_TIME, System.currentTimeMillis(), Store.YES);
 		// 创建文档对象
 		Document doc = new Document();

@@ -68,7 +68,7 @@ public class FileUploadServer {
 		// 对cms目录下创建索引
 		fileSearch.index(cmsRoot);
 		// 正则式，匹配CMS_DIR目录，用于判断是否cms目录
-		cmsRoot_pattern = Pattern.compile("(^" + SEPARATOR + cmsRoot.getName() + SEPARATOR + "?)|(^cms_dir" + SEPARATOR + "?)");
+		cmsRoot_pattern = Pattern.compile("(^" + SEPARATOR + cmsRoot.getName() + SEPARATOR + "?)|(^" + cmsRoot.getName() + SEPARATOR + "?)");
 		logger.debug(cmsRoot_pattern.matcher(cmsRoot.getName()));
 	}
 	

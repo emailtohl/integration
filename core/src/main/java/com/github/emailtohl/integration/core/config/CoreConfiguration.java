@@ -1,11 +1,14 @@
 package com.github.emailtohl.integration.core.config;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,6 +33,7 @@ import org.springframework.util.ErrorHandler;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
+import com.github.emailtohl.integration.common.lucene.FileSearch;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
@@ -160,5 +164,20 @@ public class CoreConfiguration implements TransactionManagementConfigurer, Async
 	@Override
 	public PlatformTransactionManager annotationDrivenTransactionManager() {
 		return jpaTransactionManager;
+	}
+	
+	/**
+	 * 文件系统搜索组件
+	 * @return
+	 * @throws IOException
+	 */
+	@Bean
+	public FileSearch fileSearch(@Named("indexBase") File indexBase) throws IOException {
+		File indexDir = new File(indexBase, FileSearch.class.getName());
+		if (!indexDir.exists()) {
+			indexDir.mkdir();
+		}
+		FileSearch fileSearch = new FileSearch(indexDir.getAbsolutePath());
+		return fileSearch;
 	}
 }

@@ -60,6 +60,7 @@ public interface ConstantPattern {
 	
 	/**
 	 * 匹配Windows和Unix风格的路径分隔符的正则匹配式
+	 * “\”这里有四根，因为它在Java字符串和正则表达式中都需要转义
 	 */
 	String SEPARATOR = "[\\\\/]";
 	

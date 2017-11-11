@@ -75,7 +75,7 @@ public class UserDetailsImpl implements UserDetails {
 		this.authorities = u.authorityNames();
 		this.password = u.getPassword();
 		if (u.getImage() != null) {
-			this.iconUrl = u.getImage().getUrl();
+			this.iconUrl = u.getImage().getPath();
 		}
 		this.accountNonExpired = u.getAccountNonExpired();
 		this.accountNonLocked = u.getAccountNonLocked();
