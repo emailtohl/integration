@@ -42,9 +42,14 @@ public interface FileService {
 	
 	/**
 	 * 保存文件到
-	 * @param path
+	 * @param filename
 	 * @param in
 	 * @return
 	 */
-	ExecResult save(String path, InputStream in);
+	ExecResult save(String filename, InputStream in);
+	
+	/**
+	 * 重新索引
+	 */
+	void reIndex();
 }

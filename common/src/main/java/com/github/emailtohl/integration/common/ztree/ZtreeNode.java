@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -233,27 +234,38 @@ public class ZtreeNode<T> implements Serializable, Comparable<ZtreeNode<T>> {
 	/**
 	 * 根据queue的顺序逐级打开ZtreeNode的节点
 	 * 
-	 * 注意：方法执行完后，会改变queue中的数据
 	 * @param nodes
-	 * @param queue
+	 * @param openPath 沿着打开的路径
 	 */
-	protected void setOpen(Set<? extends ZtreeNode<T>> nodes, LinkedList<String> queue) {
-		String name = queue.poll();
-		for (ZtreeNode<T> node : nodes) {
-			if (node.isParent) {
-				if (name != null && name.equals(node.name)) {
-					node.open = true;
-					// 根据定义node.isParent == true，那么node.children != null，不过保险起见还是做判断
-					if (node.children != null) {
-						setOpen(node.children, queue);
+	public void setOpen(Set<? extends ZtreeNode<T>> nodes, List<String> openPath) {
+		class Func {
+			LinkedList<String> queue;
+
+			Func(List<String> queue) {
+				this.queue = new LinkedList<String>(queue);
+			}
+
+			void setOpen(Set<? extends ZtreeNode<T>> nodes) {
+				String name = queue.poll();
+				for (ZtreeNode<T> node : nodes) {
+					if (node.isParent) {
+						if (name != null && name.equals(node.name)) {
+							node.open = true;
+							// 根据定义node.isParent == true，那么node.children !=
+							// null，不过保险起见还是做判断
+							if (node.children != null) {
+								setOpen(node.children);
+							}
+						}
+					} else {
+						if (name != null && name.equals(node.name)) {
+							node.selected = true;
+						}
 					}
-				}
-			} else {
-				if (name != null && name.equals(node.name)) {
-					node.selected = true;
 				}
 			}
 		}
+		new Func(openPath).setOpen(nodes);
 	}
 	
 	@Override
