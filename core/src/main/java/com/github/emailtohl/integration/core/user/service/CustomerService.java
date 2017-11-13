@@ -15,8 +15,8 @@ import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.github.emailtohl.integration.common.ConstantPattern;
-import com.github.emailtohl.integration.common.standard.ExecResult;
-import com.github.emailtohl.integration.common.standard.StandardService;
+import com.github.emailtohl.integration.core.standard.ExecResult;
+import com.github.emailtohl.integration.core.standard.StandardService;
 import com.github.emailtohl.integration.core.user.entities.Card;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 

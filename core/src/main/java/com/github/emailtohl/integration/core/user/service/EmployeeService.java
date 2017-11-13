@@ -1,6 +1,8 @@
 package com.github.emailtohl.integration.core.user.service;
 
-import static com.github.emailtohl.integration.core.user.entities.Authority.*;
+import static com.github.emailtohl.integration.core.user.entities.Authority.EMPLOYEE_ENABLED;
+import static com.github.emailtohl.integration.core.user.entities.Authority.EMPLOYEE_RESET_PASSWORD;
+import static com.github.emailtohl.integration.core.user.entities.Authority.EMPLOYEE_ROLE;
 
 import java.util.List;
 
@@ -11,8 +13,8 @@ import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 
-import com.github.emailtohl.integration.common.standard.ExecResult;
-import com.github.emailtohl.integration.common.standard.StandardService;
+import com.github.emailtohl.integration.core.standard.ExecResult;
+import com.github.emailtohl.integration.core.standard.StandardService;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 
 /**

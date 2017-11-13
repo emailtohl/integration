@@ -1,6 +1,12 @@
 package com.github.emailtohl.integration.core.user.auth;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyVararg;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
@@ -15,11 +21,8 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 
 import com.github.emailtohl.integration.common.jpa.envers.Tuple;
-import com.github.emailtohl.integration.common.standard.ExecResult;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
-import com.github.emailtohl.integration.core.user.auth.AuthenticationManagerImpl;
-import com.github.emailtohl.integration.core.user.auth.AuthenticationProviderImpl;
-import com.github.emailtohl.integration.core.user.auth.LoadUser;
+import com.github.emailtohl.integration.core.standard.ExecResult;
 import com.github.emailtohl.integration.core.user.dao.CustomerRepository;
 import com.github.emailtohl.integration.core.user.dao.EmployeeRepository;
 import com.github.emailtohl.integration.core.user.entities.Customer;

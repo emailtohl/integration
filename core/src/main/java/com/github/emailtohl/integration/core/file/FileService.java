@@ -4,14 +4,17 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Set;
 
-import com.github.emailtohl.integration.common.standard.ExecResult;
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import com.github.emailtohl.integration.common.ztree.FileNode;
+import com.github.emailtohl.integration.core.standard.ExecResult;
 
 /**
  * 文件管理服务接口
  * 本服务已经统一定向到系统中文件存储的根目录下，所有输入的路径名（文件名）均是相对于该根目录的相对路径
  * @author HeLei
  */
+@PreAuthorize("isAuthenticated()")
 public interface FileService {
 	/**
 	 * 测试该文件或目录是否存在

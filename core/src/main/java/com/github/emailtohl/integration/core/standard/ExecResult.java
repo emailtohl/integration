@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.common.standard;
+package com.github.emailtohl.integration.core.standard;
 
 /**
  * 对于执行结果，如果失败，往往需要附带失败信息

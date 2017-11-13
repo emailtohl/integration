@@ -22,8 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.lucene.FileSearch;
-import com.github.emailtohl.integration.common.standard.ExecResult;
 import com.github.emailtohl.integration.common.ztree.FileNode;
+import com.github.emailtohl.integration.core.standard.ExecResult;
 
 /**
  * 管理文件的服务
