@@ -3,6 +3,7 @@ package com.github.emailtohl.integration.core.config;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Properties;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -21,7 +22,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.env.Environment;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -45,6 +50,7 @@ import com.google.gson.GsonBuilder;
  */
 @Configuration
 @EnableScheduling
+@EnableAsync
 @ComponentScan(basePackages = "com.github.emailtohl.integration.core", excludeFilters = @ComponentScan.Filter({
 		Controller.class, Configuration.class }))
 @EnableCaching
@@ -179,5 +185,33 @@ public class CoreConfiguration implements TransactionManagementConfigurer, Async
 		}
 		FileSearch fileSearch = new FileSearch(indexDir.getAbsolutePath());
 		return fileSearch;
+	}
+	
+	@Inject
+	Environment env;
+	@Bean
+	public JavaMailSender mailSender() {
+		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+		mailSender.setDefaultEncoding("UTF-8");
+		mailSender.setHost(env.getProperty("mailserver.host"));
+		mailSender.setPort(Integer.valueOf(env.getProperty("mailserver.port")));
+		mailSender.setUsername(env.getProperty("mailserver.username"));
+		mailSender.setPassword(env.getProperty("mailserver.password"));
+		Properties p = new Properties();
+		p.setProperty("mail.debug", "true");
+		String proxyHost = env.getProperty("proxyHost");
+		String proxyPort = env.getProperty("proxyPort");
+		String auth = env.getProperty("mailserver.auth");
+		
+		// 暂未找到通过代理发送邮件的方法
+		if (proxyHost != null && !proxyHost.isEmpty()) {
+		}
+		if (proxyPort != null && !proxyPort.isEmpty()) {
+		}
+		if (auth != null && !auth.isEmpty()) {
+			p.setProperty("mail.smtp.auth", auth);
+		}
+		mailSender.setJavaMailProperties(p);
+		return mailSender;
 	}
 }
