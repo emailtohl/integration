@@ -16,4 +16,10 @@ public class ExecResult {
 		this.cause = cause;
 		this.attribute = attribute;
 	}
+
+	@Override
+	public String toString() {
+		return "ExecResult [ok=" + ok + ", cause=" + cause + ", attribute=" + attribute + "]";
+	}
+	
 }

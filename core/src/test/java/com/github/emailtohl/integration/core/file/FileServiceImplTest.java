@@ -42,9 +42,10 @@ public class FileServiceImplTest {
 		ExecResult r = fileService.createDir("\\test1\\test2/test3/test4");
 		assertTrue(r.ok);
 		path = (String) r.attribute;
-		File dir = new File(path);
-		assertTrue(dir.exists());
-		
+		assertTrue(fileService.exist(path));
+		File srcDir = new File("src" + File.separator + "main" + File.separator + "resources");
+		File destDir = fileService.getFile(path);
+		FileUtils.copyDirectory(srcDir, destDir);
 	}
 
 	@After
@@ -59,9 +60,6 @@ public class FileServiceImplTest {
 
 	@Test
 	public void testFindFile() throws IOException {
-		File srcDir = new File("src" + File.separator + "main" + File.separator + "resources");
-		File destDir = new File(path);
-		FileUtils.copyDirectory(srcDir, destDir);
 		Set<FileNode> nodes = fileService.findFile(null);
 		assertTrue(nodes.stream().anyMatch(fileNode -> "test1".equals(fileNode.getName())));
 		System.out.println(nodes);
@@ -141,4 +139,16 @@ public class FileServiceImplTest {
 		}
 	}
 
+	@Test
+	public void testLoadAndWriteText() {
+		String filename = path + File.separator + "log4j2.xml";
+		ExecResult r = fileService.loadText(filename, null);
+		assertTrue(r.ok);
+		String txt = (String) r.attribute;
+		txt = txt + "\n  update foo";
+		r = fileService.writeText(filename, txt, null);
+		assertTrue(r.ok);
+		Set<FileNode> fns = fileService.findFile("foo");
+		System.out.println(fns);
+	}
 }

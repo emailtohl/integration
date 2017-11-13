@@ -75,6 +75,7 @@ public class FileNode extends ZtreeNode<File> {
 
 	@Override
 	public String toString() {
-		return "FileNode [name=" + name + ", isParent=" + isParent + ", open=" + open + ", children=" + children + "]";
+		return "FileNode [name=" + name + ", open=" + open + ", children=" + children + ", selected=" + selected + "]";
 	}
+	
 }
