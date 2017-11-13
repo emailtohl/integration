@@ -32,7 +32,7 @@ import org.springframework.util.StringUtils;
 import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.exception.InvalidDataException;
 import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.core.standard.ExecResult;
+import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.user.dao.CustomerRepository;
 import com.github.emailtohl.integration.core.user.dao.RoleRepository;
 import com.github.emailtohl.integration.core.user.entities.Card;

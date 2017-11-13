@@ -26,7 +26,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.core.standard.ExecResult;
+import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.user.dao.DepartmentRepository;
 import com.github.emailtohl.integration.core.user.dao.EmployeeRepository;
 import com.github.emailtohl.integration.core.user.dao.RoleRepository;

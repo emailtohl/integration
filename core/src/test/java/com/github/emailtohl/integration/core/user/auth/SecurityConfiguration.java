@@ -21,8 +21,8 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 
 import com.github.emailtohl.integration.common.jpa.envers.Tuple;
+import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
-import com.github.emailtohl.integration.core.standard.ExecResult;
 import com.github.emailtohl.integration.core.user.dao.CustomerRepository;
 import com.github.emailtohl.integration.core.user.dao.EmployeeRepository;
 import com.github.emailtohl.integration.core.user.entities.Customer;

@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.standard;
+package com.github.emailtohl.integration.core;
 
 import java.io.Serializable;
 import java.util.List;

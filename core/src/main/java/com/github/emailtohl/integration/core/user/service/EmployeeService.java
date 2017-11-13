@@ -13,8 +13,8 @@ import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 
-import com.github.emailtohl.integration.core.standard.ExecResult;
-import com.github.emailtohl.integration.core.standard.StandardService;
+import com.github.emailtohl.integration.core.ExecResult;
+import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 
 /**

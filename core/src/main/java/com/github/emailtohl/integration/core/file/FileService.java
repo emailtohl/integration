@@ -7,7 +7,7 @@ import java.util.Set;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.github.emailtohl.integration.common.ztree.FileNode;
-import com.github.emailtohl.integration.core.standard.ExecResult;
+import com.github.emailtohl.integration.core.ExecResult;
 
 /**
  * 文件管理服务接口

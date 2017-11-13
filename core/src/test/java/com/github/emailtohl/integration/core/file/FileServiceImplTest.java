@@ -28,8 +28,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.ztree.FileNode;
 import com.github.emailtohl.integration.common.ztree.ZtreeNode;
+import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
-import com.github.emailtohl.integration.core.standard.ExecResult;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = CoreTestConfiguration.class)

@@ -23,7 +23,7 @@ import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.lucene.FileSearch;
 import com.github.emailtohl.integration.common.ztree.FileNode;
-import com.github.emailtohl.integration.core.standard.ExecResult;
+import com.github.emailtohl.integration.core.ExecResult;
 
 /**
  * 管理文件的服务
