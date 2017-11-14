@@ -5,8 +5,8 @@
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
 		</Console>
-		<RollingFile name="coreFileAppender" fileName="../logs/core.log"
-			filePattern="../logs/core-%d{MM-dd-yyyy}-%i.log">
+		<RollingFile name="CoreTestFileAppender" fileName="../logs/core-test.log"
+			filePattern="../logs/core-test-%d{MM-dd-yyyy}-%i.log">
 			<PatternLayout>
 				<pattern>%d{HH:mm:ss.SSS} [%t] %X{id} %X{username} %-5level
 					%c{36} %l: %msg%n</pattern>
@@ -24,19 +24,19 @@
 			<appender-ref ref="Console" />
 		</root>
 		<logger name="com.github.emailtohl.integration.core" level="debug">
-			<!-- <appender-ref ref="coreFileAppender" /> -->
+			<!-- <appender-ref ref="CoreTestFileAppender" /> -->
 		</logger>
 		<logger name="org.springframework.test" level="info">
-			<!-- <appender-ref ref="coreFileAppender" /> -->
+			<!-- <appender-ref ref="CoreTestFileAppender" /> -->
 		</logger>
 		<logger name="org.springframework.security" level="info">
-			<!-- <appender-ref ref="coreFileAppender" /> -->
+			<!-- <appender-ref ref="CoreTestFileAppender" /> -->
 		</logger>
 		<logger name="org.hibernate" level="info">
-			<!-- <appender-ref ref="coreFileAppender" /> -->
+			<!-- <appender-ref ref="CoreTestFileAppender" /> -->
 		</logger>
 		<logger name="org.apache" level="info">
-			<!-- <appender-ref ref="coreFileAppender" /> -->
+			<!-- <appender-ref ref="CoreTestFileAppender" /> -->
 		</logger>
 		<!-- <logger name="org.hibernate.type.descriptor.sql" level="TRACE" /> -->
 	</loggers>

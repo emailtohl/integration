@@ -69,7 +69,7 @@ public class FileServiceImplTest {
 		System.out.println(nodes);
 		
 		fileService.reIndex();
-		nodes = fileService.findFile("org.springframework");
+		nodes = fileService.findFile("Console appender");
 		System.out.println(nodes);
 		for (FileNode n : nodes) {
 			if ("test1".equals(n.getName())) {

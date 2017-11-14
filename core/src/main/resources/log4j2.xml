@@ -6,9 +6,9 @@
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
 		</Console>
-<!-- 
-		<RollingFile name="BuildingFileAppender" fileName="../logs/application.log"
-			filePattern="../logs/application-%d{MM-dd-yyyy}-%i.log">
+
+		<RollingFile name="CoreFileAppender" fileName="../logs/core.log"
+			filePattern="../logs/core-%d{MM-dd-yyyy}-%i.log">
 			<PatternLayout>
 				<pattern>%d{HH:mm:ss.SSS} [%t] %X{id} %X{username} %-5level %c{36}
 					%l: %msg%n</pattern>
@@ -18,7 +18,7 @@
 			</Policies>
 			<DefaultRolloverStrategy min="1" max="4" />
 		</RollingFile>
-		 -->
+		
 	</appenders>
 	<loggers>
 		<root level="warn">
@@ -26,10 +26,18 @@
 			否则关联一次就多打印一次，也可以使用<logger additivity="false">关闭 -->
 			<appender-ref ref="Console" />
 		</root>
-		<logger name="com.github.emailtohl.integration.core" level="info" />
-		<logger name="org.apache" level="info" />
-		<logger name="org.springframework" level="info" />
-		<!-- <logger name="org.springframework.security" level="debug" /> -->
+		<logger name="org.springframework.test" level="info">
+			<appender-ref ref="CoreFileAppender" />
+		</logger>
+		<logger name="org.springframework.security" level="info">
+			<appender-ref ref="CoreFileAppender" />
+		</logger>
+		<logger name="org.hibernate" level="info">
+			<!-- <appender-ref ref="CoreFileAppender" /> -->
+		</logger>
+		<logger name="org.apache" level="info">
+			<!-- <appender-ref ref="CoreFileAppender" /> -->
+		</logger>
 		<!-- <logger name="org.hibernate.type.descriptor.sql" level="TRACE" /> -->
 	</loggers>
 </configuration>  
