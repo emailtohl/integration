@@ -30,7 +30,7 @@ public interface ConstantPattern {
 	/**
 	 * 匹配手机号码的正则表达式，默认首位是1的11位数字是手机号码
 	 */
-	String CELL_PHONE = "^1\\d{10}$";
+	String CELL_PHONE = "^1[0-9]{10}$";
 	
 	/**
 	 * 匹配腾讯QQ号的正则匹配式
