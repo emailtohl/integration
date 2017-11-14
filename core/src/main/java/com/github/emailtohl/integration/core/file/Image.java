@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.common.jpa.entity;
+package com.github.emailtohl.integration.core.file;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;

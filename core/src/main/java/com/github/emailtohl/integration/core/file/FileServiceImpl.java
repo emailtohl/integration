@@ -6,7 +6,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.time.LocalDate;
 import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -36,6 +38,11 @@ public class FileServiceImpl implements FileService {
 	@Named("resources")
 	File resources;
 	/**
+	 * 自动存储的文件空间
+	 */
+	File autoSaveSpace;
+	
+	/**
 	 * FileSearch用到两个文件路径，一个是被搜索的资源目录，另一个是Lucene的索引目录
 	 */
 	@Inject
@@ -48,22 +55,39 @@ public class FileServiceImpl implements FileService {
 		fileSearch.index(resources);
 		// 匹配Windows的“resources\”和UNIX的“resources/”
 		root_pattern = Pattern.compile(resources.getName() + SEPARATOR);
+		
+		autoSaveSpace = new File(resources, "autoSaveSpace");
+		if (!autoSaveSpace.exists()) {
+			autoSaveSpace.mkdir();
+		}
 	}
 
 	@Override
-	public boolean exist(String filename) {
-		if (!StringUtils.hasText(filename)) {
+	public boolean exist(String pathname) {
+		if (!StringUtils.hasText(pathname)) {
 			return false;
 		}
-		return new File(resources, filterPath(filename)).exists();
+		return new File(resources, filterPath(pathname)).exists();
 	}
 
 	@Override
-	public File getFile(String filename) {
-		if (!StringUtils.hasText(filename)) {
+	public File getFile(String pathname) {
+		if (!StringUtils.hasText(pathname)) {
 			return new File(resources.getPath());// 根路径的副本
 		}
-		return new File(resources, filterPath(filename));
+		return new File(resources, filterPath(pathname));
+	}
+	
+	@Override
+	public String getPath(File f) {
+		if (f == null) {
+			return "";
+		}
+		Matcher m = root_pattern.matcher(f.getPath());
+		if (!m.find()) {
+			return "";
+		}
+		return f.getPath().substring(m.end());
 	}
 	
 	@Override
@@ -112,11 +136,11 @@ public class FileServiceImpl implements FileService {
 	}
 
 	@Override
-	public ExecResult delete(String filename) {
-		if (!StringUtils.hasText(filename)) {
+	public ExecResult delete(String pathname) {
+		if (!StringUtils.hasText(pathname)) {
 			return new ExecResult(false, "filename is empty", null);
 		}
-		File f = new File(resources, filterPath(filename));
+		File f = new File(resources, filterPath(pathname));
 		boolean b = FileUtils.deleteQuietly(f);
 		if (b) {
 			try {
@@ -130,12 +154,12 @@ public class FileServiceImpl implements FileService {
 	}
 
 	@Override
-	public ExecResult save(String filename, InputStream in) {
-		if (!StringUtils.hasText(filename)) {
+	public ExecResult save(String pathname, InputStream in) {
+		if (!StringUtils.hasText(pathname)) {
 			return new ExecResult(false, "filename is empty", null);
 		}
 		try {
-			File f = new File(resources, filterPath(filename));
+			File f = new File(resources, filterPath(pathname));
 			boolean exist = f.exists();
 			FileUtils.copyToFile(in, f);
 			if (exist) {
@@ -150,6 +174,36 @@ public class FileServiceImpl implements FileService {
 		return new ExecResult(true, null, null);
 	}
 
+	@Override
+	public ExecResult autoSaveFile(InputStream in, String suffix) {
+		LocalDate d = LocalDate.now();
+		int year = d.getYear(), month = d.getMonthValue(), day = d.getDayOfMonth();
+		File fyear = new File(autoSaveSpace, String.valueOf(year));
+		if (!fyear.exists()) {
+			fyear.mkdir();
+		}
+		File fmonth = new File(fyear, String.valueOf(month));
+		if (!fmonth.exists()) {
+			fmonth.mkdir();
+		}
+		File fday = new File(fmonth, String.valueOf(day));
+		if (!fday.exists()) {
+			fday.mkdir();
+		}
+		String filename = getSerialByUUId();
+		if (StringUtils.hasText(suffix)) {
+			filename = filename + '.' + suffix;
+		}
+		try {
+			File f = new File(fday, filterPath(filename));
+			FileUtils.copyToFile(in, f);
+			return new ExecResult(true, null, getPath(f));
+		} catch (IOException e) {
+			LOG.catching(e);
+			return new ExecResult(false, "io exception", null);
+		}
+	}
+	
 	@Override
 	public Set<FileNode> findFile(String query) {
 		FileNode root = FileNode.newInstance(resources);
@@ -183,11 +237,11 @@ public class FileServiceImpl implements FileService {
 	}
 
 	@Override
-	public ExecResult loadText(String filename, String charset) {
-		if (!StringUtils.hasText(filename)) {
-			return new ExecResult(false, "filename is empty", null);
+	public ExecResult loadText(String pathname, String charset) {
+		if (!StringUtils.hasText(pathname)) {
+			return new ExecResult(false, "pathname is empty", null);
 		}
-		File f = new File(resources, filterPath(filename));
+		File f = new File(resources, filterPath(pathname));
 		try {
 			String txt = FileUtils.readFileToString(f, charset);
 			return new ExecResult(true, null, txt);
@@ -198,11 +252,11 @@ public class FileServiceImpl implements FileService {
 	}
 
 	@Override
-	public ExecResult writeText(String filename, String textContext, String charset) {
-		if (!StringUtils.hasText(filename)) {
-			return new ExecResult(false, "filename is empty", null);
+	public ExecResult writeText(String pathname, String textContext, String charset) {
+		if (!StringUtils.hasText(pathname)) {
+			return new ExecResult(false, "pathname is empty", null);
 		}
-		File f = new File(resources, filterPath(filename));
+		File f = new File(resources, filterPath(pathname));
 		try {
 			boolean exist = f.exists();
 			FileUtils.write(f, textContext, charset);
@@ -216,6 +270,18 @@ public class FileServiceImpl implements FileService {
 			LOG.catching(e);
 			return new ExecResult(false, e.getMessage(), null);
 		}
+	}
+
+	public String getSerialByUUId() {
+		int machineId = 1;// 最大支持1-9个集群机器部署
+		int hashCodeV = UUID.randomUUID().toString().hashCode();
+		if (hashCodeV < 0) {// 有可能是负数
+			hashCodeV = -hashCodeV;
+		}
+		// 0 代表前面补充0
+		// 4 代表长度为4
+		// d 代表参数为正数型
+		return machineId + String.format("%04d", hashCodeV);
 	}
 	
 	private String filterPath(String path) {
@@ -231,5 +297,4 @@ public class FileServiceImpl implements FileService {
 		}
 		return s.toString();
 	}
-
 }

@@ -30,6 +30,7 @@ import com.github.emailtohl.integration.common.ztree.FileNode;
 import com.github.emailtohl.integration.common.ztree.ZtreeNode;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
+import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = CoreTestConfiguration.class)
@@ -139,6 +140,27 @@ public class FileServiceImplTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail();
+		}
+	}
+	
+	@Test
+	public void testAutoSaveFile() {
+		ClassLoader cl = CoreTestData.class.getClassLoader();
+		File f = null;
+		try (InputStream is = cl.getResourceAsStream("img/icon-head-emailtohl.png")) {
+			ExecResult r = fileService.autoSaveFile(is, "png");
+			assertTrue(r.ok);
+			String filename = (String) r.attribute;
+			System.out.println(filename);
+			f = fileService.getFile(filename);
+			assertTrue(f.exists());
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail();
+		} finally {
+			if (f != null && f.exists()) {
+				f.delete();
+			}
 		}
 	}
 
