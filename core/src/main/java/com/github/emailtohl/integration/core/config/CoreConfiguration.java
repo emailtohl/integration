@@ -18,10 +18,12 @@ import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -185,6 +187,19 @@ public class CoreConfiguration implements TransactionManagementConfigurer, Async
 		}
 		FileSearch fileSearch = new FileSearch(indexDir.getAbsolutePath());
 		return fileSearch;
+	}
+	
+	@Bean
+	public ApplicationListener<ContextClosedEvent> contextClosedListener(FileSearch fs) {
+		// void onApplicationEvent(E event);
+		return event -> {
+			LOG.info("close context");
+			try {
+				fs.close();
+			} catch (Exception e) {
+				LOG.catching(e);
+			}
+		};
 	}
 	
 	@Inject
