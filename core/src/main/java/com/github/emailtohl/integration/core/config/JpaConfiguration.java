@@ -49,7 +49,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @Import(DataSourceConfiguration.class)
 class JpaConfiguration {
-	public static final String[] ENTITIES_PACKAGE = {"com.github.emailtohl.integration.core"};
+	public static final String[] ENTITIES_PACKAGE = {"com.github.emailtohl.integration"};
 	/*
 	hibernate.hbm2ddl.auto参数的作用主要用于：自动创建|更新|验证数据库表结构。如果不是此方面的需求建议set value="none"。
 	create：

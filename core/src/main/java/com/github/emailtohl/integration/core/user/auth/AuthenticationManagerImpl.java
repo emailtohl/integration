@@ -3,7 +3,6 @@ package com.github.emailtohl.integration.core.user.auth;
 import java.io.Serializable;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +19,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
@@ -33,8 +31,8 @@ import com.github.emailtohl.integration.core.user.entities.User;
  * 本类实现了AuthenticationManager
  * @author HeLei
  */
-@Service
-@Named("authenticationManager")
+//@Service
+//@Named("authenticationManager")
 public class AuthenticationManagerImpl implements AuthenticationManager {
 	protected static final transient Logger LOG = LogManager.getLogger();
 	

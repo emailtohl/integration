@@ -4,7 +4,6 @@ import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.junit.After;
 import org.junit.Before;
@@ -31,8 +30,7 @@ import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 @ActiveProfiles({ DB_RAM_H2, ENV_NO_SERVLET })
 public class AuthenticationManagerImplTest {
 	@Inject
-	@Named("authenticationManager")
-	AuthenticationManager authenticationManager;
+	AuthenticationManager authenticationManager;// AuthenticationProviderImpl的实例
 	CoreTestData td = new CoreTestData();
 	Encipher encipher = new Encipher();
 	String publicKey, privateKey;
