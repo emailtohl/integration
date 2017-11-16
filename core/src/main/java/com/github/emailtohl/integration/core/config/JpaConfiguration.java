@@ -114,7 +114,7 @@ class JpaConfiguration {
 		if (contains(DB_RAM_H2)) // 使用内存数据库一般是测试环境，可以使用内存来做索引的存储空间
 			properties.put("hibernate.search.default.directory_provider", "ram");
 		else
-			properties.put("hibernate.search.default.directory_provider", indexBase.getAbsolutePath());
+			properties.put("hibernate.search.default.indexBase", indexBase.getAbsolutePath());
 		emfb.setJpaPropertyMap(properties);
 		return emfb;
 	}
@@ -167,7 +167,7 @@ class JpaConfiguration {
 		if (contains(DB_RAM_H2)) // 使用内存数据库一般是测试环境，可以使用内存来做索引的存储空间
 			builder.setProperty("hibernate.search.default.directory_provider", "ram");
 		else
-			builder.setProperty("hibernate.search.default.directory_provider", indexBase.getAbsolutePath());
+			builder.setProperty("hibernate.search.default.indexBase", indexBase.getAbsolutePath());
 		return builder;
 	}
 	

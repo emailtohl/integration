@@ -1,6 +1,7 @@
 package com.github.emailtohl.integration.core.user.auth;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,6 +14,7 @@ import com.github.emailtohl.integration.core.user.entities.User;
  * @author HeLei
  */
 @Service
+@Named("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService {
 	@Inject
 	LoadUser loadUser;
