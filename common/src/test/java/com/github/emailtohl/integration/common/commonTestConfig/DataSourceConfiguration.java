@@ -15,7 +15,6 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 /**
  * 测试的spring上下文配置
  * @author HeLei
- * @date 2017.06.12
  */
 @Configuration
 @PropertySource({ "classpath:database.properties" })

@@ -7,7 +7,6 @@ import org.junit.Test;
 /**
  * JPA基类测试
  * @author HeLei
- * @date 2017.02.04
  */
 public class AbstractJpaRepositoryTest {
 

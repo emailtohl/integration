@@ -15,7 +15,6 @@ import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 /**
  * 角色关联的授权
  * @author HeLei
- * @date 2017.02.04
  */
 @org.hibernate.envers.Audited
 @Entity

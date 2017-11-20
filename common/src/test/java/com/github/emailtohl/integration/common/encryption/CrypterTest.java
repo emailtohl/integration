@@ -8,7 +8,6 @@ import org.junit.Test;
 /**
  * 对封装java加密的测试
  * @author HeLei
- * @date 2017.02.04
  */
 public class CrypterTest {
 

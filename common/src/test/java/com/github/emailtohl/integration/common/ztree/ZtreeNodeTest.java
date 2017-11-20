@@ -18,7 +18,6 @@ import com.google.gson.Gson;
 /**
  * ztree数据模型的测试
  * @author HeLei
- * @date 2017.02.04
  */
 public class ZtreeNodeTest {
 	File test_root = new File("test_root");

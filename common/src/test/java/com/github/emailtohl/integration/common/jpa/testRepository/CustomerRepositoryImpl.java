@@ -20,7 +20,6 @@ import com.github.emailtohl.integration.common.testEntities.Customer;
 /**
  * 客户管理数据访问接口实现类
  * @author HeLei
- * @date 2017.02.04
  */
 @Repository
 public class CustomerRepositoryImpl extends AbstractSearchableRepository<Customer> implements CustomerRepository {

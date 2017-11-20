@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 /**
  * spring data的审计实现类
  * @author HeLei
- * @date 2017.02.04
  */
 @Component("auditorAwareImpl")
 public class AuditorAwareImpl implements AuditorAware<String> {

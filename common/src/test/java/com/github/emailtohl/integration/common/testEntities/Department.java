@@ -16,7 +16,6 @@ import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 /**
  * 部门实体
  * @author HeLei
- * @date 2017.02.04
  */
 @Entity
 @Table(name = "t_Department")

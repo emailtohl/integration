@@ -46,7 +46,6 @@ import com.github.emailtohl.integration.common.testEntities.User.Gender;
 /**
  * 用于测试的数据
  * @author HeLei
- * @date 2017.06.12
  */
 public class CommonTestData {
 	static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

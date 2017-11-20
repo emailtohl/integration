@@ -7,7 +7,6 @@ import com.github.emailtohl.integration.common.testEntities.Authority;
 /**
  * 授权访问接口
  * @author HeLei
- * @date 2017.02.04
  */
 public interface AuthorityRepository extends JpaRepository<Authority, Long> {
 	String CACHE_NAME = "authorityCache";

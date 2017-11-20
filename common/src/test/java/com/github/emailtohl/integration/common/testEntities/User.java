@@ -53,7 +53,6 @@ import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
  * 用户实体类
  * javax校验的注解在field上，JPA约束的注解写在JavaBean属性上
  * @author HeLei
- * @date 2017.02.04
  */
 @org.hibernate.envers.Audited
 @Entity

@@ -25,7 +25,6 @@ import com.github.emailtohl.integration.common.testEntities.Article;
 /**
  * JPA2的标准查询的测试类
  * @author HeLei
- * @date 2017.02.04
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceConfiguration.class)

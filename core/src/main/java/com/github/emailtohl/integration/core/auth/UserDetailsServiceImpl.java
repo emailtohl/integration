@@ -8,8 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.entities.User;
-import com.github.emailtohl.integration.core.user.service.UserService;
 /**
  * 本类实现了UserDetailsService，用于spring security配置AuthenticationManagerBuilder中
  * @author HeLei

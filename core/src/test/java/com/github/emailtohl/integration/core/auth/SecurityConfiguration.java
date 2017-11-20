@@ -26,17 +26,17 @@ import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleAuditedService;
 import com.github.emailtohl.integration.core.role.RoleService;
-import com.github.emailtohl.integration.core.user.dao.CustomerRepository;
-import com.github.emailtohl.integration.core.user.dao.EmployeeRepository;
-import com.github.emailtohl.integration.core.user.dao.UserRepository;
+import com.github.emailtohl.integration.core.user.UserRepository;
+import com.github.emailtohl.integration.core.user.UserService;
+import com.github.emailtohl.integration.core.user.UserServiceImpl;
+import com.github.emailtohl.integration.core.user.customer.CustomerAuditedService;
+import com.github.emailtohl.integration.core.user.customer.CustomerRepository;
+import com.github.emailtohl.integration.core.user.customer.CustomerService;
+import com.github.emailtohl.integration.core.user.employee.EmployeeAuditedService;
+import com.github.emailtohl.integration.core.user.employee.EmployeeRepository;
+import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;
-import com.github.emailtohl.integration.core.user.service.CustomerAuditedService;
-import com.github.emailtohl.integration.core.user.service.CustomerService;
-import com.github.emailtohl.integration.core.user.service.EmployeeAuditedService;
-import com.github.emailtohl.integration.core.user.service.EmployeeService;
-import com.github.emailtohl.integration.core.user.service.UserService;
-import com.github.emailtohl.integration.core.user.service.UserServiceImpl;
 
 /**
  * 对接口安全权限的测试

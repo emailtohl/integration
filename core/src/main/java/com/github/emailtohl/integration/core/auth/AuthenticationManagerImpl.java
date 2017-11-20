@@ -23,10 +23,10 @@ import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
 import com.github.emailtohl.integration.common.exception.InnerDataStateException;
+import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.User;
-import com.github.emailtohl.integration.core.user.service.UserService;
 
 /**
  * 本类实现了AuthenticationManager

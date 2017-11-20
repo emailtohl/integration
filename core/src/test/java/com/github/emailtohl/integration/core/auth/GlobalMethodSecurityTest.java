@@ -24,12 +24,12 @@ import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleAuditedService;
 import com.github.emailtohl.integration.core.role.RoleService;
+import com.github.emailtohl.integration.core.user.customer.CustomerAuditedService;
+import com.github.emailtohl.integration.core.user.customer.CustomerService;
+import com.github.emailtohl.integration.core.user.employee.EmployeeAuditedService;
+import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;
-import com.github.emailtohl.integration.core.user.service.CustomerAuditedService;
-import com.github.emailtohl.integration.core.user.service.CustomerService;
-import com.github.emailtohl.integration.core.user.service.EmployeeAuditedService;
-import com.github.emailtohl.integration.core.user.service.EmployeeService;
 /**
  * 在接口处声明了权限，对这些声明进行测试
  * @author HeLei

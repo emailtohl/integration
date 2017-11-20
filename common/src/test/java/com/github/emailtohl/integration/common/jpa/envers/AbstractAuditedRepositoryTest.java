@@ -39,7 +39,6 @@ import com.github.emailtohl.integration.common.testEntities.User;
 /**
  * Hibernate envers组件使用测试
  * @author HeLei
- * @date 2017.02.04
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceConfiguration.class)

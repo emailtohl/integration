@@ -29,7 +29,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 /**
  * 测试的spring上下文配置
  * @author HeLei
- * @date 2017.06.12
  */
 @Configuration
 //启用注解式事务管理，配置类通常要实现TransactionManagementConfigurer接口，确定使用哪个事务管理器

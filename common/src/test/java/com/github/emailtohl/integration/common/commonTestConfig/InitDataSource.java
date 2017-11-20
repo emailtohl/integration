@@ -11,7 +11,6 @@ import com.github.emailtohl.integration.common.testEntities.CommonTestData;
  * 初始化数据库
  * 
  * @author HeLei
- * @date 2017.06.13
  */
 //@Component 如果是自动扫描则不容易理解，显示地写在配置文件中
 class InitDataSource {

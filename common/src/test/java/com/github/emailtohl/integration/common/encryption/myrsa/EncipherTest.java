@@ -6,7 +6,6 @@ import org.junit.Test;
 /**
  * myrsa测试
  * @author HeLei
- * @date 2017.02.04
  */
 public class EncipherTest {
 

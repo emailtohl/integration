@@ -29,7 +29,6 @@ import com.github.emailtohl.integration.common.utils.UpDownloader;
 /**
  * 文件搜索器的测试
  * @author HeLei
- * @date 2017.02.04
  */
 public class FileSearchTest {
 	private static final Logger logger = LogManager.getLogger();

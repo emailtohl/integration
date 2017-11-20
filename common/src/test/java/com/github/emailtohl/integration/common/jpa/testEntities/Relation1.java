@@ -8,7 +8,6 @@ import javax.persistence.Id;
 /**
  * 相互引用关系
  * @author HeLei
- * @date 2017.02.04
  */
 @org.hibernate.search.annotations.Indexed
 @Entity

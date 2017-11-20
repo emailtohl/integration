@@ -9,7 +9,6 @@ import org.junit.Test;
 /**
  * 文本工具的测试
  * @author HeLei
- * @date 2017.02.04
  */
 public class TextUtilTest {
 	TextUtil util = new TextUtil();

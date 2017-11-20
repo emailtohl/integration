@@ -13,7 +13,6 @@ import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 /**
  * 评论嵌入类
  * @author HeLei
- * @date 2017.02.11
  */
 @org.hibernate.search.annotations.Indexed
 @org.hibernate.annotations.BatchSize(size = 10)// 因n+1查询问题，盲猜优化，一次性加载size个代理

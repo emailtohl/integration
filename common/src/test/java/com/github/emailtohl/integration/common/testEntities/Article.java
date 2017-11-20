@@ -18,7 +18,6 @@ import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 /**
  * 文章实体
  * @author HeLei
- * @date 2017.02.11
  */
 @org.hibernate.annotations.BatchSize(size = 10)// 因n+1查询问题，盲猜优化，一次性加载size个代理
 @org.hibernate.envers.Audited

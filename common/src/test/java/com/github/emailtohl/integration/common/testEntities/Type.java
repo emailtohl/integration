@@ -17,7 +17,6 @@ import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 /**
  * 文章的分类
  * @author HeLei
- * @date 2017.02.17
  */
 @Entity
 @Table(name = "t_article_type")
