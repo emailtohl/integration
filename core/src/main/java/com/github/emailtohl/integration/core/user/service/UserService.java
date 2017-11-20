@@ -1,7 +1,5 @@
 package com.github.emailtohl.integration.core.user.service;
 
-import javax.transaction.Transactional;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 
@@ -12,7 +10,6 @@ import com.github.emailtohl.integration.core.user.entities.User;
  * 统一查询功能
  * @author HeLei
  */
-@Transactional
 @Validated
 public interface UserService {
 	/**
@@ -37,5 +34,12 @@ public interface UserService {
 	 * @return
 	 */
 	User get(Long id);
+	
+	/**
+	 * 返回持久化状态的用户实例
+	 * @param username 在Spring Security中用户唯一性的标识，本系统中可以是平台工号、客户手机或客户邮箱
+	 * @return 若没查找到则返回null
+	 */
+	User find(String username);
 	
 }

@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.user.auth;
+package com.github.emailtohl.integration.core.auth;
 
 /**
  * 用户类型

@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.user.auth;
+package com.github.emailtohl.integration.core.auth;
 
 import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
 import org.springframework.security.core.Authentication;

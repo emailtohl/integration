@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.user.auth;
+package com.github.emailtohl.integration.core.auth;
 
 import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;

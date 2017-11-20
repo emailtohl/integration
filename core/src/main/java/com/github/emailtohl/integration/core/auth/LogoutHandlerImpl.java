@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.user.auth;
+package com.github.emailtohl.integration.core.auth;
 
 import javax.inject.Inject;
 import javax.inject.Named;

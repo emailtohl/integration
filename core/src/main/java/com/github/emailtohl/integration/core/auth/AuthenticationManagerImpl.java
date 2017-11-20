@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.user.auth;
+package com.github.emailtohl.integration.core.auth;
 
 import java.io.Serializable;
 
@@ -26,6 +26,7 @@ import com.github.emailtohl.integration.common.exception.InnerDataStateException
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.User;
+import com.github.emailtohl.integration.core.user.service.UserService;
 
 /**
  * 本类实现了AuthenticationManager
@@ -42,7 +43,7 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 	public static final String ID_PREFIX = "id:";
 	
 	@Inject
-	protected LoadUser loadUser;
+	protected UserService userService;
 	@Inject
 	protected ApplicationEventPublisher publisher;
 	protected Encipher encipher = new Encipher();
@@ -50,8 +51,8 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 
 	public AuthenticationManagerImpl() {}
 	
-	public AuthenticationManagerImpl(LoadUser loadUser) {
-		this.loadUser = loadUser;
+	public AuthenticationManagerImpl(UserService userService) {
+		this.userService = userService;
 	}
 
 	/**
@@ -68,7 +69,7 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 	}
 
 	public Authentication authenticate(String username, String password) throws AuthenticationException {
-		User u = loadUser.load(username);
+		User u = userService.find(username);
 		if (u == null) {
 			LOG.warn("Authentication failed for non-existent user {}.", username);
 			throw new UsernameNotFoundException("没有此账号");

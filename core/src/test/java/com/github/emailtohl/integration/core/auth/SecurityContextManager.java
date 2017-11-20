@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.user.auth;
+package com.github.emailtohl.integration.core.auth;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.user.auth;
+package com.github.emailtohl.integration.core.auth;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.core.user.entities.User;
+import com.github.emailtohl.integration.core.user.service.UserService;
 /**
  * 本类实现了UserDetailsService，用于spring security配置AuthenticationManagerBuilder中
  * @author HeLei
@@ -17,11 +18,11 @@ import com.github.emailtohl.integration.core.user.entities.User;
 @Named("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService {
 	@Inject
-	LoadUser loadUser;
+	UserService userService;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User u = loadUser.load(username);
+		User u = userService.find(username);
 		if (u == null) {
 			throw new UsernameNotFoundException("没有此用户：" + username);
 		}

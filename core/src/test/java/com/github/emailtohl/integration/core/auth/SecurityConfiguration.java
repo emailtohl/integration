@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.user.auth;
+package com.github.emailtohl.integration.core.auth;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -22,9 +22,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 
 import com.github.emailtohl.integration.common.jpa.envers.Tuple;
 import com.github.emailtohl.integration.core.ExecResult;
+import com.github.emailtohl.integration.core.auth.AuthenticationManagerImpl;
+import com.github.emailtohl.integration.core.auth.AuthenticationProviderImpl;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.user.dao.CustomerRepository;
 import com.github.emailtohl.integration.core.user.dao.EmployeeRepository;
+import com.github.emailtohl.integration.core.user.dao.UserRepository;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.Role;
@@ -34,6 +37,8 @@ import com.github.emailtohl.integration.core.user.service.EmployeeAuditedService
 import com.github.emailtohl.integration.core.user.service.EmployeeService;
 import com.github.emailtohl.integration.core.user.service.RoleAuditedService;
 import com.github.emailtohl.integration.core.user.service.RoleService;
+import com.github.emailtohl.integration.core.user.service.UserService;
+import com.github.emailtohl.integration.core.user.service.UserServiceImpl;
 
 /**
  * 对接口安全权限的测试
@@ -76,20 +81,26 @@ class SecurityConfiguration {
 	}
 	
 	@Bean
-	public LoadUser loadUser(CustomerRepository cr, EmployeeRepository er) {
-		LoadUser l = new LoadUser(cr, er);
-		return l;
+	public UserRepository userRepository() {
+		UserRepository dao = mock(UserRepository.class);
+		return dao;
+	}
+	
+	@Bean
+	public UserService userService(CustomerRepository cr, EmployeeRepository er, UserRepository ur) {
+		UserService service = new UserServiceImpl(cr, er, ur);
+		return service;
 	}
 
 	@Bean
-	public AuthenticationProvider authenticationProvider(LoadUser l) {
-		AuthenticationProviderImpl authenticationProviderImpl = new AuthenticationProviderImpl(l);
+	public AuthenticationProvider authenticationProvider(UserService userService) {
+		AuthenticationProviderImpl authenticationProviderImpl = new AuthenticationProviderImpl(userService);
 		return authenticationProviderImpl;
 	}
 	
 	@Bean
-	public AuthenticationManager authenticationManager(LoadUser l) {
-		AuthenticationManagerImpl authenticationManager = new AuthenticationManagerImpl(l);
+	public AuthenticationManager authenticationManager(UserService userService) {
+		AuthenticationManagerImpl authenticationManager = new AuthenticationManagerImpl(userService);
 		return authenticationManager;
 	}
 	

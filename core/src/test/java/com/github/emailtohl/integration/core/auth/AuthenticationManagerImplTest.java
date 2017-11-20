@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.user.auth;
+package com.github.emailtohl.integration.core.auth;
 
 import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
 import com.github.emailtohl.integration.common.exception.InvalidDataException;
+import com.github.emailtohl.integration.core.auth.AuthenticationManagerImpl;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 /**

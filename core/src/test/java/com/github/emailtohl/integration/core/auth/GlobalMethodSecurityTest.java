@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.user.auth;
+package com.github.emailtohl.integration.core.auth;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
