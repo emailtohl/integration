@@ -1,6 +1,6 @@
 package com.github.emailtohl.integration.core.user.service;
 
-import static com.github.emailtohl.integration.core.user.entities.Authority.AUDIT_USER;
+import static com.github.emailtohl.integration.core.role.Authority.AUDIT_USER;
 
 import java.util.List;
 

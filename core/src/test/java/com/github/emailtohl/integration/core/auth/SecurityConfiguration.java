@@ -22,21 +22,19 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 
 import com.github.emailtohl.integration.common.jpa.envers.Tuple;
 import com.github.emailtohl.integration.core.ExecResult;
-import com.github.emailtohl.integration.core.auth.AuthenticationManagerImpl;
-import com.github.emailtohl.integration.core.auth.AuthenticationProviderImpl;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
+import com.github.emailtohl.integration.core.role.Role;
+import com.github.emailtohl.integration.core.role.RoleAuditedService;
+import com.github.emailtohl.integration.core.role.RoleService;
 import com.github.emailtohl.integration.core.user.dao.CustomerRepository;
 import com.github.emailtohl.integration.core.user.dao.EmployeeRepository;
 import com.github.emailtohl.integration.core.user.dao.UserRepository;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;
-import com.github.emailtohl.integration.core.user.entities.Role;
 import com.github.emailtohl.integration.core.user.service.CustomerAuditedService;
 import com.github.emailtohl.integration.core.user.service.CustomerService;
 import com.github.emailtohl.integration.core.user.service.EmployeeAuditedService;
 import com.github.emailtohl.integration.core.user.service.EmployeeService;
-import com.github.emailtohl.integration.core.user.service.RoleAuditedService;
-import com.github.emailtohl.integration.core.user.service.RoleService;
 import com.github.emailtohl.integration.core.user.service.UserService;
 import com.github.emailtohl.integration.core.user.service.UserServiceImpl;
 

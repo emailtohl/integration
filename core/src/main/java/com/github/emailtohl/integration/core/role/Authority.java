@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.user.entities;
+package com.github.emailtohl.integration.core.role;
 
 import java.util.HashSet;
 import java.util.Objects;

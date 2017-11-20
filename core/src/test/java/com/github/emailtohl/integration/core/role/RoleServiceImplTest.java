@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.user.service;
+package com.github.emailtohl.integration.core.role;
 
 import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
@@ -23,8 +23,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
-import com.github.emailtohl.integration.core.user.entities.Authority;
-import com.github.emailtohl.integration.core.user.entities.Role;
+import com.github.emailtohl.integration.core.role.Authority;
+import com.github.emailtohl.integration.core.role.Role;
+import com.github.emailtohl.integration.core.role.RoleService;
 import com.google.gson.Gson;
 
 /**

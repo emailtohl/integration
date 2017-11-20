@@ -1,8 +1,8 @@
 package com.github.emailtohl.integration.core.user.service;
 
-import static com.github.emailtohl.integration.core.user.entities.Authority.EMPLOYEE_ENABLED;
-import static com.github.emailtohl.integration.core.user.entities.Authority.EMPLOYEE_RESET_PASSWORD;
-import static com.github.emailtohl.integration.core.user.entities.Authority.EMPLOYEE_ROLE;
+import static com.github.emailtohl.integration.core.role.Authority.EMPLOYEE_ENABLED;
+import static com.github.emailtohl.integration.core.role.Authority.EMPLOYEE_RESET_PASSWORD;
+import static com.github.emailtohl.integration.core.role.Authority.EMPLOYEE_ROLE;
 
 import java.util.List;
 

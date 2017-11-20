@@ -1,27 +1,27 @@
 package com.github.emailtohl.integration.core.coreTestConfig;
 
-import static com.github.emailtohl.integration.core.user.entities.Authority.APPLICATION_FORM_DELETE;
-import static com.github.emailtohl.integration.core.user.entities.Authority.APPLICATION_FORM_READ_HISTORY;
-import static com.github.emailtohl.integration.core.user.entities.Authority.APPLICATION_FORM_TRANSIT;
-import static com.github.emailtohl.integration.core.user.entities.Authority.AUDIT_ROLE;
-import static com.github.emailtohl.integration.core.user.entities.Authority.AUDIT_USER;
-import static com.github.emailtohl.integration.core.user.entities.Authority.CONTENT_MANAGER;
-import static com.github.emailtohl.integration.core.user.entities.Authority.CUSTOMER;
-import static com.github.emailtohl.integration.core.user.entities.Authority.CUSTOMER_DELETE;
-import static com.github.emailtohl.integration.core.user.entities.Authority.CUSTOMER_ENABLED;
-import static com.github.emailtohl.integration.core.user.entities.Authority.CUSTOMER_LEVEL;
-import static com.github.emailtohl.integration.core.user.entities.Authority.CUSTOMER_RESET_PASSWORD;
-import static com.github.emailtohl.integration.core.user.entities.Authority.CUSTOMER_ROLE;
-import static com.github.emailtohl.integration.core.user.entities.Authority.EMPLOYEE;
-import static com.github.emailtohl.integration.core.user.entities.Authority.EMPLOYEE_DELETE;
-import static com.github.emailtohl.integration.core.user.entities.Authority.EMPLOYEE_ENABLED;
-import static com.github.emailtohl.integration.core.user.entities.Authority.EMPLOYEE_RESET_PASSWORD;
-import static com.github.emailtohl.integration.core.user.entities.Authority.EMPLOYEE_ROLE;
-import static com.github.emailtohl.integration.core.user.entities.Authority.FLOW;
-import static com.github.emailtohl.integration.core.user.entities.Authority.FORUM_DELETE;
-import static com.github.emailtohl.integration.core.user.entities.Authority.QUERY_ALL_USER;
-import static com.github.emailtohl.integration.core.user.entities.Authority.RESOURCE_MANAGER;
-import static com.github.emailtohl.integration.core.user.entities.Authority.ROLE;
+import static com.github.emailtohl.integration.core.role.Authority.APPLICATION_FORM_DELETE;
+import static com.github.emailtohl.integration.core.role.Authority.APPLICATION_FORM_READ_HISTORY;
+import static com.github.emailtohl.integration.core.role.Authority.APPLICATION_FORM_TRANSIT;
+import static com.github.emailtohl.integration.core.role.Authority.AUDIT_ROLE;
+import static com.github.emailtohl.integration.core.role.Authority.AUDIT_USER;
+import static com.github.emailtohl.integration.core.role.Authority.CONTENT_MANAGER;
+import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER;
+import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_DELETE;
+import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_ENABLED;
+import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_LEVEL;
+import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_RESET_PASSWORD;
+import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_ROLE;
+import static com.github.emailtohl.integration.core.role.Authority.EMPLOYEE;
+import static com.github.emailtohl.integration.core.role.Authority.EMPLOYEE_DELETE;
+import static com.github.emailtohl.integration.core.role.Authority.EMPLOYEE_ENABLED;
+import static com.github.emailtohl.integration.core.role.Authority.EMPLOYEE_RESET_PASSWORD;
+import static com.github.emailtohl.integration.core.role.Authority.EMPLOYEE_ROLE;
+import static com.github.emailtohl.integration.core.role.Authority.FLOW;
+import static com.github.emailtohl.integration.core.role.Authority.FORUM_DELETE;
+import static com.github.emailtohl.integration.core.role.Authority.QUERY_ALL_USER;
+import static com.github.emailtohl.integration.core.role.Authority.RESOURCE_MANAGER;
+import static com.github.emailtohl.integration.core.role.Authority.ROLE;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,14 +34,14 @@ import java.util.HashSet;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import com.github.emailtohl.integration.core.file.Image;
+import com.github.emailtohl.integration.core.role.Authority;
+import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.user.entities.Address;
-import com.github.emailtohl.integration.core.user.entities.Authority;
 import com.github.emailtohl.integration.core.user.entities.Company;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Customer.Level;
 import com.github.emailtohl.integration.core.user.entities.Department;
 import com.github.emailtohl.integration.core.user.entities.Employee;
-import com.github.emailtohl.integration.core.user.entities.Role;
 import com.github.emailtohl.integration.core.user.entities.User.Gender;
 /**
  * 用于测试的数据

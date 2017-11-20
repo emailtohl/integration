@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.user.entities;
+package com.github.emailtohl.integration.core.role;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
+import com.github.emailtohl.integration.core.user.entities.User;
 /**
  * 角色实体类
  * @author HeLei

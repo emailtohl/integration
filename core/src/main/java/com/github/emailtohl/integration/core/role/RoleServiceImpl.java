@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.user.service;
+package com.github.emailtohl.integration.core.role;
 
 import java.util.Iterator;
 import java.util.List;
@@ -17,10 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.core.user.dao.AuthorityRepository;
-import com.github.emailtohl.integration.core.user.dao.RoleRepository;
-import com.github.emailtohl.integration.core.user.entities.Authority;
-import com.github.emailtohl.integration.core.user.entities.Role;
 import com.github.emailtohl.integration.core.user.entities.User;
 /**
  * 角色管理服务的实现

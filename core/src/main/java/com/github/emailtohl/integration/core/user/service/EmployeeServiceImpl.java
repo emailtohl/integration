@@ -27,12 +27,12 @@ import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
+import com.github.emailtohl.integration.core.role.Role;
+import com.github.emailtohl.integration.core.role.RoleRepository;
 import com.github.emailtohl.integration.core.user.dao.DepartmentRepository;
 import com.github.emailtohl.integration.core.user.dao.EmployeeRepository;
-import com.github.emailtohl.integration.core.user.dao.RoleRepository;
 import com.github.emailtohl.integration.core.user.entities.Department;
 import com.github.emailtohl.integration.core.user.entities.Employee;
-import com.github.emailtohl.integration.core.user.entities.Role;
 
 /**
  * 平台账号服务层的实现

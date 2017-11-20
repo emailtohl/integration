@@ -1,9 +1,9 @@
 package com.github.emailtohl.integration.core.user.service;
 
-import static com.github.emailtohl.integration.core.user.entities.Authority.CUSTOMER_ENABLED;
-import static com.github.emailtohl.integration.core.user.entities.Authority.CUSTOMER_LEVEL;
-import static com.github.emailtohl.integration.core.user.entities.Authority.CUSTOMER_RESET_PASSWORD;
-import static com.github.emailtohl.integration.core.user.entities.Authority.CUSTOMER_ROLE;
+import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_ENABLED;
+import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_LEVEL;
+import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_RESET_PASSWORD;
+import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_ROLE;
 
 import java.util.Set;
 

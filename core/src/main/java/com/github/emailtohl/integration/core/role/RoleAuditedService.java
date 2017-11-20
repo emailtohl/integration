@@ -1,13 +1,13 @@
-package com.github.emailtohl.integration.core.user.service;
+package com.github.emailtohl.integration.core.role;
 
-import static com.github.emailtohl.integration.core.user.entities.Authority.AUDIT_ROLE;
+import static com.github.emailtohl.integration.core.role.Authority.AUDIT_ROLE;
 
 import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.github.emailtohl.integration.common.jpa.envers.Tuple;
-import com.github.emailtohl.integration.core.user.entities.Role;
+import com.github.emailtohl.integration.core.role.Role;
 
 /**
  * 审计角色的历史记录

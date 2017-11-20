@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.user.dao;
+package com.github.emailtohl.integration.core.role;
 
 import static org.springframework.data.jpa.repository.query.QueryUtils.toOrders;
 import static org.springframework.util.StringUtils.hasText;
@@ -20,14 +20,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import com.github.emailtohl.integration.common.jpa.jpaCriterionQuery.AbstractCriterionQueryRepository;
-import com.github.emailtohl.integration.core.user.entities.Role;
+import com.github.emailtohl.integration.core.role.Role;
 
 /**
  * 自定义接口的实现
  * 
  * @author HeLei
  */
-public class RoleRepositoryImpl extends AbstractCriterionQueryRepository<Role> implements RoleRepositoryCustomization {
+class RoleRepositoryImpl extends AbstractCriterionQueryRepository<Role> implements RoleRepositoryCustomization {
 	@PersistenceContext
 	EntityManager em;
 

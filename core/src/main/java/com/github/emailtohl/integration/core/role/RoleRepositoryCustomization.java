@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.user.dao;
+package com.github.emailtohl.integration.core.role;
 
 import java.util.List;
 import java.util.Set;
@@ -9,13 +9,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.github.emailtohl.integration.common.jpa.jpaCriterionQuery.CriterionQueryRepository;
-import com.github.emailtohl.integration.core.user.entities.Role;
+import com.github.emailtohl.integration.core.role.Role;
 
 /**
  * 访问角色的自定义接口
  * @author HeLei
  */
-public interface RoleRepositoryCustomization extends CriterionQueryRepository<Role> {
+interface RoleRepositoryCustomization extends CriterionQueryRepository<Role> {
 	/**
      * 根据角色名和权限名组合查询
      * @param roleName
