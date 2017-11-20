@@ -21,7 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationEventPublisher;
 
-import com.github.emailtohl.integration.web.websocket.Configurator;
+import com.github.emailtohl.integration.common.websocket.Configurator;
 import com.google.gson.Gson;
 /**
  * websocket，聊天程序的服务端

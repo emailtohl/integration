@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.web.websocket;
+package com.github.emailtohl.integration.common.websocket;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -22,7 +22,6 @@ import org.apache.logging.log4j.Logger;
 /**
  * 为websocket提供序列化支持，可在@ServerEndpoint的参数encoders和decoders中声明继承了本类的类
  * @author HeLei
- * @date 2016.06.11
  *
  * @param <T extends Serializable> 被序列化的类
  */

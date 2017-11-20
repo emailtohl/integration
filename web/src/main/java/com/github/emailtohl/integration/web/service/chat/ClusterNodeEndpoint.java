@@ -17,7 +17,7 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
-import com.github.emailtohl.integration.web.websocket.Configurator;
+import com.github.emailtohl.integration.common.websocket.Configurator;
 /**
  * websocket，模拟群集的服务端点
  * @author HeLei

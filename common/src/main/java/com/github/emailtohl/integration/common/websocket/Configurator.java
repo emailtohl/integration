@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.web.websocket;
+package com.github.emailtohl.integration.common.websocket;
 
 import java.security.Principal;
 import java.util.Locale;
@@ -16,7 +16,6 @@ import org.springframework.web.socket.server.standard.SpringConfigurator;
  * SpringConfigurator继承ServerEndpointConfig.Configurator。
  * 本类继承了后者，若@ServerEndpoint使用了基于SpringConfigurator的配置就拥有Spring依赖注入的特性
  * @author HeLei
- * @date 2016.06.11
  */
 public class Configurator extends /*ServerEndpointConfig.Configurator*/ SpringConfigurator {
 	private static final String HTTP_SESSION_KEY = "httpSession";

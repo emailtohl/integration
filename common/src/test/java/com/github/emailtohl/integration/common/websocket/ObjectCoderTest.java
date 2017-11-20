@@ -1,6 +1,6 @@
-package com.github.emailtohl.integration.web.websocket;
+package com.github.emailtohl.integration.common.websocket;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,12 +13,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.emailtohl.integration.user.entities.Customer;
-import com.github.emailtohl.integration.web.WebTestData;
+import com.github.emailtohl.integration.common.testEntities.CommonTestData;
+import com.github.emailtohl.integration.common.testEntities.Customer;
 
 public class ObjectCoderTest {
 	
-	private class User extends com.github.emailtohl.integration.user.entities.User {
+	private class User extends com.github.emailtohl.integration.common.testEntities.User {
 		private static final long serialVersionUID = 4534734369771438196L;
 	}
 
@@ -40,7 +40,7 @@ public class ObjectCoderTest {
 	public void test() throws EncodeException, IOException, DecodeException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		ObjectCoder<Customer> oc = new ObjectCoder<Customer>(){};
-		WebTestData td = new WebTestData();
+		CommonTestData td = new CommonTestData();
 		oc.encode(td.emailtohl, out);
 		ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
 		Customer c = oc.decode(in);
