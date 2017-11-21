@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -70,6 +71,8 @@ class JpaConfiguration {
 	@Inject
 	@Named("indexBase")
 	File indexBase;
+	Pattern postgresql_pattern = Pattern.compile("postgresql", Pattern.CASE_INSENSITIVE);
+	Pattern mysql_pattern = Pattern.compile("mysql", Pattern.CASE_INSENSITIVE);
 	
 	@Bean
 	public JdbcTemplate jdbcTemplate() {
@@ -84,10 +87,10 @@ class JpaConfiguration {
 			adapter.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
 		} else {
 			String driverClassName = env.getProperty("jdbc.driverClassName");
-			if (driverClassName.matches("postgresql")) {
+			if (postgresql_pattern.matcher(driverClassName).find()) {
 				adapter.setDatabase(Database.POSTGRESQL);
 				adapter.setDatabasePlatform("org.hibernate.dialect.PostgreSQL94Dialect");
-			} else if (driverClassName.matches("mysql")) {
+			} else if (mysql_pattern.matcher(driverClassName).find()) {
 				adapter.setDatabase(Database.MYSQL);
 				adapter.setDatabasePlatform("org.hibernate.dialect.MySQL57InnoDBDialect");
 			} else {
