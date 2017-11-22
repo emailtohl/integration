@@ -3,7 +3,6 @@ package com.github.emailtohl.integration.core.user;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -14,12 +13,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
 import com.github.emailtohl.integration.core.user.customer.CustomerRepository;
 import com.github.emailtohl.integration.core.user.employee.EmployeeRepository;
-import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.User;
 
 /**
@@ -29,9 +26,6 @@ import com.github.emailtohl.integration.core.user.entities.User;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
-	public static final Pattern PATTEN_EMAIL = Pattern.compile(ConstantPattern.EMAIL);
-	public static final Pattern PATTERN_CELL_PHONE = Pattern.compile(ConstantPattern.CELL_PHONE);
-	public static final Pattern PATTEN_EMP_NUM = Pattern.compile(Employee.PATTERN_EMP_NUM);
 	@Inject
 	CustomerRepository customerRepository;
 	@Inject
@@ -85,7 +79,7 @@ public class UserServiceImpl implements UserService {
 			u = customerRepository.findByCellPhone(username);
 		}
 		if (u == null) {
-			m = PATTEN_EMAIL.matcher(username);
+			m = PATTERN_EMAIL.matcher(username);
 			if (m.find()) {
 				u = customerRepository.findByEmail(username);
 			}
