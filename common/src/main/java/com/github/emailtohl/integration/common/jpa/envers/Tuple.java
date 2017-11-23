@@ -43,4 +43,9 @@ public class Tuple<E> {
 		this.revisionType = revisionType;
 	}
 
+	@Override
+	public String toString() {
+		return "Tuple [defaultRevisionEntity=" + defaultRevisionEntity + ", revisionType=" + revisionType + "]";
+	}
+
 }

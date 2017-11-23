@@ -3,10 +3,12 @@ package com.github.emailtohl.integration.core.role;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.jpa.envers.Tuple;
@@ -23,17 +25,28 @@ public class RoleAuditedServiceImpl implements RoleAuditedService {
 	public List<Tuple<Role>> getRoleRevision(Long id) {
 		Map<String, Object> propertyNameValueMap = new HashMap<>();
 		propertyNameValueMap.put("id", id);
-		return roleAudit.getAllRevisionInfo(propertyNameValueMap);
+		List<Tuple<Role>> ls = roleAudit.getAllRevisionInfo(propertyNameValueMap);
+		return ls.stream().map(t -> {
+			Tuple<Role> n = new Tuple<Role>();
+			n.setDefaultRevisionEntity(t.getDefaultRevisionEntity());
+			n.setRevisionType(t.getRevisionType());
+			n.setEntity(toTransient(t.getEntity()));
+			return n;
+		}).collect(Collectors.toList());
 	}
 
 	@Override
 	public Role getRoleAtRevision(Long id, Number revision) {
-		return roleAudit.getEntityAtRevision(id, revision);
+		return toTransient(roleAudit.getEntityAtRevision(id, revision));
 	}
 
-	@Override
-	public void rollback(Long id, Number revision) {
-		roleAudit.rollback(id, revision);
+	private Role toTransient(Role source) {
+		if (source == null) {
+			return source;
+		}
+		Role target = new Role();
+		BeanUtils.copyProperties(source, target, "users", "authorities");
+		source.getAuthorities().forEach(a -> target.getAuthorities().add(new Authority(a.getName(), a.getDescription(), null)));
+		return target;
 	}
-
 }

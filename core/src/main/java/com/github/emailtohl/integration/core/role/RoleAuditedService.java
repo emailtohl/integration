@@ -30,8 +30,4 @@ public interface RoleAuditedService {
 	 */
 	Role getRoleAtRevision(Long id, Number revision);
 	
-	/**
-	 * 将角色回滚到某历史版本上
-	 */
-	void rollback(Long id, Number revision);
 }
