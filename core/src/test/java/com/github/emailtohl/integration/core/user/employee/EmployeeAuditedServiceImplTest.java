@@ -32,6 +32,7 @@ import com.github.emailtohl.integration.core.user.employee.EmployeeAuditedServic
 import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.User.Gender;
+import com.google.gson.Gson;
 /**
  * 业务类测试
  * @author HeLei
@@ -47,7 +48,8 @@ public class EmployeeAuditedServiceImplTest {
 	EmployeeService employeeService;
 	@Inject
 	EmployeeAuditedService auditedService;
-	
+	@Inject
+	Gson gson;
 	Long id;
 	
 	@Before
@@ -90,6 +92,7 @@ public class EmployeeAuditedServiceImplTest {
 	@Test
 	public void testGetEmployeeRevision() {
 		List<Tuple<Employee>> ls = auditedService.getEmployeeRevision(id);
+		System.out.println(gson.toJson(ls));
 		assertTrue(ls.size() >= 2);// 一个新增、一个修改
 //		在Maven统一执行时有其他用例修改数据，所以届时得到的结果会不一致
 //		assertEquals(ls.get(0).getEntity().getDescription(), "系统分析人员");
@@ -101,6 +104,7 @@ public class EmployeeAuditedServiceImplTest {
 	@Test
 	public void testGetEmployeeAtRevision() {
 		List<Tuple<Employee>> ls = auditedService.getEmployeeRevision(id);
+		System.out.println(gson.toJson(ls));
 		Integer revision = ls.get(0).getDefaultRevisionEntity().getId();
 		Employee e = auditedService.getEmployeeAtRevision(id, revision);
 		assertNotNull(e);

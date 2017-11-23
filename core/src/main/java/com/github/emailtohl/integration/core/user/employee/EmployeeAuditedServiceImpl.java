@@ -8,11 +8,13 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.hibernate.envers.DefaultRevisionEntity;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.jpa.envers.Tuple;
 import com.github.emailtohl.integration.core.role.Role;
+import com.github.emailtohl.integration.core.user.entities.Department;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 /**
  * 审计平台账号的历史记录
@@ -30,7 +32,7 @@ public class EmployeeAuditedServiceImpl implements EmployeeAuditedService {
 		List<Tuple<Employee>> ls = employeeAudit.getAllRevisionInfo(propertyNameValueMap);
 		return ls.stream().map(t -> {
 			Tuple<Employee> n = new Tuple<Employee>();
-			n.setDefaultRevisionEntity(t.getDefaultRevisionEntity());
+			n.setDefaultRevisionEntity(transientRevisionEntity(t.getDefaultRevisionEntity()));
 			n.setRevisionType(t.getRevisionType());
 			n.setEntity(toTransient(t.getEntity()));
 			return n;
@@ -47,7 +49,12 @@ public class EmployeeAuditedServiceImpl implements EmployeeAuditedService {
 			return null;
 		}
 		Employee target = new Employee();
-		BeanUtils.copyProperties(source, target, "password", "roles");
+		BeanUtils.copyProperties(source, target, "department", "password", "roles");
+		if (source.getDepartment() != null) {// 懒加载
+			Department d = new Department();
+			d.setName(source.getDepartment().getName());
+			target.setDepartment(d);
+		}
 		return target;
 	}
 	
@@ -56,8 +63,23 @@ public class EmployeeAuditedServiceImpl implements EmployeeAuditedService {
 			return null;
 		}
 		Employee target = new Employee();
-		BeanUtils.copyProperties(source, target, "password", "roles");
+		BeanUtils.copyProperties(source, target, "department", "password", "roles");
+		if (source.getDepartment() != null) {// 懒加载
+			Department d = new Department();
+			d.setName(source.getDepartment().getName());
+			target.setDepartment(d);
+		}
 		source.getRoles().forEach(role -> target.getRoles().add(new Role(role.getName(), role.getDescription())));
 		return target;
+	}
+	
+	private DefaultRevisionEntity transientRevisionEntity(DefaultRevisionEntity re) {
+		if (re == null) {
+			return null;
+		}
+		DefaultRevisionEntity n = new DefaultRevisionEntity();
+		n.setId(re.getId());
+		n.setTimestamp(re.getTimestamp());
+		return n;
 	}
 }

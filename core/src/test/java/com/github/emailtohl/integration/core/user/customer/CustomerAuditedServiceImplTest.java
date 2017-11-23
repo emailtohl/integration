@@ -32,6 +32,7 @@ import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.entities.Address;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.User.Gender;
+import com.google.gson.Gson;
 /**
  * 业务类测试
  * @author HeLei
@@ -47,6 +48,8 @@ public class CustomerAuditedServiceImplTest {
 	CustomerService customerService;
 	@Inject
 	CustomerAuditedService auditedService;
+	@Inject
+	Gson gson;
 	
 	Long id;
 	
@@ -90,6 +93,7 @@ public class CustomerAuditedServiceImplTest {
 	@Test
 	public void testGetCustomerRevision() {
 		List<Tuple<Customer>> ls = auditedService.getCustomerRevision(id);
+		System.out.println(gson.toJson(ls));
 		assertTrue(ls.size() >= 2);// 一个新增、一个修改
 //		在Maven统一执行时有其他用例修改数据，所以届时得到的结果会不一致
 //		assertEquals(ls.get(0).getRevisionType(), RevisionType.ADD);
@@ -100,6 +104,7 @@ public class CustomerAuditedServiceImplTest {
 	@Test
 	public void testGetCustomerAtRevision() {
 		List<Tuple<Customer>> ls = auditedService.getCustomerRevision(id);
+		System.out.println(gson.toJson(ls));
 		Integer revision = ls.get(0).getDefaultRevisionEntity().getId();
 		Customer e = auditedService.getCustomerAtRevision(id, revision);
 		assertNotNull(e);

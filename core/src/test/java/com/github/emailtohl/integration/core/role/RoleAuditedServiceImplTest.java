@@ -36,6 +36,7 @@ public class RoleAuditedServiceImplTest {
 	RoleService roleService;
 	@Inject
 	Gson gson;
+	
 	Long id;
 
 	@Before
@@ -66,13 +67,14 @@ public class RoleAuditedServiceImplTest {
 	@Test
 	public void test() {
 		List<Tuple<Role>> ls = roleAuditedService.getRoleRevision(id);
+		System.out.println(gson.toJson(ls));
 		assertFalse(ls.isEmpty());
 		ls.forEach(t -> {
 			System.out.println(t);
 			int revision = t.getDefaultRevisionEntity().getId();
 			Role r = roleAuditedService.getRoleAtRevision(id, revision);
 			assertNotNull(r);
-			System.out.println(r);
+			System.out.println(gson.toJson(r));
 		});
 	}
 

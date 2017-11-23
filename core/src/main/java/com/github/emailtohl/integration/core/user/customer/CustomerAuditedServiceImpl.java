@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.hibernate.envers.DefaultRevisionEntity;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,7 @@ public class CustomerAuditedServiceImpl implements CustomerAuditedService {
 		List<Tuple<Customer>> ls = customerAudit.getAllRevisionInfo(propertyNameValueMap);
 		return ls.stream().map(t -> {
 			Tuple<Customer> n = new Tuple<Customer>();
-			n.setDefaultRevisionEntity(t.getDefaultRevisionEntity());
+			n.setDefaultRevisionEntity(transientRevisionEntity(t.getDefaultRevisionEntity()));
 			n.setRevisionType(t.getRevisionType());
 			n.setEntity(toTransient(t.getEntity()));
 			return n;
@@ -60,5 +61,15 @@ public class CustomerAuditedServiceImpl implements CustomerAuditedService {
 		source.getCards().forEach(card -> target.getCards().add(card));
 		source.getRoles().forEach(role -> target.getRoles().add(new Role(role.getName(), role.getDescription())));
 		return target;
+	}
+	
+	private DefaultRevisionEntity transientRevisionEntity(DefaultRevisionEntity re) {
+		if (re == null) {
+			return null;
+		}
+		DefaultRevisionEntity n = new DefaultRevisionEntity();
+		n.setId(re.getId());
+		n.setTimestamp(re.getTimestamp());
+		return n;
 	}
 }
