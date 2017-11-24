@@ -98,9 +98,9 @@ public class CustomerServiceImplTest {
 	@Test
 	public void testExist() {
 		CoreTestData td = new CoreTestData();
-		assertTrue(customerService.exist(null, td.baz.getEmail()));
-		assertTrue(customerService.exist(null, td.baz.getCellPhone()));
-		assertFalse(customerService.exist(null, td.foo.getEmail()));
+		assertTrue(customerService.exist(td.baz.getEmail()));
+		assertTrue(customerService.exist(td.baz.getCellPhone()));
+		assertFalse(customerService.exist(td.foo.getEmail()));
 	}
 
 	@Test

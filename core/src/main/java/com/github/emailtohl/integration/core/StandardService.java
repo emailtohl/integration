@@ -30,12 +30,11 @@ public interface StandardService<E extends Serializable> {
 	E create(@Valid E entity);
 	
 	/**
-	 * 根据JavaBean属性名以及匹配的值来查找是否已存在
-	 * @param uniquePropertyName
+	 * 根据实体自身唯一性的属性查找是否已存在
 	 * @param matcherValue
 	 * @return
 	 */
-	boolean exist(String uniquePropertyName, Object matcherValue);
+	boolean exist(Object matcherValue);
 	
 	/**
 	 * 根据ID获取实体

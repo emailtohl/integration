@@ -52,7 +52,7 @@ public class RoleServiceImpl implements RoleService {
 	}
 
 	@Override
-	public boolean exist(String name, Object matcherValue) {
+	public boolean exist(Object matcherValue) {
 		return roleRepository.exist((String) matcherValue);
 	}
 

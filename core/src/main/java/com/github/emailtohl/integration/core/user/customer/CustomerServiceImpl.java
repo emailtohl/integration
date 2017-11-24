@@ -105,7 +105,7 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public boolean exist(String propertyName, Object matcherValue) {
+	public boolean exist(Object matcherValue) {
 		String _matcherValue = (String) matcherValue;
 		Customer c = new Customer();
 		Example<Customer> example;

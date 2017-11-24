@@ -85,7 +85,7 @@ public class EmployeeServiceImplTest {
 
 	@Test
 	public void testExist() {
-		assertFalse(employeeService.exist(null, null));
+		assertFalse(employeeService.exist(null));
 	}
 
 	@Test

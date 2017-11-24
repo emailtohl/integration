@@ -95,7 +95,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public boolean exist(String propertyName, Object matcherValue) {
+	public boolean exist(Object matcherValue) {
 		// 以工号为唯一识别，故始终为false
 		return false;
 	}

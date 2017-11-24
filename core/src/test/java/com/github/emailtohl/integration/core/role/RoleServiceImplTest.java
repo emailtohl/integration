@@ -70,9 +70,9 @@ public class RoleServiceImplTest {
 	@Test
 	public void testExist() {
 		CoreTestData td = new CoreTestData();
-		boolean b = roleService.exist("name", td.role_guest.getName());
+		boolean b = roleService.exist(td.role_guest.getName());
 		assertTrue(b);
-		b = roleService.exist("name", "foo");
+		b = roleService.exist("foo");
 		assertFalse(b);
 	}
 
