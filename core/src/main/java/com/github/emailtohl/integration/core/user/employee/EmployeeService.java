@@ -8,11 +8,13 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.user.entities.Employee;
@@ -25,6 +27,13 @@ import com.github.emailtohl.integration.core.user.entities.Employee;
 @PreAuthorize("isAuthenticated()")
 public interface EmployeeService extends StandardService<Employee> {
 	
+	/**
+	 * 全文查询
+	 * @param query
+	 * @param pageable
+	 * @return
+	 */
+	Paging<Employee> search(String query, Pageable pageable);
 	/**
 	 * 平台账号登录
 	 * @param empNum

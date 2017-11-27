@@ -11,10 +11,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.github.emailtohl.integration.common.ConstantPattern;
+import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.user.entities.Card;
@@ -26,6 +28,13 @@ import com.github.emailtohl.integration.core.user.entities.Customer;
  */
 public interface CustomerService extends StandardService<Customer> {
 	
+	/**
+	 * 全文查询
+	 * @param query
+	 * @param pageable
+	 * @return
+	 */
+	Paging<Customer> search(String query, Pageable pageable);
 	/**
 	 * 客户登录
 	 * @param cellPhoneOrEmail

@@ -165,6 +165,26 @@ public class EmployeeServiceImplTest {
 	}
 	
 	@Test
+	public void testSearch() {
+		Paging<Employee> p = employeeService.search(null, pageable);
+		System.out.println(gson.toJson(p));
+		assertFalse(p.getContent().isEmpty());
+		p.getContent().forEach(e -> System.out.println(e));
+		
+		p = employeeService.search("haha", pageable);
+		assertFalse(p.getContent().isEmpty());
+		p.getContent().forEach(e -> System.out.println(e));
+		
+		p = employeeService.search("haha@test.com", pageable);
+		assertFalse(p.getContent().isEmpty());
+		p.getContent().forEach(e -> System.out.println(e));
+		
+		p = employeeService.search("17812345678", pageable);
+		assertFalse(p.getContent().isEmpty());
+		p.getContent().forEach(e -> System.out.println(e));
+	}
+	
+	@Test
 	public void testLogin() {
 		ExecResult r = employeeService.login(0, "123");
 		assertFalse(r.ok);

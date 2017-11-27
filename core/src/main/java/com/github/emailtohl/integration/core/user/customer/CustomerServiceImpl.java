@@ -32,6 +32,7 @@ import org.springframework.util.StringUtils;
 import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.exception.InvalidDataException;
 import com.github.emailtohl.integration.common.jpa.Paging;
+import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleRepository;
@@ -184,6 +185,18 @@ public class CustomerServiceImpl implements CustomerService {
 		customerRepository.delete(id);
 	}
 
+	@Override
+	public Paging<Customer> search(String query, Pageable pageable) {
+		if (!StringUtils.hasText(query)) {
+			Page<Customer> p = customerRepository.queryForPage(null, pageable, null);
+			List<Customer> ls = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
+			return new Paging<>(ls, p.getTotalElements(), p.getNumber(), p.getSize());
+		}
+		Page<SearchResult<Customer>> p = customerRepository.search(query, pageable);
+		List<Customer> ls = p.getContent().stream().map(s -> toTransient(s.getEntity())).collect(Collectors.toList());
+		return new Paging<>(ls, p.getTotalElements(), p.getNumber(), p.getSize());
+	}
+	
 	@Override
 	public ExecResult login(String cellPhoneOrEmail, String password) {
 		Customer c = find(cellPhoneOrEmail);

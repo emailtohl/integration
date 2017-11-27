@@ -24,8 +24,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
+import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleRepository;
@@ -169,6 +171,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 			i.remove();
 		}
 		employeeRepository.delete(id);
+	}
+	
+	public Paging<Employee> search(String query, Pageable pageable) {
+		if (!StringUtils.hasText(query)) {
+			Page<Employee> p = employeeRepository.queryForPage(null, pageable, null);
+			List<Employee> ls = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
+			return new Paging<>(ls, p.getTotalElements(), p.getNumber(), p.getSize());
+		}
+		Page<SearchResult<Employee>> p = employeeRepository.search(query, pageable);
+		List<Employee> ls = p.getContent().stream().map(s -> toTransient(s.getEntity())).collect(Collectors.toList());
+		return new Paging<>(ls, p.getTotalElements(), p.getNumber(), p.getSize());
 	}
 
 	@Override

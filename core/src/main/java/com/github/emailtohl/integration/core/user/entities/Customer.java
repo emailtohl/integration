@@ -56,7 +56,7 @@ public class Customer extends User {
 	 */
 	private Set<Card> cards = new HashSet<Card>();
 	
-	@org.hibernate.search.annotations.Field
+//	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = org.hibernate.search.bridge.builtin.EnumBridge.class))
 	@Enumerated(EnumType.STRING)
 	public Level getLevel() {
 		return level;
@@ -129,6 +129,12 @@ public class Customer extends User {
 		} else if (!email.equals(other.email))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return "Customer [level=" + level + ", address=" + address + ", name=" + name + ", email=" + email
+				+ ", cellPhone=" + cellPhone + ", id=" + id + "]";
 	}
 	
 }

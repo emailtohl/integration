@@ -91,4 +91,10 @@ public class Employee extends User {
 		return true;
 	}
 	
+	@Override
+	public String toString() {
+		return "Employee [empNum=" + empNum + ", name=" + name + ", email=" + email + ", cellPhone=" + cellPhone
+				+ ", id=" + id + "]";
+	}
+	
 }

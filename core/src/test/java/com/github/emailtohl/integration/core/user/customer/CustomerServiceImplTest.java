@@ -36,7 +36,6 @@ import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.file.Image;
-import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.entities.Address;
 import com.github.emailtohl.integration.core.user.entities.Card;
 import com.github.emailtohl.integration.core.user.entities.Customer;
@@ -274,7 +273,27 @@ public class CustomerServiceImplTest {
 		c = customerService.get(id);
 		assertTrue(c.getCards().isEmpty());
 	}
-
+	
+	@Test
+	public void testSearch() {
+		Paging<Customer> p = customerService.search(null, pageable);
+		System.out.println(gson.toJson(p));
+		assertFalse(p.getContent().isEmpty());
+		p.getContent().forEach(c -> System.out.println(c));
+		
+		p = customerService.search("haha", pageable);
+		assertFalse(p.getContent().isEmpty());
+		p.getContent().forEach(c -> System.out.println(c));
+		
+		p = customerService.search("haha@test.com", pageable);
+		assertFalse(p.getContent().isEmpty());
+		p.getContent().forEach(c -> System.out.println(c));
+		
+		p = customerService.search("112342513514", pageable);
+		assertFalse(p.getContent().isEmpty());
+		p.getContent().forEach(c -> System.out.println(c));
+	}
+	
 	@Test
 	public void testLogin() {
 		ExecResult r = customerService.login("lalala", "123");
