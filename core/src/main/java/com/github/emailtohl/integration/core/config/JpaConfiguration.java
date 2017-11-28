@@ -43,7 +43,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 //这是SpringData的注解，启动后，它将扫描指定包中继承了Repository（实际业务代码中的接口是间接继承它）的接口，并为其提供代理
 //repositoryImplementationPostfix = "Impl" 扫描实现类的名字，若该类的名字为接口名+"Impl"，则认为该实现类将提供SpringData以外的功能
-@EnableJpaRepositories(basePackages = "com.github.emailtohl.integration.core", 
+@EnableJpaRepositories(basePackages = "com.github.emailtohl.integration", 
 		repositoryImplementationPostfix = "Impl", 
 		transactionManagerRef = "annotationDrivenTransactionManager", 
 		entityManagerFactoryRef = "entityManagerFactory")
