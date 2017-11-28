@@ -164,11 +164,14 @@ public abstract class AbstractSearchableRepository<E extends Serializable> exten
 				if (e != null) {
 					Class<?> embclz = p.getPropertyType();
 					if (Collection.class.isAssignableFrom(embclz)) {// 当属性是集合的时候
-						Class<?>[] genericClasses = BeanUtil.getGenericClass(p);
-						if (genericClasses.length != 1) {
-							throw new IllegalArgumentException("分析不了" + embclz.getName() + "集合存储的实体类型");
-						} else {
-							embclz = genericClasses[0];
+						embclz = e.targetElement();
+						if (void.class.equals(embclz)) {// 如果没有指定目标类，那就分析该泛型类
+							Class<?>[] genericClasses = BeanUtil.getGenericClass(p);
+							if (genericClasses.length != 1) {
+								throw new IllegalArgumentException("分析不了" + embclz.getName() + "集合存储的实体类型");
+							} else {
+								embclz = genericClasses[0];
+							}
 						}
 					}
 					findProper(name + p.getName(), embclz, fields);
@@ -205,11 +208,14 @@ public abstract class AbstractSearchableRepository<E extends Serializable> exten
 				if (e != null) {
 					Class<?> embclz = fs[i].getType();
 					if (Collection.class.isAssignableFrom(embclz)) {// 当属性是集合的时候
-						Class<?>[] genericClasses = BeanUtil.getGenericClass(fs[i]);
-						if (genericClasses.length != 1) {
-							throw new IllegalArgumentException("分析不了" + embclz.getName() + "集合存储的实体类型");
-						} else {
-							embclz = genericClasses[0];
+						embclz = e.targetElement();
+						if (void.class.equals(embclz)) {// 如果没有指定目标类，那就分析该泛型类
+							Class<?>[] genericClasses = BeanUtil.getGenericClass(fs[i]);
+							if (genericClasses.length != 1) {
+								throw new IllegalArgumentException("分析不了" + embclz.getName() + "集合存储的实体类型");
+							} else {
+								embclz = genericClasses[0];
+							}
 						}
 					}
 					findField(name + fs[i].getName(), fs[i].getType(), fields);

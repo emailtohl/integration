@@ -44,6 +44,7 @@ public class Role extends BaseEntity {
 	private transient Set<User> users = new HashSet<User>();
 	private Set<Authority> authorities = new HashSet<Authority>();
 	
+	@org.hibernate.search.annotations.Field
 	@Column(nullable = false, unique = true)
 	public String getName() {
 		return name;
@@ -51,6 +52,8 @@ public class Role extends BaseEntity {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	@org.hibernate.search.annotations.Field
 	public String getDescription() {
 		return description;
 	}
@@ -59,6 +62,8 @@ public class Role extends BaseEntity {
 	}
 	
 	@org.hibernate.envers.NotAudited
+	// @ContainedIn是用于将被包含的对象的变化通知包含者
+	@org.hibernate.search.annotations.ContainedIn
 	// Hibernate的@Fetch(FetchMode.SUBSELECT)注解只能用于懒加载的集合，它将n+1查询转成两次查询，一次查询Role自身，拿到Role的id后第二次嵌套查询User：
 	// SELECT * FROM t_user u WHERE u.id IN (SELECT ur.user_id FROM t_user_role ur WHERE ur.role_id = ?)
 	@org.hibernate.annotations.Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
@@ -87,11 +92,6 @@ public class Role extends BaseEntity {
 		return names;
 	}
 	
-	@Override
-	public String toString() {
-		return "Role [name=" + name + ", authorities=" + authorities + "]";
-	}
-	
 	/**
 	 * 基于唯一标识name的equals和hashCode方法
 	 */
@@ -110,6 +110,11 @@ public class Role extends BaseEntity {
 			return false;
 		else
 			return this.name.equals(that.getName());
+	}
+
+	@Override
+	public String toString() {
+		return "Role [name=" + name + ", description=" + description + "]";
 	}
 	
 }

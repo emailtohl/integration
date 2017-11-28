@@ -292,6 +292,13 @@ public class CustomerServiceImplTest {
 		p = customerService.search("112342513514", pageable);
 		assertFalse(p.getContent().isEmpty());
 		p.getContent().forEach(c -> System.out.println(c));
+		
+		CoreTestData td = new CoreTestData();
+		Customer cust = customerService.grandRoles(id, td.role_guest.getName());
+		System.out.println(cust.getRoles());
+		p = customerService.search(td.role_guest.getName(), pageable);
+		assertFalse(p.getContent().isEmpty());
+		p.getContent().forEach(c -> System.out.println(c));
 	}
 	
 	@Test

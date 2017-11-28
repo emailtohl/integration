@@ -182,6 +182,13 @@ public class EmployeeServiceImplTest {
 		p = employeeService.search("17812345678", pageable);
 		assertFalse(p.getContent().isEmpty());
 		p.getContent().forEach(e -> System.out.println(e));
+		
+		CoreTestData td = new CoreTestData();
+		Employee emp = employeeService.grandRoles(id, td.role_staff.getName());
+		System.out.println(emp.getRoles());
+		p = employeeService.search(td.role_staff.getName(), pageable);
+		assertFalse(p.getContent().isEmpty());
+		p.getContent().forEach(e -> System.out.println(e));
 	}
 	
 	@Test
