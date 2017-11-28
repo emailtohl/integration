@@ -196,8 +196,8 @@ public class User extends BaseEntity {
 		this.lastChangeCredentials = lastChangeCredentials;
 	}
 	
-//	@org.hibernate.search.annotations.Field(index = org.hibernate.search.annotations.Index.NO)
-//	@org.hibernate.search.annotations.DateBridge(resolution = org.hibernate.search.annotations.Resolution.MINUTE)
+//	@org.hibernate.search.annotations.Field(index = org.hibernate.search.annotations.Index.YES, analyze=org.hibernate.search.annotations.Analyze.NO, store = org.hibernate.search.annotations.Store.YES)
+//	@org.hibernate.search.annotations.DateBridge(resolution = org.hibernate.search.annotations.Resolution.DAY)
 	@org.hibernate.envers.NotAudited
 	@Temporal(TemporalType.DATE)
 	public Date getBirthday() {

@@ -43,6 +43,11 @@ public class UserServiceImplTest {
 		System.out.println(p.getTotalElements());
 		assertFalse(p.getContent().isEmpty());
 		System.out.println(gson.toJson(p));
+		
+		CoreTestData td = new CoreTestData();
+		p = userService.search(td.role_manager.getName(), pageable);
+		assertFalse(p.getContent().isEmpty());
+		System.out.println(gson.toJson(p));
 	}
 
 	@Test
