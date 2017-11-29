@@ -65,14 +65,21 @@ public class GlobalMethodSecurityTest {
 	public void testRoleService() {
 		scm.clearContext();
 		try {
+			// 未登录时不能访问被权限包含的方法
 			roleService.getAuthorities();
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
 		scm.setEmailtohl();
+		// 登录的用户可以调用该方法
 		roleService.getAuthorities();
+		// 传入参数是否正确并不重要，关键是测试被权限包含的方法是否能被调用，拥有role权限的用户可以调用该方法
+		roleService.update(1L, new Role("test", "for test"));
+		// 只要登录，即可查询角色列表
 		scm.setBar();
 		roleService.getAuthorities();
+		// bar没有role权限，故会抛出AccessDeniedException
+		roleService.update(1L, new Role("test", "for test"));
 	}
 	
 	@Test
@@ -81,6 +88,7 @@ public class GlobalMethodSecurityTest {
 		ExecResult r = null;
 		scm.clearContext();
 		try {
+			// 传入参数是否正确并不重要，关键是测试被权限包含的方法是否能被调用
 			bar = employeeService.grandRoles(1L, "a", "b", "c");
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);

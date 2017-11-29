@@ -46,7 +46,6 @@ import com.github.emailtohl.integration.core.user.entities.User.Gender;
 /**
  * 用于测试的数据
  * @author HeLei
- * @date 2017.06.12
  */
 public class CoreTestData {
 	public final static String TEST_PASSWORD = "123456";

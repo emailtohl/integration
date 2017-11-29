@@ -21,5 +21,6 @@ public interface RoleService extends StandardService<Role> {
 	 * 获取所有权限
 	 * @return
 	 */
+	@PreAuthorize("isAuthenticated()")
 	List<Authority> getAuthorities();
 }
