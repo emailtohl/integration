@@ -50,14 +50,14 @@ public class AuthenticationManagerImplTest {
 
 	@Test
 	public void testAuthenticateAuthentication() {
-		String crypted = encipher.encrypt(CoreTestData.TEST_PASSWORD, publicKey);
+		String crypted = encipher.encrypt(CoreTestData.DEFAULT_PASSWORD, publicKey);
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(td.bar.getEmpNum().toString(), crypted);
 		authenticationManager.authenticate(token);
 	}
 	
 	@Test(expected = UsernameNotFoundException.class)
 	public void testUsernameNotFoundException() {
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("abc", CoreTestData.TEST_PASSWORD);
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("abc", CoreTestData.DEFAULT_PASSWORD);
 		authenticationManager.authenticate(token);
 	}
 	

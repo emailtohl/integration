@@ -1,9 +1,19 @@
 package com.github.emailtohl.integration.core.coreTestConfig;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
+import com.github.emailtohl.integration.core.role.Role;
+import com.github.emailtohl.integration.core.user.entities.Department;
 
 /**
  * 初始化数据库
@@ -18,7 +28,6 @@ class InitDataSource {
 	public InitDataSource() {}
 
 	public InitDataSource(EntityManagerFactory factory) {
-		super();
 		this.factory = factory;
 	}
 
@@ -38,39 +47,31 @@ class InitDataSource {
 					CoreTestData td = new CoreTestData();
 					EntityManager em = factory.createEntityManager();
 					em.getTransaction().begin();
-
-					em.persist(td.role);
-					em.persist(td.query_all_user);
-					em.persist(td.employee);
-					em.persist(td.employee_role);
-					em.persist(td.employee_lock);
-					em.persist(td.employee_reset_password);
-					em.persist(td.employee_delete);
-					em.persist(td.customer);
-					em.persist(td.customer_role);
-					em.persist(td.customer_level);
-					em.persist(td.customer_lock);
-					em.persist(td.customer_reset_password);
-					em.persist(td.customer_delete);
-					em.persist(td.flow);
-					em.persist(td.application_form_transit);
-					em.persist(td.application_form_read_history);
-					em.persist(td.application_form_delete);
-					em.persist(td.forum_delete);
-					em.persist(td.audit_user);
-					em.persist(td.audit_role);
-					em.persist(td.resource_manager);
-					em.persist(td.content_manager);
-
-					em.persist(td.role_admin);
-					em.persist(td.role_manager);
-					em.persist(td.role_staff);
-					em.persist(td.role_guest);
-
-					em.persist(td.company);
-					em.persist(td.product);
-					em.persist(td.qa);
-					em.persist(td.emailtohl);
+					
+					Set<Role> roles = td.foo.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
+					Department d = getDepartment(em, td.foo.getDepartment());
+					td.foo.getRoles().clear();
+					td.foo.getRoles().addAll(roles);
+					roles.forEach(r -> r.getUsers().add(td.foo));
+					td.foo.setDepartment(d);
+					
+					roles = td.bar.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
+					d = getDepartment(em, td.bar.getDepartment());
+					td.bar.getRoles().clear();
+					td.bar.getRoles().addAll(roles);
+					roles.forEach(r -> r.getUsers().add(td.bar));
+					td.bar.setDepartment(d);
+					
+					roles = td.baz.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
+					td.baz.getRoles().clear();
+					td.baz.getRoles().addAll(roles);
+					roles.forEach(r -> r.getUsers().add(td.baz));
+					
+					roles = td.qux.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
+					td.qux.getRoles().clear();
+					td.qux.getRoles().addAll(roles);
+					roles.forEach(r -> r.getUsers().add(td.qux));
+					
 					em.persist(td.foo);
 					em.persist(td.bar);
 					em.persist(td.baz);
@@ -85,4 +86,27 @@ class InitDataSource {
 		}
 	}
 
+	private Role getRole(EntityManager em, Role trans) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Role> q = cb.createQuery(Role.class);
+		Root<Role> r = q.from(Role.class);
+		q = q.select(r).where(cb.equal(r.get("name"), trans.getName()));
+		Role pers = null;
+		try {
+			pers = em.createQuery(q).getSingleResult();
+		} catch (NoResultException e) {}
+		return pers;
+	}
+	
+	private Department getDepartment(EntityManager em, Department trans) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Department> q = cb.createQuery(Department.class);
+		Root<Department> r = q.from(Department.class);
+		q = q.select(r).where(cb.equal(r.get("name"), trans.getName()));
+		Department pers = null;
+		try {
+			pers = em.createQuery(q).getSingleResult();
+		} catch (NoResultException e) {}
+		return pers;
+	}
 }

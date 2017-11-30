@@ -90,6 +90,26 @@ public class Authority extends BaseEntity {
 	public static final String CUSTOMER_DELETE = "customer_delete";
 	
 	/**
+	 * 审计修改用户信息
+	 */
+	public static final String AUDIT_USER = "audit_user";
+	
+	/**
+	 * 审计修改角色信息
+	 */
+	public static final String AUDIT_ROLE = "audit_role";
+	
+	/**
+	 * 资源管理，文件上传，目录创建、改名以及删除
+	 */
+	public static final String RESOURCE_MANAGER = "resource_manager";
+	
+	/**
+	 * 内容管理权限
+	 */
+	public static final String CONTENT_MANAGER = "content_manager";
+	
+	/**
 	 * 流程权限
 	 */
 	public static final String FLOW = "flow";
@@ -113,26 +133,6 @@ public class Authority extends BaseEntity {
 	 * 删除论坛帖子
 	 */
 	public static final String FORUM_DELETE = "forum_delete";
-	
-	/**
-	 * 审计修改用户信息
-	 */
-	public static final String AUDIT_USER = "audit_user";
-	
-	/**
-	 * 审计修改角色信息
-	 */
-	public static final String AUDIT_ROLE = "audit_role";
-	
-	/**
-	 * 资源管理，文件上传，目录创建、改名以及删除
-	 */
-	public static final String RESOURCE_MANAGER = "resource_manager";
-	
-	/**
-	 * 内容管理权限
-	 */
-	public static final String CONTENT_MANAGER = "content_manager";
 	
 	public Authority() {
 		super();

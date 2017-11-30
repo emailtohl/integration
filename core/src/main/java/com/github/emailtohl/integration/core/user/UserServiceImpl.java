@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
+import com.github.emailtohl.integration.core.config.PresetData;
 import com.github.emailtohl.integration.core.user.customer.CustomerRepository;
 import com.github.emailtohl.integration.core.user.employee.EmployeeRepository;
 import com.github.emailtohl.integration.core.user.entities.User;
@@ -90,6 +91,9 @@ public class UserServiceImpl implements UserService {
 				Integer empNum = Integer.parseInt(username);
 				u = employeeRepository.findByEmpNum(empNum);
 			}
+		}
+		if (u == null && PresetData.ADMIN_NAME.equals(username)) {
+			u = userRepository.findByName(PresetData.ADMIN_NAME);
 		}
 		if (u != null) {
 			u.authorityNames();// 加载角色与权限

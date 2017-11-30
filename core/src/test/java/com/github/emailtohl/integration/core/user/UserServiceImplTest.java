@@ -16,9 +16,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
+import com.github.emailtohl.integration.core.config.PresetData;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
-import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.entities.User;
 import com.google.gson.Gson;
 
@@ -70,5 +70,17 @@ public class UserServiceImplTest {
 			assertNotNull(uu);
 		});
 		System.out.println(gson.toJson(p));
+	}
+	
+	@Test
+	public void testFind() {
+		User u = userService.find(PresetData.ADMIN_NAME);
+		assertNotNull(u);
+		u = userService.find(td.foo.getEmpNum().toString());
+		assertNotNull(u);
+		u = userService.find(td.baz.getCellPhone());
+		assertNotNull(u);
+		u = userService.find(td.baz.getEmail());
+		assertNotNull(u);
 	}
 }

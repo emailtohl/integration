@@ -27,6 +27,7 @@ import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -60,6 +61,16 @@ import com.google.gson.GsonBuilder;
 public class CoreConfiguration implements TransactionManagementConfigurer, AsyncConfigurer, SchedulingConfigurer {
 	private static final Logger LOG = LogManager.getLogger();
 
+	/**
+	 * 初始化数据库中的数据
+	 */
+	@Bean
+	public InitData initData(LocalContainerEntityManagerFactoryBean entityManagerFactory) {
+		InitData d = new InitData(entityManagerFactory.getObject());
+		d.init();
+		return d;
+	}
+	
 	/**
 	 * 简单的缓存管理器的实现
 	 * 

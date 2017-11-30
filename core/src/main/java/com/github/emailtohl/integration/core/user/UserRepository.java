@@ -10,4 +10,10 @@ import com.github.emailtohl.integration.core.user.entities.User;
  * @author HeLei
  */
 public interface UserRepository extends JpaRepository<User, Long>, UserRepositoryCustomization {
+	/**
+	 * 通过姓名查询
+	 * @param name
+	 * @return
+	 */
+	User findByName(String name);
 }
