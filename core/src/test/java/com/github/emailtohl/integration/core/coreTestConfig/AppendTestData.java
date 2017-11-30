@@ -21,13 +21,13 @@ import com.github.emailtohl.integration.core.user.entities.Department;
  * @author HeLei
  */
 //@Component 如果是自动扫描则不容易理解，显示地写在配置文件中
-class InitDataSource {
+class AppendTestData {
 	@Inject
 	EntityManagerFactory factory;
 	
-	public InitDataSource() {}
+	public AppendTestData() {}
 
-	public InitDataSource(EntityManagerFactory factory) {
+	public AppendTestData(EntityManagerFactory factory) {
 		this.factory = factory;
 	}
 
@@ -42,7 +42,7 @@ class InitDataSource {
 	@PostConstruct
 	public void init() {
 		if (!isInit) {
-			synchronized (InitDataSource.class) {
+			synchronized (AppendTestData.class) {
 				if (!isInit) {
 					CoreTestData td = new CoreTestData();
 					EntityManager em = factory.createEntityManager();

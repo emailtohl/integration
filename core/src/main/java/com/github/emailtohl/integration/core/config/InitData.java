@@ -58,28 +58,23 @@ class InitData {
 		if (exist) {
 			return;
 		}
-		em.persist(pd.role);
-		em.persist(pd.query_all_user);
-		em.persist(pd.employee);
-		em.persist(pd.employee_role);
-		em.persist(pd.employee_lock);
-		em.persist(pd.employee_reset_password);
-		em.persist(pd.employee_delete);
-		em.persist(pd.customer);
-		em.persist(pd.customer_role);
-		em.persist(pd.customer_level);
-		em.persist(pd.customer_lock);
-		em.persist(pd.customer_reset_password);
-		em.persist(pd.customer_delete);
-		em.persist(pd.audit_user);
-		em.persist(pd.audit_role);
-		em.persist(pd.resource_manager);
-		em.persist(pd.content_manager);
-		em.persist(pd.flow);
-		em.persist(pd.application_form_transit);
-		em.persist(pd.application_form_read_history);
-		em.persist(pd.application_form_delete);
-		em.persist(pd.forum_delete);
+		em.persist(pd.auth_role);
+		em.persist(pd.auth_query_all_user);
+		em.persist(pd.auth_employee);
+		em.persist(pd.auth_employee_role);
+		em.persist(pd.auth_employee_lock);
+		em.persist(pd.auth_employee_reset_password);
+		em.persist(pd.auth_employee_delete);
+		em.persist(pd.auth_customer);
+		em.persist(pd.auth_customer_role);
+		em.persist(pd.auth_customer_level);
+		em.persist(pd.auth_customer_lock);
+		em.persist(pd.auth_customer_reset_password);
+		em.persist(pd.auth_customer_delete);
+		em.persist(pd.auth_audit_user);
+		em.persist(pd.auth_audit_role);
+		em.persist(pd.auth_resource);
+		em.persist(pd.auth_content);
 	}
 	
 	private void role(EntityManager em, PresetData pd) {
@@ -159,10 +154,10 @@ class InitData {
 		
 		q = cb.createQuery(boolean.class);
 		Root<Customer> r1 = q.from(Customer.class);
-		q = q.select(cb.greaterThan(cb.count(r1), 0L)).where(cb.equal(r1.get("email"), pd.emailtohl.getEmail()));
+		q = q.select(cb.greaterThan(cb.count(r1), 0L)).where(cb.equal(r1.get("email"), pd.user_emailtohl.getEmail()));
 		exist = em.createQuery(q).getSingleResult();
 		if (!exist) {
-			em.persist(pd.emailtohl);
+			em.persist(pd.user_emailtohl);
 		}
 	}
 	

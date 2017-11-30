@@ -47,24 +47,24 @@ public class CoreTestData extends PresetData {
 
 		company.setDepartments(new HashSet<Department>(Arrays.asList(product, qa)));
 		
-		emailtohl.setName("hl");
-		emailtohl.setNickname("hl");
-		emailtohl.setEmail("emailtohl@163.com");
-		emailtohl.setCellPhone("17712356789");
-		emailtohl.setTelephone("69922113");
-		emailtohl.setAddress(new Address("重庆", "40000", "回龙路66号"));
-		emailtohl.setAccountNonLocked(true);
-		emailtohl.setPassword(encryptPassword(DEFAULT_PASSWORD));
-		emailtohl.setDescription("developer");
-		emailtohl.setGender(Gender.MALE);
-		emailtohl.setLevel(Level.VIP);
-		emailtohl.getRoles().addAll(Arrays.asList(role_admin, role_guest));
+		user_emailtohl.setName("hl");
+		user_emailtohl.setNickname("hl");
+		user_emailtohl.setEmail("emailtohl@163.com");
+		user_emailtohl.setCellPhone("17712356789");
+		user_emailtohl.setTelephone("69922113");
+		user_emailtohl.setAddress(new Address("重庆", "40000", "回龙路66号"));
+		user_emailtohl.setAccountNonLocked(true);
+		user_emailtohl.setPassword(encryptPassword(DEFAULT_PASSWORD));
+		user_emailtohl.setDescription("developer");
+		user_emailtohl.setGender(Gender.MALE);
+		user_emailtohl.setLevel(Level.VIP);
+		user_emailtohl.getRoles().addAll(Arrays.asList(role_admin, role_guest));
 		// cl.getResourceAsStream方法返回的输入流已经是BufferedInputStream对象，无需再装饰
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-emailtohl.png")) {
-			emailtohl.setBirthday(sdf.parse("1982-02-12"));
+			user_emailtohl.setBirthday(sdf.parse("1982-02-12"));
 			icon = new byte[is.available()];
 			is.read(icon);
-			emailtohl.setImage(new Image("icon-head-emailtohl.png", "download/img/icon-head-emailtohl.png", icon));
+			user_emailtohl.setImage(new Image("icon-head-emailtohl.png", "download/img/icon-head-emailtohl.png", icon));
 		} catch (ParseException | IOException e) {
 			e.printStackTrace();
 		}

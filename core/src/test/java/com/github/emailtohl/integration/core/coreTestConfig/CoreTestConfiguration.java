@@ -19,7 +19,7 @@ public class CoreTestConfiguration {
 	 * @return
 	 */
 	@Bean
-	public InitDataSource initEmbeddedDataSource(LocalContainerEntityManagerFactoryBean entityManagerFactory) {
-		return new InitDataSource(entityManagerFactory.getObject());
+	public AppendTestData initEmbeddedDataSource(LocalContainerEntityManagerFactoryBean entityManagerFactory) {
+		return new AppendTestData(entityManagerFactory.getObject());
 	}
 }

@@ -29,7 +29,7 @@ class SecurityContextManager {
 	
 	public void setEmailtohl() {
 		SecurityContextHolder.clearContext();
-		String name = td.emailtohl.getEmail();
+		String name = td.user_emailtohl.getEmail();
 		Authentication token = new UsernamePasswordAuthenticationToken(name, password);
 		Authentication authentication = authenticationManager.authenticate(token);
 		SecurityContextHolder.getContext().setAuthentication(authentication);

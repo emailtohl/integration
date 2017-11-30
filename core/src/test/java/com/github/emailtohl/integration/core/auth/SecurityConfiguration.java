@@ -63,8 +63,8 @@ class SecurityConfiguration {
 	public CustomerRepository customerRepository() {
 		CustomerRepository dao = mock(CustomerRepository.class);
 		// 手机号码和邮箱都能查找到
-		when(dao.findByCellPhone(td.emailtohl.getCellPhone())).thenReturn(td.emailtohl);
-		when(dao.findByEmail(td.emailtohl.getEmail())).thenReturn(td.emailtohl);
+		when(dao.findByCellPhone(td.user_emailtohl.getCellPhone())).thenReturn(td.user_emailtohl);
+		when(dao.findByEmail(td.user_emailtohl.getEmail())).thenReturn(td.user_emailtohl);
 		when(dao.findByCellPhone(td.baz.getCellPhone())).thenReturn(td.baz);
 		when(dao.findByEmail(td.baz.getEmail())).thenReturn(td.baz);
 		return dao;

@@ -47,16 +47,16 @@ public class RoleServiceImplTest {
 		Role r = new Role("test_role", "for test");
 		r.getAuthorities().addAll(Arrays.asList(
 			new Authority("not exist", "不存在的权限", null),
-			td.customer_lock, td.customer_reset_password
+			td.auth_customer_lock, td.auth_customer_reset_password
 		));
 		
 		r = roleService.create(r);
 		Long id = r.getId();
 		r = roleService.get(id);
 		assertEquals(2, r.getAuthorities().size());
-		r.getAuthorities().remove(td.customer_lock);
-		r.getAuthorities().add(td.customer_level);
-		r.getAuthorities().add(td.employee_role);
+		r.getAuthorities().remove(td.auth_customer_lock);
+		r.getAuthorities().add(td.auth_customer_level);
+		r.getAuthorities().add(td.auth_employee_role);
 		r.setDescription("for update");
 		roleService.update(id, r);
 		r = roleService.get(id);
