@@ -47,28 +47,6 @@ public class CoreTestData extends PresetData {
 
 		company.setDepartments(new HashSet<Department>(Arrays.asList(product, qa)));
 		
-		user_emailtohl.setName("hl");
-		user_emailtohl.setNickname("hl");
-		user_emailtohl.setEmail("emailtohl@163.com");
-		user_emailtohl.setCellPhone("17712356789");
-		user_emailtohl.setTelephone("69922113");
-		user_emailtohl.setAddress(new Address("重庆", "40000", "回龙路66号"));
-		user_emailtohl.setAccountNonLocked(true);
-		user_emailtohl.setPassword(encryptPassword(DEFAULT_PASSWORD));
-		user_emailtohl.setDescription("developer");
-		user_emailtohl.setGender(Gender.MALE);
-		user_emailtohl.setLevel(Level.VIP);
-		user_emailtohl.getRoles().addAll(Arrays.asList(role_admin, role_guest));
-		// cl.getResourceAsStream方法返回的输入流已经是BufferedInputStream对象，无需再装饰
-		try (InputStream is = cl.getResourceAsStream("img/icon-head-emailtohl.png")) {
-			user_emailtohl.setBirthday(sdf.parse("1982-02-12"));
-			icon = new byte[is.available()];
-			is.read(icon);
-			user_emailtohl.setImage(new Image("icon-head-emailtohl.png", "download/img/icon-head-emailtohl.png", icon));
-		} catch (ParseException | IOException e) {
-			e.printStackTrace();
-		}
-
 		foo.setName("foo");
 		foo.setNickname("foo");
 		foo.setEmail("foo@test.com");
