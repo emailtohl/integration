@@ -62,7 +62,7 @@ public class Role extends BaseEntity {
 	}
 	
 	@org.hibernate.envers.NotAudited
-	// @ContainedIn是用于将被包含的对象的变化通知包含者
+	// 配合@IndexedEmbedded使用，保证Lucene document的联动更新当前类被用JPA方式标注为@Embeddable时不需要使用@ContainedIn
 	@org.hibernate.search.annotations.ContainedIn
 	// Hibernate的@Fetch(FetchMode.SUBSELECT)注解只能用于懒加载的集合，它将n+1查询转成两次查询，一次查询Role自身，拿到Role的id后第二次嵌套查询User：
 	// SELECT * FROM t_user u WHERE u.id IN (SELECT ur.user_id FROM t_user_role ur WHERE ur.role_id = ?)

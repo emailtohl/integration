@@ -30,6 +30,7 @@ public class Department extends BaseEntity {
 	private Department parent;
 	private Company company;
 
+	@org.hibernate.search.annotations.Field
 	@Column(nullable = false, unique = true)
 	public String getName() {
 		return name;
@@ -38,6 +39,7 @@ public class Department extends BaseEntity {
 		this.name = name;
 	}
 
+	@org.hibernate.search.annotations.Field
 	@org.hibernate.envers.NotAudited
 	public String getDescription() {
 		return description;
@@ -47,6 +49,7 @@ public class Department extends BaseEntity {
 	}
 
 	@org.hibernate.envers.NotAudited
+	@org.hibernate.search.annotations.ContainedIn
 	@OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	public Set<Employee> getEmployees() {
 		return employees;

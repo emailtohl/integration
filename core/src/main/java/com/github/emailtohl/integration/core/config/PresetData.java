@@ -24,7 +24,6 @@ import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.HashSet;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
@@ -123,7 +122,7 @@ public class PresetData {
 		qa.setDescription("质量与测试部门");
 		qa.setCompany(company);
 
-		company.setDepartments(new HashSet<Department>(Arrays.asList(product, qa)));
+		company.getDepartments().addAll(Arrays.asList(product, qa));
 		
 		user_emailtohl.setName("hl");
 		user_emailtohl.setNickname("hl");

@@ -183,10 +183,21 @@ public class EmployeeServiceImplTest {
 		assertFalse(p.getContent().isEmpty());
 		p.getContent().forEach(e -> System.out.println(e));
 		
+		// test role name
 		CoreTestData td = new CoreTestData();
 		Employee emp = employeeService.grandRoles(id, td.role_staff.getName());
 		System.out.println(emp.getRoles());
 		p = employeeService.search(td.role_staff.getName(), pageable);
+		assertFalse(p.getContent().isEmpty());
+		p.getContent().forEach(e -> System.out.println(e));
+		
+		// test Integer
+		p = employeeService.search(emp.getEmpNum().toString(), pageable);
+		assertFalse(p.getContent().isEmpty());
+		p.getContent().forEach(e -> System.out.println(e));
+		
+		// test Double
+		p = employeeService.search(emp.getSalary().toString(), pageable);
 		assertFalse(p.getContent().isEmpty());
 		p.getContent().forEach(e -> System.out.println(e));
 	}

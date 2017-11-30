@@ -2,11 +2,13 @@ package com.github.emailtohl.integration.core.user.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
+
+import org.hibernate.search.bridge.builtin.DoubleBridge;
+import org.hibernate.search.bridge.builtin.IntegerBridge;
 
 /**
  * 系统平台账号，他们有工号唯一识别
@@ -28,11 +30,14 @@ public class Employee extends User {
 	 */
 	public static final int NO1 = 1000;
 	
-	private Integer empNum;
+	private Integer empNum = NO1 + 100;
 	private String post;
 	private Double salary;
 	private Department department;
 	
+	@org.hibernate.search.annotations.Field
+	@org.hibernate.search.annotations.FieldBridge(impl = IntegerBridge.class)
+//	@org.hibernate.search.annotations.NumericField
 	@org.hibernate.envers.NotAudited
 	@Column(name = "emp_num", unique = true/*, nullable = false*/, updatable = false)
 	@Min(value = NO1)
@@ -43,6 +48,7 @@ public class Employee extends User {
 		this.empNum = empNum;
 	}
 	
+	@org.hibernate.search.annotations.Field
 	public String getPost() {
 		return post;
 	}
@@ -50,6 +56,9 @@ public class Employee extends User {
 		this.post = post;
 	}
 	
+	@org.hibernate.search.annotations.Field
+	@org.hibernate.search.annotations.FieldBridge(impl = DoubleBridge.class)
+//	@org.hibernate.search.annotations.NumericField
 	public Double getSalary() {
 		return salary;
 	}
@@ -57,7 +66,8 @@ public class Employee extends User {
 		this.salary = salary;
 	}
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@org.hibernate.search.annotations.IndexedEmbedded(depth = 1)
+	@ManyToOne
 	@JoinColumn(name = "department_id")
 	public Department getDepartment() {
 		return department;

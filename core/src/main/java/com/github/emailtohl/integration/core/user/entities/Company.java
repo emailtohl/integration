@@ -1,10 +1,9 @@
 package com.github.emailtohl.integration.core.user.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -23,7 +22,7 @@ public class Company extends BaseEntity {
 	private static final long serialVersionUID = 2560110793039918070L;
 	private String name;
 	private String description;
-	private transient Set<Department> departments;
+	private transient Set<Department> departments = new HashSet<Department>();
 	private Company parent;
 
 	public String getName() {
@@ -42,7 +41,7 @@ public class Company extends BaseEntity {
 		this.description = description;
 	}
 
-	@OneToMany(mappedBy = "company", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "company", orphanRemoval = true)
 	public Set<Department> getDepartments() {
 		return departments;
 	}

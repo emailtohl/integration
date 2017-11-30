@@ -264,6 +264,7 @@ public class User extends BaseEntity {
 		this.publicKey = publicKey;
 	}
 	
+	// 关联对象会自动被设为@Indexed
 	@org.hibernate.search.annotations.IndexedEmbedded(depth = 1)
 	@ManyToMany
 	@JoinTable(name = "users_role"
