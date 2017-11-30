@@ -25,6 +25,15 @@ public class Company extends BaseEntity {
 	private transient Set<Department> departments = new HashSet<Department>();
 	private Company parent;
 
+	public Company() {}
+	
+	public Company(String name, String description, Company parent) {
+		super();
+		this.name = name;
+		this.description = description;
+		this.parent = parent;
+	}
+
 	public String getName() {
 		return name;
 	}

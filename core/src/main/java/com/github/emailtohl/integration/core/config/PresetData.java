@@ -75,8 +75,8 @@ public class PresetData {
 	public final User user_admin = new User();
 	public final Customer user_emailtohl = new Customer();
 	
-	public final Company company = new Company();
-	public final Department product = new Department(), qa = new Department();
+	public final Company company = new Company("XXX注册公司", "公司上面还有集团公司", null);
+	public final Department product = new Department("生产部", "研发生产部门", null), qa = new Department("质量部", "质量与测试部门", null);
 
 	{
 		auth_role.getRoles().addAll(Arrays.asList(role_admin));
@@ -109,19 +109,9 @@ public class PresetData {
 		ClassLoader cl = PresetData.class.getClassLoader();
 		byte[] icon;
 
-		/*
-		 * 下面是创建一对多对一数据模型
-		 */
-		company.setName("XXX注册公司");
-		company.setDescription("公司上面还有集团公司");
-
-		product.setName("生产部");
-		product.setDescription("研发生产部门");
+		// 下面是创建一对多对一数据模型
 		product.setCompany(company);
-		qa.setName("质量部");
-		qa.setDescription("质量与测试部门");
 		qa.setCompany(company);
-
 		company.getDepartments().addAll(Arrays.asList(product, qa));
 		
 		user_emailtohl.setName("hl");

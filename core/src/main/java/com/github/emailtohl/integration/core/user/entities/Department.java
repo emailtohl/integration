@@ -1,5 +1,6 @@
 package com.github.emailtohl.integration.core.user.entities;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -26,9 +27,18 @@ public class Department extends BaseEntity {
 	private static final long serialVersionUID = -4263959308837757530L;
 	private String name;
 	private String description;
-	private transient Set<Employee> employees;
+	private transient Set<Employee> employees = new HashSet<Employee>();
 	private Department parent;
 	private Company company;
+
+	public Department() {}
+	
+	public Department(String name, String description, Department parent) {
+		super();
+		this.name = name;
+		this.description = description;
+		this.parent = parent;
+	}
 
 	@org.hibernate.search.annotations.Field
 	@Column(nullable = false, unique = true)
