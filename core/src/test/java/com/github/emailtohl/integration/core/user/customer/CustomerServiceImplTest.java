@@ -299,6 +299,7 @@ public class CustomerServiceImplTest {
 		p = customerService.search(td.role_guest.getName(), pageable);
 		assertFalse(p.getContent().isEmpty());
 		p.getContent().forEach(c -> System.out.println(c));
+		
 	}
 	
 	@Test

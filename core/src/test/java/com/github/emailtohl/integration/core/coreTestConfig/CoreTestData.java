@@ -9,6 +9,7 @@ import java.util.HashSet;
 import com.github.emailtohl.integration.core.config.PresetData;
 import com.github.emailtohl.integration.core.file.Image;
 import com.github.emailtohl.integration.core.user.entities.Address;
+import com.github.emailtohl.integration.core.user.entities.Classify;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Customer.Level;
 import com.github.emailtohl.integration.core.user.entities.Department;
@@ -107,6 +108,7 @@ public class CoreTestData extends PresetData {
 		baz.getRoles().add(role_guest);
 		baz.setLevel(Level.ORDINARY);
 		baz.setIdentification("510104199901013338");
+		qux.setClassify(Classify.COOPERATE);
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-baz.jpg")) {
 			baz.setBirthday(sdf.parse("1995-11-20"));
 			icon = new byte[is.available()];
@@ -129,6 +131,7 @@ public class CoreTestData extends PresetData {
 		qux.getRoles().add(role_guest);
 		qux.setLevel(Level.ORDINARY);
 		qux.setIdentification("510104199901016176");
+		qux.setClassify(Classify.CONSIGNOR);
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-qux.jpg")) {
 			qux.setBirthday(sdf.parse("1992-07-17"));
 			icon = new byte[is.available()];

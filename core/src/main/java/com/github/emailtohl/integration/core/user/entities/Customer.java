@@ -55,8 +55,12 @@ public class Customer extends User {
 	 * 拥有的卡
 	 */
 	private Set<Card> cards = new HashSet<Card>();
+	/**
+	 * 分类
+	 */
+	private Classify classify;
 	
-//	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = org.hibernate.search.bridge.builtin.EnumBridge.class))
+//	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = EnumBridge.class))
 	@Enumerated(EnumType.STRING)
 	public Level getLevel() {
 		return level;
@@ -100,6 +104,14 @@ public class Customer extends User {
 		this.cards = cards;
 	}
 
+//	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = EnumBridge.class))
+	public Classify getClassify() {
+		return classify;
+	}
+	public void setClassify(Classify classify) {
+		this.classify = classify;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

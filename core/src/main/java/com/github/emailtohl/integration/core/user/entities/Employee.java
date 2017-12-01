@@ -30,13 +30,12 @@ public class Employee extends User {
 	 */
 	public static final int NO1 = 1000;
 	
-	private Integer empNum = NO1 + 100;
+	private Integer empNum;
 	private String post;
 	private Double salary;
 	private Department department;
 	
-	@org.hibernate.search.annotations.Field
-	@org.hibernate.search.annotations.FieldBridge(impl = IntegerBridge.class)
+	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = IntegerBridge.class))
 //	@org.hibernate.search.annotations.NumericField
 	@org.hibernate.envers.NotAudited
 	@Column(name = "emp_num", unique = true/*, nullable = false*/, updatable = false)
@@ -56,8 +55,7 @@ public class Employee extends User {
 		this.post = post;
 	}
 	
-	@org.hibernate.search.annotations.Field
-	@org.hibernate.search.annotations.FieldBridge(impl = DoubleBridge.class)
+	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = DoubleBridge.class))
 //	@org.hibernate.search.annotations.NumericField
 	public Double getSalary() {
 		return salary;
