@@ -88,8 +88,8 @@ public class CustomerServiceImpl implements CustomerService {
 			throw new InvalidDataException("注册时既未填入手机号也未填入邮箱地址，不能注册");
 		}
 		Customer c = new Customer();
-		BeanUtils.copyProperties(entity, c, Customer.getIgnoreProperties("roles", "enabled", "credentialsNonExpired",
-				"accountNonLocked", "lastLogin", "lastChangeCredentials", "level", "cards"));
+		BeanUtils.copyProperties(entity, c, Customer.getIgnoreProperties("customerRef", "roles", "enabled",
+				"credentialsNonExpired", "accountNonLocked", "lastLogin", "lastChangeCredentials", "level", "cards"));
 		c.setAccountNonLocked(true);
 		c.setLevel(Level.ORDINARY);
 		String pw = c.getPassword();
@@ -101,7 +101,7 @@ public class CustomerServiceImpl implements CustomerService {
 		Date now = new Date();
 		c.setLastLogin(now);
 		c.setLastChangeCredentials(now);
-		c = customerRepository.save(c);
+		c = customerRepository.create(c);
 		return transientDetail(c);
 	}
 
@@ -400,7 +400,7 @@ public class CustomerServiceImpl implements CustomerService {
 			return null;
 		}
 		Customer target = new Customer();
-		BeanUtils.copyProperties(source, target, "password", "roles", "cards");
+		BeanUtils.copyProperties(source, target, "customerRef", "password", "roles", "cards");
 		return target;
 	}
 
@@ -409,7 +409,7 @@ public class CustomerServiceImpl implements CustomerService {
 			return null;
 		}
 		Customer target = new Customer();
-		BeanUtils.copyProperties(source, target, "password", "roles", "cards");
+		BeanUtils.copyProperties(source, target, "customerRef", "password", "roles", "cards");
 		source.getCards().forEach(card -> target.getCards().add(card));
 		source.getRoles().forEach(role -> target.getRoles().add(new Role(role.getName(), role.getDescription())));
 		return target;

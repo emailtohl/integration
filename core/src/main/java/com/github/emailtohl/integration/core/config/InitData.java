@@ -10,6 +10,7 @@ import com.github.emailtohl.integration.core.role.Authority;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.user.entities.Company;
 import com.github.emailtohl.integration.core.user.entities.Customer;
+import com.github.emailtohl.integration.core.user.entities.CustomerRef;
 import com.github.emailtohl.integration.core.user.entities.Department;
 import com.github.emailtohl.integration.core.user.entities.User;
 
@@ -158,6 +159,8 @@ class InitData {
 		exist = em.createQuery(q).getSingleResult();
 		if (!exist) {
 			em.persist(pd.user_emailtohl);
+			CustomerRef ref = new CustomerRef(pd.user_emailtohl);
+			pd.user_emailtohl.setCustomerRef(ref);
 		}
 	}
 	

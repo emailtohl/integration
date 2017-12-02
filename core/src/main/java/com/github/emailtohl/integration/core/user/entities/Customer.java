@@ -3,6 +3,7 @@ package com.github.emailtohl.integration.core.user.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
@@ -10,10 +11,12 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinTable;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Pattern;
 
 import com.github.emailtohl.integration.common.ConstantPattern;
+import com.github.emailtohl.integration.core.file.Image;
 
 /**
  * 客户，如顾客、商家、匿名访问者等等
@@ -56,11 +59,15 @@ public class Customer extends User {
 	 */
 	private Set<Card> cards = new HashSet<Card>();
 	/**
-	 * 分类
+	 * 顾客分类
 	 */
 	private Classify classify;
+	/**
+	 * 自身引用
+	 */
+	private CustomerRef customerRef;
 	
-//	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = EnumBridge.class))
+	//	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = EnumBridge.class))
 	@Enumerated(EnumType.STRING)
 	public Level getLevel() {
 		return level;
@@ -104,12 +111,64 @@ public class Customer extends User {
 		this.cards = cards;
 	}
 
-//	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = EnumBridge.class))
 	public Classify getClassify() {
 		return classify;
 	}
 	public void setClassify(Classify classify) {
 		this.classify = classify;
+	}
+	
+	@org.hibernate.envers.NotAudited
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "customer")
+	public CustomerRef getCustomerRef() {
+		return customerRef;
+	}
+	public void setCustomerRef(CustomerRef customerRef) {
+		this.customerRef = customerRef;
+	}
+	
+
+	@Override
+	public void setId(Long id) {
+		super.id = id;
+		if (customerRef != null) {
+			customerRef.id = id;
+		}
+	}
+	@Override
+	public void setName(String name) {
+		super.name = name;
+		if (customerRef != null) {
+			customerRef.name = name;
+		}
+	}
+	@Override
+	public void setNickname(String nickname) {
+		super.nickname = nickname;
+		if (customerRef != null) {
+			customerRef.nickname = nickname;
+		}
+	}
+	@Override
+	public void setEmail(String email) {
+		super.email = email;
+		if (customerRef != null) {
+			customerRef.email = email;
+		}
+	}
+	@Override
+	public void setImage(Image image) {
+		super.image = image;
+		if (customerRef != null && image != null) {
+			customerRef.icon = image.getPath();
+		}
+	}
+	@Override
+	public void setCellPhone(String cellPhone) {
+		super.cellPhone = cellPhone;
+		if (customerRef != null) {
+			customerRef.name = name;
+		}
 	}
 	
 	@Override

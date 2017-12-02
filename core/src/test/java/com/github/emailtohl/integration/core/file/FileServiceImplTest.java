@@ -32,6 +32,10 @@ import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 
+/**
+ * 文件服务测试
+ * @author HeLei
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = CoreTestConfiguration.class)
 @ActiveProfiles({ DB_RAM_H2, ENV_NO_SERVLET })

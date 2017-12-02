@@ -4,6 +4,9 @@ import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchableRepo
 import com.github.emailtohl.integration.core.user.entities.Employee;
 
 interface EmployeeRepositoryCustomization extends SearchableRepository<Employee> {
+	
+	Employee create(Employee employee);
+	
 	/**
 	 * 获取最大的emp_no
 	 */

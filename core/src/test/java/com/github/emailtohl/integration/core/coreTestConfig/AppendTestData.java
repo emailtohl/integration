@@ -13,7 +13,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import com.github.emailtohl.integration.core.role.Role;
+import com.github.emailtohl.integration.core.user.entities.Customer;
+import com.github.emailtohl.integration.core.user.entities.CustomerRef;
 import com.github.emailtohl.integration.core.user.entities.Department;
+import com.github.emailtohl.integration.core.user.entities.Employee;
+import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 
 /**
  * 初始化数据库
@@ -47,36 +51,12 @@ class AppendTestData {
 					CoreTestData td = new CoreTestData();
 					EntityManager em = factory.createEntityManager();
 					em.getTransaction().begin();
-					
-					Set<Role> roles = td.foo.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
-					Department d = getDepartment(em, td.foo.getDepartment());
-					td.foo.getRoles().clear();
-					td.foo.getRoles().addAll(roles);
-					roles.forEach(r -> r.getUsers().add(td.foo));
-					td.foo.setDepartment(d);
-					
-					roles = td.bar.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
-					d = getDepartment(em, td.bar.getDepartment());
-					td.bar.getRoles().clear();
-					td.bar.getRoles().addAll(roles);
-					roles.forEach(r -> r.getUsers().add(td.bar));
-					td.bar.setDepartment(d);
-					
-					roles = td.baz.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
-					td.baz.getRoles().clear();
-					td.baz.getRoles().addAll(roles);
-					roles.forEach(r -> r.getUsers().add(td.baz));
-					
-					roles = td.qux.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
-					td.qux.getRoles().clear();
-					td.qux.getRoles().addAll(roles);
-					roles.forEach(r -> r.getUsers().add(td.qux));
-					
-					em.persist(td.foo);
-					em.persist(td.bar);
-					em.persist(td.baz);
-					em.persist(td.qux);
 
+					foo(em, td);
+					bar(em, td);
+					baz(em, td);
+					qux(em, td);
+					
 					em.getTransaction().commit();
 					em.close();
 					isInit = true;
@@ -84,6 +64,86 @@ class AppendTestData {
 				
 			}
 		}
+	}
+	
+	private void foo(EntityManager em, CoreTestData td) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Boolean> q = cb.createQuery(boolean.class);
+		Root<Employee> root = q.from(Employee.class);
+		q = q.select(cb.greaterThan(cb.count(root), 0L)).where(cb.equal(root.get("empNum"), td.foo.getEmpNum()));
+		boolean exist = em.createQuery(q).getSingleResult();
+		if (exist) {
+			return;
+		}
+		Set<Role> roles = td.foo.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
+		Department d = getDepartment(em, td.foo.getDepartment());
+		td.foo.getRoles().clear();
+		td.foo.getRoles().addAll(roles);
+		roles.forEach(r -> r.getUsers().add(td.foo));
+		td.foo.setDepartment(d);
+		em.persist(td.foo);
+		EmployeeRef fooRef = new EmployeeRef(td.foo);
+		td.foo.setEmployeeRef(fooRef);
+		em.persist(fooRef);
+	}
+	
+	private void bar(EntityManager em, CoreTestData td) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Boolean> q = cb.createQuery(boolean.class);
+		Root<Employee> root = q.from(Employee.class);
+		q = q.select(cb.greaterThan(cb.count(root), 0L)).where(cb.equal(root.get("empNum"), td.bar.getEmpNum()));
+		boolean exist = em.createQuery(q).getSingleResult();
+		if (exist) {
+			return;
+		}
+		Set<Role> roles = td.bar.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
+		Department d = getDepartment(em, td.bar.getDepartment());
+		td.bar.getRoles().clear();
+		td.bar.getRoles().addAll(roles);
+		roles.forEach(r -> r.getUsers().add(td.bar));
+		td.bar.setDepartment(d);
+		em.persist(td.bar);
+		EmployeeRef barRef = new EmployeeRef(td.bar);
+		td.bar.setEmployeeRef(barRef);
+		em.persist(barRef);
+	}
+	
+	private void baz(EntityManager em, CoreTestData td) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Boolean> q = cb.createQuery(boolean.class);
+		Root<Customer> root = q.from(Customer.class);
+		q = q.select(cb.greaterThan(cb.count(root), 0L)).where(cb.equal(root.get("email"), td.baz.getEmail()));
+		boolean exist = em.createQuery(q).getSingleResult();
+		if (exist) {
+			return;
+		}
+		Set<Role> roles = td.baz.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
+		td.baz.getRoles().clear();
+		td.baz.getRoles().addAll(roles);
+		roles.forEach(r -> r.getUsers().add(td.baz));
+		em.persist(td.baz);
+		CustomerRef bazRef = new CustomerRef(td.baz);
+		td.baz.setCustomerRef(bazRef);
+		em.persist(bazRef);
+	}
+	
+	private void qux(EntityManager em, CoreTestData td) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Boolean> q = cb.createQuery(boolean.class);
+		Root<Customer> root = q.from(Customer.class);
+		q = q.select(cb.greaterThan(cb.count(root), 0L)).where(cb.equal(root.get("cellPhone"), td.qux.getCellPhone()));
+		boolean exist = em.createQuery(q).getSingleResult();
+		if (exist) {
+			return;
+		}
+		Set<Role> roles = td.qux.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
+		td.qux.getRoles().clear();
+		td.qux.getRoles().addAll(roles);
+		roles.forEach(r -> r.getUsers().add(td.qux));
+		em.persist(td.qux);
+		CustomerRef quxRef = new CustomerRef(td.qux);
+		td.qux.setCustomerRef(quxRef);
+		em.persist(quxRef);
 	}
 
 	private Role getRole(EntityManager em, Role trans) {

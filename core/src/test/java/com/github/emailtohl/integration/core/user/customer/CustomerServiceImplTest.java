@@ -107,6 +107,7 @@ public class CustomerServiceImplTest {
 		Customer c = customerService.get(id);
 		assertNotNull(c);
 		System.out.println(gson.toJson(c));
+		System.out.println(c.getCustomerRef());
 	}
 
 	@Test

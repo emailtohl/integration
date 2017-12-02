@@ -7,5 +7,8 @@ import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchableRepo
 import com.github.emailtohl.integration.core.user.entities.Customer;
 
 interface CustomerRepositoryCustomization extends SearchableRepository<Customer> {
+	
+	Customer create(Customer customer);
+	
 	Page<Customer> queryForPage(Customer params, Pageable pageable);
 }

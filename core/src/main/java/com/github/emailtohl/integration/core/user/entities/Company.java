@@ -28,7 +28,6 @@ public class Company extends BaseEntity {
 	public Company() {}
 	
 	public Company(String name, String description, Company parent) {
-		super();
 		this.name = name;
 		this.description = description;
 		this.parent = parent;

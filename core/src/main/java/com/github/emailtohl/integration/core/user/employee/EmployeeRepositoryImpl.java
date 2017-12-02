@@ -6,6 +6,7 @@ import javax.persistence.criteria.Root;
 
 import com.github.emailtohl.integration.common.jpa.fullTextSearch.AbstractSearchableRepository;
 import com.github.emailtohl.integration.core.user.entities.Employee;
+import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 
 /**
  * 数据访问层
@@ -14,6 +15,15 @@ import com.github.emailtohl.integration.core.user.entities.Employee;
 class EmployeeRepositoryImpl extends AbstractSearchableRepository<Employee>
 		implements EmployeeRepositoryCustomization {
 
+	@Override
+	public Employee create(Employee employee) {
+		entityManager.persist(employee);
+		EmployeeRef ref = new EmployeeRef(employee);
+		employee.setEmployeeRef(ref);
+		entityManager.persist(ref);
+		return employee;
+	}
+	
 	@Override
 	public Integer getMaxEmpNo() {
 		Integer result;
@@ -27,4 +37,5 @@ class EmployeeRepositoryImpl extends AbstractSearchableRepository<Employee>
 
 		return result;
 	}
+
 }

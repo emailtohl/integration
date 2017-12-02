@@ -64,8 +64,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public Employee create(Employee entity) {
 		Employee e = new Employee();
-		BeanUtils.copyProperties(entity, e, Employee.getIgnoreProperties("roles", "enabled", "credentialsNonExpired",
-				"accountNonLocked", "lastLogin", "lastChangeCredentials", "department"));
+		BeanUtils.copyProperties(entity, e, Employee.getIgnoreProperties("employeeRef", "roles", "enabled",
+				"credentialsNonExpired", "accountNonLocked", "lastLogin", "lastChangeCredentials", "department"));
 		// 关于工号
 		synchronized (this) {
 			Integer max = employeeRepository.getMaxEmpNo();
@@ -92,7 +92,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		Date now = new Date();
 		e.setLastLogin(now);
 		e.setLastChangeCredentials(now);
-		e = employeeRepository.save(e);
+		e = employeeRepository.create(e);
 		return transientDetail(e);
 	}
 
@@ -342,7 +342,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 			return null;
 		}
 		Employee target = new Employee();
-		BeanUtils.copyProperties(source, target, "password", "roles");
+		BeanUtils.copyProperties(source, target, "employeeRef", "password", "roles");
 		return target;
 	}
 	
@@ -351,7 +351,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 			return null;
 		}
 		Employee target = new Employee();
-		BeanUtils.copyProperties(source, target, "password", "roles");
+		BeanUtils.copyProperties(source, target, "employeeRef", "password", "roles");
 		source.getRoles().forEach(role -> target.getRoles().add(new Role(role.getName(), role.getDescription())));
 		return target;
 	}
