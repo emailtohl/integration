@@ -31,6 +31,7 @@ import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleRepository;
+import com.github.emailtohl.integration.core.user.entities.CustomerRef;
 import com.github.emailtohl.integration.core.user.entities.Department;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
@@ -55,6 +56,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 	RoleRepository roleRepository;
 	@Inject
 	DepartmentRepository departmentRepository;
+	@Inject
+	EmployeeRefRepository employeeRefRepository;
 
 	/**
 	 * 缓存名
@@ -349,6 +352,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public List<EmployeeRef> queryRef(EmployeeRef params) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private CustomerRef toTransientRef(CustomerRef ref) {
+		CustomerRef copy = new CustomerRef();
+		copy.setId(ref.getId());
+		copy.setCellPhone(ref.getCellPhone());
+		copy.setEmail(ref.getEmail());
+		copy.setName(ref.getName());
+		copy.setNickname(ref.getNickname());
+		copy.setIcon(ref.getIcon());
+		return copy;
 	}
 	
 	@Override
