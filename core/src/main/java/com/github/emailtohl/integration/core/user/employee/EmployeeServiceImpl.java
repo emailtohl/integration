@@ -33,6 +33,7 @@ import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleRepository;
 import com.github.emailtohl.integration.core.user.entities.Department;
 import com.github.emailtohl.integration.core.user.entities.Employee;
+import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.LoginResult;
 
 /**
@@ -301,6 +302,55 @@ public class EmployeeServiceImpl implements EmployeeService {
 		}
 	}
 	
+	private Employee toTransient(Employee source) {
+		if (source == null) {
+			return null;
+		}
+		Employee target = new Employee();
+		BeanUtils.copyProperties(source, target, "employeeRef", "password", "roles");
+		return target;
+	}
+	
+	private Employee transientDetail(Employee source) {
+		if (source == null) {
+			return null;
+		}
+		Employee target = new Employee();
+		BeanUtils.copyProperties(source, target, "employeeRef", "password", "roles");
+		source.getRoles().forEach(role -> target.getRoles().add(new Role(role.getName(), role.getDescription())));
+		return target;
+	}
+
+	@Override
+	public EmployeeRef getRef(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public EmployeeRef findRefByEmpNum(Integer empNum) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public EmployeeRef findRefByName(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Paging<EmployeeRef> queryRef(EmployeeRef params, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<EmployeeRef> queryRef(EmployeeRef params) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	@Override
 	public void accountStatus() {
 		final LocalDate today = LocalDate.now();
@@ -336,24 +386,4 @@ public class EmployeeServiceImpl implements EmployeeService {
 			}
 		});
 	}
-	
-	private Employee toTransient(Employee source) {
-		if (source == null) {
-			return null;
-		}
-		Employee target = new Employee();
-		BeanUtils.copyProperties(source, target, "employeeRef", "password", "roles");
-		return target;
-	}
-	
-	private Employee transientDetail(Employee source) {
-		if (source == null) {
-			return null;
-		}
-		Employee target = new Employee();
-		BeanUtils.copyProperties(source, target, "employeeRef", "password", "roles");
-		source.getRoles().forEach(role -> target.getRoles().add(new Role(role.getName(), role.getDescription())));
-		return target;
-	}
-	
 }

@@ -17,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.StandardService;
+import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 
 /**
@@ -91,6 +92,42 @@ public interface EmployeeService extends StandardService<Employee> {
 	 */
 	@PreAuthorize("hasAuthority('" + EMPLOYEE_ENABLED + "')")
 	Employee enabled(Long id, boolean enabled);
+
+	/**
+	 * 获取平台账号引用
+	 * @param id
+	 * @return
+	 */
+	EmployeeRef getRef(Long id);
+	
+	/**
+	 * 通过手机或邮箱获取平台账号引用
+	 * @param empNum
+	 * @return
+	 */
+	EmployeeRef findRefByEmpNum(Integer empNum);
+	
+	/**
+	 * 通过手机或邮箱获取平台账号引用
+	 * @param name
+	 * @return
+	 */
+	EmployeeRef findRefByName(String name);
+	
+	/**
+	 * 查找平台账号引用
+	 * @param params
+	 * @param pageable
+	 * @return
+	 */
+	Paging<EmployeeRef> queryRef(EmployeeRef params, Pageable pageable);
+	
+	/**
+	 * 查找平台账号引用
+	 * @param params
+	 * @return
+	 */
+	List<EmployeeRef> queryRef(EmployeeRef params);
 	
 	/**
 	 * 账号过期的维护

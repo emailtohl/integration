@@ -98,5 +98,11 @@ public class CustomerRef implements Serializable {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
+
+	@Override
+	public String toString() {
+		return "CustomerRef [id=" + id + ", name=" + name + ", nickname=" + nickname + ", email=" + email + ", icon="
+				+ icon + ", cellPhone=" + cellPhone + "]";
+	}
 	
 }

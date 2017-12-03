@@ -5,6 +5,7 @@ import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_LEVE
 import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_RESET_PASSWORD;
 import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_ROLE;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -21,6 +22,7 @@ import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.user.entities.Card;
 import com.github.emailtohl.integration.core.user.entities.Customer;
+import com.github.emailtohl.integration.core.user.entities.CustomerRef;
 
 /**
  * 客户的服务层
@@ -141,4 +143,33 @@ public interface CustomerService extends StandardService<Customer> {
 	 * @return
 	 */
 	Customer removeCard(Long id, @Valid Card card);
+	
+	/**
+	 * 获取客户引用
+	 * @param id
+	 * @return
+	 */
+	CustomerRef getRef(Long id);
+	
+	/**
+	 * 通过手机或邮箱获取客户引用
+	 * @param cellPhoneOrEmail
+	 * @return
+	 */
+	CustomerRef findRefByCellPhoneOrEmail(String cellPhoneOrEmail);
+	
+	/**
+	 * 查找客户引用
+	 * @param params
+	 * @param pageable
+	 * @return
+	 */
+	Paging<CustomerRef> queryRef(CustomerRef params, Pageable pageable);
+	
+	/**
+	 * 查找客户引用
+	 * @param params
+	 * @return
+	 */
+	List<CustomerRef> queryRef(CustomerRef params);
 }

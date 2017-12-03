@@ -40,6 +40,7 @@ import com.github.emailtohl.integration.core.user.entities.Address;
 import com.github.emailtohl.integration.core.user.entities.Card;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Customer.Level;
+import com.github.emailtohl.integration.core.user.entities.CustomerRef;
 import com.github.emailtohl.integration.core.user.entities.User.Gender;
 import com.google.gson.Gson;
 /**
@@ -107,7 +108,6 @@ public class CustomerServiceImplTest {
 		Customer c = customerService.get(id);
 		assertNotNull(c);
 		System.out.println(gson.toJson(c));
-		System.out.println(c.getCustomerRef());
 	}
 
 	@Test
@@ -115,6 +115,9 @@ public class CustomerServiceImplTest {
 		CoreTestData td = new CoreTestData();
 		Paging<Customer> p = customerService.query(null, pageable);
 		assertFalse(p.getContent().isEmpty());
+		
+		System.out.println(gson.toJson(p));
+		
 		Customer params = new Customer();
 		params.setCellPhone(td.baz.getCellPhone());
 		params.setEmail(td.baz.getEmail());
@@ -143,6 +146,8 @@ public class CustomerServiceImplTest {
 		params.setEmail(td.bar.getEmail());
 		p = customerService.query(params);
 		assertTrue(p.isEmpty());
+		
+		System.out.println(gson.toJson(p));
 	}
 
 	@Test
@@ -171,6 +176,7 @@ public class CustomerServiceImplTest {
 		assertEquals(e.getDescription(), c.getDescription());
 		assertFalse(e.getCellPhone().equals(c.getCellPhone()));
 		
+		System.out.println(gson.toJson(c));
 	}
 
 	@Test
@@ -180,6 +186,8 @@ public class CustomerServiceImplTest {
 		assertNotNull(c);
 		c = customerService.findByCellPhoneOrEmail(td.baz.getEmail());
 		assertNotNull(c);
+		
+		System.out.println(gson.toJson(c));
 	}
 
 	@Test
@@ -312,5 +320,64 @@ public class CustomerServiceImplTest {
 		assertFalse(r.ok);
 		r = customerService.login(td.baz.getCellPhone(), "123456");
 		assertTrue(r.ok);
+	}
+	
+	@Test
+	public void testGetRef() {
+		CustomerRef ref = customerService.getRef(id);
+		assertNotNull(ref);
+		System.out.println(gson.toJson(ref));
+	}
+	
+	@Test
+	public void testFindRefByCellPhoneOrEmail() {
+		CoreTestData td = new CoreTestData();
+		CustomerRef ref = customerService.findRefByCellPhoneOrEmail(td.baz.getCellPhone());
+		assertNotNull(ref);
+		ref = customerService.findRefByCellPhoneOrEmail(td.baz.getEmail());
+		assertNotNull(ref);
+		System.out.println(gson.toJson(ref));
+	}
+	
+	@Test
+	public void testQueryRefPageable() {
+		CoreTestData td = new CoreTestData();
+		Paging<CustomerRef> p = customerService.queryRef(null, pageable);
+		assertFalse(p.getContent().isEmpty());
+		
+		System.out.println(gson.toJson(p));
+		
+		CustomerRef params = new CustomerRef();
+		params.setCellPhone(td.baz.getCellPhone());
+		params.setEmail(td.baz.getEmail());
+		p = customerService.queryRef(params, pageable);
+		assertFalse(p.getContent().isEmpty());
+		System.out.println(gson.toJson(p));
+		
+		params = new CustomerRef();
+		params.setEmail(td.bar.getEmail());
+		p = customerService.queryRef(params, pageable);
+		assertTrue(p.getContent().isEmpty());
+	}
+	
+	@Test
+	public void testQueryRef() {
+		CoreTestData td = new CoreTestData();
+		List<CustomerRef> ls = customerService.queryRef(null);
+		assertFalse(ls.isEmpty());
+		
+		System.out.println(gson.toJson(ls));
+		
+		CustomerRef params = new CustomerRef();
+		params.setCellPhone(td.baz.getCellPhone());
+		params.setEmail(td.baz.getEmail());
+		ls = customerService.queryRef(params);
+		assertFalse(ls.isEmpty());
+		System.out.println(gson.toJson(ls));
+		
+		params = new CustomerRef();
+		params.setEmail(td.bar.getEmail());
+		ls = customerService.queryRef(params);
+		assertTrue(ls.isEmpty());
 	}
 }

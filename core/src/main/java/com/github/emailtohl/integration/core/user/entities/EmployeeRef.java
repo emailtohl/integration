@@ -108,4 +108,10 @@ public class EmployeeRef implements Serializable {
 		this.employee = employee;
 	}
 
+	@Override
+	public String toString() {
+		return "EmployeeRef [id=" + id + ", empNum=" + empNum + ", name=" + name + ", nickname=" + nickname + ", email="
+				+ email + ", icon=" + icon + ", cellPhone=" + cellPhone + "]";
+	}
+
 }

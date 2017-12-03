@@ -39,6 +39,7 @@ import com.github.emailtohl.integration.core.role.RoleRepository;
 import com.github.emailtohl.integration.core.user.entities.Card;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Customer.Level;
+import com.github.emailtohl.integration.core.user.entities.CustomerRef;
 import com.github.emailtohl.integration.core.user.entities.LoginResult;
 
 /**
@@ -60,6 +61,8 @@ public class CustomerServiceImpl implements CustomerService {
 	private int tokenExpire;
 	@Inject
 	CustomerRepository customerRepository;
+	@Inject
+	CustomerRefRepository customerRefRepository;
 	@Inject
 	RoleRepository roleRepository;
 	@Inject
@@ -415,4 +418,87 @@ public class CustomerServiceImpl implements CustomerService {
 		return target;
 	}
 
+	@Override
+	public CustomerRef getRef(Long id) {
+		CustomerRef source = customerRefRepository.findOne(id);
+		CustomerRef target = new CustomerRef();
+		if (source == null) {
+			return null;
+		}
+		target.setId(source.getId());
+		target.setCellPhone(source.getCellPhone());
+		target.setEmail(source.getEmail());
+		target.setName(source.getName());
+		target.setNickname(source.getNickname());
+		target.setIcon(source.getIcon());
+		return target;
+	}
+
+	@Override
+	public CustomerRef findRefByCellPhoneOrEmail(String cellPhoneOrEmail) {
+		if (cellPhoneOrEmail == null) {
+			return null;
+		}
+		CustomerRef ref = null;
+		Matcher m = PATTERN_CELL_PHONE.matcher(cellPhoneOrEmail);
+		if (m.find()) {
+			ref = customerRefRepository.findByCellPhone(cellPhoneOrEmail);
+		}
+		if (ref == null) {
+			m = EMAIL_PATTERN.matcher(cellPhoneOrEmail);
+			if (m.find()) {
+				ref = customerRefRepository.findByEmail(cellPhoneOrEmail);
+			}
+		}
+		return toTransientRef(ref);
+	}
+
+	/**
+	 * 引用实体匹配器
+	 */
+	private ExampleMatcher refMatcher = ExampleMatcher.matching()
+			.withIgnoreNullValues()
+			.withIgnorePaths("icon", "customer")
+			.withMatcher("id", GenericPropertyMatchers.exact())
+			.withMatcher("name", GenericPropertyMatchers.caseSensitive())
+			.withMatcher("nickname", GenericPropertyMatchers.caseSensitive())
+			.withMatcher("email", GenericPropertyMatchers.caseSensitive())
+			.withMatcher("nickname", GenericPropertyMatchers.caseSensitive())
+			.withMatcher("cellPhone", GenericPropertyMatchers.caseSensitive());
+	
+	@Override
+	public Paging<CustomerRef> queryRef(CustomerRef params, Pageable pageable) {
+		Page<CustomerRef> page;
+		if (params == null) {
+			page = customerRefRepository.findAll(pageable);
+		} else {
+			Example<CustomerRef> example = Example.of(params, refMatcher);
+			page = customerRefRepository.findAll(example, pageable);
+		}
+		List<CustomerRef> ls = page.getContent().stream().map(this::toTransientRef).collect(Collectors.toList());
+		return new Paging<CustomerRef>(ls, pageable, page.getTotalElements());
+	}
+
+	@Override
+	public List<CustomerRef> queryRef(CustomerRef params) {
+		List<CustomerRef> ls;
+		if (params == null) {
+			ls = customerRefRepository.findAll();
+		} else {
+			Example<CustomerRef> example = Example.of(params, refMatcher);
+			ls = customerRefRepository.findAll(example);
+		}
+		return ls.stream().map(this::toTransientRef).collect(Collectors.toList());
+	}
+
+	private CustomerRef toTransientRef(CustomerRef ref) {
+		CustomerRef copy = new CustomerRef();
+		copy.setId(ref.getId());
+		copy.setCellPhone(ref.getCellPhone());
+		copy.setEmail(ref.getEmail());
+		copy.setName(ref.getName());
+		copy.setNickname(ref.getNickname());
+		copy.setIcon(ref.getIcon());
+		return copy;
+	}
 }
