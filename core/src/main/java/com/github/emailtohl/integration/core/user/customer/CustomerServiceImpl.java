@@ -420,18 +420,11 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public CustomerRef getRef(Long id) {
-		CustomerRef source = customerRefRepository.findOne(id);
-		CustomerRef target = new CustomerRef();
-		if (source == null) {
+		CustomerRef ref = customerRefRepository.findOne(id);
+		if (ref == null) {
 			return null;
 		}
-		target.setId(source.getId());
-		target.setCellPhone(source.getCellPhone());
-		target.setEmail(source.getEmail());
-		target.setName(source.getName());
-		target.setNickname(source.getNickname());
-		target.setIcon(source.getIcon());
-		return target;
+		return toTransientRef(ref);
 	}
 
 	@Override

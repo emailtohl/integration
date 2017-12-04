@@ -20,6 +20,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -31,7 +34,6 @@ import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleRepository;
-import com.github.emailtohl.integration.core.user.entities.CustomerRef;
 import com.github.emailtohl.integration.core.user.entities.Department;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
@@ -326,37 +328,65 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public EmployeeRef getRef(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		EmployeeRef ref = employeeRefRepository.findOne(id);
+		if (ref == null) {
+			return null;
+		}
+		return toTransientRef(ref);
 	}
 
 	@Override
 	public EmployeeRef findRefByEmpNum(Integer empNum) {
-		// TODO Auto-generated method stub
-		return null;
+		EmployeeRef ref = employeeRefRepository.findByEmpNum(empNum);
+		if (ref == null) {
+			return null;
+		}
+		return toTransientRef(ref);
 	}
 
-	@Override
-	public EmployeeRef findRefByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	/**
+	 * 引用实体匹配器
+	 */
+	private ExampleMatcher refMatcher = ExampleMatcher.matching()
+			.withIgnoreNullValues()
+			.withIgnorePaths("icon", "employee")
+			.withMatcher("id", GenericPropertyMatchers.exact())
+			.withMatcher("empNum", GenericPropertyMatchers.exact())
+			.withMatcher("name", GenericPropertyMatchers.caseSensitive())
+			.withMatcher("nickname", GenericPropertyMatchers.caseSensitive())
+			.withMatcher("email", GenericPropertyMatchers.caseSensitive())
+			.withMatcher("nickname", GenericPropertyMatchers.caseSensitive())
+			.withMatcher("cellPhone", GenericPropertyMatchers.caseSensitive());
+	
 	@Override
 	public Paging<EmployeeRef> queryRef(EmployeeRef params, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+		Page<EmployeeRef> page;
+		if (params == null) {
+			page = employeeRefRepository.findAll(pageable);
+		} else {
+			Example<EmployeeRef> example = Example.of(params, refMatcher);
+			page = employeeRefRepository.findAll(example, pageable);
+		}
+		List<EmployeeRef> ls = page.getContent().stream().map(this::toTransientRef).collect(Collectors.toList());
+		return new Paging<EmployeeRef>(ls, pageable, page.getTotalElements());
 	}
 
 	@Override
 	public List<EmployeeRef> queryRef(EmployeeRef params) {
-		// TODO Auto-generated method stub
-		return null;
+		List<EmployeeRef> ls;
+		if (params == null) {
+			ls = employeeRefRepository.findAll();
+		} else {
+			Example<EmployeeRef> example = Example.of(params, refMatcher);
+			ls = employeeRefRepository.findAll(example);
+		}
+		return ls.stream().map(this::toTransientRef).collect(Collectors.toList());
 	}
 	
-	private CustomerRef toTransientRef(CustomerRef ref) {
-		CustomerRef copy = new CustomerRef();
+	private EmployeeRef toTransientRef(EmployeeRef ref) {
+		EmployeeRef copy = new EmployeeRef();
 		copy.setId(ref.getId());
+		copy.setEmpNum(ref.getEmpNum());
 		copy.setCellPhone(ref.getCellPhone());
 		copy.setEmail(ref.getEmail());
 		copy.setName(ref.getName());

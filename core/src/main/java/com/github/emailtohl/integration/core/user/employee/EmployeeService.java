@@ -101,18 +101,11 @@ public interface EmployeeService extends StandardService<Employee> {
 	EmployeeRef getRef(Long id);
 	
 	/**
-	 * 通过手机或邮箱获取平台账号引用
+	 * 通过工号获取平台账号引用
 	 * @param empNum
 	 * @return
 	 */
 	EmployeeRef findRefByEmpNum(Integer empNum);
-	
-	/**
-	 * 通过手机或邮箱获取平台账号引用
-	 * @param name
-	 * @return
-	 */
-	EmployeeRef findRefByName(String name);
 	
 	/**
 	 * 查找平台账号引用

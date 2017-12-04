@@ -126,9 +126,9 @@ public class CustomerServiceImplTest {
 		System.out.println(gson.toJson(p));
 		
 		params = new Customer();
-		params.setEmail(td.bar.getEmail());
+		params.setEmail(td.baz.getEmail());
 		p = customerService.query(params, pageable);
-		assertTrue(p.getContent().isEmpty());
+		assertFalse(p.getContent().isEmpty());
 	}
 
 	@Test
@@ -143,9 +143,9 @@ public class CustomerServiceImplTest {
 		assertFalse(p.isEmpty());
 		
 		params = new Customer();
-		params.setEmail(td.bar.getEmail());
+		params.setEmail(td.baz.getEmail());
 		p = customerService.query(params);
-		assertTrue(p.isEmpty());
+		assertFalse(p.isEmpty());
 		
 		System.out.println(gson.toJson(p));
 	}
@@ -153,18 +153,18 @@ public class CustomerServiceImplTest {
 	@Test
 	public void testUpdate() {
 		Customer e = new Customer();
-		e.setName("bar");
-		e.setNickname("bar");
+		e.setName("bzzz");
+		e.setNickname("bbzzz");
 		e.setPassword("212233");
 		e.setEmail("_haha@test.com");
 		e.setTelephone("212342513514");
 		e.setDescription("_测试人员");
 		e.setGender(Gender.FEMALE);
-		try (InputStream is = cl.getResourceAsStream("img/icon-head-bar.jpg")) {
+		try (InputStream is = cl.getResourceAsStream("img/icon-head-baz.jpg")) {
 			e.setBirthday(sdf.parse("1990-12-22"));
 			byte[] icon = new byte[is.available()];
 			is.read(icon);
-			e.setImage(new Image("icon-head-bar.jpg", "download/img/icon-head-bar.jpg", icon));
+			e.setImage(new Image("icon-head-baz.jpg", "download/img/icon-head-baz.jpg", icon));
 		} catch (ParseException | IOException exception) {
 			exception.printStackTrace();
 		}
@@ -355,9 +355,9 @@ public class CustomerServiceImplTest {
 		System.out.println(gson.toJson(p));
 		
 		params = new CustomerRef();
-		params.setEmail(td.bar.getEmail());
+		params.setEmail(td.baz.getEmail());
 		p = customerService.queryRef(params, pageable);
-		assertTrue(p.getContent().isEmpty());
+		assertFalse(p.getContent().isEmpty());
 	}
 	
 	@Test
@@ -376,8 +376,8 @@ public class CustomerServiceImplTest {
 		System.out.println(gson.toJson(ls));
 		
 		params = new CustomerRef();
-		params.setEmail(td.bar.getEmail());
+		params.setEmail(td.baz.getEmail());
 		ls = customerService.queryRef(params);
-		assertTrue(ls.isEmpty());
+		assertFalse(ls.isEmpty());
 	}
 }

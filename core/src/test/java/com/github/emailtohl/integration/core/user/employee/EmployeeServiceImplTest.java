@@ -33,6 +33,7 @@ import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.file.Image;
 import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Employee;
+import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.User.Gender;
 import com.google.gson.Gson;
 /**
@@ -211,6 +212,65 @@ public class EmployeeServiceImplTest {
 		assertFalse(r.ok);
 		r = employeeService.login(td.bar.getEmpNum(), "123456");
 		assertTrue(r.ok);
+	}
+	
+	@Test
+	public void testGetRef() {
+		EmployeeRef ref = employeeService.getRef(id);
+		assertNotNull(ref);
+		System.out.println(gson.toJson(ref));
+	}
+	
+	@Test
+	public void testFindRefByEmpNum() {
+		CoreTestData td = new CoreTestData();
+		EmployeeRef ref = employeeService.findRefByEmpNum(td.bar.getEmpNum());
+		assertNotNull(ref);
+		ref = employeeService.findRefByEmpNum(td.bar.getEmpNum());
+		assertNotNull(ref);
+		System.out.println(gson.toJson(ref));
+	}
+	
+	@Test
+	public void testQueryRefPageable() {
+		CoreTestData td = new CoreTestData();
+		Paging<EmployeeRef> p = employeeService.queryRef(null, pageable);
+		assertFalse(p.getContent().isEmpty());
+		
+		System.out.println(gson.toJson(p));
+		
+		EmployeeRef params = new EmployeeRef();
+		params.setCellPhone(td.bar.getCellPhone());
+		params.setEmail(td.bar.getEmail());
+		p = employeeService.queryRef(params, pageable);
+		assertFalse(p.getContent().isEmpty());
+		System.out.println(gson.toJson(p));
+		
+		params = new EmployeeRef();
+		params.setEmail(td.bar.getEmail());
+		p = employeeService.queryRef(params, pageable);
+		assertFalse(p.getContent().isEmpty());
+	}
+	
+	@Test
+	public void testQueryRef() {
+		CoreTestData td = new CoreTestData();
+		List<EmployeeRef> ls = employeeService.queryRef(null);
+		assertFalse(ls.isEmpty());
+		
+		System.out.println(gson.toJson(ls));
+		
+		EmployeeRef params = new EmployeeRef();
+		params.setCellPhone(td.bar.getCellPhone());
+		params.setEmail(td.bar.getEmail());
+		ls = employeeService.queryRef(params);
+		assertFalse(ls.isEmpty());
+		System.out.println(gson.toJson(ls));
+		
+		params = new EmployeeRef();
+		params.setEmpNum(td.bar.getEmpNum());
+		ls = employeeService.queryRef(params);
+		assertFalse(ls.isEmpty());
 	}
 
 }
