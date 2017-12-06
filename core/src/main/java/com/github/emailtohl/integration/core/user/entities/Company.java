@@ -55,7 +55,7 @@ public class Company extends BaseEntity {
 		this.responsiblePerson = responsiblePerson;
 	}
 
-	@OneToMany(mappedBy = "company", orphanRemoval = true)
+	@OneToMany(mappedBy = "company")
 	public Set<Department> getDepartments() {
 		return departments;
 	}

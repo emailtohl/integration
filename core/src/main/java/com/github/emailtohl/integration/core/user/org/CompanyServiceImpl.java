@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.user.entities.Company;
@@ -15,6 +16,7 @@ import com.github.emailtohl.integration.core.user.entities.Company;
  * @author HeLei
  */
 @Transactional
+@Service
 public class CompanyServiceImpl implements CompanyService {
 	@Inject
 	CompanyRepository companyRepository;

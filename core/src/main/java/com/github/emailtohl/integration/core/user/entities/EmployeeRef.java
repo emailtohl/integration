@@ -43,7 +43,7 @@ public class EmployeeRef implements Serializable {
 		nickname = employee.getNickname();
 		email = employee.getEmail();
 		cellPhone = employee.getCellPhone();
-		icon = employee.getImage() == null ? employee.getImage().getPath() : null;
+		icon = employee.getImage() != null ? employee.getImage().getPath() : null;
 		this.employee = employee;
 	}
 

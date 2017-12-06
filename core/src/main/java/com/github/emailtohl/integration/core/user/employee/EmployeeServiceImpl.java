@@ -38,6 +38,7 @@ import com.github.emailtohl.integration.core.user.entities.Department;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.LoginResult;
+import com.github.emailtohl.integration.core.user.org.DepartmentRepository;
 
 /**
  * 平台账号服务层的实现

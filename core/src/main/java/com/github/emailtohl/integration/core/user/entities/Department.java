@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -68,7 +67,7 @@ public class Department extends BaseEntity {
 
 	@org.hibernate.envers.NotAudited
 	@org.hibernate.search.annotations.ContainedIn
-	@OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "department")
 	public Set<Employee> getEmployees() {
 		return employees;
 	}

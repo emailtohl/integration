@@ -10,7 +10,7 @@ import com.github.emailtohl.integration.core.user.entities.Department;
  * 部门数据层
  * @author HeLei
  */
-interface DepartmentRepository extends JpaRepository<Department, Long> {
+public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
 	Department findByName(String name);
 	

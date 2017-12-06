@@ -41,7 +41,7 @@ public class CustomerRef implements Serializable {
 		nickname = customer.getNickname();
 		email = customer.getEmail();
 		cellPhone = customer.getCellPhone();
-		icon = customer.getImage() == null ? customer.getImage().getPath() : null;
+		icon = customer.getImage() != null ? customer.getImage().getPath() : null;
 		this.customer = customer;
 	}
 	

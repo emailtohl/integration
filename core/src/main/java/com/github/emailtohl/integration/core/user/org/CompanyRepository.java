@@ -10,7 +10,7 @@ import com.github.emailtohl.integration.core.user.entities.Company;
  * 公司数据层
  * @author HeLei
  */
-interface CompanyRepository extends JpaRepository<Company, Long> {
+public interface CompanyRepository extends JpaRepository<Company, Long> {
 	
 	Company findByName(String name);
 	
