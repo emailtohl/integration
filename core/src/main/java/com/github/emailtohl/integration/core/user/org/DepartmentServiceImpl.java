@@ -81,10 +81,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 	}
 
 	private ExampleMatcher queryMatcher = ExampleMatcher.matching()
-			.withIgnorePaths("parent", "company")
+			.withIgnorePaths("employees", "parent")
 			.withMatcher("name", GenericPropertyMatchers.caseSensitive())
 			.withMatcher("description", GenericPropertyMatchers.caseSensitive())
-			.withMatcher("responsiblePerson", GenericPropertyMatchers.caseSensitive());
+			.withMatcher("responsiblePerson", GenericPropertyMatchers.caseSensitive())
+			.withMatcher("company.name", GenericPropertyMatchers.caseSensitive());
 	
 	@Override
 	public Paging<Department> query(Department params, Pageable pageable) {

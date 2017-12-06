@@ -35,18 +35,18 @@ import com.google.gson.Gson;
 @ActiveProfiles({ DB_RAM_H2, ENV_NO_SERVLET })
 @Rollback(false)
 public class DepartmentServiceImplTest {
-	Pageable pageable = new PageRequest(0, 20);
 	@Inject
 	DepartmentService departmentService;
 	@Inject
 	EmployeeService employeeService;
 	@Inject
 	Gson gson;
+	Pageable pageable = new PageRequest(0, 20);
 	Long pid, sid1, sid2, empid1, empid2, empid3;
 
 	@Before
 	public void setUp() throws Exception {
-		Department d = new Department("parent", "父级部门", null),
+		Department d = new Department("parent", "一级部门", null),
 				d1 = new Department("son1", "二级部门1", d),
 				d2 = new Department("son2", "二级部门2", d);
 		d.setResponsiblePerson("_foo");
