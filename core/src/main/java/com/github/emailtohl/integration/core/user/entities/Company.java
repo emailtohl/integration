@@ -22,6 +22,7 @@ public class Company extends BaseEntity {
 	private static final long serialVersionUID = 2560110793039918070L;
 	private String name;
 	private String description;
+	private String responsiblePerson;
 	private transient Set<Department> departments = new HashSet<Department>();
 	private Company parent;
 
@@ -36,7 +37,6 @@ public class Company extends BaseEntity {
 	public String getName() {
 		return name;
 	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -44,16 +44,21 @@ public class Company extends BaseEntity {
 	public String getDescription() {
 		return description;
 	}
-
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public String getResponsiblePerson() {
+		return responsiblePerson;
+	}
+	public void setResponsiblePerson(String responsiblePerson) {
+		this.responsiblePerson = responsiblePerson;
 	}
 
 	@OneToMany(mappedBy = "company", orphanRemoval = true)
 	public Set<Department> getDepartments() {
 		return departments;
 	}
-
 	public void setDepartments(Set<Department> departments) {
 		this.departments = departments;
 	}
@@ -63,14 +68,39 @@ public class Company extends BaseEntity {
 	public Company getParent() {
 		return parent;
 	}
-
 	public void setParent(Company parent) {
 		this.parent = parent;
 	}
 
 	@Override
 	public String toString() {
-		return "Company [name=" + name + ", description=" + description + "]";
+		return "Company [name=" + name + ", description=" + description + ", responsiblePerson=" + responsiblePerson
+				+ "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Company other = (Company) obj;
+		if (name == null) {
+			if (other.getName() != null)
+				return false;
+		} else if (!name.equals(other.getName()))
+			return false;
+		return true;
 	}
 
 }

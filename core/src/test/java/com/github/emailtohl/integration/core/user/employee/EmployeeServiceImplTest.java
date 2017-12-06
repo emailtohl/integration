@@ -1,6 +1,6 @@
 package com.github.emailtohl.integration.core.user.employee;
 
-import static com.github.emailtohl.integration.core.Profiles.DB_CONFIG;
+import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -42,7 +42,7 @@ import com.google.gson.Gson;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = CoreTestConfiguration.class)
-@ActiveProfiles({ DB_CONFIG, ENV_NO_SERVLET })
+@ActiveProfiles({ DB_RAM_H2, ENV_NO_SERVLET })
 @Rollback(false)
 public class EmployeeServiceImplTest {
 	final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

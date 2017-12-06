@@ -27,6 +27,7 @@ public class Department extends BaseEntity {
 	private static final long serialVersionUID = -4263959308837757530L;
 	private String name;
 	private String description;
+	private String responsiblePerson;
 	private transient Set<Employee> employees = new HashSet<Employee>();
 	private Department parent;
 	private Company company;
@@ -56,6 +57,13 @@ public class Department extends BaseEntity {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getResponsiblePerson() {
+		return responsiblePerson;
+	}
+	public void setResponsiblePerson(String responsiblePerson) {
+		this.responsiblePerson = responsiblePerson;
 	}
 
 	@org.hibernate.envers.NotAudited
@@ -90,7 +98,8 @@ public class Department extends BaseEntity {
 
 	@Override
 	public String toString() {
-		return "Department [name=" + name + ", description=" + description + ", company=" + company + "]";
+		return "Department [name=" + name + ", description=" + description + ", responsiblePerson=" + responsiblePerson
+				+ "]";
 	}
 
 	/**
