@@ -398,7 +398,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public void accountStatus() {
 		final LocalDate today = LocalDate.now();
-		employeeRepository.findAll().stream().peek(u -> {
+		employeeRepository.findAll().stream()
+		.filter(u -> !u.getEmpNum().equals(Employee.NO1))
+		// 最后登录时间的维护
+		.peek(u -> {
 			Date d = u.getLastLogin();
 			if (d == null) {
 				LOG.debug("lastLoginTime: null {} accountNonExpired : false", u.getId());
@@ -414,6 +417,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 				u.setAccountNonExpired(false);
 			}
 		})
+		// 密码过期的维护
 		.peek(u ->  {
 			Date d = u.getLastChangeCredentials();
 			if (d == null) {

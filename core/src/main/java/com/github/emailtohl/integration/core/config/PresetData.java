@@ -35,6 +35,7 @@ import com.github.emailtohl.integration.core.user.entities.Company;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Customer.Level;
 import com.github.emailtohl.integration.core.user.entities.Department;
+import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.User;
 import com.github.emailtohl.integration.core.user.entities.User.Gender;
 
@@ -73,6 +74,7 @@ public class PresetData {
 			role_guest = new Role("guest", "普通用户");
 	
 	public final User user_admin = new User();
+	public final Employee user_bot = new Employee();
 	public final Customer user_emailtohl = new Customer();
 	
 	public final Company company = new Company("XXX注册公司", "公司上面还有集团公司", null);
@@ -114,6 +116,36 @@ public class PresetData {
 		qa.setCompany(company);
 		company.getDepartments().addAll(Arrays.asList(product, qa));
 		
+		user_admin.setName(ADMIN_NAME);
+		user_admin.setNickname(ADMIN_NAME);
+		user_admin.setPassword(encryptPassword(DEFAULT_PASSWORD));
+		user_admin.setDescription("系统管理员");
+		user_admin.getRoles().add(role_admin);
+		try (InputStream is = cl.getResourceAsStream("img/icon-head-admin.png")) {
+			icon = new byte[is.available()];
+			is.read(icon);
+			user_admin.setImage(new Image("icon-head-admin.png", "download/img/icon-head-admin.png", icon));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		user_bot.setName("bot");
+		user_bot.setEmpNum(Employee.NO1);
+		user_bot.setNickname("bot");
+		user_bot.setAccountNonLocked(true);
+		user_bot.setPassword(encryptPassword(DEFAULT_PASSWORD));
+		user_bot.setDescription("自动审批人");
+		user_bot.setGender(Gender.UNSPECIFIED);
+		user_bot.getRoles().addAll(Arrays.asList(role_manager));
+		// cl.getResourceAsStream方法返回的输入流已经是BufferedInputStream对象，无需再装饰
+		try (InputStream is = cl.getResourceAsStream("img/icon-head-bot.jpg")) {
+			icon = new byte[is.available()];
+			is.read(icon);
+			user_bot.setImage(new Image("icon-head-bot.jpg", "download/img/icon-head-bot.jpg", icon));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		user_emailtohl.setName("hl");
 		user_emailtohl.setNickname("hl");
 		user_emailtohl.setEmail("emailtohl@163.com");
@@ -136,18 +168,6 @@ public class PresetData {
 			e.printStackTrace();
 		}
 
-		user_admin.setName(ADMIN_NAME);
-		user_admin.setNickname(ADMIN_NAME);
-		user_admin.setPassword(encryptPassword(DEFAULT_PASSWORD));
-		user_admin.setDescription("系统管理员");
-		user_admin.getRoles().add(role_admin);
-		try (InputStream is = cl.getResourceAsStream("img/icon-head-admin.png")) {
-			icon = new byte[is.available()];
-			is.read(icon);
-			user_admin.setImage(new Image("icon-head-admin.png", "download/img/icon-head-admin.png", icon));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	public String encryptPassword(String plainText) {

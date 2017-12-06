@@ -12,6 +12,8 @@ import com.github.emailtohl.integration.core.user.entities.Company;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.CustomerRef;
 import com.github.emailtohl.integration.core.user.entities.Department;
+import com.github.emailtohl.integration.core.user.entities.Employee;
+import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.User;
 
 /**
@@ -154,8 +156,18 @@ class InitData {
 		}
 		
 		q = cb.createQuery(boolean.class);
-		Root<Customer> r1 = q.from(Customer.class);
-		q = q.select(cb.greaterThan(cb.count(r1), 0L)).where(cb.equal(r1.get("email"), pd.user_emailtohl.getEmail()));
+		Root<Employee> r1 = q.from(Employee.class);
+		q = q.select(cb.greaterThan(cb.count(r1), 0L)).where(cb.equal(r1.get("empNum"), pd.user_bot.getEmpNum()));
+		exist = em.createQuery(q).getSingleResult();
+		if (!exist) {
+			em.persist(pd.user_bot);
+			EmployeeRef ref = new EmployeeRef(pd.user_bot);
+			pd.user_bot.setEmployeeRef(ref);
+		}
+		
+		q = cb.createQuery(boolean.class);
+		Root<Customer> r2 = q.from(Customer.class);
+		q = q.select(cb.greaterThan(cb.count(r2), 0L)).where(cb.equal(r2.get("email"), pd.user_emailtohl.getEmail()));
 		exist = em.createQuery(q).getSingleResult();
 		if (!exist) {
 			em.persist(pd.user_emailtohl);

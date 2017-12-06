@@ -103,7 +103,7 @@ public class Customer extends User {
 	}
 
 	@ElementCollection
-	@JoinTable(name = "t_customer_card")
+	@JoinTable(name = "customer_card")
 	public Set<Card> getCards() {
 		return cards;
 	}
