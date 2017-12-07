@@ -12,6 +12,7 @@ import com.github.emailtohl.integration.core.user.entities.Employee;
 public interface Constant {
 	String ADMIN_NAME = "admin";
 	String ANONYMOUS_NAME = "anonymous";
+	String ANONYMOUS_EMAIL = "anonymous@anonymous.com";
 	String DEFAULT_PASSWORD = "123456";
 	
 	Pattern PATTERN_EMAIL = Pattern.compile(ConstantPattern.EMAIL);

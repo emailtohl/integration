@@ -94,9 +94,6 @@ public class UserServiceImpl implements UserService {
 		if (u == null && Constant.ADMIN_NAME.equals(username)) {
 			u = userRepository.findByName(Constant.ADMIN_NAME);
 		}
-		if (u == null && Constant.ANONYMOUS_NAME.equals(username)) {
-			u = userRepository.findByName(Constant.ANONYMOUS_NAME);
-		}
 		if (u != null) {
 			u.authorityNames();// 加载角色与权限
 		}

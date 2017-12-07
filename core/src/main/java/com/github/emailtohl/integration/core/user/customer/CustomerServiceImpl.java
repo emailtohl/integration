@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -29,7 +28,6 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.exception.InvalidDataException;
 import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
@@ -52,8 +50,6 @@ import com.github.emailtohl.integration.core.user.entities.LoginResult;
 @Transactional
 @Service
 public class CustomerServiceImpl implements CustomerService {
-	public static final Pattern PATTERN_CELL_PHONE = Pattern.compile(ConstantPattern.CELL_PHONE);
-	public static final Pattern EMAIL_PATTERN = Pattern.compile(ConstantPattern.EMAIL);
 	private static final transient SecureRandom RANDOM = new SecureRandom();
 	private static final transient int HASHING_ROUNDS = 10;
 	private static final transient ConcurrentHashMap<String, String> TOKEN_MAP = new ConcurrentHashMap<String, String>();
@@ -115,7 +111,7 @@ public class CustomerServiceImpl implements CustomerService {
 		String _matcherValue = (String) matcherValue;
 		Customer c = new Customer();
 		Example<Customer> example;
-		Matcher m = EMAIL_PATTERN.matcher(_matcherValue);
+		Matcher m = Constant.PATTERN_EMAIL.matcher(_matcherValue);
 		if (m.find()) {
 			c.setEmail(_matcherValue);
 			example = Example.<Customer>of(c, emailMatcher);
@@ -192,7 +188,10 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public void delete(Long id) {
 		Customer source = customerRepository.getOne(id);
-		if (Constant.ANONYMOUS_NAME.equals(source.getName())) {
+		if (source == null) {
+			return;
+		}
+		if (Constant.ANONYMOUS_EMAIL.equals(source.getEmail())) {
 			throw new NotAcceptableException("不能删除系统内置账号");
 		}
 		// 解除双方关系
@@ -401,12 +400,12 @@ public class CustomerServiceImpl implements CustomerService {
 			return null;
 		}
 		Customer c = null;
-		Matcher m = PATTERN_CELL_PHONE.matcher(cellPhoneOrEmail);
+		Matcher m = Constant.PATTERN_CELL_PHONE.matcher(cellPhoneOrEmail);
 		if (m.find()) {
 			c = customerRepository.findByCellPhone(cellPhoneOrEmail);
 		}
 		if (c == null) {
-			m = EMAIL_PATTERN.matcher(cellPhoneOrEmail);
+			m = Constant.PATTERN_EMAIL.matcher(cellPhoneOrEmail);
 			if (m.find()) {
 				c = customerRepository.findByEmail(cellPhoneOrEmail);
 			}
@@ -449,12 +448,12 @@ public class CustomerServiceImpl implements CustomerService {
 			return null;
 		}
 		CustomerRef ref = null;
-		Matcher m = PATTERN_CELL_PHONE.matcher(cellPhoneOrEmail);
+		Matcher m = Constant.PATTERN_CELL_PHONE.matcher(cellPhoneOrEmail);
 		if (m.find()) {
 			ref = customerRefRepository.findByCellPhone(cellPhoneOrEmail);
 		}
 		if (ref == null) {
-			m = EMAIL_PATTERN.matcher(cellPhoneOrEmail);
+			m = Constant.PATTERN_EMAIL.matcher(cellPhoneOrEmail);
 			if (m.find()) {
 				ref = customerRefRepository.findByEmail(cellPhoneOrEmail);
 			}

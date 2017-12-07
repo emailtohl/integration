@@ -86,6 +86,7 @@ public class EmployeeServiceImplTest {
 
 	@Test
 	public void testExist() {
+		// 以工号为唯一标识，由系统自动生成，所以Exist返回均为false
 		assertFalse(employeeService.exist(null));
 	}
 

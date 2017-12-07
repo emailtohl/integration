@@ -18,6 +18,7 @@ import static com.github.emailtohl.integration.core.role.Authority.QUERY_ALL_USE
 import static com.github.emailtohl.integration.core.role.Authority.RESOURCE;
 import static com.github.emailtohl.integration.core.role.Authority.ROLE;
 import static com.github.emailtohl.integration.core.user.Constant.ADMIN_NAME;
+import static com.github.emailtohl.integration.core.user.Constant.ANONYMOUS_EMAIL;
 import static com.github.emailtohl.integration.core.user.Constant.ANONYMOUS_NAME;
 import static com.github.emailtohl.integration.core.user.Constant.DEFAULT_PASSWORD;
 
@@ -149,8 +150,10 @@ public class PresetData {
 		
 		user_anonymous.setName(ANONYMOUS_NAME);
 		user_anonymous.setNickname(ANONYMOUS_NAME);
+		user_anonymous.setEmail(ANONYMOUS_EMAIL);
 		user_anonymous.setPassword(encryptPassword(DEFAULT_PASSWORD));
 		user_anonymous.setDescription("系统中的匿名用户; anonymous in system");
+		user_anonymous.setGender(Gender.UNSPECIFIED);
 		user_anonymous.getRoles().addAll(Arrays.asList(role_guest));
 		// cl.getResourceAsStream方法返回的输入流已经是BufferedInputStream对象，无需再装饰
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-anonymous.jpg")) {

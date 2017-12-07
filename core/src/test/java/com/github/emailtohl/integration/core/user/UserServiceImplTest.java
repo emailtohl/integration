@@ -3,7 +3,7 @@ package com.github.emailtohl.integration.core.user;
 import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
 import static com.github.emailtohl.integration.core.user.Constant.ADMIN_NAME;
-import static com.github.emailtohl.integration.core.user.Constant.ANONYMOUS_NAME;
+import static com.github.emailtohl.integration.core.user.Constant.ANONYMOUS_EMAIL;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
@@ -77,7 +77,7 @@ public class UserServiceImplTest {
 	public void testFind() {
 		User u = userService.find(ADMIN_NAME);
 		assertNotNull(u);
-		u = userService.find(ANONYMOUS_NAME);
+		u = userService.find(ANONYMOUS_EMAIL);
 		assertNotNull(u);
 		u = userService.find(td.foo.getEmpNum().toString());
 		assertNotNull(u);

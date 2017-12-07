@@ -29,6 +29,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
 import com.github.emailtohl.integration.core.ExecResult;
@@ -171,6 +172,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public void delete(Long id) {
 		Employee source = employeeRepository.getOne(id);
+		if (source == null) {
+			return;
+		}
+		if (source.getEmpNum() == null) {
+			return;
+		}
+		if (source.getEmpNum() == Employee.NO1) {
+			throw new NotAcceptableException("不能删除系统内置账号");
+		}
 		// 解除双方关系
 		for (Iterator<Role> i = source.getRoles().iterator(); i.hasNext();) {
 			Role r = i.next();
