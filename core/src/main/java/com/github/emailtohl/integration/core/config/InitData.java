@@ -167,7 +167,17 @@ class InitData {
 		
 		q = cb.createQuery(boolean.class);
 		Root<Customer> r2 = q.from(Customer.class);
-		q = q.select(cb.greaterThan(cb.count(r2), 0L)).where(cb.equal(r2.get("email"), pd.user_emailtohl.getEmail()));
+		q = q.select(cb.greaterThan(cb.count(r2), 0L)).where(cb.equal(r2.get("name"), pd.user_anonymous.getName()));
+		exist = em.createQuery(q).getSingleResult();
+		if (!exist) {
+			em.persist(pd.user_anonymous);
+			CustomerRef ref = new CustomerRef(pd.user_anonymous);
+			pd.user_anonymous.setCustomerRef(ref);
+		}
+		
+		q = cb.createQuery(boolean.class);
+		Root<Customer> r3 = q.from(Customer.class);
+		q = q.select(cb.greaterThan(cb.count(r3), 0L)).where(cb.equal(r3.get("email"), pd.user_emailtohl.getEmail()));
 		exist = em.createQuery(q).getSingleResult();
 		if (!exist) {
 			em.persist(pd.user_emailtohl);

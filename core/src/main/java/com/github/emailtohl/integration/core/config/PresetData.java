@@ -17,6 +17,9 @@ import static com.github.emailtohl.integration.core.role.Authority.EMPLOYEE_ROLE
 import static com.github.emailtohl.integration.core.role.Authority.QUERY_ALL_USER;
 import static com.github.emailtohl.integration.core.role.Authority.RESOURCE;
 import static com.github.emailtohl.integration.core.role.Authority.ROLE;
+import static com.github.emailtohl.integration.core.user.Constant.ADMIN_NAME;
+import static com.github.emailtohl.integration.core.user.Constant.ANONYMOUS_NAME;
+import static com.github.emailtohl.integration.core.user.Constant.DEFAULT_PASSWORD;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,8 +47,6 @@ import com.github.emailtohl.integration.core.user.entities.User.Gender;
  * @author HeLei
  */
 public class PresetData {
-	public final static String ADMIN_NAME = "admin";
-	public final static String DEFAULT_PASSWORD = "123456";
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	
 	public final Authority
@@ -75,7 +76,7 @@ public class PresetData {
 	
 	public final User user_admin = new User();
 	public final Employee user_bot = new Employee();
-	public final Customer user_emailtohl = new Customer();
+	public final Customer user_emailtohl = new Customer(), user_anonymous = new Customer();
 	
 	public final Company company = new Company("XXX注册公司", "公司上面还有集团公司", null);
 	public final Department product = new Department("生产部", "研发生产部门", null), qa = new Department("质量部", "质量与测试部门", null);
@@ -142,6 +143,20 @@ public class PresetData {
 			icon = new byte[is.available()];
 			is.read(icon);
 			user_bot.setImage(new Image("icon-head-bot.jpg", "download/img/icon-head-bot.jpg", icon));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		user_anonymous.setName(ANONYMOUS_NAME);
+		user_anonymous.setNickname(ANONYMOUS_NAME);
+		user_anonymous.setPassword(encryptPassword(DEFAULT_PASSWORD));
+		user_anonymous.setDescription("系统中的匿名用户; anonymous in system");
+		user_anonymous.getRoles().addAll(Arrays.asList(role_guest));
+		// cl.getResourceAsStream方法返回的输入流已经是BufferedInputStream对象，无需再装饰
+		try (InputStream is = cl.getResourceAsStream("img/icon-head-anonymous.jpg")) {
+			icon = new byte[is.available()];
+			is.read(icon);
+			user_anonymous.setImage(new Image("icon-head-anonymous.jpg", "download/icon-head-anonymous.jpg", icon));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

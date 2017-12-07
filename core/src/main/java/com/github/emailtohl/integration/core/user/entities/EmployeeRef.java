@@ -84,6 +84,7 @@ public class EmployeeRef implements Serializable {
 		this.email = email;
 	}
 
+	@org.hibernate.envers.NotAudited
 	public String getIcon() {
 		return icon;
 	}

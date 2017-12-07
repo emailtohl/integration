@@ -2,6 +2,8 @@ package com.github.emailtohl.integration.core.user;
 
 import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
+import static com.github.emailtohl.integration.core.user.Constant.ADMIN_NAME;
+import static com.github.emailtohl.integration.core.user.Constant.ANONYMOUS_NAME;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
@@ -16,7 +18,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.core.config.PresetData;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.user.entities.User;
@@ -74,7 +75,9 @@ public class UserServiceImplTest {
 	
 	@Test
 	public void testFind() {
-		User u = userService.find(PresetData.ADMIN_NAME);
+		User u = userService.find(ADMIN_NAME);
+		assertNotNull(u);
+		u = userService.find(ANONYMOUS_NAME);
 		assertNotNull(u);
 		u = userService.find(td.foo.getEmpNum().toString());
 		assertNotNull(u);

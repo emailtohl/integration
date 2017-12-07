@@ -2,6 +2,7 @@ package com.github.emailtohl.integration.core.auth;
 
 import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
+import static com.github.emailtohl.integration.core.user.Constant.DEFAULT_PASSWORD;
 
 import javax.inject.Inject;
 
@@ -19,7 +20,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
 import com.github.emailtohl.integration.common.exception.InvalidDataException;
-import com.github.emailtohl.integration.core.auth.AuthenticationManagerImpl;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 /**
@@ -50,14 +50,14 @@ public class AuthenticationManagerImplTest {
 
 	@Test
 	public void testAuthenticateAuthentication() {
-		String crypted = encipher.encrypt(CoreTestData.DEFAULT_PASSWORD, publicKey);
+		String crypted = encipher.encrypt(DEFAULT_PASSWORD, publicKey);
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(td.bar.getEmpNum().toString(), crypted);
 		authenticationManager.authenticate(token);
 	}
 	
 	@Test(expected = UsernameNotFoundException.class)
 	public void testUsernameNotFoundException() {
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("abc", CoreTestData.DEFAULT_PASSWORD);
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("abc", DEFAULT_PASSWORD);
 		authenticationManager.authenticate(token);
 	}
 	

@@ -1,13 +1,9 @@
 package com.github.emailtohl.integration.core.user;
 
-import java.util.regex.Pattern;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 
-import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.User;
 
 /**
@@ -16,9 +12,6 @@ import com.github.emailtohl.integration.core.user.entities.User;
  */
 @Validated
 public interface UserService {
-	Pattern PATTERN_EMAIL = Pattern.compile(ConstantPattern.EMAIL);
-	Pattern PATTERN_CELL_PHONE = Pattern.compile(ConstantPattern.CELL_PHONE);
-	Pattern PATTEN_EMP_NUM = Pattern.compile(Employee.PATTERN_EMP_NUM);
 	/**
 	 * 全文搜索
 	 * @param fulltext

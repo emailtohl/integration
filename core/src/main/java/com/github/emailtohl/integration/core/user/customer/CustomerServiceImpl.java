@@ -31,11 +31,13 @@ import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.exception.InvalidDataException;
+import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleRepository;
+import com.github.emailtohl.integration.core.user.Constant;
 import com.github.emailtohl.integration.core.user.entities.Card;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Customer.Level;
@@ -133,14 +135,25 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public Paging<Customer> query(Customer params, Pageable pageable) {
-		Page<Customer> p = customerRepository.queryForPage(params, pageable);
+		Page<Customer> p;
+		if (params == null) {
+			p = customerRepository.findAll(pageable);
+		} else {
+			p = customerRepository.queryForPage(params, pageable);
+		}
 		List<Customer> content = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
 		return new Paging<>(content, pageable, p.getTotalElements());
 	}
 
 	@Override
 	public List<Customer> query(Customer params) {
-		return customerRepository.queryForList(params).stream().map(this::toTransient).collect(Collectors.toList());
+		List<Customer> ls;
+		if (params == null) {
+			ls = customerRepository.findAll();
+		} else {
+			ls = customerRepository.queryForList(params);
+		}
+		return ls.stream().map(this::toTransient).collect(Collectors.toList());
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
@@ -179,6 +192,9 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public void delete(Long id) {
 		Customer source = customerRepository.getOne(id);
+		if (Constant.ANONYMOUS_NAME.equals(source.getName())) {
+			throw new NotAcceptableException("不能删除系统内置账号");
+		}
 		// 解除双方关系
 		for (Iterator<Role> i = source.getRoles().iterator(); i.hasNext();) {
 			Role r = i.next();

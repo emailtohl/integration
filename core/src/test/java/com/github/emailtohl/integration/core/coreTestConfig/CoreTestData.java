@@ -1,5 +1,7 @@
 package com.github.emailtohl.integration.core.coreTestConfig;
 
+import static com.github.emailtohl.integration.core.user.Constant.DEFAULT_PASSWORD;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
