@@ -33,6 +33,7 @@ import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
 import com.github.emailtohl.integration.core.ExecResult;
+import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleRepository;
 import com.github.emailtohl.integration.core.user.Constant;
@@ -49,7 +50,7 @@ import com.github.emailtohl.integration.core.user.entities.LoginResult;
  */
 @Transactional
 @Service
-public class CustomerServiceImpl implements CustomerService {
+public class CustomerServiceImpl extends StandardService<Customer> implements CustomerService {
 	private static final transient SecureRandom RANDOM = new SecureRandom();
 	private static final transient int HASHING_ROUNDS = 10;
 	private static final transient ConcurrentHashMap<String, String> TOKEN_MAP = new ConcurrentHashMap<String, String>();
@@ -413,7 +414,8 @@ public class CustomerServiceImpl implements CustomerService {
 		return c;
 	}
 
-	private Customer toTransient(Customer source) {
+	@Override
+	protected Customer toTransient(Customer source) {
 		if (source == null) {
 			return null;
 		}
@@ -422,7 +424,8 @@ public class CustomerServiceImpl implements CustomerService {
 		return target;
 	}
 
-	private Customer transientDetail(Customer source) {
+	@Override
+	protected Customer transientDetail(Customer source) {
 		if (source == null) {
 			return null;
 		}

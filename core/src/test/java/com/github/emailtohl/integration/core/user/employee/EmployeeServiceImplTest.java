@@ -57,6 +57,8 @@ public class EmployeeServiceImplTest {
 	@Before
 	public void setUp() throws Exception {
 		Employee e = new Employee();
+		e.setEmail("123");
+		e = employeeService.create(e);
 		e.setName("haha");
 		e.setNickname("haha");
 		e.setPassword("112233");

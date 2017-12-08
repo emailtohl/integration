@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
+import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.user.entities.Company;
 import com.github.emailtohl.integration.core.user.entities.Department;
 
@@ -27,7 +28,7 @@ import com.github.emailtohl.integration.core.user.entities.Department;
  */
 @Transactional
 @Service
-public class DepartmentServiceImpl implements DepartmentService {
+public class DepartmentServiceImpl extends StandardService<Department> implements DepartmentService {
 	@Inject
 	DepartmentRepository departmentRepository;
 	@Inject
@@ -165,7 +166,8 @@ public class DepartmentServiceImpl implements DepartmentService {
 		departmentRepository.delete(src);
 	}
 
-	private Department toTransient(Department src) {
+	@Override
+	protected Department toTransient(Department src) {
 		if (src == null) {
 			return null;
 		}
@@ -178,7 +180,8 @@ public class DepartmentServiceImpl implements DepartmentService {
 		return tar;
 	}
 	
-	private Department transientDetail(Department src) {
+	@Override
+	protected Department transientDetail(Department src) {
 		if (src == null) {
 			return null;
 		}
@@ -188,7 +191,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 		tar.setDescription(src.getDescription());
 		tar.setCreateDate(src.getCreateDate());
 		tar.setModifyDate(src.getCreateDate());
-		tar.setCompany(companyService.transientDetail(src.getCompany()));
+		tar.setCompany(companyService.transientCompanyDetail(src.getCompany()));
 		tar.setParent(transientDetail(src.getParent()));
 		return tar;
 	}

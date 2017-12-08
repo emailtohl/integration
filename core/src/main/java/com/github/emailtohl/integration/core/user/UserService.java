@@ -1,6 +1,7 @@
 package com.github.emailtohl.integration.core.user;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
@@ -18,6 +19,7 @@ public interface UserService {
 	 * @param pageable
 	 * @return
 	 */
+	@PreAuthorize("isAuthenticated()")
 	Paging<User> search(String fulltext, Pageable pageable);
 	
 	/**
@@ -26,6 +28,7 @@ public interface UserService {
 	 * @param pageable
 	 * @return
 	 */
+	@PreAuthorize("isAuthenticated()")
 	Paging<User> query(User params, Pageable pageable);
 	
 	/**
@@ -33,6 +36,7 @@ public interface UserService {
 	 * @param id
 	 * @return
 	 */
+	@PreAuthorize("isAuthenticated()")
 	User get(Long id);
 	
 	/**

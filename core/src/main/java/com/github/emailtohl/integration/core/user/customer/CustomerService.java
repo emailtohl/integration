@@ -1,5 +1,7 @@
 package com.github.emailtohl.integration.core.user.customer;
 
+import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER;
+import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_DELETE;
 import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_ENABLED;
 import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_LEVEL;
 import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_RESET_PASSWORD;
@@ -15,11 +17,11 @@ import javax.validation.constraints.Pattern;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 
 import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
-import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.user.entities.Card;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.CustomerRef;
@@ -28,14 +30,70 @@ import com.github.emailtohl.integration.core.user.entities.CustomerRef;
  * 客户的服务层
  * @author HeLei
  */
-public interface CustomerService extends StandardService<Customer> {
+@Validated
+public interface CustomerService {
+	/**
+	 * 创建一个用户
+	 * @param entity
+	 * @return
+	 */
+	Customer create(@Valid Customer entity);
 	
+	/**
+	 * 根据手机号或邮箱查找是否已存在
+	 * @param matcherValue
+	 * @return
+	 */
+	boolean exist(Object matcherValue);
+	
+	/**
+	 * 根据ID获取用户
+	 * @param id
+	 * @return
+	 */
+	@PreAuthorize("hasAuthority('" + CUSTOMER + "')")
+	Customer get(Long id);
+
+	/**
+	 * 分页查询
+	 * @param params
+	 * @param pageable
+	 * @return Paging封装的分页信息，一般JPA底层返回的是Page对象，但该对象不利于JSON等序列化。
+	 * 所以在将持久化状态的用户转瞬态时，同时改变分页对象
+	 */
+	@PreAuthorize("hasAuthority('" + CUSTOMER + "')")
+	Paging<Customer> query(Customer params, Pageable pageable);
+
+	/**
+	 * 查询列表
+	 * @param params
+	 * @return
+	 */
+	@PreAuthorize("hasAuthority('" + CUSTOMER + "')")
+	List<Customer> query(Customer params);
+
+	/**
+	 * 修改用户内容，并指明哪些属性忽略
+	 * @param id
+	 * @param newEntity
+	 * @return 返回null表示没找到该用户
+	 */
+	@PreAuthorize("hasAuthority('" + CUSTOMER + "')")
+	Customer update(Long id, @Valid Customer newEntity);
+
+	/**
+	 * 根据ID删除用户
+	 * @param id
+	 */
+	@PreAuthorize("hasAuthority('" + CUSTOMER_DELETE + "')")
+	void delete(Long id);
 	/**
 	 * 全文查询
 	 * @param query
 	 * @param pageable
 	 * @return
 	 */
+	@PreAuthorize("hasAuthority('" + CUSTOMER + "')")
 	Paging<Customer> search(String query, Pageable pageable);
 	/**
 	 * 客户登录
@@ -50,6 +108,7 @@ public interface CustomerService extends StandardService<Customer> {
 	 * @param cellPhoneOrEmail
 	 * @return
 	 */
+	@PreAuthorize("hasAuthority('" + CUSTOMER + "')")
 	Customer findByCellPhoneOrEmail(String cellPhoneOrEmail);
 	
 	/**
@@ -149,6 +208,7 @@ public interface CustomerService extends StandardService<Customer> {
 	 * @param id
 	 * @return
 	 */
+	@PreAuthorize("isAuthenticated()")
 	CustomerRef getRef(Long id);
 	
 	/**
@@ -156,6 +216,7 @@ public interface CustomerService extends StandardService<Customer> {
 	 * @param cellPhoneOrEmail
 	 * @return
 	 */
+	@PreAuthorize("isAuthenticated()")
 	CustomerRef findRefByCellPhoneOrEmail(String cellPhoneOrEmail);
 	
 	/**
@@ -164,6 +225,7 @@ public interface CustomerService extends StandardService<Customer> {
 	 * @param pageable
 	 * @return
 	 */
+	@PreAuthorize("isAuthenticated()")
 	Paging<CustomerRef> queryRef(CustomerRef params, Pageable pageable);
 	
 	/**
@@ -171,5 +233,6 @@ public interface CustomerService extends StandardService<Customer> {
 	 * @param params
 	 * @return
 	 */
+	@PreAuthorize("isAuthenticated()")
 	List<CustomerRef> queryRef(CustomerRef params);
 }

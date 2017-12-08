@@ -62,6 +62,7 @@ class InitData {
 			return;
 		}
 		em.persist(pd.auth_role);
+		em.persist(pd.auth_org);
 		em.persist(pd.auth_query_all_user);
 		em.persist(pd.auth_employee);
 		em.persist(pd.auth_employee_role);

@@ -2,6 +2,7 @@ package com.github.emailtohl.integration.core.role;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
+import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.user.entities.User;
 /**
  * 角色管理服务的实现
@@ -24,7 +26,7 @@ import com.github.emailtohl.integration.core.user.entities.User;
  */
 @Transactional
 @Service
-public class RoleServiceImpl implements RoleService {
+public class RoleServiceImpl extends StandardService<Role> implements RoleService {
 	private static final String CACHE_NAME_ROLE = "roleCache";
 	private static final String CACHE_NAME_AUTHORITY = "authorityListCache";
 	@Inject RoleRepository roleRepository;
@@ -61,21 +63,32 @@ public class RoleServiceImpl implements RoleService {
 	public Role get(Long id) {
 		Role r = roleRepository.get(id);
 		if (r != null) {
-			r.getAuthorities().isEmpty();// 关联查询
+			return null;
 		}
-		return r;
+		return transientDetail(r);
 	}
 
 	@Override
 	public Paging<Role> query(Role params, Pageable pageable) {
-		Page<Role> p = roleRepository.queryForPage(params, pageable);
+		Page<Role> p;
+		if (params == null) {
+			p = roleRepository.findAll(pageable);
+		} else {
+			p = roleRepository.queryForPage(params, pageable);
+		}
 		List<Role> ls = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
 		return new Paging<>(ls, pageable, p.getTotalElements());
 	}
 
 	@Override
 	public List<Role> query(Role params) {
-		return roleRepository.queryForList(params).stream().map(this::toTransient).collect(Collectors.toList());
+		List<Role> ls;
+		if (params == null) {
+			ls = roleRepository.findAll();
+		} else {
+			ls = roleRepository.queryForList(params);
+		}
+		return ls.stream().map(this::toTransient).collect(Collectors.toList());
 	}
 
 	@CachePut(value = CACHE_NAME_ROLE, key = "#root.args[0]", condition = "#result != null")
@@ -88,7 +101,9 @@ public class RoleServiceImpl implements RoleService {
 		if (StringUtils.hasText(newEntity.getName())) {
 			source.setName(newEntity.getName());
 		}
-		source.setDescription(newEntity.getDescription());
+		if (StringUtils.hasText(newEntity.getDescription())) {
+			source.setDescription(newEntity.getDescription());
+		}
 		// 先解除双方关系
 		for (Iterator<Authority> i = source.getAuthorities().iterator(); i.hasNext();) {
 			Authority a = i.next();
@@ -135,10 +150,11 @@ public class RoleServiceImpl implements RoleService {
 	@Cacheable(value = CACHE_NAME_AUTHORITY)
 	@Override
 	public List<Authority> getAuthorities() {
-		return authorityRepository.findAll().stream().map(a -> new Authority(a.getName(), a.getDescription(), null)).collect(Collectors.toList());
+		return authorityRepository.findAll().stream().map(this::transientAuthority).collect(Collectors.toList());
 	}
 	
-	private Role toTransient(Role source) {
+	@Override
+	protected Role toTransient(Role source) {
 		if (source == null) {
 			return source;
 		}
@@ -146,5 +162,49 @@ public class RoleServiceImpl implements RoleService {
 		BeanUtils.copyProperties(source, target, "users", "authorities");
 		source.getAuthorities().forEach(a -> target.getAuthorities().add(new Authority(a.getName(), a.getDescription(), null)));
 		return target;
+	}
+
+	@Override
+	protected Role transientDetail(Role src) {
+		if (src == null) {
+			return null;
+		}
+		Role tar = new Role();
+		tar.setId(src.getId());
+		tar.setName(src.getName());
+		tar.setDescription(src.getDescription());
+		tar.setCreateDate(src.getCreateDate());
+		tar.setModifyDate(src.getModifyDate());
+		Set<Authority> authorities = src.getAuthorities().stream()
+				.map(this::transientAuthorityDetail).collect(Collectors.toSet());
+		tar.getAuthorities().addAll(authorities);
+		return tar;
+	}
+	
+	protected Authority transientAuthority(Authority src) {
+		if (src == null) {
+			return null;
+		}
+		Authority tar = new Authority();
+		tar.setId(src.getId());
+		tar.setName(src.getName());
+		tar.setDescription(src.getDescription());
+		tar.setCreateDate(src.getCreateDate());
+		tar.setModifyDate(src.getModifyDate());
+		return tar;
+	}
+	
+	protected Authority transientAuthorityDetail(Authority src) {
+		if (src == null) {
+			return null;
+		}
+		Authority tar = new Authority();
+		tar.setId(src.getId());
+		tar.setName(src.getName());
+		tar.setDescription(src.getDescription());
+		tar.setCreateDate(src.getCreateDate());
+		tar.setModifyDate(src.getModifyDate());
+		tar.setParent(transientAuthorityDetail(src.getParent()));
+		return tar;
 	}
 }

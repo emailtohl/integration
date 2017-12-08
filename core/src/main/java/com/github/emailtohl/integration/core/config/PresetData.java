@@ -14,6 +14,7 @@ import static com.github.emailtohl.integration.core.role.Authority.EMPLOYEE_DELE
 import static com.github.emailtohl.integration.core.role.Authority.EMPLOYEE_ENABLED;
 import static com.github.emailtohl.integration.core.role.Authority.EMPLOYEE_RESET_PASSWORD;
 import static com.github.emailtohl.integration.core.role.Authority.EMPLOYEE_ROLE;
+import static com.github.emailtohl.integration.core.role.Authority.ORG;
 import static com.github.emailtohl.integration.core.role.Authority.QUERY_ALL_USER;
 import static com.github.emailtohl.integration.core.role.Authority.RESOURCE;
 import static com.github.emailtohl.integration.core.role.Authority.ROLE;
@@ -51,6 +52,7 @@ public class PresetData {
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	
 	public final Authority
+			auth_org = new Authority(ORG, "管理组织信息的权限", null),
 			auth_role = new Authority(ROLE, "管理角色的权限", null),
 			auth_query_all_user = new Authority(QUERY_ALL_USER, "查询所有用户的权限", null),
 			auth_employee = new Authority(EMPLOYEE, "管理平台账号的权限", null),
@@ -84,6 +86,7 @@ public class PresetData {
 
 	{
 		auth_role.getRoles().addAll(Arrays.asList(role_admin));
+		auth_org.getRoles().addAll(Arrays.asList(role_admin, role_manager));
 		auth_query_all_user.getRoles().addAll(Arrays.asList(role_admin, role_manager));
 		auth_employee.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff));
 		auth_employee_role.getRoles().addAll(Arrays.asList(role_admin, role_manager));
@@ -102,8 +105,8 @@ public class PresetData {
 		auth_resource.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff));
 		auth_content.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff));
 		
-		role_admin.getAuthorities().addAll(Arrays.asList(auth_role, auth_query_all_user, auth_employee, auth_employee_role, auth_employee_lock, auth_employee_reset_password, auth_employee_delete, auth_customer, auth_customer_role, auth_customer_level, auth_customer_lock, auth_customer_reset_password, auth_customer_delete, auth_audit_user, auth_audit_role, auth_resource, auth_content));
-		role_manager.getAuthorities().addAll(Arrays.asList(auth_query_all_user, auth_employee, auth_employee_role, auth_customer_level, auth_employee_lock, auth_employee_reset_password, auth_customer, auth_customer_role, auth_customer_lock, auth_customer_reset_password, auth_audit_user, auth_resource, auth_content));
+		role_admin.getAuthorities().addAll(Arrays.asList(auth_role, auth_org, auth_query_all_user, auth_employee, auth_employee_role, auth_employee_lock, auth_employee_reset_password, auth_employee_delete, auth_customer, auth_customer_role, auth_customer_level, auth_customer_lock, auth_customer_reset_password, auth_customer_delete, auth_audit_user, auth_audit_role, auth_resource, auth_content));
+		role_manager.getAuthorities().addAll(Arrays.asList(auth_org, auth_query_all_user, auth_employee, auth_employee_role, auth_customer_level, auth_employee_lock, auth_employee_reset_password, auth_customer, auth_customer_role, auth_customer_lock, auth_customer_reset_password, auth_audit_user, auth_resource, auth_content));
 		role_staff.getAuthorities().addAll(Arrays.asList(auth_employee, auth_customer, auth_customer_lock, auth_resource, auth_content));
 		role_guest.getAuthorities().addAll(Arrays.asList(auth_customer));
 		
