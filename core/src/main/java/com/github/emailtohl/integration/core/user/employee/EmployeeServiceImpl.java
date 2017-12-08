@@ -33,6 +33,7 @@ import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
 import com.github.emailtohl.integration.core.ExecResult;
+import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleRepository;
 import com.github.emailtohl.integration.core.user.entities.Department;
@@ -48,7 +49,7 @@ import com.github.emailtohl.integration.core.user.org.DepartmentRepository;
  */
 @Transactional
 @Service
-public class EmployeeServiceImpl implements EmployeeService {
+public class EmployeeServiceImpl extends StandardService<Employee> implements EmployeeService {
 	private static final transient Logger LOG = LogManager.getLogger();
 	private static final transient SecureRandom RANDOM = new SecureRandom();
 	private static final transient int HASHING_ROUNDS = 10;
@@ -71,6 +72,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@CachePut(value = CACHE_NAME, key = "#result.id")
 	@Override
 	public Employee create(Employee entity) {
+		validate(entity);
 		Employee e = new Employee();
 		BeanUtils.copyProperties(entity, e, Employee.getIgnoreProperties("employeeRef", "roles", "enabled",
 				"credentialsNonExpired", "accountNonLocked", "lastLogin", "lastChangeCredentials", "department"));
@@ -132,6 +134,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Employee update(Long id, Employee newEntity) {
+		validate(newEntity);
 		Employee source = employeeRepository.get(id);
 		if (source == null) {
 			return null;
@@ -318,7 +321,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 		}
 	}
 	
-	private Employee toTransient(Employee source) {
+	@Override
+	protected Employee toTransient(Employee source) {
 		if (source == null) {
 			return null;
 		}
@@ -327,7 +331,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return target;
 	}
 	
-	private Employee transientDetail(Employee source) {
+	@Override
+	protected Employee transientDetail(Employee source) {
 		if (source == null) {
 			return null;
 		}

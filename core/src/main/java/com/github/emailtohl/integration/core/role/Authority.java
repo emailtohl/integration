@@ -30,6 +30,11 @@ public class Authority extends BaseEntity {
 	public static final String ROLE = "role";
 	
 	/**
+	 * 管理组织的权限
+	 */
+	public static final String ORG = "org";
+	
+	/**
 	 * 查询所有用户的权限
 	 */
 	public static final String QUERY_ALL_USER = "query_all_user";

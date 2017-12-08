@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
+import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.user.entities.Company;
 
 /**
@@ -26,7 +27,7 @@ import com.github.emailtohl.integration.core.user.entities.Company;
  */
 @Transactional
 @Service
-public class CompanyServiceImpl implements CompanyService {
+public class CompanyServiceImpl extends StandardService<Company> implements CompanyService {
 	@Inject
 	CompanyRepository companyRepository;
 	
@@ -38,6 +39,7 @@ public class CompanyServiceImpl implements CompanyService {
 	@CachePut(value = CACHE_NAME, key = "#result.id")
 	@Override
 	public Company create(Company entity) {
+		validate(entity);
 		Company src = new Company();
 		src.setName(entity.getName());
 		src.setDescription(entity.getDescription());
@@ -102,6 +104,7 @@ public class CompanyServiceImpl implements CompanyService {
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Company update(Long id, Company newEntity) {
+		validate(newEntity);
 		Company src = companyRepository.findOne(id);
 		if (src == null) {
 			return null;
@@ -140,7 +143,13 @@ public class CompanyServiceImpl implements CompanyService {
 		companyRepository.delete(src);
 	}
 
-	private Company toTransient(Company src) {
+	@Override
+	public Company transientCompanyDetail(Company src) {
+		return transientDetail(src);
+	}
+	
+	@Override
+	protected Company toTransient(Company src) {
 		if (src == null) {
 			return null;
 		}
@@ -150,6 +159,21 @@ public class CompanyServiceImpl implements CompanyService {
 		tar.setDescription(src.getDescription());
 		tar.setCreateDate(src.getCreateDate());
 		tar.setModifyDate(src.getCreateDate());
+		return tar;
+	}
+
+	@Override
+	protected Company transientDetail(Company src) {
+		if (src == null) {
+			return null;
+		}
+		Company tar = new Company();
+		tar.setId(src.getId());
+		tar.setName(src.getName());
+		tar.setDescription(src.getDescription());
+		tar.setCreateDate(src.getCreateDate());
+		tar.setModifyDate(src.getModifyDate());
+		tar.setParent(transientDetail(src.getParent()));
 		return tar;
 	}
 	
