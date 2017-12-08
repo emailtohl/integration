@@ -2,12 +2,12 @@ package com.github.emailtohl.integration.core.role;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -48,7 +48,7 @@ public class RoleServiceImpl implements RoleService {
 				p.getRoles().add(r);
 			}
 		});
-		return toTransient(roleRepository.save(r));
+		return transientDetail(roleRepository.save(r));
 	}
 
 	@Override
@@ -60,10 +60,10 @@ public class RoleServiceImpl implements RoleService {
 	@Override
 	public Role get(Long id) {
 		Role r = roleRepository.get(id);
-		if (r != null) {
-			r.getAuthorities().isEmpty();// 关联查询
+		if (r == null) {
+			return null;
 		}
-		return r;
+		return transientDetail(r);
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public class RoleServiceImpl implements RoleService {
 				p.getRoles().add(source);
 			}
 		});
-		return toTransient(source);
+		return transientDetail(source);
 	}
 
 	@CacheEvict(value = CACHE_NAME_ROLE, key = "#root.args[0]")
@@ -135,16 +135,65 @@ public class RoleServiceImpl implements RoleService {
 	@Cacheable(value = CACHE_NAME_AUTHORITY)
 	@Override
 	public List<Authority> getAuthorities() {
-		return authorityRepository.findAll().stream().map(a -> new Authority(a.getName(), a.getDescription(), null)).collect(Collectors.toList());
+		return authorityRepository.findAll().stream().map(this::transientAuthority).collect(Collectors.toList());
 	}
 	
-	private Role toTransient(Role source) {
-		if (source == null) {
-			return source;
+	private Role toTransient(Role src) {
+		if (src == null) {
+			return null;
 		}
-		Role target = new Role();
-		BeanUtils.copyProperties(source, target, "users", "authorities");
-		source.getAuthorities().forEach(a -> target.getAuthorities().add(new Authority(a.getName(), a.getDescription(), null)));
-		return target;
+		Role tar = new Role();
+		tar.setId(src.getId());
+		tar.setName(src.getName());
+		tar.setDescription(src.getDescription());
+		tar.setCreateDate(src.getCreateDate());
+		tar.setModifyDate(src.getModifyDate());
+		Set<Authority> authorities = src.getAuthorities().stream()
+				.map(this::transientAuthorityDetail).collect(Collectors.toSet());
+		tar.getAuthorities().addAll(authorities);
+		return tar;
+	}
+	
+	private Role transientDetail(Role src) {
+		if (src == null) {
+			return null;
+		}
+		Role tar = new Role();
+		tar.setId(src.getId());
+		tar.setName(src.getName());
+		tar.setDescription(src.getDescription());
+		tar.setCreateDate(src.getCreateDate());
+		tar.setModifyDate(src.getModifyDate());
+		Set<Authority> authorities = src.getAuthorities().stream()
+				.map(this::transientAuthorityDetail).collect(Collectors.toSet());
+		tar.getAuthorities().addAll(authorities);
+		return tar;
+	}
+	
+	private Authority transientAuthority(Authority src) {
+		if (src == null) {
+			return null;
+		}
+		Authority tar = new Authority();
+		tar.setId(src.getId());
+		tar.setName(src.getName());
+		tar.setDescription(src.getDescription());
+		tar.setCreateDate(src.getCreateDate());
+		tar.setModifyDate(src.getModifyDate());
+		return tar;
+	}
+	
+	private Authority transientAuthorityDetail(Authority src) {
+		if (src == null) {
+			return null;
+		}
+		Authority tar = new Authority();
+		tar.setId(src.getId());
+		tar.setName(src.getName());
+		tar.setDescription(src.getDescription());
+		tar.setCreateDate(src.getCreateDate());
+		tar.setModifyDate(src.getModifyDate());
+		tar.setParent(transientAuthorityDetail(src.getParent()));
+		return tar;
 	}
 }
