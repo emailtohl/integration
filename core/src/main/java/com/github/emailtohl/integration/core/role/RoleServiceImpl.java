@@ -35,6 +35,7 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 	@CachePut(value = CACHE_NAME_ROLE, key = "#result.id")
 	@Override
 	public Role create(Role entity) {
+		validate(entity);
 		Role r = new Role();
 		r.setName(entity.getName());
 		r.setDescription(entity.getDescription());
@@ -62,7 +63,7 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 	@Override
 	public Role get(Long id) {
 		Role r = roleRepository.get(id);
-		if (r != null) {
+		if (r == null) {
 			return null;
 		}
 		return transientDetail(r);
@@ -94,6 +95,7 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 	@CachePut(value = CACHE_NAME_ROLE, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Role update(Long id, Role newEntity) {
+		validate(newEntity);
 		Role source = roleRepository.get(id);
 		if (source == null) {
 			return null;

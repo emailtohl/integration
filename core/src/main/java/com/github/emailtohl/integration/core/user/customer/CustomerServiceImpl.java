@@ -86,6 +86,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	@CachePut(value = CACHE_NAME, key = "#result.id")
 	@Override
 	public Customer create(Customer entity) {
+		validate(entity);
 		if (!StringUtils.hasText(entity.getCellPhone()) && !StringUtils.hasText(entity.getEmail())) {
 			throw new InvalidDataException("注册时既未填入手机号也未填入邮箱地址，不能注册");
 		}
@@ -156,6 +157,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer update(Long id, Customer newEntity) {
+		validate(newEntity);
 		Customer source = customerRepository.get(id);
 		if (source == null) {
 			return null;

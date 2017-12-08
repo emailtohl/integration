@@ -4,11 +4,8 @@ import static com.github.emailtohl.integration.core.role.Authority.ROLE;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
 
@@ -17,7 +14,6 @@ import com.github.emailtohl.integration.common.jpa.Paging;
  * 覆盖StandardService中的方法是因为要标注安全层校验
  * @author HeLei
  */
-@Validated
 public interface RoleService {
 	/**
 	 * 创建一个角色
@@ -25,7 +21,7 @@ public interface RoleService {
 	 * @return
 	 */
 	@PreAuthorize("hasAuthority('" + ROLE + "')")
-	Role create(@Valid Role entity);
+	Role create(Role entity);
 	
 	/**
 	 * 根据角色名查找是否已存在
@@ -67,7 +63,7 @@ public interface RoleService {
 	 * @return 返回null表示没找到该角色
 	 */
 	@PreAuthorize("hasAuthority('" + ROLE + "')")
-	Role update(Long id, @Valid Role newEntity);
+	Role update(Long id, Role newEntity);
 
 	/**
 	 * 根据ID删除角色

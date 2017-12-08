@@ -17,7 +17,6 @@ import javax.validation.constraints.Pattern;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 
 import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.jpa.Paging;
@@ -30,14 +29,13 @@ import com.github.emailtohl.integration.core.user.entities.CustomerRef;
  * 客户的服务层
  * @author HeLei
  */
-@Validated
 public interface CustomerService {
 	/**
 	 * 创建一个用户
 	 * @param entity
 	 * @return
 	 */
-	Customer create(@Valid Customer entity);
+	Customer create(Customer entity);
 	
 	/**
 	 * 根据手机号或邮箱查找是否已存在
@@ -79,7 +77,7 @@ public interface CustomerService {
 	 * @return 返回null表示没找到该用户
 	 */
 	@PreAuthorize("hasAuthority('" + CUSTOMER + "')")
-	Customer update(Long id, @Valid Customer newEntity);
+	Customer update(Long id, Customer newEntity);
 
 	/**
 	 * 根据ID删除用户

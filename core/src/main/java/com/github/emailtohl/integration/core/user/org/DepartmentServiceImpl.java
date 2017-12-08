@@ -44,6 +44,7 @@ public class DepartmentServiceImpl extends StandardService<Department> implement
 	@CachePut(value = CACHE_NAME, key = "#result.id")
 	@Override
 	public Department create(Department entity) {
+		validate(entity);
 		Department src = new Department();
 		src.setName(entity.getName());
 		src.setDescription(entity.getDescription());
@@ -116,6 +117,7 @@ public class DepartmentServiceImpl extends StandardService<Department> implement
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Department update(Long id, Department newEntity) {
+		validate(newEntity);
 		Department src = departmentRepository.findOne(id);
 		if (src == null) {
 			return null;

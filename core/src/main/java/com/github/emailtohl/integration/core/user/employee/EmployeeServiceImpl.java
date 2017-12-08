@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,7 +28,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.annotation.Validated;
 
 import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
@@ -49,7 +47,6 @@ import com.github.emailtohl.integration.core.user.org.DepartmentRepository;
  * 
  * @author HeLei
  */
-@Validated
 @Transactional
 @Service
 public class EmployeeServiceImpl extends StandardService<Employee> implements EmployeeService {
@@ -74,7 +71,8 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 
 	@CachePut(value = CACHE_NAME, key = "#result.id")
 	@Override
-	public Employee create(@Valid Employee entity) {
+	public Employee create(Employee entity) {
+		validate(entity);
 		Employee e = new Employee();
 		BeanUtils.copyProperties(entity, e, Employee.getIgnoreProperties("employeeRef", "roles", "enabled",
 				"credentialsNonExpired", "accountNonLocked", "lastLogin", "lastChangeCredentials", "department"));
@@ -136,6 +134,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Employee update(Long id, Employee newEntity) {
+		validate(newEntity);
 		Employee source = employeeRepository.get(id);
 		if (source == null) {
 			return null;

@@ -4,11 +4,8 @@ import static com.github.emailtohl.integration.core.role.Authority.ORG;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.user.entities.Department;
@@ -17,7 +14,6 @@ import com.github.emailtohl.integration.core.user.entities.Department;
  * 部门信息服务层
  * @author HeLei
  */
-@Validated
 public interface DepartmentService {
 	/**
 	 * 创建一个部门
@@ -25,7 +21,7 @@ public interface DepartmentService {
 	 * @return
 	 */
 	@PreAuthorize("hasAuthority('" + ORG + "')")
-	Department create(@Valid Department entity);
+	Department create(Department entity);
 	
 	/**
 	 * 根据部门名是否已存在
@@ -68,7 +64,7 @@ public interface DepartmentService {
 	 * @return 返回null表示没找到该部门
 	 */
 	@PreAuthorize("hasAuthority('" + ORG + "')")
-	Department update(Long id, @Valid Department newEntity);
+	Department update(Long id, Department newEntity);
 
 	/**
 	 * 根据ID删除部门

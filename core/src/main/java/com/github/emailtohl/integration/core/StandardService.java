@@ -2,11 +2,21 @@ package com.github.emailtohl.integration.core;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import javax.transaction.Transactional;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Pageable;
 
+import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 
 /**
@@ -18,6 +28,12 @@ import com.github.emailtohl.integration.common.jpa.Paging;
  */
 @Transactional
 public abstract class StandardService<E extends Serializable> {
+	protected static final Logger LOG = LogManager.getLogger();
+	/**
+	 * 由于接口+抽象类的加入使得@Valid注解不能使用，所以可进行手动校验
+	 */
+	protected static final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+	protected Validator validator = factory.getValidator();
 	
 	/**
 	 * 创建一个实体
@@ -84,5 +100,18 @@ public abstract class StandardService<E extends Serializable> {
 	 * @param entity 持久化状态的实体对象
 	 * @return 瞬时态的实体对象
 	 */
-	protected abstract E transientDetail(E entity);
+	protected abstract E transientDetail(@Valid E entity);
+	
+	/**
+	 * 手动校验对象是否符合约束条件
+	 * @param entity
+	 * @return
+	 */
+	public void validate(E entity) {
+		Set<ConstraintViolation<E>> violations = validator.validate(entity);
+		if (violations.size() > 0) {
+			violations.forEach(v -> LOG.debug(v));
+			throw new NotAcceptableException(new ConstraintViolationException(violations));
+		}
+	}
 }

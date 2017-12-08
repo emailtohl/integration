@@ -39,6 +39,7 @@ public class CompanyServiceImpl extends StandardService<Company> implements Comp
 	@CachePut(value = CACHE_NAME, key = "#result.id")
 	@Override
 	public Company create(Company entity) {
+		validate(entity);
 		Company src = new Company();
 		src.setName(entity.getName());
 		src.setDescription(entity.getDescription());
@@ -103,6 +104,7 @@ public class CompanyServiceImpl extends StandardService<Company> implements Comp
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Company update(Long id, Company newEntity) {
+		validate(newEntity);
 		Company src = companyRepository.findOne(id);
 		if (src == null) {
 			return null;

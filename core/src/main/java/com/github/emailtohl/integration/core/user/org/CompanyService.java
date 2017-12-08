@@ -4,11 +4,8 @@ import static com.github.emailtohl.integration.core.role.Authority.ORG;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.user.entities.Company;
@@ -17,7 +14,6 @@ import com.github.emailtohl.integration.core.user.entities.Company;
  * 公司信息服务层
  * @author HeLei
  */
-@Validated
 public interface CompanyService {
 	
 	/**
@@ -26,7 +22,7 @@ public interface CompanyService {
 	 * @return
 	 */
 	@PreAuthorize("hasAuthority('" + ORG + "')")
-	Company create(@Valid Company entity);
+	Company create(Company entity);
 	
 	/**
 	 * 根据公司名查找是否已存在
@@ -69,7 +65,7 @@ public interface CompanyService {
 	 * @return 返回null表示没找到该公司
 	 */
 	@PreAuthorize("hasAuthority('" + ORG + "')")
-	Company update(Long id, @Valid Company newEntity);
+	Company update(Long id, Company newEntity);
 
 	/**
 	 * 根据ID删除公司
