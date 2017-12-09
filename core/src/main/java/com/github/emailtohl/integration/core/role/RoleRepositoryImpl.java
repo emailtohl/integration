@@ -4,9 +4,7 @@ import static org.springframework.data.jpa.repository.query.QueryUtils.toOrders;
 import static org.springframework.util.StringUtils.hasText;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,7 +18,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import com.github.emailtohl.integration.common.jpa.jpaCriterionQuery.AbstractCriterionQueryRepository;
-import com.github.emailtohl.integration.core.role.Role;
 
 /**
  * 自定义接口的实现
@@ -89,16 +86,6 @@ class RoleRepositoryImpl extends AbstractCriterionQueryRepository<Role> implemen
 			ls.add(r.join("authorities").<String>get("name").in(authorityName));
 		}
 		return ls.toArray(new Predicate[ls.size()]);
-	}
-
-	@Override
-	public Set<Long> roleIdsWhichCanNotBeDeleted() {
-		List<?> ls = em.createNativeQuery("SELECT role_id FROM t_user_role").getResultList();
-		Set<Long> set = new HashSet<Long>();
-		for (Object o : ls) {
-			set.add(Long.parseLong(o.toString()));
-		}
-		return set;
 	}
 
 	@Override

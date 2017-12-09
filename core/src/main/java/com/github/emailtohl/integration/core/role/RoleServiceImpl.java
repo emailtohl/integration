@@ -15,7 +15,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
@@ -42,7 +41,7 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 			Authority p = null;
 			if (a.getId() != null) {
 				p = authorityRepository.findOne(a.getId());
-			} else if (StringUtils.hasText(a.getName())) {
+			} else if (hasText(a.getName())) {
 				p = authorityRepository.findByName(a.getName());
 			}
 			if (p != null) {
@@ -98,10 +97,10 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 		if (source == null) {
 			return null;
 		}
-		if (StringUtils.hasText(newEntity.getName())) {
+		if (hasText(newEntity.getName())) {
 			source.setName(newEntity.getName());
 		}
-		if (StringUtils.hasText(newEntity.getDescription())) {
+		if (hasText(newEntity.getDescription())) {
 			source.setDescription(newEntity.getDescription());
 		}
 		// 先解除双方关系
@@ -115,7 +114,7 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 			Authority p = null;
 			if (a.getId() != null) {
 				p = authorityRepository.findOne(a.getId());
-			} else if (StringUtils.hasText(a.getName())) {
+			} else if (hasText(a.getName())) {
 				p = authorityRepository.findByName(a.getName());
 			}
 			if (p != null) {

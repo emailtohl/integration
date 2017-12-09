@@ -62,4 +62,13 @@ class SecurityContextManager {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		LOG.debug(authentication.getPrincipal());
 	}
+
+	public void setQux() {
+		SecurityContextHolder.clearContext();
+		String name = td.qux.getEmail();
+		Authentication token = new UsernamePasswordAuthenticationToken(name, password);
+		Authentication authentication = authenticationManager.authenticate(token);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		LOG.debug(authentication.getPrincipal());
+	}
 }

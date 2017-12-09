@@ -46,8 +46,8 @@ public interface EmployeeService {
 	 * @param id
 	 * @return
 	 */
-	@PreAuthorize("hasAuthority('" + EMPLOYEE + "')")
-	Employee get(Long id);
+	@PreAuthorize("hasAuthority('" + EMPLOYEE + "') or #id == authentication.principal.id")
+	Employee get(@P("id") Long id);
 
 	/**
 	 * 分页查询
@@ -73,8 +73,8 @@ public interface EmployeeService {
 	 * @param newEntity
 	 * @return 返回null表示没找到该平台账号
 	 */
-	@PreAuthorize("hasAuthority('" + EMPLOYEE + "')")
-	Employee update(Long id, Employee newEntity);
+	@PreAuthorize("hasAuthority('" + EMPLOYEE + "') or #id == authentication.principal.id")
+	Employee update(@P("id") Long id, Employee newEntity);
 
 	/**
 	 * 根据ID删除平台账号
@@ -91,6 +91,7 @@ public interface EmployeeService {
 	 */
 	@PreAuthorize("hasAuthority('" + EMPLOYEE + "')")
 	Paging<Employee> search(String query, Pageable pageable);
+	
 	/**
 	 * 平台账号登录
 	 * @param empNum
@@ -104,8 +105,8 @@ public interface EmployeeService {
 	 * @param empNum
 	 * @return
 	 */
-	@PreAuthorize("hasAuthority('" + EMPLOYEE + "')")
-	Employee getByEmpNum(Integer empNum);
+	@PreAuthorize("authentication.principal.username.indexOf(#empNum.toString()) != -1 or hasAuthority('" + EMPLOYEE + "')")
+	Employee getByEmpNum(@P("empNum") Integer empNum);
 	
 	/**
 	 * 根据姓名查询平台账号
@@ -131,7 +132,7 @@ public interface EmployeeService {
 	 * @param newPassword
 	 * @return ExecResult
 	 */
-	@PreAuthorize("#empNum.toString() matches authentication.principal.username")
+	@PreAuthorize("authentication.principal.username.indexOf(#empNum.toString()) != -1")
 	@NotNull ExecResult updatePassword(@P("empNum") Integer empNum, String oldPassword, String newPassword);
 	
 	/**

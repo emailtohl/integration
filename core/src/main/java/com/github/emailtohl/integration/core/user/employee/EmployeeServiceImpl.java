@@ -27,7 +27,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
@@ -194,7 +193,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 	}
 	
 	public Paging<Employee> search(String query, Pageable pageable) {
-		if (!StringUtils.hasText(query)) {
+		if (!hasText(query)) {
 			Page<Employee> p = employeeRepository.queryForPage(null, pageable, null);
 			List<Employee> ls = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
 			return new Paging<>(ls, p.getTotalElements(), p.getNumber(), p.getSize());

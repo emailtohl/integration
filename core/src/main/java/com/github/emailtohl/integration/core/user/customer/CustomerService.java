@@ -10,7 +10,6 @@ import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_ROLE
 import java.util.List;
 import java.util.Set;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -49,8 +48,8 @@ public interface CustomerService {
 	 * @param id
 	 * @return
 	 */
-	@PreAuthorize("hasAuthority('" + CUSTOMER + "')")
-	Customer get(Long id);
+	@PreAuthorize("#id == authentication.principal.id or hasAuthority('" + CUSTOMER + "')")
+	Customer get(@P("id") Long id);
 
 	/**
 	 * 分页查询
@@ -76,8 +75,8 @@ public interface CustomerService {
 	 * @param newEntity
 	 * @return 返回null表示没找到该用户
 	 */
-	@PreAuthorize("hasAuthority('" + CUSTOMER + "')")
-	Customer update(Long id, Customer newEntity);
+	@PreAuthorize("#id == authentication.principal.id or hasAuthority('" + CUSTOMER + "')")
+	Customer update(@P("id") Long id, Customer newEntity);
 
 	/**
 	 * 根据ID删除用户
@@ -106,8 +105,8 @@ public interface CustomerService {
 	 * @param cellPhoneOrEmail
 	 * @return
 	 */
-	@PreAuthorize("hasAuthority('" + CUSTOMER + "')")
-	Customer findByCellPhoneOrEmail(String cellPhoneOrEmail);
+	@PreAuthorize("authentication.principal.username.indexOf(#cellPhoneOrEmail) != -1 or hasAuthority('" + CUSTOMER + "')")
+	Customer findByCellPhoneOrEmail(@P("cellPhoneOrEmail") String cellPhoneOrEmail);
 	
 	/**
 	 * 为客户授予角色
@@ -141,7 +140,7 @@ public interface CustomerService {
 	 * @param token 通过邮箱或短信或其他方式获取的令牌，该令牌证明确实是该账号拥有者在修改密码
 	 * @return ExecResult
 	 */
-	@PreAuthorize("#cellPhoneOrEmail matches authentication.principal.username")
+	@PreAuthorize("authentication.principal.username.indexOf(#cellPhoneOrEmail) != -1")
 	@NotNull ExecResult updatePassword(@P("cellPhoneOrEmail") String cellPhoneOrEmail, String newPassword, String token);
 	
 	/**
@@ -149,8 +148,8 @@ public interface CustomerService {
 	 * @param id
 	 * @return
 	 */
-	@PreAuthorize("hasAuthority('" + CUSTOMER_RESET_PASSWORD + "')")
-	@NotNull ExecResult resetPassword(Long id);
+	@PreAuthorize("#id == authentication.principal.id or hasAuthority('" + CUSTOMER_RESET_PASSWORD + "')")
+	@NotNull ExecResult resetPassword(@P("id") Long id);
 	
 	/**
 	 * 跟换手机号码
@@ -178,20 +177,22 @@ public interface CustomerService {
 	Customer enabled(Long id, boolean enabled);
 	
 	/**
-	 * 批量更新用户所属的卡
-	 * @param id
-	 * @param cards
-	 * @return
-	 */
-	Customer updateCards(Long id, Set<Card> cards);
-	
-	/**
 	 * 添加卡
 	 * @param id
 	 * @param card
 	 * @return
 	 */
-	Customer addCard(Long id, @Valid Card card);
+	@PreAuthorize("#id == authentication.principal.id")
+	Customer addCard(@P("id") Long id, Card card);
+	
+	/**
+	 * 批量更新用户所属的卡
+	 * @param id
+	 * @param cards
+	 * @return
+	 */
+	@PreAuthorize("#id == authentication.principal.id")
+	Customer updateCards(@P("id") Long id, Set<Card> cards);
 	
 	/**
 	 * 移除卡
@@ -199,7 +200,8 @@ public interface CustomerService {
 	 * @param card
 	 * @return
 	 */
-	Customer removeCard(Long id, @Valid Card card);
+	@PreAuthorize("#id == authentication.principal.id")
+	Customer removeCard(@P("id") Long id, Card card);
 	
 	/**
 	 * 获取客户引用

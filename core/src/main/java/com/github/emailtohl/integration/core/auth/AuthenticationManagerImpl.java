@@ -19,13 +19,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
-import com.github.emailtohl.integration.common.exception.InnerDataStateException;
 import com.github.emailtohl.integration.core.user.UserService;
-import com.github.emailtohl.integration.core.user.entities.Customer;
-import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.User;
 
 /**
@@ -107,7 +103,7 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 		// ...
 		UserDetails principal = new UserDetailsImpl(u);
 
-		AuthenticationImpl a = new AuthenticationImpl(getUniqueName(u), u.getPassword(), u.authorityNames(), d,
+		AuthenticationImpl a = new AuthenticationImpl(UniqueUsername.get(u), u.getPassword(), u.authorityNames(), d,
 				principal, true);
 		// 构造器已经设置完成，为了表达逻辑，所以下面三条语句冗余
 		a.setAuthenticated(true);
@@ -158,31 +154,4 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 		this.privateKey = privateKey;
 	}
 	
-	/**
-	 * 在安全上下文中获取全局唯一识别的用户名
-	 * @param u
-	 * @return
-	 */
-	private String getUniqueName(User u) {
-		StringBuilder uniqueName = new StringBuilder();
-		if (u instanceof Employee) {
-			uniqueName.append(EMP_NUM_PREFIX).append(((Employee) u).getEmpNum().toString());
-		} else if (u instanceof Customer) {
-			if (StringUtils.hasText(u.getCellPhone())) {
-				uniqueName.append(CELL_PHONE_PREFIX).append(u.getCellPhone());
-			}
-			if (StringUtils.hasText(u.getEmail())) {
-				if (uniqueName.length() > 0) {
-					uniqueName.append(';');
-				}
-				uniqueName.append(EMAIL_PREFIX).append(u.getEmail());
-			}
-		} else if (u.getId() != null){
-			uniqueName.append(ID_PREFIX).append(u.getId().toString());
-		}
-		if (uniqueName.length() == 0) {
-			throw new InnerDataStateException("未获取到用户唯一标识");
-		}
-		return uniqueName.toString();
-	}
 }

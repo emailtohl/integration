@@ -15,7 +15,6 @@ import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
@@ -45,7 +44,7 @@ public class CompanyServiceImpl extends StandardService<Company> implements Comp
 		src.setDescription(entity.getDescription());
 		src.setResponsiblePerson(entity.getResponsiblePerson());
 		Company p = entity.getParent();
-		if (p != null && StringUtils.hasText(p.getName())) {
+		if (p != null && hasText(p.getName())) {
 			Company pc = companyRepository.findByName(p.getName());
 			if (pc != null) {
 				src.setParent(pc);
@@ -119,7 +118,7 @@ public class CompanyServiceImpl extends StandardService<Company> implements Comp
 			src.setResponsiblePerson(newEntity.getResponsiblePerson());
 		}
 		Company p = newEntity.getParent();
-		if (p != null && StringUtils.hasText(p.getName())) {
+		if (p != null && hasText(p.getName())) {
 			Company pc = companyRepository.findByName(p.getName());
 			if (pc != null) {
 				src.setParent(pc);

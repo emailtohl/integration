@@ -1,7 +1,6 @@
 package com.github.emailtohl.integration.core.role;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -9,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.github.emailtohl.integration.common.jpa.jpaCriterionQuery.CriterionQueryRepository;
-import com.github.emailtohl.integration.core.role.Role;
 
 /**
  * 访问角色的自定义接口
@@ -31,12 +29,7 @@ interface RoleRepositoryCustomization extends CriterionQueryRepository<Role> {
      * @return
      */
     List<Role> getRoleList(String roleName, String authorityName);
-    /**
-     * 查找能被删除的角色，即未被用户使用的角色
-     * @return
-     */
-    @Transactional
-    Set<Long> roleIdsWhichCanNotBeDeleted();
+
     /**
      * 检查该roleName是否存在
      * @param roleName

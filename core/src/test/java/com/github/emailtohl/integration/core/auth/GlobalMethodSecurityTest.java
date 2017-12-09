@@ -1,10 +1,12 @@
 package com.github.emailtohl.integration.core.auth;
 
+import static com.github.emailtohl.integration.core.auth.SecurityConfiguration.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -84,66 +86,87 @@ public class GlobalMethodSecurityTest {
 	
 	@Test
 	public void testEmployeeService() {
+		Integer empNum = 1002;
 		Employee bar = null;
 		ExecResult r = null;
 		scm.clearContext();
 		try {
-			// 传入参数是否正确并不重要，关键是测试被权限包含的方法是否能被调用
-			bar = employeeService.grandRoles(1L, "a", "b", "c");
+			employeeService.create(new Employee());
+		} catch (Exception e) {
+			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
+		}
+		try {
+			bar = employeeService.get(BAR_ID);
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
 		assertNull(bar);
 		try {
-			r = employeeService.resetPassword(1L);
+			// 传入参数是否正确并不重要，关键是测试被权限包含的方法是否能被调用
+			bar = employeeService.grandRoles(BAR_ID, "a", "b", "c");
+		} catch (Exception e) {
+			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
+		}
+		assertNull(bar);
+		try {
+			r = employeeService.resetPassword(BAR_ID);
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
 		assertNull(r);
 		try {
-			bar = employeeService.enabled(1L, true);
+			bar = employeeService.enabled(BAR_ID, true);
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
 		assertNull(bar);
 		try {
-			r = employeeService.updatePassword(1002, "678901", "token");
+			r = employeeService.updatePassword(empNum, "678901", "token");
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
 		
-		
 		scm.setEmailtohl();
-		bar = employeeService.grandRoles(1L, "a", "b", "c");
+		employeeService.create(new Employee());
+		bar = employeeService.get(BAR_ID);
 		assertNotNull(bar);
-		r = employeeService.resetPassword(1L);
+		bar = employeeService.grandRoles(BAR_ID, "a", "b", "c");
+		assertNotNull(bar);
+		r = employeeService.resetPassword(BAR_ID);
 		assertTrue(r.ok);
-		bar = employeeService.enabled(1L, false);
+		bar = employeeService.enabled(BAR_ID, false);
 		try {
-			r = employeeService.updatePassword(1002, "678901", "token");
+			r = employeeService.updatePassword(empNum, "678901", "token");
 		} catch (Exception e) {
 			assertTrue(e instanceof AccessDeniedException);
 		}
 		
 		scm.setBar();
 		try {
-			bar = employeeService.grandRoles(1L, "a", "b", "c");
+			employeeService.create(new Employee());
+		} catch (Exception e) {
+			assertTrue(e instanceof AccessDeniedException);
+		}
+		bar = employeeService.get(BAR_ID);
+		assertNotNull(bar);
+		try {
+			bar = employeeService.grandRoles(BAR_ID, "a", "b", "c");
 		} catch (Exception e) {
 			assertTrue(e instanceof AccessDeniedException);
 		}
 		try {
-			r = employeeService.resetPassword(1L);
+			r = employeeService.resetPassword(BAR_ID);
 		} catch (Exception e) {
 			assertTrue(e instanceof AccessDeniedException);
 		}
 		try {
-			bar = employeeService.enabled(1L, false);
+			bar = employeeService.enabled(BAR_ID, false);
 		} catch (Exception e) {
 			assertTrue(e instanceof AccessDeniedException);
 		}
 		
 		System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
-		r = employeeService.updatePassword(1002, "678901", "token");
+		r = employeeService.updatePassword(empNum, "678901", "token");
 		assertTrue(r.ok);
 	}
 
@@ -152,26 +175,45 @@ public class GlobalMethodSecurityTest {
 		Customer baz = null;
 		ExecResult r = null;
 		scm.clearContext();
+		
 		try {
-			baz = customerService.grandRoles(1L, "a", "b", "c");
+			baz = customerService.get(BAZ_ID);
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
 		assertNull(baz);
 		try {
-			baz = customerService.grandLevel(1L, Customer.Level.VIP);
+			baz = customerService.findByCellPhoneOrEmail(randomCellPhoneOrEmail(td.baz));
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
 		assertNull(baz);
 		try {
-			r = customerService.resetPassword(1L);
+			baz = customerService.update(BAZ_ID, new Customer());
+		} catch (Exception e) {
+			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
+		}
+//		assertNull(baz);
+		try {
+			baz = customerService.grandRoles(BAZ_ID, "a", "b", "c");
+		} catch (Exception e) {
+			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
+		}
+		assertNull(baz);
+		try {
+			baz = customerService.grandLevel(BAZ_ID, Customer.Level.VIP);
+		} catch (Exception e) {
+			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
+		}
+		assertNull(baz);
+		try {
+			r = customerService.resetPassword(BAZ_ID);
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
 		assertNull(r);
 		try {
-			baz = customerService.enabled(1L, true);
+			baz = customerService.enabled(BAZ_ID, true);
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
@@ -183,13 +225,19 @@ public class GlobalMethodSecurityTest {
 		}
 		
 		scm.setEmailtohl();
-		baz = customerService.grandRoles(1L, "a", "b", "c");
+		baz = customerService.get(BAZ_ID);
 		assertNotNull(baz);
-		baz = customerService.grandLevel(1L, Customer.Level.VIP);
+		baz = customerService.findByCellPhoneOrEmail(randomCellPhoneOrEmail(td.baz));
 		assertNotNull(baz);
-		r = employeeService.resetPassword(1L);
+		baz = customerService.update(BAZ_ID, new Customer());
+//		assertNotNull(baz);
+		baz = customerService.grandRoles(BAZ_ID, "a", "b", "c");
+		assertNotNull(baz);
+		baz = customerService.grandLevel(BAZ_ID, Customer.Level.VIP);
+		assertNotNull(baz);
+		r = employeeService.resetPassword(BAZ_ID);
 		assertTrue(r.ok);
-		baz = customerService.enabled(1L, false);
+		baz = customerService.enabled(BAZ_ID, false);
 		try {
 			r = customerService.updatePassword(td.baz.getEmail(), "678901", "token");
 		} catch (Exception e) {
@@ -197,23 +245,29 @@ public class GlobalMethodSecurityTest {
 		}
 		
 		scm.setBaz();
+		baz = customerService.get(BAZ_ID);
+		assertNotNull(baz);
+		baz = customerService.findByCellPhoneOrEmail(randomCellPhoneOrEmail(td.baz));
+		assertNotNull(baz);
+		baz = customerService.update(BAZ_ID, new Customer());
+//		assertNotNull(baz);
 		try {
-			baz = customerService.grandRoles(1L, "a", "b", "c");
+			baz = customerService.grandRoles(BAZ_ID, "a", "b", "c");
 		} catch (Exception e) {
 			assertTrue(e instanceof AccessDeniedException);
 		}
 		try {
-			baz = customerService.grandLevel(1L, Customer.Level.VIP);
+			baz = customerService.grandLevel(BAZ_ID, Customer.Level.VIP);
 		} catch (Exception e) {
 			assertTrue(e instanceof AccessDeniedException);
 		}
 		try {
-			r = customerService.resetPassword(1L);
+			r = customerService.resetPassword(BAZ_ID);
 		} catch (Exception e) {
 			assertTrue(e instanceof AccessDeniedException);
 		}
 		try {
-			baz = customerService.enabled(1L, false);
+			baz = customerService.enabled(BAZ_ID, false);
 		} catch (Exception e) {
 			assertTrue(e instanceof AccessDeniedException);
 		}
@@ -334,5 +388,15 @@ public class GlobalMethodSecurityTest {
 		assertNotNull(role);
 		ls = roleAuditedService.getRoleRevision(1L);
 		assertNotNull(ls);
+	}
+	
+	
+	Random r = new Random();
+	String randomCellPhoneOrEmail(Customer c) {
+		if (r.nextBoolean()) {
+			return c.getCellPhone();
+		} else {
+			return c.getEmail();
+		}
 	}
 }

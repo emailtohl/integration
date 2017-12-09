@@ -93,7 +93,7 @@ public class PresetData {
 		auth_employee_lock.getRoles().addAll(Arrays.asList(role_admin, role_manager));
 		auth_employee_reset_password.getRoles().addAll(Arrays.asList(role_admin, role_manager));
 		auth_employee_delete.getRoles().addAll(Arrays.asList(role_admin));
-		auth_customer.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff, role_guest));
+		auth_customer.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff));
 		auth_customer_role.getRoles().addAll(Arrays.asList(role_admin, role_manager));
 		auth_customer_level.getRoles().addAll(Arrays.asList(role_admin, role_manager));
 		auth_customer_lock.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff));
@@ -102,13 +102,13 @@ public class PresetData {
 		
 		auth_audit_user.getRoles().addAll(Arrays.asList(role_admin, role_manager));
 		auth_audit_role.getRoles().addAll(Arrays.asList(role_admin));
-		auth_resource.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff));
-		auth_content.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff));
+		auth_resource.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff, role_guest));
+		auth_content.getRoles().addAll(Arrays.asList(role_admin, role_manager, role_staff, role_guest));
 		
 		role_admin.getAuthorities().addAll(Arrays.asList(auth_role, auth_org, auth_query_all_user, auth_employee, auth_employee_role, auth_employee_lock, auth_employee_reset_password, auth_employee_delete, auth_customer, auth_customer_role, auth_customer_level, auth_customer_lock, auth_customer_reset_password, auth_customer_delete, auth_audit_user, auth_audit_role, auth_resource, auth_content));
 		role_manager.getAuthorities().addAll(Arrays.asList(auth_org, auth_query_all_user, auth_employee, auth_employee_role, auth_customer_level, auth_employee_lock, auth_employee_reset_password, auth_customer, auth_customer_role, auth_customer_lock, auth_customer_reset_password, auth_audit_user, auth_resource, auth_content));
 		role_staff.getAuthorities().addAll(Arrays.asList(auth_employee, auth_customer, auth_customer_lock, auth_resource, auth_content));
-		role_guest.getAuthorities().addAll(Arrays.asList(auth_customer));
+		role_guest.getAuthorities().addAll(Arrays.asList(auth_resource, auth_content));
 		
 		role_admin.getUsers().add(user_admin);
 		role_guest.getUsers().addAll(Arrays.asList(user_emailtohl));

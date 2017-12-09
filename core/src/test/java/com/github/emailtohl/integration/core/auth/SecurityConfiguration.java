@@ -48,7 +48,16 @@ import com.github.emailtohl.integration.core.user.entities.Employee;
 // 这时候spring会在调用Bean方法时再添加一个切面，执行spring security的安全检查
 @EnableGlobalMethodSecurity(prePostEnabled = true, order = 0, mode = AdviceMode.PROXY, proxyTargetClass = false)
 class SecurityConfiguration {
+	public static final Long EMAIL_TO_HL_ID = 1L, FOO_ID = 2L, BAR_ID = 3L, BAZ_ID = 4L, QUX_ID = 5L;
 	private CoreTestData td = new CoreTestData();
+	{
+		td.user_emailtohl.setId(1L);
+		td.foo.setId(2L);
+		td.bar.setId(3L);
+		td.baz.setId(4L);
+		td.qux.setId(5L);
+	}
+	
 	/**
 	 * 简单的缓存管理器的实现
 	 * 
@@ -67,6 +76,9 @@ class SecurityConfiguration {
 		when(dao.findByEmail(td.user_emailtohl.getEmail())).thenReturn(td.user_emailtohl);
 		when(dao.findByCellPhone(td.baz.getCellPhone())).thenReturn(td.baz);
 		when(dao.findByEmail(td.baz.getEmail())).thenReturn(td.baz);
+		when(dao.get(EMAIL_TO_HL_ID)).thenReturn(td.user_emailtohl);
+		when(dao.get(BAZ_ID)).thenReturn(td.baz);
+		when(dao.get(QUX_ID)).thenReturn(td.qux);
 		return dao;
 	}
 	
@@ -75,6 +87,8 @@ class SecurityConfiguration {
 		EmployeeRepository dao = mock(EmployeeRepository.class);
 		when(dao.findByEmpNum(Employee.NO1 + 1)).thenReturn(td.foo);
 		when(dao.findByEmpNum(Employee.NO1 + 2)).thenReturn(td.bar);
+		when(dao.get(FOO_ID)).thenReturn(td.foo);
+		when(dao.get(BAR_ID)).thenReturn(td.bar);
 		return dao;
 	}
 	
@@ -125,6 +139,13 @@ class SecurityConfiguration {
 	@Bean
 	public CustomerService customerServiceMock() {
 		CustomerService service = mock(CustomerService.class);
+		when(service.get(EMAIL_TO_HL_ID)).thenReturn(td.user_emailtohl);
+		when(service.get(BAZ_ID)).thenReturn(td.baz);
+		when(service.get(QUX_ID)).thenReturn(td.qux);
+		when(service.findByCellPhoneOrEmail(td.user_emailtohl.getCellPhone())).thenReturn(td.user_emailtohl);
+		when(service.findByCellPhoneOrEmail(td.user_emailtohl.getEmail())).thenReturn(td.user_emailtohl);
+		when(service.findByCellPhoneOrEmail(td.baz.getCellPhone())).thenReturn(td.baz);
+		when(service.findByCellPhoneOrEmail(td.baz.getEmail())).thenReturn(td.baz);
 		when(service.grandRoles(anyLong(), anyVararg())).thenReturn(td.baz);
 		when(service.grandLevel(anyLong(), any(Customer.Level.class))).thenReturn(td.baz);
 		when(service.resetPassword(anyLong())).thenReturn(new ExecResult(true, "", null));
@@ -136,6 +157,8 @@ class SecurityConfiguration {
 	@Bean
 	public EmployeeService employeeServiceMock() {
 		EmployeeService service = mock(EmployeeService.class);
+		when(service.get(FOO_ID)).thenReturn(td.foo);
+		when(service.get(BAR_ID)).thenReturn(td.bar);
 		when(service.grandRoles(anyLong(), anyVararg())).thenReturn(td.bar);
 		when(service.resetPassword(anyLong())).thenReturn(new ExecResult(true, "", null));
 		when(service.enabled(anyLong(), anyBoolean())).thenReturn(td.bar);

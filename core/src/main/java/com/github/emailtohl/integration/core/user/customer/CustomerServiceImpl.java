@@ -26,7 +26,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.exception.InvalidDataException;
 import com.github.emailtohl.integration.common.exception.NotAcceptableException;
@@ -87,7 +86,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	@Override
 	public Customer create(Customer entity) {
 		validate(entity);
-		if (!StringUtils.hasText(entity.getCellPhone()) && !StringUtils.hasText(entity.getEmail())) {
+		if (!hasText(entity.getCellPhone()) && !hasText(entity.getEmail())) {
 			throw new InvalidDataException("注册时既未填入手机号也未填入邮箱地址，不能注册");
 		}
 		Customer c = new Customer();
@@ -208,7 +207,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 
 	@Override
 	public Paging<Customer> search(String query, Pageable pageable) {
-		if (!StringUtils.hasText(query)) {
+		if (!hasText(query)) {
 			Page<Customer> p = customerRepository.queryForPage(null, pageable, null);
 			List<Customer> ls = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
 			return new Paging<>(ls, p.getTotalElements(), p.getNumber(), p.getSize());
@@ -362,24 +361,26 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
+	public Customer addCard(Long id, Card card) {
+		validate(card, Card.class);
+		Customer source = customerRepository.get(id);
+		if (source == null) {
+			return null;
+		}
+		source.getCards().add(card);
+		return transientDetail(source);
+	}
+	
+	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
+	@Override
 	public Customer updateCards(Long id, Set<Card> cards) {
+		cards.forEach(c -> validate(c, Card.class));
 		Customer source = customerRepository.get(id);
 		if (source == null) {
 			return null;
 		}
 		source.getCards().clear();
 		source.getCards().addAll(cards);
-		return transientDetail(source);
-	}
-
-	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
-	@Override
-	public Customer addCard(Long id, Card card) {
-		Customer source = customerRepository.get(id);
-		if (source == null) {
-			return null;
-		}
-		source.getCards().add(card);
 		return transientDetail(source);
 	}
 

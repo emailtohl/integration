@@ -15,7 +15,6 @@ import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
@@ -50,14 +49,14 @@ public class DepartmentServiceImpl extends StandardService<Department> implement
 		src.setDescription(entity.getDescription());
 		src.setResponsiblePerson(entity.getResponsiblePerson());
 		Department p = entity.getParent();
-		if (p != null && StringUtils.hasText(p.getName())) {
+		if (p != null && hasText(p.getName())) {
 			Department pd = departmentRepository.findByName(p.getName());
 			if (pd != null) {
 				src.setParent(pd);
 			}
 		}
 		Company c = entity.getCompany();
-		if (c != null && StringUtils.hasText(c.getName())) {
+		if (c != null && hasText(c.getName())) {
 			Company pc = companyRepository.findByName(c.getName());
 			if (pc != null) {
 				src.setCompany(pc);
@@ -132,14 +131,14 @@ public class DepartmentServiceImpl extends StandardService<Department> implement
 			src.setResponsiblePerson(newEntity.getResponsiblePerson());
 		}
 		Department p = newEntity.getParent();
-		if (p != null && StringUtils.hasText(p.getName())) {
+		if (p != null && hasText(p.getName())) {
 			Department pd = departmentRepository.findByName(p.getName());
 			if (pd != null) {
 				src.setParent(pd);
 			}
 		}
 		Company c = newEntity.getCompany();
-		if (c != null && StringUtils.hasText(c.getName())) {
+		if (c != null && hasText(c.getName())) {
 			Company pc = companyRepository.findByName(c.getName());
 			if (pc != null) {
 				src.setCompany(pc);

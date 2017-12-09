@@ -7,13 +7,16 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.github.emailtohl.integration.common.exception.InnerDataStateException;
+import com.github.emailtohl.integration.core.user.entities.Classify;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.User;
 
 /**
  * org.springframework.security.core.userdetails.UserDetailsService接口需要返回的实例
+ * 在SpEL表达式中authentication.principal引用的是AuthenticationImpl.getPrincipal()
+ * 而AuthenticationImpl中的principal是本类实例
+ * 
  * @author HeLei
  */
 public class UserDetailsImpl implements UserDetails {
@@ -22,6 +25,7 @@ public class UserDetailsImpl implements UserDetails {
 	/**
 	 * Gson序列化对象是根据对象的Field字段而不是根据JavaBean属性，所以这里还需有Field字段
 	 */
+	public final String username;
 	private Long id;
 	private String realName;
 	private UserType userType;
@@ -30,6 +34,7 @@ public class UserDetailsImpl implements UserDetails {
 	private String email;
 	private Integer empNum; // 跟平台账号相关
 	private Customer.Level level; // 跟客户账号相关
+	private Classify classify; // 跟客户账号相关
 	private Set<String> authorities;
 	private String password;
 	private String iconUrl;// 额外携带用户图片信息
@@ -37,28 +42,6 @@ public class UserDetailsImpl implements UserDetails {
 	private Boolean accountNonExpired;
 	private Boolean credentialsNonExpired;
 	
-	public UserDetailsImpl() {
-	}
-
-	public UserDetailsImpl(Long id, String realName, UserType userType, String nickname, String cellPhone, String email,
-			Integer empNum, Set<String> authorities, String password, String iconSrc, Boolean accountNonLocked,
-			Boolean accountNonExpired, Boolean credentialsNonExpired) {
-		super();
-		this.id = id;
-		this.realName = realName;
-		this.userType = userType;
-		this.nickname = nickname;
-		this.cellPhone = cellPhone;
-		this.email = email;
-		this.empNum = empNum;
-		this.authorities = authorities;
-		this.password = password;
-		this.iconUrl = iconSrc;
-		this.accountNonLocked = accountNonLocked;
-		this.accountNonExpired = accountNonExpired;
-		this.credentialsNonExpired = credentialsNonExpired;
-	}
-
 	public UserDetailsImpl(User u) {
 		this.id = u.getId();
 		this.realName = u.getName();
@@ -71,6 +54,7 @@ public class UserDetailsImpl implements UserDetails {
 		} else if (u instanceof Customer) {
 			this.userType = UserType.Customer;
 			this.level = ((Customer) u).getLevel();
+			this.classify = ((Customer) u).getClassify();
 		}
 		this.authorities = u.authorityNames();
 		this.password = u.getPassword();
@@ -80,6 +64,7 @@ public class UserDetailsImpl implements UserDetails {
 		this.accountNonExpired = u.getAccountNonExpired();
 		this.accountNonLocked = u.getAccountNonLocked();
 		this.credentialsNonExpired = u.getCredentialsNonExpired();
+		this.username = UniqueUsername.get(u);
 	}
 	
 	@Override
@@ -94,16 +79,7 @@ public class UserDetailsImpl implements UserDetails {
 
 	@Override
 	public String getUsername() {
-		if (userType == UserType.Employee) {
-			return empNum.toString();
-		}
-		if (cellPhone != null) {
-			return cellPhone;
-		}
-		if (email != null) {
-			return email;
-		}
-		throw new InnerDataStateException("未存储用户的标识");
+		return this.username;
 	}
 	
 	public Long getId() {
@@ -149,24 +125,21 @@ public class UserDetailsImpl implements UserDetails {
 
 	@Override
 	public String toString() {
-		return "UserDetailsImpl [id=" + id + ", userType=" + userType + ", nickname=" + nickname + ", cellPhone="
-				+ cellPhone + ", email=" + email + ", empNum=" + empNum + ", level=" + level + ", authorities="
-				+ authorities + ", password=" + password + ", iconSrc=" + iconUrl + ", accountNonLocked="
-				+ accountNonLocked + ", accountNonExpired=" + accountNonExpired + ", credentialsNonExpired="
-				+ credentialsNonExpired + "]";
+		return "UserDetailsImpl [username=" + username + ", id=" + id + ", realName=" + realName + ", userType="
+				+ userType + ", nickname=" + nickname + ", cellPhone=" + cellPhone + ", email=" + email + ", empNum="
+				+ empNum + ", level=" + level + ", classify=" + classify + ", authorities=" + authorities
+				+ ", password=" + password + ", iconUrl=" + iconUrl + ", accountNonLocked=" + accountNonLocked
+				+ ", accountNonExpired=" + accountNonExpired + ", credentialsNonExpired=" + credentialsNonExpired + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
-	
-	/**
-	 * 从数据库中查询出来的用户身份，以id为相等标识
-	 */
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -176,10 +149,10 @@ public class UserDetailsImpl implements UserDetails {
 		if (getClass() != obj.getClass())
 			return false;
 		UserDetailsImpl other = (UserDetailsImpl) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (username == null) {
+			if (other.username != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!username.equals(other.username))
 			return false;
 		return true;
 	}

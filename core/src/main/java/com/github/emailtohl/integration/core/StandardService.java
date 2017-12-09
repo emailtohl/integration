@@ -114,4 +114,26 @@ public abstract class StandardService<E extends Serializable> {
 			throw new NotAcceptableException(new ConstraintViolationException(violations));
 		}
 	}
+	
+	/**
+	 * 手动校验对象是否符合约束条件
+	 * @param entity
+	 * @return
+	 */
+	public <T> void validate(T obj, Class<T> clz) {
+		Set<ConstraintViolation<T>> violations = validator.validate(obj);
+		if (violations.size() > 0) {
+			violations.forEach(v -> LOG.debug(v));
+			throw new NotAcceptableException(new ConstraintViolationException(violations));
+		}
+	}
+	
+	/**
+	 * 判断字符串是否存在
+	 * @param text
+	 * @return
+	 */
+	public boolean hasText(String text) {
+		return text != null && !text.isEmpty();
+	}
 }
