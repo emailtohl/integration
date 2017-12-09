@@ -14,8 +14,8 @@ import com.github.emailtohl.integration.core.user.entities.User;
 
 /**
  * org.springframework.security.core.userdetails.UserDetailsService接口需要返回的实例
- * 在SpEL表达式中authentication.principal引用的是AuthenticationImpl.getPrincipal()
- * 而AuthenticationImpl中的principal是本类实例
+ * 在SpEL表达式中，authentication即AuthenticationImpl的实例
+ * authentication.principal就是UserDetailsImpl的实例
  * 
  * @author HeLei
  */

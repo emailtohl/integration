@@ -33,11 +33,6 @@ import com.github.emailtohl.integration.core.user.entities.User;
 public class AuthenticationManagerImpl implements AuthenticationManager {
 	protected static final transient Logger LOG = LogManager.getLogger();
 	
-	public static final String EMP_NUM_PREFIX = "emp_num:";
-	public static final String CELL_PHONE_PREFIX = "cell_phone:";
-	public static final String EMAIL_PREFIX = "email:";
-	public static final String ID_PREFIX = "id:";
-	
 	@Inject
 	protected UserService userService;
 	@Inject
