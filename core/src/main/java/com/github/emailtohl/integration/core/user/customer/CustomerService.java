@@ -105,7 +105,7 @@ public interface CustomerService {
 	 * @param cellPhoneOrEmail
 	 * @return
 	 */
-	@PreAuthorize("authentication.principal.username.indexOf(#cellPhoneOrEmail) != -1 or hasAuthority('" + CUSTOMER + "')")
+	@PreAuthorize("authentication.principal.username.contains(#cellPhoneOrEmail) or hasAuthority('" + CUSTOMER + "')")
 	Customer findByCellPhoneOrEmail(@P("cellPhoneOrEmail") String cellPhoneOrEmail);
 	
 	/**
@@ -140,7 +140,7 @@ public interface CustomerService {
 	 * @param token 通过邮箱或短信或其他方式获取的令牌，该令牌证明确实是该账号拥有者在修改密码
 	 * @return ExecResult
 	 */
-	@PreAuthorize("authentication.principal.username.indexOf(#cellPhoneOrEmail) != -1")
+	@PreAuthorize("authentication.principal.username.contains(#cellPhoneOrEmail)")
 	@NotNull ExecResult updatePassword(@P("cellPhoneOrEmail") String cellPhoneOrEmail, String newPassword, String token);
 	
 	/**
