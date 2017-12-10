@@ -26,7 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		if (u == null) {
 			throw new UsernameNotFoundException("没有此用户：" + username);
 		}
-		UserDetails d = new UserDetailsImpl(u);
+		UserDetails d = new UserDetailsImpl(u, username/*用查找的用户名*/);
 		return d;
 	}
 

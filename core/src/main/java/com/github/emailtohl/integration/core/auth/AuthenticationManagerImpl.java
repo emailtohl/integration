@@ -1,7 +1,5 @@
 package com.github.emailtohl.integration.core.auth;
 
-import java.io.Serializable;
-
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
@@ -96,11 +94,9 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 		// 这是辅助的一些信息
 		Details d = new Details();
 		// ...
-		UserDetails principal = new UserDetailsImpl(u);
+		UserDetails principal = new UserDetailsImpl(u, username/*用登录时的用户名*/);
 
-		AuthenticationImpl a = new AuthenticationImpl(UniqueUsername.get(u), u.getPassword(), u.authorityNames(), d,
-				principal, true);
-		// 构造器已经设置完成，为了表达逻辑，所以下面三条语句冗余
+		AuthenticationImpl a = new AuthenticationImpl(principal);
 		a.setAuthenticated(true);
 		a.eraseCredentials();
 		a.setDetails(d);
@@ -108,37 +104,6 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 			publisher.publishEvent(new LoginEvent(a));
 		}
 		return a;
-	}
-
-	public class Details implements Serializable {
-		private static final long serialVersionUID = -7461854984848054398L;
-		String remoteAddress;
-		String sessionId;
-		String certificateSerialNumber;
-
-		public String getRemoteAddress() {
-			return remoteAddress;
-		}
-
-		public void setRemoteAddress(String remoteAddress) {
-			this.remoteAddress = remoteAddress;
-		}
-
-		public String getSessionId() {
-			return sessionId;
-		}
-
-		public void setSessionId(String sessionId) {
-			this.sessionId = sessionId;
-		}
-
-		public String getCertificateSerialNumber() {
-			return certificateSerialNumber;
-		}
-
-		public void setCertificateSerialNumber(String certificateSerialNumber) {
-			this.certificateSerialNumber = certificateSerialNumber;
-		}
 	}
 
 	public Encipher getEncipher() {

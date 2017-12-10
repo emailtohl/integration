@@ -6,7 +6,9 @@ import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 
+import com.github.emailtohl.integration.core.user.Constant;
 import com.github.emailtohl.integration.core.user.entities.Classify;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;
@@ -19,13 +21,14 @@ import com.github.emailtohl.integration.core.user.entities.User;
  * 
  * @author HeLei
  */
+@SuppressWarnings("unused")
 public class UserDetailsImpl implements UserDetails {
 	private static final long serialVersionUID = 1635134127318665555L;
 
 	/**
 	 * Gson序列化对象是根据对象的Field字段而不是根据JavaBean属性，所以这里还需有Field字段
 	 */
-	public final String username;
+	private String username = "anonymous";
 	private Long id;
 	private String realName;
 	private UserType userType;
@@ -43,6 +46,9 @@ public class UserDetailsImpl implements UserDetails {
 	private Boolean credentialsNonExpired;
 	
 	public UserDetailsImpl(User u) {
+		if (u == null) {
+			return;
+		}
 		this.id = u.getId();
 		this.realName = u.getName();
 		this.nickname = u.getNickname();
@@ -51,10 +57,20 @@ public class UserDetailsImpl implements UserDetails {
 		if (u instanceof Employee) {
 			this.userType = UserType.Employee;
 			this.empNum = ((Employee) u).getEmpNum();
+			if (this.empNum != null) {
+				this.username = this.empNum.toString();
+			}
 		} else if (u instanceof Customer) {
 			this.userType = UserType.Customer;
 			this.level = ((Customer) u).getLevel();
 			this.classify = ((Customer) u).getClassify();
+			if (StringUtils.hasText(u.getEmail())) {
+				this.username = u.getEmail();
+			} else if (StringUtils.hasText(u.getCellPhone())) {
+				this.username = u.getCellPhone();
+			}
+		} else if (u instanceof User && Constant.ADMIN_NAME.equals(u.getName())) {
+			this.username = Constant.ADMIN_NAME;
 		}
 		this.authorities = u.authorityNames();
 		this.password = u.getPassword();
@@ -64,7 +80,19 @@ public class UserDetailsImpl implements UserDetails {
 		this.accountNonExpired = u.getAccountNonExpired();
 		this.accountNonLocked = u.getAccountNonLocked();
 		this.credentialsNonExpired = u.getCredentialsNonExpired();
-		this.username = UniqueUsername.get(u);
+	}
+	
+	/**
+	 * 指定username
+	 * @param u
+	 * @param username
+	 */
+	public UserDetailsImpl(User u, String username) {
+		this(u);
+		if (!StringUtils.hasText(username)) {
+			throw new IllegalArgumentException("the username never null");
+		}
+		this.username = username;
 	}
 	
 	@Override
@@ -77,13 +105,45 @@ public class UserDetailsImpl implements UserDetails {
 		return this.password;
 	}
 
+	/**
+	 * Returns the username used to authenticate the user. Cannot return <code>null</code>
+	 *
+	 * @return the username (never <code>null</code>)
+	 */
 	@Override
 	public String getUsername() {
 		return this.username;
 	}
 	
+	public void setUsername(String username) {
+		if (!StringUtils.hasText(username)) {
+			throw new IllegalArgumentException("the username never null");
+		}
+		this.username = username;
+	}
+	
 	public Long getId() {
 		return this.id;
+	}
+
+	public String getCellPhone() {
+		return cellPhone;
+	}
+
+	public void setCellPhone(String cellPhone) {
+		this.cellPhone = cellPhone;
+	}
+
+	public Integer getEmpNum() {
+		return empNum;
+	}
+
+	public void setEmpNum(Integer empNum) {
+		this.empNum = empNum;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getIconUrl() {
@@ -125,11 +185,7 @@ public class UserDetailsImpl implements UserDetails {
 
 	@Override
 	public String toString() {
-		return "UserDetailsImpl [username=" + username + ", id=" + id + ", realName=" + realName + ", userType="
-				+ userType + ", nickname=" + nickname + ", cellPhone=" + cellPhone + ", email=" + email + ", empNum="
-				+ empNum + ", level=" + level + ", classify=" + classify + ", authorities=" + authorities
-				+ ", password=" + password + ", iconUrl=" + iconUrl + ", accountNonLocked=" + accountNonLocked
-				+ ", accountNonExpired=" + accountNonExpired + ", credentialsNonExpired=" + credentialsNonExpired + "]";
+		return "UserDetailsImpl [username=" + username + ", authorities=" + authorities + "]";
 	}
 
 	@Override

@@ -105,7 +105,7 @@ public interface EmployeeService {
 	 * @param empNum
 	 * @return
 	 */
-	@PreAuthorize("authentication.principal.username.contains(#empNum.toString()) or hasAuthority('" + EMPLOYEE + "')")
+	@PreAuthorize("#empNum.toString() == authentication.principal.username or hasAuthority('" + EMPLOYEE + "')")
 	Employee getByEmpNum(@P("empNum") Integer empNum);
 	
 	/**
@@ -132,7 +132,7 @@ public interface EmployeeService {
 	 * @param newPassword
 	 * @return ExecResult
 	 */
-	@PreAuthorize("authentication.principal.username.contains(#empNum.toString())")
+	@PreAuthorize("#empNum.toString() == authentication.principal.username")
 	@NotNull ExecResult updatePassword(@P("empNum") Integer empNum, String oldPassword, String newPassword);
 	
 	/**
