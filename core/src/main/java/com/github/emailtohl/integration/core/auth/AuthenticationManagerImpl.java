@@ -19,7 +19,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
+import com.github.emailtohl.integration.core.user.Constant;
 import com.github.emailtohl.integration.core.user.UserService;
+import com.github.emailtohl.integration.core.user.entities.Customer;
+import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.User;
 
 /**
@@ -63,6 +66,16 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 			LOG.warn("Authentication failed for non-existent user {}.", username);
 			throw new UsernameNotFoundException("没有此账号");
 		}
+		
+		if (u instanceof Employee && Employee.NO1 == ((Employee) u).getEmpNum()) {
+			LOG.warn("Authentication Don't login this account {}.", username);
+			throw new UsernameNotFoundException("没有此账号");
+		}
+		if (u instanceof Customer && Constant.ANONYMOUS_EMAIL.equals(u.getEmail())) {
+			LOG.warn("Authentication Don't login this account {}.", username);
+			throw new UsernameNotFoundException("没有此账号");
+		}
+		
 		if (u.getEnabled() != null && !u.getEnabled()) {
 			LOG.warn("Authentication enable for user {}.", username);
 			throw new DisabledException("账号未启用");

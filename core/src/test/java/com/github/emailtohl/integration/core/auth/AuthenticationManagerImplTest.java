@@ -61,6 +61,18 @@ public class AuthenticationManagerImplTest {
 		authenticationManager.authenticate(token);
 	}
 	
+	@Test(expected = UsernameNotFoundException.class)
+	public void testUsernameNotFoundExceptionBot() {
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(td.user_bot.getEmpNum(), Constant.DEFAULT_PASSWORD);
+		authenticationManager.authenticate(token);
+	}
+	
+	@Test(expected = UsernameNotFoundException.class)
+	public void testUsernameNotFoundExceptionAnonymous() {
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(td.user_anonymous.getEmail(), Constant.DEFAULT_PASSWORD);
+		authenticationManager.authenticate(token);
+	}
+	
 	@Test(expected = InvalidDataException.class)
 	public void testInvalidDataException() {
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(td.bar.getEmpNum().toString(), "123");
