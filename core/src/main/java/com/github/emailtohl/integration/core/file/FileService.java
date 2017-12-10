@@ -1,5 +1,7 @@
 package com.github.emailtohl.integration.core.file;
 
+import static com.github.emailtohl.integration.core.role.Authority.*;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.Set;
@@ -14,13 +16,13 @@ import com.github.emailtohl.integration.core.ExecResult;
  * 本服务已经统一定向到系统中资源文件的存储目录下，所有输入的路径名（文件名）均是相对于该根目录的相对路径
  * @author HeLei
  */
-@PreAuthorize("isAuthenticated()")
 public interface FileService {
 	/**
 	 * 测试该文件或目录是否存在
 	 * @param pathname 目录+文件名
 	 * @return
 	 */
+	@PreAuthorize("isAuthenticated()")
 	boolean exist(String pathname);
 	
 	/**
@@ -28,6 +30,7 @@ public interface FileService {
 	 * @param pathname 目录+文件名
 	 * @return
 	 */
+	@PreAuthorize("isAuthenticated()")
 	File getFile(String pathname);
 	
 	/**
@@ -35,6 +38,7 @@ public interface FileService {
 	 * @param f
 	 * @return
 	 */
+	@PreAuthorize("isAuthenticated()")
 	String getPath(File f);
 	
 	/**
@@ -42,6 +46,7 @@ public interface FileService {
 	 * @param dirname
 	 * @return
 	 */
+	@PreAuthorize("hasAuthority('" + RESOURCE + "')")
 	ExecResult createDir(String dirname);
 	
 	/**
@@ -50,6 +55,7 @@ public interface FileService {
 	 * @param destName 目录+文件名
 	 * @return
 	 */
+	@PreAuthorize("hasAuthority('" + RESOURCE + "')")
 	ExecResult reName(String srcName, String destName);
 	
 	/**
@@ -57,6 +63,7 @@ public interface FileService {
 	 * @param pathname 目录+文件名
 	 * @return
 	 */
+	@PreAuthorize("hasAuthority('" + RESOURCE + "')")
 	ExecResult delete(String pathname);
 	
 	/**
@@ -108,6 +115,7 @@ public interface FileService {
 	 * @param charset the charset to use, null means platform default
 	 * @return
 	 */
+	@PreAuthorize("hasAuthority('" + CONTENT + "')")
 	ExecResult writeText(String pathname, String textContext, String charset);
 
 }

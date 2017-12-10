@@ -107,37 +107,12 @@ public class Authority extends BaseEntity {
 	/**
 	 * 资源管理，文件上传，目录创建、改名以及删除
 	 */
-	public static final String RESOURCE = "resource_manager";
+	public static final String RESOURCE = "resource";
 	
 	/**
 	 * 内容管理权限
 	 */
-	public static final String CONTENT = "content_manager";
-	
-	/**
-	 * 流程权限
-	 */
-	public static final String FLOW = "flow";
-	
-	/**
-	 * 处理申请单状态的权限
-	 */
-	public static final String APPLICATION_FORM_TRANSIT = "application_form_transit";
-	
-	/**
-	 * 删除申请单
-	 */
-	public static final String APPLICATION_FORM_DELETE = "application_form_delete";
-	
-	/**
-	 * 查询申请单的处理历史
-	 */
-	public static final String APPLICATION_FORM_READ_HISTORY = "application_form_read_history";
-	
-	/**
-	 * 删除论坛帖子
-	 */
-	public static final String FORUM_DELETE = "forum_delete";
+	public static final String CONTENT = "content";
 	
 	public Authority() {
 		super();
