@@ -1,6 +1,5 @@
 package com.github.emailtohl.integration.core.user.customer;
 
-import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -24,7 +23,6 @@ import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.exception.InvalidDataException;
@@ -50,8 +48,6 @@ import com.github.emailtohl.integration.core.user.entities.LoginResult;
 @Transactional
 @Service
 public class CustomerServiceImpl extends StandardService<Customer> implements CustomerService {
-	private static final transient SecureRandom RANDOM = new SecureRandom();
-	private static final transient int HASHING_ROUNDS = 10;
 	private static final transient ConcurrentHashMap<String, String> TOKEN_MAP = new ConcurrentHashMap<String, String>();
 	@Value("${customer.default.password}")
 	private String customerDefaultPassword;
@@ -95,10 +91,11 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		c.setAccountNonLocked(true);
 		c.setLevel(Level.ORDINARY);
 		String pw = c.getPassword();
-		if (pw == null || pw.isEmpty()) {
-			throw new InvalidDataException("请输入密码");
+		if (hasText(pw)) {
+			pw = hashpw(pw);
+		} else {
+			pw = customerDefaultPassword;
 		}
-		pw = BCrypt.hashpw(pw, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		c.setPassword(pw);
 		Date now = new Date();
 		c.setLastLogin(now);
@@ -235,7 +232,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		if (c.getCredentialsNonExpired() != null && !c.getCredentialsNonExpired()) {
 			return new ExecResult(false, LoginResult.credentialsExpired.name(), null);
 		}
-		if (!BCrypt.checkpw(password, c.getPassword())) {
+		if (!checkpw(password, c.getPassword())) {
 			return new ExecResult(false, LoginResult.badCredentials.name(), null);
 		}
 		c.setLastLogin(new Date());
@@ -305,7 +302,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		if (!s.equals(source.getCellPhone()) && !s.equals(source.getEmail())) {
 			return new ExecResult(false, "token无效或过期", null);
 		}
-		String hashPw = BCrypt.hashpw(newPassword, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
+		String hashPw = hashpw(newPassword);
 		source.setPassword(hashPw);
 		source.setLastChangeCredentials(new Date());
 		return new ExecResult(true, "", null);
@@ -317,8 +314,8 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		if (source == null) {
 			return new ExecResult(false, "没有此用户", null);
 		}
-		String hashPw = BCrypt.hashpw(customerDefaultPassword, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
-		source.setPassword(hashPw);
+//		String hashPw = BCrypt.hashpw(customerDefaultPassword, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
+		source.setPassword(customerDefaultPassword);
 		source.setLastChangeCredentials(new Date());
 		return new ExecResult(true, "", null);
 	}

@@ -2,9 +2,12 @@ package com.github.emailtohl.integration.core.config;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+
+import org.springframework.core.env.Environment;
 
 import com.github.emailtohl.integration.core.role.Authority;
 import com.github.emailtohl.integration.core.role.Role;
@@ -27,9 +30,12 @@ class InitData {
 	private static volatile boolean exec = false;
 	
 	private EntityManagerFactory factory;
+	
+	private Environment env;
 
-	public InitData(EntityManagerFactory factory) {
+	public InitData(EntityManagerFactory factory, Environment env) {
 		this.factory = factory;
+		this.env = env;
 	}
 	
 	public void init() {
@@ -148,18 +154,24 @@ class InitData {
 	
 	private void user(EntityManager em, PresetData pd) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Boolean> q = cb.createQuery(boolean.class);
-		Root<User> r = q.from(User.class);
-		q = q.select(cb.greaterThan(cb.count(r), 0L)).where(cb.equal(r.get("name"), pd.user_admin.getName()));
-		boolean exist = em.createQuery(q).getSingleResult();
-		if (!exist) {
+		CriteriaQuery<User> aq = cb.createQuery(User.class);
+		Root<User> ar = aq.from(User.class);
+		aq = aq.select(ar).where(cb.equal(ar.get("name"), pd.user_admin.getName()));
+		User u = null;
+		try {
+			u = em.createQuery(aq).getSingleResult();
+		} catch (NoResultException e) {}
+		if (u == null) {
 			em.persist(pd.user_admin);
+		} else {
+			String encryptPassword = env.getProperty("admin.password");
+			u.setPassword(encryptPassword);
 		}
 		
-		q = cb.createQuery(boolean.class);
+		CriteriaQuery<Boolean> q = cb.createQuery(boolean.class);
 		Root<Employee> r1 = q.from(Employee.class);
 		q = q.select(cb.greaterThan(cb.count(r1), 0L)).where(cb.equal(r1.get("empNum"), pd.user_bot.getEmpNum()));
-		exist = em.createQuery(q).getSingleResult();
+		boolean exist = em.createQuery(q).getSingleResult();
 		if (!exist) {
 			em.persist(pd.user_bot);
 			EmployeeRef ref = new EmployeeRef(pd.user_bot);

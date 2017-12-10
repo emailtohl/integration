@@ -1,6 +1,5 @@
 package com.github.emailtohl.integration.core.user.employee;
 
-import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -25,7 +24,6 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.exception.NotAcceptableException;
@@ -50,10 +48,8 @@ import com.github.emailtohl.integration.core.user.org.DepartmentRepository;
 @Service
 public class EmployeeServiceImpl extends StandardService<Employee> implements EmployeeService {
 	private static final transient Logger LOG = LogManager.getLogger();
-	private static final transient SecureRandom RANDOM = new SecureRandom();
-	private static final transient int HASHING_ROUNDS = 10;
 	@Value("${employee.default.password}")
-	private String employeeDefaultPassword = "123456";
+	private String employeeDefaultPassword;
 	@Inject
 	EmployeeRepository employeeRepository;
 	@Inject
@@ -93,10 +89,11 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		// 创建雇员时，可以直接激活可用
 		e.setAccountNonLocked(true);
 		String pw = e.getPassword();
-		if (pw == null || pw.isEmpty()) {
+		if (hasText(pw)) {
+			pw = hashpw(pw);
+		} else {
 			pw = employeeDefaultPassword;// 设置默认密码
 		}
-		pw = BCrypt.hashpw(pw, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
 		e.setPassword(pw);
 		Date now = new Date();
 		e.setLastLogin(now);
@@ -221,7 +218,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		if (source.getCredentialsNonExpired() != null && !source.getCredentialsNonExpired()) {
 			return new ExecResult(false, LoginResult.credentialsExpired.name(), null);
 		}
-		if (!BCrypt.checkpw(password, source.getPassword())) {
+		if (!checkpw(password, source.getPassword())) {
 			return new ExecResult(false, LoginResult.badCredentials.name(), null);
 		}
 		source.setLastLogin(new Date());
@@ -268,10 +265,10 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		if (source == null) {
 			return new ExecResult(false, "没有此用户", null);
 		}
-		if (!BCrypt.checkpw(oldPassword, source.getPassword())) {
+		if (!checkpw(oldPassword, source.getPassword())) {
 			return new ExecResult(false, "原密码输入错误", null);
 		}
-		String hashPw = BCrypt.hashpw(newPassword, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
+		String hashPw = hashpw(newPassword);
 		source.setPassword(hashPw);
 		source.setLastChangeCredentials(new Date());
 		return new ExecResult(true, "", null);
@@ -283,8 +280,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		if (source == null) {
 			return new ExecResult(false, "没有此用户", null);
 		}
-		String hashPw = BCrypt.hashpw(employeeDefaultPassword, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
-		source.setPassword(hashPw);
+		source.setPassword(employeeDefaultPassword);
 		source.setLastChangeCredentials(new Date());
 		return new ExecResult(true, "", null);
 	}

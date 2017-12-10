@@ -65,8 +65,8 @@ public class CoreConfiguration implements TransactionManagementConfigurer, Async
 	 * 初始化数据库中的数据
 	 */
 	@Bean
-	public InitData initData(LocalContainerEntityManagerFactoryBean entityManagerFactory) {
-		InitData d = new InitData(entityManagerFactory.getObject());
+	public InitData initData(LocalContainerEntityManagerFactoryBean entityManagerFactory, Environment env) {
+		InitData d = new InitData(entityManagerFactory.getObject(), env);
 		d.init();
 		return d;
 	}

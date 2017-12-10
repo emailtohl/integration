@@ -1,6 +1,7 @@
 package com.github.emailtohl.integration.core;
 
 import java.io.Serializable;
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Set;
 
@@ -15,6 +16,7 @@ import javax.validation.ValidatorFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
@@ -34,6 +36,8 @@ public abstract class StandardService<E extends Serializable> {
 	 */
 	protected static final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 	protected Validator validator = factory.getValidator();
+	
+	protected static final transient int HASHING_ROUNDS = 10;
 	
 	/**
 	 * 创建一个实体
@@ -126,6 +130,15 @@ public abstract class StandardService<E extends Serializable> {
 			violations.forEach(v -> LOG.debug(v));
 			throw new NotAcceptableException(new ConstraintViolationException(violations));
 		}
+	}
+	
+	public String hashpw(String password) {
+		String salt = BCrypt.gensalt(HASHING_ROUNDS, new SecureRandom());
+		return BCrypt.hashpw(password, salt);
+	}
+	
+	public boolean checkpw(String plaintext, String hashed) {
+		return BCrypt.checkpw(plaintext, hashed);
 	}
 	
 	/**
