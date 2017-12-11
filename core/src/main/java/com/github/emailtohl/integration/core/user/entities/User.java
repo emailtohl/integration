@@ -63,8 +63,8 @@ public class User extends BaseEntity {
 	protected String cellPhone;
 	
 	protected String telephone;
-	@Size(min = 6)
-	@Pattern(regexp = "^[^\\s&\"<>]+$")
+	@Size(min = 5, message = "密码至少5位")
+	@Pattern(regexp = "^[\\x21-\\x7e]*$", message = "用简单字符作为密码")
 	protected transient String password;
 	protected Boolean enabled = true;
 	protected Boolean accountNonExpired = true;

@@ -19,6 +19,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
@@ -31,7 +32,6 @@ import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.file.Image;
-import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.User.Gender;
@@ -52,6 +52,9 @@ public class EmployeeServiceImplTest {
 	EmployeeService employeeService;
 	@Inject
 	Gson gson;
+	@Value("${employee.default.password}")
+	String employeeDefaultPassword;
+	String password = "112233";
 	Long id;
 
 	@Before
@@ -147,7 +150,20 @@ public class EmployeeServiceImplTest {
 		Employee e = employeeService.grandRoles(id, td.role_staff.getName(), td.role_guest.getName());
 		assertFalse(e.getRoles().isEmpty());
 	}
-
+	
+	@Test
+	public void testResetPassword() {
+		ExecResult r = employeeService.resetPassword(0L);
+		assertFalse(r.ok);
+		r = employeeService.resetPassword(id);
+		assertTrue(r.ok);
+		Employee e = employeeService.get(id);
+		r = employeeService.login(e.getEmpNum(), password);
+		assertFalse(r.ok);
+		r = employeeService.login(e.getEmpNum(), employeeDefaultPassword);
+		assertTrue(r.ok);
+	}
+	
 	@Test
 	public void testUpdatePassword() {
 		Employee e = employeeService.get(id);

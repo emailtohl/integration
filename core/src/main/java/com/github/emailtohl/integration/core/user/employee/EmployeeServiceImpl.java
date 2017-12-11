@@ -92,7 +92,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		if (hasText(pw)) {
 			pw = hashpw(pw);
 		} else {
-			pw = employeeDefaultPassword;// 设置默认密码
+			pw = hashpw(employeeDefaultPassword);// 设置默认密码
 		}
 		e.setPassword(pw);
 		Date now = new Date();
@@ -280,7 +280,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		if (source == null) {
 			return new ExecResult(false, "没有此用户", null);
 		}
-		source.setPassword(employeeDefaultPassword);
+		source.setPassword(hashpw(employeeDefaultPassword));
 		source.setLastChangeCredentials(new Date());
 		return new ExecResult(true, "", null);
 	}

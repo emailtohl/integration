@@ -238,8 +238,8 @@ public class CustomerServiceImplTest {
 		Customer c = customerService.get(id);
 		r = customerService.login(c.getEmail(), password);
 		assertFalse(r.ok);
-//		r = customerService.login(c.getEmail(), "123456");
-//		assertTrue(r.ok);
+		r = customerService.login(c.getEmail(), customerDefaultPassword);
+		assertTrue(r.ok);
 	}
 
 	@Test

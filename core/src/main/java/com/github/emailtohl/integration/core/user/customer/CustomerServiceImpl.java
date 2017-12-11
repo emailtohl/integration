@@ -94,7 +94,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		if (hasText(pw)) {
 			pw = hashpw(pw);
 		} else {
-			pw = customerDefaultPassword;
+			pw = hashpw(customerDefaultPassword);
 		}
 		c.setPassword(pw);
 		Date now = new Date();
@@ -314,8 +314,8 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		if (source == null) {
 			return new ExecResult(false, "没有此用户", null);
 		}
-//		String hashPw = BCrypt.hashpw(customerDefaultPassword, BCrypt.gensalt(HASHING_ROUNDS, RANDOM));
-		source.setPassword(customerDefaultPassword);
+		String hashPw = hashpw(customerDefaultPassword);
+		source.setPassword(hashPw);
 		source.setLastChangeCredentials(new Date());
 		return new ExecResult(true, "", null);
 	}
