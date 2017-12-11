@@ -3,6 +3,7 @@ package com.github.emailtohl.integration.core.coreTestConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.env.Environment;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 import com.github.emailtohl.integration.core.config.CoreConfiguration;
@@ -19,7 +20,7 @@ public class CoreTestConfiguration {
 	 * @return
 	 */
 	@Bean
-	public AppendTestData initEmbeddedDataSource(LocalContainerEntityManagerFactoryBean entityManagerFactory) {
-		return new AppendTestData(entityManagerFactory.getObject());
+	public AppendTestData initEmbeddedDataSource(LocalContainerEntityManagerFactoryBean entityManagerFactory, Environment env) {
+		return new AppendTestData(entityManagerFactory.getObject(), env);
 	}
 }

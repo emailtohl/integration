@@ -1,5 +1,7 @@
 package com.github.emailtohl.integration.core.config;
 
+import java.security.SecureRandom;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
@@ -8,9 +10,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import org.springframework.core.env.Environment;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import com.github.emailtohl.integration.core.role.Authority;
 import com.github.emailtohl.integration.core.role.Role;
+import com.github.emailtohl.integration.core.user.Constant;
 import com.github.emailtohl.integration.core.user.entities.Company;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.CustomerRef;
@@ -164,8 +168,9 @@ class InitData {
 		if (u == null) {
 			em.persist(pd.user_admin);
 		} else {
-			String encryptPassword = env.getProperty("admin.password");
-			u.setPassword(encryptPassword);
+			String pw = env.getProperty("admin.password", Constant.DEFAULT_PASSWORD);
+			pw = hashpw(pw);
+			u.setPassword(pw);
 		}
 		
 		CriteriaQuery<Boolean> q = cb.createQuery(boolean.class);
@@ -173,6 +178,9 @@ class InitData {
 		q = q.select(cb.greaterThan(cb.count(r1), 0L)).where(cb.equal(r1.get("empNum"), pd.user_bot.getEmpNum()));
 		boolean exist = em.createQuery(q).getSingleResult();
 		if (!exist) {
+			String pw = env.getProperty("employee.default.password", Constant.DEFAULT_PASSWORD);
+			pw = hashpw(pw);
+			pd.user_bot.setPassword(pw);
 			em.persist(pd.user_bot);
 			EmployeeRef ref = new EmployeeRef(pd.user_bot);
 			pd.user_bot.setEmployeeRef(ref);
@@ -183,6 +191,8 @@ class InitData {
 		q = q.select(cb.greaterThan(cb.count(r2), 0L)).where(cb.equal(r2.get("name"), pd.user_anonymous.getName()));
 		exist = em.createQuery(q).getSingleResult();
 		if (!exist) {
+			String pw = env.getProperty("customer.default.password", Constant.DEFAULT_PASSWORD);
+			pw = hashpw(pw);
 			em.persist(pd.user_anonymous);
 			CustomerRef ref = new CustomerRef(pd.user_anonymous);
 			pd.user_anonymous.setCustomerRef(ref);
@@ -193,10 +203,15 @@ class InitData {
 		q = q.select(cb.greaterThan(cb.count(r3), 0L)).where(cb.equal(r3.get("email"), pd.user_emailtohl.getEmail()));
 		exist = em.createQuery(q).getSingleResult();
 		if (!exist) {
+			
 			em.persist(pd.user_emailtohl);
 			CustomerRef ref = new CustomerRef(pd.user_emailtohl);
 			pd.user_emailtohl.setCustomerRef(ref);
 		}
 	}
 	
+	private String hashpw(String password) {
+		String salt = BCrypt.gensalt(10, new SecureRandom());
+		return BCrypt.hashpw(password, salt);
+	}
 }

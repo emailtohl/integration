@@ -34,8 +34,8 @@ public abstract class StandardService<E extends Serializable> {
 	/**
 	 * 由于接口+抽象类的加入使得@Valid注解不能使用，所以可进行手动校验
 	 */
-	protected static final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-	protected Validator validator = factory.getValidator();
+	protected static final ValidatorFactory FACTORY = Validation.buildDefaultValidatorFactory();
+	protected Validator validator = FACTORY.getValidator();
 	
 	protected static final transient int HASHING_ROUNDS = 10;
 	

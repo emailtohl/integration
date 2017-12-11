@@ -56,7 +56,7 @@ public class CoreTestData extends PresetData {
 		foo.setCellPhone("18900987678");
 		foo.setTelephone("40221199");
 		foo.setAccountNonLocked(true);
-		foo.setPassword(encryptPassword(DEFAULT_PASSWORD));
+		foo.setPassword(hashpw(DEFAULT_PASSWORD));
 		foo.setDescription("业务管理人员");
 		foo.setGender(Gender.MALE);
 		foo.getRoles().add(role_manager);
@@ -79,7 +79,7 @@ public class CoreTestData extends PresetData {
 		bar.setCellPhone("18255678769");
 		bar.setTelephone("67891234");
 		bar.setAccountNonLocked(true);
-		bar.setPassword(encryptPassword(DEFAULT_PASSWORD));
+		bar.setPassword(hashpw(DEFAULT_PASSWORD));
 		bar.setDescription("普通职员");
 		bar.setGender(Gender.FEMALE);
 		bar.getRoles().add(role_staff);
@@ -104,7 +104,7 @@ public class CoreTestData extends PresetData {
 		baz.setTelephone("7722134");
 		baz.setAddress(new Address("成都", "", "新南路XX号"));
 		baz.setAccountNonLocked(true);
-		baz.setPassword(encryptPassword(DEFAULT_PASSWORD));
+		baz.setPassword(hashpw(DEFAULT_PASSWORD));
 		baz.setDescription("普通客户");
 		baz.setGender(Gender.FEMALE);
 		baz.getRoles().add(role_guest);
@@ -127,7 +127,7 @@ public class CoreTestData extends PresetData {
 		qux.setTelephone("98241562");
 		qux.setAddress(new Address("南京", "", "竹山路XX号"));
 		qux.setAccountNonLocked(true);
-		qux.setPassword(encryptPassword(DEFAULT_PASSWORD));
+		qux.setPassword(hashpw(DEFAULT_PASSWORD));
 		qux.setDescription("高级客户");
 		qux.setGender(Gender.FEMALE);
 		qux.getRoles().add(role_guest);

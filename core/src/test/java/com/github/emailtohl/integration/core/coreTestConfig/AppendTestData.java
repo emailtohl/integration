@@ -1,5 +1,6 @@
 package com.github.emailtohl.integration.core.coreTestConfig;
 
+import java.security.SecureRandom;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,7 +13,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import org.springframework.core.env.Environment;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+
 import com.github.emailtohl.integration.core.role.Role;
+import com.github.emailtohl.integration.core.user.Constant;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.CustomerRef;
 import com.github.emailtohl.integration.core.user.entities.Department;
@@ -29,10 +34,13 @@ class AppendTestData {
 	@Inject
 	EntityManagerFactory factory;
 	
-	public AppendTestData() {}
-
-	public AppendTestData(EntityManagerFactory factory) {
+	final String customerDefaultPassword;
+	final String employeeDefaultPassword;
+	
+	public AppendTestData(EntityManagerFactory factory, Environment env) {
 		this.factory = factory;
+		this.customerDefaultPassword = env.getProperty("customer.default.password", Constant.DEFAULT_PASSWORD);
+		this.employeeDefaultPassword = env.getProperty("employee.default.password", Constant.DEFAULT_PASSWORD);
 	}
 
 	/**
@@ -81,6 +89,7 @@ class AppendTestData {
 		td.foo.getRoles().addAll(roles);
 		roles.forEach(r -> r.getUsers().add(td.foo));
 		td.foo.setDepartment(d);
+		td.foo.setPassword(hashpw(employeeDefaultPassword));
 		em.persist(td.foo);
 		EmployeeRef fooRef = new EmployeeRef(td.foo);
 		td.foo.setEmployeeRef(fooRef);
@@ -102,6 +111,7 @@ class AppendTestData {
 		td.bar.getRoles().addAll(roles);
 		roles.forEach(r -> r.getUsers().add(td.bar));
 		td.bar.setDepartment(d);
+		td.bar.setPassword(hashpw(employeeDefaultPassword));
 		em.persist(td.bar);
 		EmployeeRef barRef = new EmployeeRef(td.bar);
 		td.bar.setEmployeeRef(barRef);
@@ -121,6 +131,7 @@ class AppendTestData {
 		td.baz.getRoles().clear();
 		td.baz.getRoles().addAll(roles);
 		roles.forEach(r -> r.getUsers().add(td.baz));
+		td.baz.setPassword(hashpw(customerDefaultPassword));
 		em.persist(td.baz);
 		CustomerRef bazRef = new CustomerRef(td.baz);
 		td.baz.setCustomerRef(bazRef);
@@ -140,6 +151,7 @@ class AppendTestData {
 		td.qux.getRoles().clear();
 		td.qux.getRoles().addAll(roles);
 		roles.forEach(r -> r.getUsers().add(td.qux));
+		td.qux.setPassword(hashpw(customerDefaultPassword));
 		em.persist(td.qux);
 		CustomerRef quxRef = new CustomerRef(td.qux);
 		td.qux.setCustomerRef(quxRef);
@@ -168,5 +180,10 @@ class AppendTestData {
 			pers = em.createQuery(q).getSingleResult();
 		} catch (NoResultException e) {}
 		return pers;
+	}
+	
+	private String hashpw(String password) {
+		String salt = BCrypt.gensalt(10, new SecureRandom());
+		return BCrypt.hashpw(password, salt);
 	}
 }
