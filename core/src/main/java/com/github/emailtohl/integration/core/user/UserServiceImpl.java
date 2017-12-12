@@ -21,6 +21,7 @@ import com.github.emailtohl.integration.core.user.entities.User;
 
 /**
  * 统一查询功能
+ * 
  * @author HeLei
  */
 @Service
@@ -33,8 +34,9 @@ public class UserServiceImpl implements UserService {
 	@Inject
 	UserRepository userRepository;
 
-	public UserServiceImpl() {}
-	
+	public UserServiceImpl() {
+	}
+
 	public UserServiceImpl(CustomerRepository customerRepository, EmployeeRepository employeeRepository,
 			UserRepository userRepository) {
 		this.customerRepository = customerRepository;
@@ -49,7 +51,7 @@ public class UserServiceImpl implements UserService {
 		p.forEach(r -> ls.add(toTransient(r.getEntity())));
 		return new Paging<>(ls, pageable, p.getTotalElements());
 	}
-	
+
 	@Override
 	public Paging<User> query(User params, Pageable pageable) {
 		Page<User> p = userRepository.queryForPage(params, pageable);
@@ -65,6 +67,7 @@ public class UserServiceImpl implements UserService {
 
 	/**
 	 * 返回持久化状态的用户实例
+	 * 
 	 * @param username 在Spring Security中用户唯一性的标识，本系统中可以是平台工号、客户手机或客户邮箱
 	 * @return 若没查找到则返回null
 	 */
@@ -73,7 +76,7 @@ public class UserServiceImpl implements UserService {
 		if (username == null) {
 			return null;
 		}
-		User u = null; 
+		User u = null;
 		Matcher m = Constant.PATTERN_CELL_PHONE.matcher(username);
 		if (m.find()) {
 			u = customerRepository.findByCellPhone(username);
@@ -91,30 +94,27 @@ public class UserServiceImpl implements UserService {
 				u = employeeRepository.findByEmpNum(empNum);
 			}
 		}
-		if (u == null && Constant.ADMIN_NAME.equals(username)) {
-			u = userRepository.findByName(Constant.ADMIN_NAME);
-		}
 		if (u != null) {
 			u.authorityNames();// 加载角色与权限
 		}
 		return u;
 	}
-	
+
 	private User toTransient(User source) {
 		if (source == null) {
 			return null;
 		}
 		User target = new User();
-		BeanUtils.copyProperties(source, target, "password", "roles");
+		BeanUtils.copyProperties(source, target, "employeeRef", "customerRef", "password", "roles", "cards");
 		return target;
 	}
-	
+
 	private User transientDetail(User source) {
 		if (source == null) {
 			return null;
 		}
 		User target = new User();
-		BeanUtils.copyProperties(source, target, "password", "roles", "cards");
+		BeanUtils.copyProperties(source, target, "employeeRef", "customerRef", "password", "roles", "cards");
 		return target;
 	}
 

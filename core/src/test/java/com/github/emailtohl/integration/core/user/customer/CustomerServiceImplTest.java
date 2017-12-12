@@ -42,7 +42,7 @@ import com.github.emailtohl.integration.core.user.entities.Card;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Customer.Level;
 import com.github.emailtohl.integration.core.user.entities.CustomerRef;
-import com.github.emailtohl.integration.core.user.entities.User.Gender;
+import com.github.emailtohl.integration.core.user.entities.Gender;
 import com.google.gson.Gson;
 /**
  * 业务类测试

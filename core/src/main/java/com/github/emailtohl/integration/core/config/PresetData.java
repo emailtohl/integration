@@ -37,8 +37,7 @@ import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Customer.Level;
 import com.github.emailtohl.integration.core.user.entities.Department;
 import com.github.emailtohl.integration.core.user.entities.Employee;
-import com.github.emailtohl.integration.core.user.entities.User;
-import com.github.emailtohl.integration.core.user.entities.User.Gender;
+import com.github.emailtohl.integration.core.user.entities.Gender;
 
 /**
  * 预置数据
@@ -73,7 +72,7 @@ public class PresetData {
 			role_staff = new Role("staff", "雇员"),
 			role_guest = new Role("guest", "普通用户");
 	
-	public final User user_admin = new User();
+	public final Employee user_admin = new Employee();
 	public final Employee user_bot = new Employee();
 	public final Customer user_emailtohl = new Customer(), user_anonymous = new Customer();
 	
@@ -116,31 +115,32 @@ public class PresetData {
 		product.setCompany(company);
 		qa.setCompany(company);
 		company.getDepartments().addAll(Arrays.asList(product, qa));
-		
-		user_admin.setName(ADMIN_NAME);
-		user_admin.setNickname(ADMIN_NAME);
-		user_admin.setDescription("系统管理员");
-		user_admin.getRoles().add(role_admin);
-		try (InputStream is = cl.getResourceAsStream("img/icon-head-admin.png")) {
-			icon = new byte[is.available()];
-			is.read(icon);
-			user_admin.setImage(new Image("icon-head-admin.png", "download/img/icon-head-admin.png", icon));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+
+		user_bot.setEmpNum(Employee.NO_BOT);
 		user_bot.setName("bot");
-		user_bot.setEmpNum(Employee.NO1);
 		user_bot.setNickname("bot");
 		user_bot.setAccountNonLocked(true);
 		user_bot.setDescription("自动审批人");
 		user_bot.setGender(Gender.UNSPECIFIED);
 		user_bot.getRoles().addAll(Arrays.asList(role_manager));
-		// cl.getResourceAsStream方法返回的输入流已经是BufferedInputStream对象，无需再装饰
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-bot.jpg")) {
 			icon = new byte[is.available()];
 			is.read(icon);
 			user_bot.setImage(new Image("icon-head-bot.jpg", "download/img/icon-head-bot.jpg", icon));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		user_admin.setEmpNum(Employee.NO1);
+		user_admin.setName(ADMIN_NAME);
+		user_admin.setNickname(ADMIN_NAME);
+		user_admin.setDescription("系统管理员");
+		user_admin.setGender(Gender.UNSPECIFIED);
+		user_admin.getRoles().add(role_admin);
+		try (InputStream is = cl.getResourceAsStream("img/icon-head-admin.png")) {
+			icon = new byte[is.available()];
+			is.read(icon);
+			user_admin.setImage(new Image("icon-head-admin.png", "download/img/icon-head-admin.png", icon));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -151,7 +151,6 @@ public class PresetData {
 		user_anonymous.setDescription("系统中的匿名用户; anonymous in system");
 		user_anonymous.setGender(Gender.UNSPECIFIED);
 		user_anonymous.getRoles().addAll(Arrays.asList(role_guest));
-		// cl.getResourceAsStream方法返回的输入流已经是BufferedInputStream对象，无需再装饰
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-anonymous.jpg")) {
 			icon = new byte[is.available()];
 			is.read(icon);
@@ -171,7 +170,6 @@ public class PresetData {
 		user_emailtohl.setGender(Gender.MALE);
 		user_emailtohl.setLevel(Level.VIP);
 		user_emailtohl.getRoles().addAll(Arrays.asList(role_admin, role_guest));
-		// cl.getResourceAsStream方法返回的输入流已经是BufferedInputStream对象，无需再装饰
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-emailtohl.png")) {
 			user_emailtohl.setBirthday(sdf.parse("1982-02-12"));
 			icon = new byte[is.available()];

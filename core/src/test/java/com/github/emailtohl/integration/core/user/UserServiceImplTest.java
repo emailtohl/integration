@@ -2,10 +2,8 @@ package com.github.emailtohl.integration.core.user;
 
 import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
-import static com.github.emailtohl.integration.core.user.Constant.ADMIN_NAME;
 import static com.github.emailtohl.integration.core.user.Constant.ANONYMOUS_EMAIL;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import javax.inject.Inject;
 
@@ -20,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
+import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.User;
 import com.google.gson.Gson;
 
@@ -75,7 +74,9 @@ public class UserServiceImplTest {
 	
 	@Test
 	public void testFind() {
-		User u = userService.find(ADMIN_NAME);
+		User u = userService.find("" + Employee.NO_BOT);
+		assertNotNull(u);
+		u = userService.find("" + Employee.NO1);
 		assertNotNull(u);
 		u = userService.find(ANONYMOUS_EMAIL);
 		assertNotNull(u);

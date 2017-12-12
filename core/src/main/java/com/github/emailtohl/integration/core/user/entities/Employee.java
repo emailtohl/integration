@@ -27,12 +27,16 @@ public class Employee extends User {
 	/**
 	 * 4-7位数字默认为工号
 	 */
-	public static final String PATTERN_EMP_NUM = "^\\d\\d{2,5}\\d$";
+	public static final String PATTERN_EMP_NUM = "^\\d\\d{1,5}\\d$";
 	
 	/**
 	 * 最低序号
 	 */
 	public static final int NO1 = 1000;
+	/**
+	 * 内置账号
+	 */
+	public static final int NO_BOT = NO1 - 1;
 	/**
 	 * 工号
 	 */
@@ -58,7 +62,7 @@ public class Employee extends User {
 //	@org.hibernate.search.annotations.NumericField
 	@org.hibernate.envers.NotAudited
 	@Column(name = "emp_num", unique = true/*, nullable = false*/, updatable = false)
-	@Min(value = NO1)
+	@Min(value = NO_BOT)
 	public Integer getEmpNum() {
 		return empNum;
 	}

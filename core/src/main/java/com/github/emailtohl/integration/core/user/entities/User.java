@@ -48,9 +48,6 @@ import com.github.emailtohl.integration.core.role.Role;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class User extends BaseEntity {
 	private static final long serialVersionUID = -2648409468140926726L;
-	public enum Gender {
-		MALE, FEMALE, UNSPECIFIED
-	}
 	protected String name;
 	protected String nickname;// 可存储第三方昵称
 	@Pattern(// 校验

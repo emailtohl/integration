@@ -21,7 +21,6 @@ import com.github.emailtohl.integration.core.user.entities.CustomerRef;
 import com.github.emailtohl.integration.core.user.entities.Department;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
-import com.github.emailtohl.integration.core.user.entities.User;
 
 /**
  * 将预置数据插入数据库
@@ -163,21 +162,8 @@ class InitData {
 		employeeDefaultPassword = hashpw(employeeDefaultPassword);
 		String customerDefaultPassword = env.getProperty(Constant.PROP_CUSTOMER_DEFAULT_PASSWORD);
 		customerDefaultPassword = hashpw(customerDefaultPassword);
-		
+
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<User> aq = cb.createQuery(User.class);
-		Root<User> ar = aq.from(User.class);
-		aq = aq.select(ar).where(cb.equal(ar.get("name"), pd.user_admin.getName()));
-		User u = null;
-		try {
-			u = em.createQuery(aq).getSingleResult();
-		} catch (NoResultException e) {}
-		if (u == null) {
-			pd.user_admin.setPassword(adminPassword);
-			em.persist(pd.user_admin);
-		} else {
-			u.setPassword(adminPassword);
-		}
 		
 		CriteriaQuery<Employee> botq = cb.createQuery(Employee.class);
 		Root<Employee> botr = botq.from(Employee.class);
@@ -185,7 +171,7 @@ class InitData {
 		Employee bot = null;
 		try {
 			bot = em.createQuery(botq).getSingleResult();
-		} catch (NoResultException e) {}
+		} catch (NoResultException ex) {}
 		if (bot == null) {
 			pd.user_bot.setPassword(employeeDefaultPassword);
 			em.persist(pd.user_bot);
@@ -195,13 +181,29 @@ class InitData {
 			bot.setPassword(employeeDefaultPassword);
 		}
 		
+		CriteriaQuery<Employee> aq = cb.createQuery(Employee.class);
+		Root<Employee> ar = aq.from(Employee.class);
+		aq = aq.select(ar).where(cb.equal(ar.get("empNum"), pd.user_admin.getEmpNum()));
+		Employee u = null;
+		try {
+			u = em.createQuery(aq).getSingleResult();
+		} catch (NoResultException ex) {}
+		if (u == null) {
+			pd.user_admin.setPassword(adminPassword);
+			em.persist(pd.user_admin);
+			EmployeeRef ref = new EmployeeRef(pd.user_admin);
+			pd.user_admin.setEmployeeRef(ref);
+		} else {
+			u.setPassword(adminPassword);
+		}
+		
 		CriteriaQuery<Customer> anonq = cb.createQuery(Customer.class);
 		Root<Customer> anonr = anonq.from(Customer.class);
 		anonq = anonq.select(anonr).where(cb.equal(anonr.get("email"), pd.user_anonymous.getEmail()));
 		Customer anon = null;
 		try {
 			anon = em.createQuery(anonq).getSingleResult();
-		} catch (NoResultException e) {}
+		} catch (NoResultException ex) {}
 		if (anon == null) {
 			pd.user_anonymous.setPassword(customerDefaultPassword);
 			em.persist(pd.user_anonymous);

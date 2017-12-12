@@ -35,7 +35,7 @@ import com.github.emailtohl.integration.core.file.Image;
 import com.github.emailtohl.integration.core.user.Constant;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
-import com.github.emailtohl.integration.core.user.entities.User.Gender;
+import com.github.emailtohl.integration.core.user.entities.Gender;
 import com.google.gson.Gson;
 /**
  * 业务类测试

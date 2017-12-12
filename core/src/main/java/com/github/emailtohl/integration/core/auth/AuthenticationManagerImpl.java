@@ -67,7 +67,7 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 			throw new UsernameNotFoundException("没有此账号");
 		}
 		
-		if (u instanceof Employee && Employee.NO1 == ((Employee) u).getEmpNum()) {
+		if (u instanceof Employee && Employee.NO_BOT == ((Employee) u).getEmpNum()) {
 			LOG.warn("Authentication Don't login this account {}.", username);
 			throw new UsernameNotFoundException("没有此账号");
 		}

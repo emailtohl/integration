@@ -178,7 +178,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		if (source.getEmpNum() == null) {
 			return;
 		}
-		if (source.getEmpNum() == Employee.NO1) {
+		if (source.getEmpNum() == Employee.NO1 || source.getEmpNum() == Employee.NO_BOT) {
 			throw new NotAcceptableException("不能删除系统内置账号");
 		}
 		// 解除双方关系
@@ -411,7 +411,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 	public void accountStatus() {
 		final LocalDate today = LocalDate.now();
 		employeeRepository.findAll().stream()
-		.filter(u -> !u.getEmpNum().equals(Employee.NO1))
+		.filter(u -> !u.getEmpNum().equals(Employee.NO1) && !u.getEmpNum().equals(Employee.NO_BOT))
 		// 最后登录时间的维护
 		.peek(u -> {
 			Date d = u.getLastLogin();
@@ -425,12 +425,12 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 			LocalDate lastLogin = instant.atZone(zoneId).toLocalDate();
 			// 过期了
 			if (today.minusMonths(accountExpireMonth).isAfter(lastLogin)) {
-				LOG.debug( "today: {} lastLogin: {} {} accountNonExpired : false", today, lastLogin, u.getId());
+				LOG.debug("today: {} lastLogin: {} {} accountNonExpired : false", today, lastLogin, u.getId());
 				u.setAccountNonExpired(false);
 			}
 		})
 		// 密码过期的维护
-		.peek(u ->  {
+		.peek(u -> {
 			Date d = u.getLastChangeCredentials();
 			if (d == null) {
 				LOG.debug("lastChangeCredentials: null {} credentialsNonExpired : false", u.getId());
@@ -441,7 +441,8 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 			ZoneId zoneId = ZoneId.systemDefault();
 			LocalDate lastChangeCredentials = instant.atZone(zoneId).toLocalDate();
 			if (today.minusMonths(credentialsExpireMonth).isAfter(lastChangeCredentials)) {
-				LOG.debug( "today: {} lastChangeCredentials: {}  {} credentialsNonExpired : false", today, lastChangeCredentials, u.getId());
+				LOG.debug("today: {} lastChangeCredentials: {}  {} credentialsNonExpired : false", today,
+						lastChangeCredentials, u.getId());
 				u.setCredentialsNonExpired(false);
 			}
 		});

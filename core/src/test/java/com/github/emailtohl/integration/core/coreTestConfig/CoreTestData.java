@@ -14,7 +14,7 @@ import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Customer.Level;
 import com.github.emailtohl.integration.core.user.entities.Department;
 import com.github.emailtohl.integration.core.user.entities.Employee;
-import com.github.emailtohl.integration.core.user.entities.User.Gender;
+import com.github.emailtohl.integration.core.user.entities.Gender;
 /**
  * 用于测试的数据
  * @author HeLei

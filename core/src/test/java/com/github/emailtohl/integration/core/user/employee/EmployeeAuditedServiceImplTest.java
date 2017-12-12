@@ -28,10 +28,8 @@ import com.github.emailtohl.integration.common.jpa.envers.Tuple;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.file.Image;
-import com.github.emailtohl.integration.core.user.employee.EmployeeAuditedService;
-import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Employee;
-import com.github.emailtohl.integration.core.user.entities.User.Gender;
+import com.github.emailtohl.integration.core.user.entities.Gender;
 import com.google.gson.Gson;
 /**
  * 业务类测试
