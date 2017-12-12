@@ -21,7 +21,6 @@ import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
 import com.github.emailtohl.integration.common.exception.InvalidDataException;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
-import com.github.emailtohl.integration.core.user.Constant;
 /**
  * 业务类测试
  * @author HeLei
@@ -33,6 +32,7 @@ public class AuthenticationManagerImplTest {
 	@Inject
 	AuthenticationManager authenticationManager;// AuthenticationProviderImpl的实例
 	CoreTestData td = new CoreTestData();
+	String password = "123456";
 	Encipher encipher = new Encipher();
 	String publicKey, privateKey;
 	
@@ -50,26 +50,26 @@ public class AuthenticationManagerImplTest {
 
 	@Test
 	public void testAuthenticateAuthentication() {
-		String crypted = encipher.encrypt(Constant.DEFAULT_PASSWORD, publicKey);
+		String crypted = encipher.encrypt(password, publicKey);
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(td.bar.getEmpNum().toString(), crypted);
 		authenticationManager.authenticate(token);
 	}
 	
 	@Test(expected = UsernameNotFoundException.class)
 	public void testUsernameNotFoundException() {
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("abc", Constant.DEFAULT_PASSWORD);
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("abc", password);
 		authenticationManager.authenticate(token);
 	}
 	
 	@Test(expected = UsernameNotFoundException.class)
 	public void testUsernameNotFoundExceptionBot() {
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(td.user_bot.getEmpNum(), Constant.DEFAULT_PASSWORD);
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(td.user_bot.getEmpNum(), password);
 		authenticationManager.authenticate(token);
 	}
 	
 	@Test(expected = UsernameNotFoundException.class)
 	public void testUsernameNotFoundExceptionAnonymous() {
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(td.user_anonymous.getEmail(), Constant.DEFAULT_PASSWORD);
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(td.user_anonymous.getEmail(), password);
 		authenticationManager.authenticate(token);
 	}
 	

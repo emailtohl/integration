@@ -13,7 +13,9 @@ public interface Constant {
 	String ADMIN_NAME = "admin";
 	String ANONYMOUS_NAME = "anonymous";
 	String ANONYMOUS_EMAIL = "anonymous@anonymous.com";
-	String DEFAULT_PASSWORD = "123456";
+	
+	String PROP_CUSTOMER_DEFAULT_PASSWORD = "customer.default.password";
+	String PROP_EMPLOYEE_DEFAULT_PASSWORD = "employee.default.password";
 	
 	Pattern PATTERN_EMAIL = Pattern.compile(ConstantPattern.EMAIL);
 	Pattern PATTERN_CELL_PHONE = Pattern.compile(ConstantPattern.CELL_PHONE);

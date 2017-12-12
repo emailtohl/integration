@@ -157,6 +157,13 @@ class InitData {
 	}
 	
 	private void user(EntityManager em, PresetData pd) {
+		String adminPassword = env.getProperty("admin.password");
+		adminPassword = hashpw(adminPassword);
+		String employeeDefaultPassword = env.getProperty(Constant.PROP_EMPLOYEE_DEFAULT_PASSWORD);
+		employeeDefaultPassword = hashpw(employeeDefaultPassword);
+		String customerDefaultPassword = env.getProperty(Constant.PROP_CUSTOMER_DEFAULT_PASSWORD);
+		customerDefaultPassword = hashpw(customerDefaultPassword);
+		
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<User> aq = cb.createQuery(User.class);
 		Root<User> ar = aq.from(User.class);
@@ -166,44 +173,50 @@ class InitData {
 			u = em.createQuery(aq).getSingleResult();
 		} catch (NoResultException e) {}
 		if (u == null) {
+			pd.user_admin.setPassword(adminPassword);
 			em.persist(pd.user_admin);
 		} else {
-			String pw = env.getProperty("admin.password", Constant.DEFAULT_PASSWORD);
-			pw = hashpw(pw);
-			u.setPassword(pw);
+			u.setPassword(adminPassword);
 		}
 		
-		CriteriaQuery<Boolean> q = cb.createQuery(boolean.class);
-		Root<Employee> r1 = q.from(Employee.class);
-		q = q.select(cb.greaterThan(cb.count(r1), 0L)).where(cb.equal(r1.get("empNum"), pd.user_bot.getEmpNum()));
-		boolean exist = em.createQuery(q).getSingleResult();
-		if (!exist) {
-			String pw = env.getProperty("employee.default.password", Constant.DEFAULT_PASSWORD);
-			pw = hashpw(pw);
-			pd.user_bot.setPassword(pw);
+		CriteriaQuery<Employee> botq = cb.createQuery(Employee.class);
+		Root<Employee> botr = botq.from(Employee.class);
+		botq = botq.select(botr).where(cb.equal(botr.get("empNum"), pd.user_bot.getEmpNum()));
+		Employee bot = null;
+		try {
+			bot = em.createQuery(botq).getSingleResult();
+		} catch (NoResultException e) {}
+		if (bot == null) {
+			pd.user_bot.setPassword(employeeDefaultPassword);
 			em.persist(pd.user_bot);
 			EmployeeRef ref = new EmployeeRef(pd.user_bot);
 			pd.user_bot.setEmployeeRef(ref);
+		} else {
+			bot.setPassword(employeeDefaultPassword);
 		}
 		
-		q = cb.createQuery(boolean.class);
-		Root<Customer> r2 = q.from(Customer.class);
-		q = q.select(cb.greaterThan(cb.count(r2), 0L)).where(cb.equal(r2.get("name"), pd.user_anonymous.getName()));
-		exist = em.createQuery(q).getSingleResult();
-		if (!exist) {
-			String pw = env.getProperty("customer.default.password", Constant.DEFAULT_PASSWORD);
-			pw = hashpw(pw);
+		CriteriaQuery<Customer> anonq = cb.createQuery(Customer.class);
+		Root<Customer> anonr = anonq.from(Customer.class);
+		anonq = anonq.select(anonr).where(cb.equal(anonr.get("email"), pd.user_anonymous.getEmail()));
+		Customer anon = null;
+		try {
+			anon = em.createQuery(anonq).getSingleResult();
+		} catch (NoResultException e) {}
+		if (anon == null) {
+			pd.user_anonymous.setPassword(customerDefaultPassword);
 			em.persist(pd.user_anonymous);
 			CustomerRef ref = new CustomerRef(pd.user_anonymous);
 			pd.user_anonymous.setCustomerRef(ref);
+		} else {
+			anon.setPassword(customerDefaultPassword);
 		}
 		
-		q = cb.createQuery(boolean.class);
-		Root<Customer> r3 = q.from(Customer.class);
-		q = q.select(cb.greaterThan(cb.count(r3), 0L)).where(cb.equal(r3.get("email"), pd.user_emailtohl.getEmail()));
-		exist = em.createQuery(q).getSingleResult();
+		CriteriaQuery<Boolean> q = cb.createQuery(boolean.class);
+		Root<Customer> r = q.from(Customer.class);
+		q = q.select(cb.greaterThan(cb.count(r), 0L)).where(cb.equal(r.get("email"), pd.user_emailtohl.getEmail()));
+		Boolean exist = em.createQuery(q).getSingleResult();
 		if (!exist) {
-			
+			pd.user_emailtohl.setPassword(customerDefaultPassword);
 			em.persist(pd.user_emailtohl);
 			CustomerRef ref = new CustomerRef(pd.user_emailtohl);
 			pd.user_emailtohl.setCustomerRef(ref);

@@ -39,8 +39,8 @@ class AppendTestData {
 	
 	public AppendTestData(EntityManagerFactory factory, Environment env) {
 		this.factory = factory;
-		this.customerDefaultPassword = env.getProperty("customer.default.password", Constant.DEFAULT_PASSWORD);
-		this.employeeDefaultPassword = env.getProperty("employee.default.password", Constant.DEFAULT_PASSWORD);
+		this.customerDefaultPassword = env.getProperty(Constant.PROP_CUSTOMER_DEFAULT_PASSWORD);
+		this.employeeDefaultPassword = env.getProperty(Constant.PROP_EMPLOYEE_DEFAULT_PASSWORD);
 	}
 
 	/**
@@ -76,11 +76,15 @@ class AppendTestData {
 	
 	private void foo(EntityManager em, CoreTestData td) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Boolean> q = cb.createQuery(boolean.class);
+		CriteriaQuery<Employee> q = cb.createQuery(Employee.class);
 		Root<Employee> root = q.from(Employee.class);
-		q = q.select(cb.greaterThan(cb.count(root), 0L)).where(cb.equal(root.get("empNum"), td.foo.getEmpNum()));
-		boolean exist = em.createQuery(q).getSingleResult();
-		if (exist) {
+		q = q.select(root).where(cb.equal(root.get("empNum"), td.foo.getEmpNum()));
+		Employee e = null;
+		try {
+			e = em.createQuery(q).getSingleResult();
+		} catch (NoResultException ex) {}
+		if (e != null) {
+			e.setPassword(hashpw(employeeDefaultPassword));
 			return;
 		}
 		Set<Role> roles = td.foo.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
@@ -98,11 +102,15 @@ class AppendTestData {
 	
 	private void bar(EntityManager em, CoreTestData td) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Boolean> q = cb.createQuery(boolean.class);
+		CriteriaQuery<Employee> q = cb.createQuery(Employee.class);
 		Root<Employee> root = q.from(Employee.class);
-		q = q.select(cb.greaterThan(cb.count(root), 0L)).where(cb.equal(root.get("empNum"), td.bar.getEmpNum()));
-		boolean exist = em.createQuery(q).getSingleResult();
-		if (exist) {
+		q = q.select(root).where(cb.equal(root.get("empNum"), td.bar.getEmpNum()));
+		Employee e = null;
+		try {
+			e = em.createQuery(q).getSingleResult();
+		} catch (NoResultException ex) {}
+		if (e != null) {
+			e.setPassword(hashpw(employeeDefaultPassword));
 			return;
 		}
 		Set<Role> roles = td.bar.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
@@ -120,11 +128,15 @@ class AppendTestData {
 	
 	private void baz(EntityManager em, CoreTestData td) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Boolean> q = cb.createQuery(boolean.class);
+		CriteriaQuery<Customer> q = cb.createQuery(Customer.class);
 		Root<Customer> root = q.from(Customer.class);
-		q = q.select(cb.greaterThan(cb.count(root), 0L)).where(cb.equal(root.get("email"), td.baz.getEmail()));
-		boolean exist = em.createQuery(q).getSingleResult();
-		if (exist) {
+		q = q.select(root).where(cb.equal(root.get("email"), td.baz.getEmail()));
+		Customer c = null;
+		try {
+			c = em.createQuery(q).getSingleResult();
+		} catch (NoResultException ex) {}
+		if (c != null) {
+			c.setPassword(hashpw(customerDefaultPassword));
 			return;
 		}
 		Set<Role> roles = td.baz.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
@@ -140,11 +152,15 @@ class AppendTestData {
 	
 	private void qux(EntityManager em, CoreTestData td) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Boolean> q = cb.createQuery(boolean.class);
+		CriteriaQuery<Customer> q = cb.createQuery(Customer.class);
 		Root<Customer> root = q.from(Customer.class);
-		q = q.select(cb.greaterThan(cb.count(root), 0L)).where(cb.equal(root.get("cellPhone"), td.qux.getCellPhone()));
-		boolean exist = em.createQuery(q).getSingleResult();
-		if (exist) {
+		q = q.select(root).where(cb.equal(root.get("cellPhone"), td.qux.getCellPhone()));
+		Customer c = null;
+		try {
+			c = em.createQuery(q).getSingleResult();
+		} catch (NoResultException ex) {}
+		if (c != null) {
+			c.setPassword(hashpw(customerDefaultPassword));
 			return;
 		}
 		Set<Role> roles = td.qux.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());

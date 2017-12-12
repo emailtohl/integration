@@ -36,6 +36,7 @@ import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.file.Image;
+import com.github.emailtohl.integration.core.user.Constant;
 import com.github.emailtohl.integration.core.user.entities.Address;
 import com.github.emailtohl.integration.core.user.entities.Card;
 import com.github.emailtohl.integration.core.user.entities.Customer;
@@ -57,7 +58,7 @@ public class CustomerServiceImplTest {
 	Pageable pageable = new PageRequest(0, 20);
 	@Inject
 	CustomerService customerService;
-	@Value("${customer.default.password}")
+	@Value("${" + Constant.PROP_CUSTOMER_DEFAULT_PASSWORD + "}")
 	String customerDefaultPassword;
 	@Inject
 	Gson gson;

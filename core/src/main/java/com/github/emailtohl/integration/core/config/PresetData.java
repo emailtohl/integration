@@ -21,16 +21,12 @@ import static com.github.emailtohl.integration.core.role.Authority.ROLE;
 import static com.github.emailtohl.integration.core.user.Constant.ADMIN_NAME;
 import static com.github.emailtohl.integration.core.user.Constant.ANONYMOUS_EMAIL;
 import static com.github.emailtohl.integration.core.user.Constant.ANONYMOUS_NAME;
-import static com.github.emailtohl.integration.core.user.Constant.DEFAULT_PASSWORD;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-
-import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import com.github.emailtohl.integration.core.file.Image;
 import com.github.emailtohl.integration.core.role.Authority;
@@ -123,7 +119,6 @@ public class PresetData {
 		
 		user_admin.setName(ADMIN_NAME);
 		user_admin.setNickname(ADMIN_NAME);
-		user_admin.setPassword(hashpw(DEFAULT_PASSWORD));
 		user_admin.setDescription("系统管理员");
 		user_admin.getRoles().add(role_admin);
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-admin.png")) {
@@ -138,7 +133,6 @@ public class PresetData {
 		user_bot.setEmpNum(Employee.NO1);
 		user_bot.setNickname("bot");
 		user_bot.setAccountNonLocked(true);
-		user_bot.setPassword(hashpw(DEFAULT_PASSWORD));
 		user_bot.setDescription("自动审批人");
 		user_bot.setGender(Gender.UNSPECIFIED);
 		user_bot.getRoles().addAll(Arrays.asList(role_manager));
@@ -154,7 +148,6 @@ public class PresetData {
 		user_anonymous.setName(ANONYMOUS_NAME);
 		user_anonymous.setNickname(ANONYMOUS_NAME);
 		user_anonymous.setEmail(ANONYMOUS_EMAIL);
-		user_anonymous.setPassword(hashpw(DEFAULT_PASSWORD));
 		user_anonymous.setDescription("系统中的匿名用户; anonymous in system");
 		user_anonymous.setGender(Gender.UNSPECIFIED);
 		user_anonymous.getRoles().addAll(Arrays.asList(role_guest));
@@ -174,7 +167,6 @@ public class PresetData {
 		user_emailtohl.setTelephone("69922113");
 		user_emailtohl.setAddress(new Address("重庆", "40000", "回龙路66号"));
 		user_emailtohl.setAccountNonLocked(true);
-		user_emailtohl.setPassword(hashpw(DEFAULT_PASSWORD));
 		user_emailtohl.setDescription("developer");
 		user_emailtohl.setGender(Gender.MALE);
 		user_emailtohl.setLevel(Level.VIP);
@@ -191,9 +183,4 @@ public class PresetData {
 
 	}
 	
-	public String hashpw(String plainText) {
-		short HASHING_ROUNDS = 10;
-		String salt = BCrypt.gensalt(HASHING_ROUNDS, new SecureRandom());
-		return BCrypt.hashpw(plainText, salt);
-	}
 }

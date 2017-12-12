@@ -33,6 +33,7 @@ import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleRepository;
+import com.github.emailtohl.integration.core.user.Constant;
 import com.github.emailtohl.integration.core.user.entities.Department;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
@@ -48,7 +49,7 @@ import com.github.emailtohl.integration.core.user.org.DepartmentRepository;
 @Service
 public class EmployeeServiceImpl extends StandardService<Employee> implements EmployeeService {
 	private static final transient Logger LOG = LogManager.getLogger();
-	@Value("${employee.default.password}")
+	@Value("${" + Constant.PROP_EMPLOYEE_DEFAULT_PASSWORD + "}")
 	private String employeeDefaultPassword;
 	@Inject
 	EmployeeRepository employeeRepository;

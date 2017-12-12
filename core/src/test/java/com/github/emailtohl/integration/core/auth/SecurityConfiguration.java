@@ -8,17 +8,24 @@ import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.security.SecureRandom;
 import java.util.Arrays;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import com.github.emailtohl.integration.common.jpa.envers.Tuple;
 import com.github.emailtohl.integration.core.ExecResult;
@@ -26,6 +33,7 @@ import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleAuditedService;
 import com.github.emailtohl.integration.core.role.RoleService;
+import com.github.emailtohl.integration.core.user.Constant;
 import com.github.emailtohl.integration.core.user.UserRepository;
 import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.UserServiceImpl;
@@ -47,15 +55,39 @@ import com.github.emailtohl.integration.core.user.entities.Employee;
 // 为了在应用层而非过滤器中使用spring security，还可以启动@EnableGlobalMethodSecurity功能
 // 这时候spring会在调用Bean方法时再添加一个切面，执行spring security的安全检查
 @EnableGlobalMethodSecurity(prePostEnabled = true, order = 0, mode = AdviceMode.PROXY, proxyTargetClass = false)
+@PropertySource({ "classpath:config.properties" })
 class SecurityConfiguration {
 	public static final Long EMAIL_TO_HL_ID = 1L, FOO_ID = 2L, BAR_ID = 3L, BAZ_ID = 4L, QUX_ID = 5L;
+	
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
+		return new PropertySourcesPlaceholderConfigurer();
+	}
+	
+	private String hashpw(String password) {
+		String salt = BCrypt.gensalt(10, new SecureRandom());
+		return BCrypt.hashpw(password, salt);
+	}
+	
 	private CoreTestData td = new CoreTestData();
-	{
+	
+	@Value("${" + Constant.PROP_CUSTOMER_DEFAULT_PASSWORD + "}")
+	private String customerDefaultPassword;
+	@Value("${" + Constant.PROP_EMPLOYEE_DEFAULT_PASSWORD + "}")
+	private String employeeDefaultPassword;
+	
+	@PostConstruct
+	public void init() {
 		td.user_emailtohl.setId(1L);
+		td.user_emailtohl.setPassword(hashpw(customerDefaultPassword));
 		td.foo.setId(2L);
+		td.foo.setPassword(hashpw(employeeDefaultPassword));
 		td.bar.setId(3L);
+		td.bar.setPassword(hashpw(employeeDefaultPassword));
 		td.baz.setId(4L);
+		td.baz.setPassword(hashpw(customerDefaultPassword));
 		td.qux.setId(5L);
+		td.qux.setPassword(hashpw(customerDefaultPassword));
 	}
 	
 	/**

@@ -49,7 +49,7 @@ import com.github.emailtohl.integration.core.user.entities.LoginResult;
 @Service
 public class CustomerServiceImpl extends StandardService<Customer> implements CustomerService {
 	private static final transient ConcurrentHashMap<String, String> TOKEN_MAP = new ConcurrentHashMap<String, String>();
-	@Value("${customer.default.password}")
+	@Value("${" + Constant.PROP_CUSTOMER_DEFAULT_PASSWORD + "}")
 	private String customerDefaultPassword;
 	@Value("${token.expire}")
 	private int tokenExpire;

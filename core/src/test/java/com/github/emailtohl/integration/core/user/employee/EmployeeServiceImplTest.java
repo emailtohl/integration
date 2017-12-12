@@ -32,6 +32,7 @@ import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.file.Image;
+import com.github.emailtohl.integration.core.user.Constant;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.User.Gender;
@@ -52,7 +53,7 @@ public class EmployeeServiceImplTest {
 	EmployeeService employeeService;
 	@Inject
 	Gson gson;
-	@Value("${employee.default.password}")
+	@Value("${" + Constant.PROP_EMPLOYEE_DEFAULT_PASSWORD +"}")
 	String employeeDefaultPassword;
 	String password = "112233";
 	Long id;
