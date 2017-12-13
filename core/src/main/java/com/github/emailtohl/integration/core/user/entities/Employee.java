@@ -25,11 +25,6 @@ import com.github.emailtohl.integration.core.file.Image;
 public class Employee extends User {
 	private static final long serialVersionUID = 3500096827826710751L;
 	/**
-	 * 4-7位数字默认为工号
-	 */
-	public static final String PATTERN_EMP_NUM = "^\\d\\d{1,5}\\d$";
-	
-	/**
 	 * 最低序号
 	 */
 	public static final int NO1 = 1000;
@@ -37,6 +32,10 @@ public class Employee extends User {
 	 * 内置账号
 	 */
 	public static final int NO_BOT = NO1 - 1;
+	/**
+	 * 4-7位数字默认为工号
+	 */
+	public static final String PATTERN_EMP_NUM = "(^\\d\\d{2,5}\\d$)|" + NO_BOT;
 	/**
 	 * 工号
 	 */

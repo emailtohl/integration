@@ -18,6 +18,7 @@ import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.github.emailtohl.integration.common.ConstantPattern;
+import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.user.entities.Card;
@@ -74,6 +75,7 @@ public interface CustomerService {
 	 * @param id
 	 * @param newEntity
 	 * @return 返回null表示没找到该用户
+	 * @exception NotAcceptableException 不能修改内置账号
 	 */
 	@PreAuthorize("#id == authentication.principal.id or hasAuthority('" + CUSTOMER + "')")
 	Customer update(@P("id") Long id, Customer newEntity);
@@ -81,6 +83,7 @@ public interface CustomerService {
 	/**
 	 * 根据ID删除用户
 	 * @param id
+	 * @exception NotAcceptableException 不能删除内置账号
 	 */
 	@PreAuthorize("hasAuthority('" + CUSTOMER_DELETE + "')")
 	void delete(Long id);
@@ -113,6 +116,7 @@ public interface CustomerService {
 	 * @param id
 	 * @param roleNames
 	 * @return
+	 * @exception NotAcceptableException 不能修改内置账号
 	 */
 	@PreAuthorize("hasAuthority('" + CUSTOMER_ROLE + "')")
 	Customer grandRoles(Long id, String... roleNames);
@@ -122,6 +126,7 @@ public interface CustomerService {
 	 * @param id
 	 * @param roleNames
 	 * @return
+	 * @exception NotAcceptableException 不能修改内置账号
 	 */
 	@PreAuthorize("hasAuthority('" + CUSTOMER_LEVEL + "')")
 	Customer grandLevel(Long id, Customer.Level level);
@@ -156,6 +161,7 @@ public interface CustomerService {
 	 * @param id
 	 * @param newCellPhone
 	 * @return
+	 * @exception NotAcceptableException 不能修改内置账号
 	 */
 	Customer changeCellPhone(Long id, @Pattern(regexp = ConstantPattern.CELL_PHONE) String newCellPhone);
 	
@@ -164,6 +170,7 @@ public interface CustomerService {
 	 * @param id
 	 * @param newEmail
 	 * @return
+	 * @exception NotAcceptableException 不能修改内置账号
 	 */
 	Customer changeEmail(Long id, String newEmail);
 	
@@ -172,6 +179,7 @@ public interface CustomerService {
 	 * @param id
 	 * @param enabled
 	 * @return
+	 * @exception NotAcceptableException 不能修改内置账号
 	 */
 	@PreAuthorize("hasAuthority('" + CUSTOMER_ENABLED + "')")
 	Customer enabled(Long id, boolean enabled);
@@ -181,6 +189,7 @@ public interface CustomerService {
 	 * @param id
 	 * @param card
 	 * @return
+	 * @exception NotAcceptableException 不能修改内置账号
 	 */
 	@PreAuthorize("#id == authentication.principal.id")
 	Customer addCard(@P("id") Long id, Card card);
@@ -190,6 +199,7 @@ public interface CustomerService {
 	 * @param id
 	 * @param cards
 	 * @return
+	 * @exception NotAcceptableException 不能修改内置账号
 	 */
 	@PreAuthorize("#id == authentication.principal.id")
 	Customer updateCards(@P("id") Long id, Set<Card> cards);
@@ -199,6 +209,7 @@ public interface CustomerService {
 	 * @param id
 	 * @param card
 	 * @return
+	 * @exception NotAcceptableException 不能修改内置账号
 	 */
 	@PreAuthorize("#id == authentication.principal.id")
 	Customer removeCard(@P("id") Long id, Card card);

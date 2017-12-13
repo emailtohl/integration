@@ -55,7 +55,6 @@ public class EmployeeServiceImplTest {
 	Gson gson;
 	@Value("${" + Constant.PROP_EMPLOYEE_DEFAULT_PASSWORD +"}")
 	String employeeDefaultPassword;
-	String password = "112233";
 	Long id;
 
 	@Before
@@ -159,7 +158,7 @@ public class EmployeeServiceImplTest {
 		r = employeeService.resetPassword(id);
 		assertTrue(r.ok);
 		Employee e = employeeService.get(id);
-		r = employeeService.login(e.getEmpNum(), password);
+		r = employeeService.login(e.getEmpNum(), "234572adfa");
 		assertFalse(r.ok);
 		r = employeeService.login(e.getEmpNum(), employeeDefaultPassword);
 		assertTrue(r.ok);
@@ -184,6 +183,10 @@ public class EmployeeServiceImplTest {
 		assertFalse(e.getEnabled());
 	}
 	
+	/**
+	 * Maven测试时若Search失败，很可能是因为找不到Lucene索引。
+	 * 典型例子就是每个test的Profiles不一致，即创建索引在内存中（Profiles.DB_RAM_H2）而Search使用索引却在文件系统中找。
+	 */
 	@Test
 	public void testSearch() {
 		Paging<Employee> p = employeeService.search(null, pageable);

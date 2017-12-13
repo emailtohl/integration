@@ -31,6 +31,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
@@ -286,6 +287,10 @@ public class CustomerServiceImplTest {
 		assertTrue(c.getCards().isEmpty());
 	}
 	
+	/**
+	 * Maven测试时若Search失败，很可能是因为找不到Lucene索引。
+	 * 典型例子就是每个test的Profiles不一致，即创建索引在内存中（Profiles.DB_RAM_H2）而Search使用索引却在文件系统中找。
+	 */
 	@Test
 	public void testSearch() {
 		Paging<Customer> p = customerService.search(null, pageable);
@@ -382,5 +387,11 @@ public class CustomerServiceImplTest {
 		params.setEmail(td.baz.getEmail());
 		ls = customerService.queryRef(params);
 		assertFalse(ls.isEmpty());
+	}
+	
+	@Test(expected = NotAcceptableException.class)
+	public void testDelete() {
+		Customer c = customerService.findByCellPhoneOrEmail(Constant.ANONYMOUS_EMAIL);
+		customerService.delete(c.getId());
 	}
 }

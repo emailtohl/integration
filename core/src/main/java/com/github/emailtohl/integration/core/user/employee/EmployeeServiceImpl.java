@@ -136,6 +136,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		if (source == null) {
 			return null;
 		}
+		isIllegal(source);
 		if (newEntity.getBirthday() != null)
 			source.setBirthday(newEntity.getBirthday());
 		if (newEntity.getDescription() != null)
@@ -178,9 +179,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		if (source.getEmpNum() == null) {
 			return;
 		}
-		if (source.getEmpNum() == Employee.NO1 || source.getEmpNum() == Employee.NO_BOT) {
-			throw new NotAcceptableException("不能删除系统内置账号");
-		}
+		isIllegal(source);
 		// 解除双方关系
 		for (Iterator<Role> i = source.getRoles().iterator(); i.hasNext();) {
 			Role r = i.next();
@@ -244,6 +243,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		if (source == null) {
 			return null;
 		}
+		isIllegal(source);
 		// 解除双方关系
 		for (Iterator<Role> i = source.getRoles().iterator(); i.hasNext();) {
 			Role r = i.next();
@@ -293,6 +293,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		if (source == null) {
 			return null;
 		}
+		isIllegal(source);
 		source.setEnabled(enabled);
 		if (enabled) {// 同时解锁
 			source.setAccountNonLocked(true);
@@ -446,5 +447,15 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 				u.setCredentialsNonExpired(false);
 			}
 		});
+	}
+	
+	/**
+	 * 若是系统内置账号，则触发异常
+	 * @param e
+	 */
+	private void isIllegal(Employee e) {
+		if (e.getEmpNum() == Employee.NO1 || e.getEmpNum() == Employee.NO_BOT) {
+			throw new NotAcceptableException("不能修改系统内置账号");
+		}
 	}
 }

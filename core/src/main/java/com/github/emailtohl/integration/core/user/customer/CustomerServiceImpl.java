@@ -158,6 +158,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		if (source == null) {
 			return null;
 		}
+		isIllegal(source);
 		if (newEntity.getBirthday() != null)
 			source.setBirthday(newEntity.getBirthday());
 		if (newEntity.getDescription() != null)
@@ -190,9 +191,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		if (source == null) {
 			return;
 		}
-		if (Constant.ANONYMOUS_EMAIL.equals(source.getEmail())) {
-			throw new NotAcceptableException("不能删除系统内置账号");
-		}
+		isIllegal(source);
 		// 解除双方关系
 		for (Iterator<Role> i = source.getRoles().iterator(); i.hasNext();) {
 			Role r = i.next();
@@ -251,6 +250,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		if (source == null) {
 			return null;
 		}
+		isIllegal(source);
 		// 解除双方关系
 		for (Iterator<Role> i = source.getRoles().iterator(); i.hasNext();) {
 			Role r = i.next();
@@ -274,6 +274,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		if (source == null) {
 			return null;
 		}
+		isIllegal(source);
 		source.setLevel(level);
 		return transientDetail(source);
 	}
@@ -327,6 +328,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		if (source == null) {
 			return null;
 		}
+		isIllegal(source);
 		source.setCellPhone(newCellPhone);
 		return transientDetail(source);
 	}
@@ -338,6 +340,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		if (source == null) {
 			return null;
 		}
+		isIllegal(source);
 		source.setEmail(newEmail);
 		return transientDetail(source);
 	}
@@ -349,6 +352,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		if (source == null) {
 			return null;
 		}
+		isIllegal(source);
 		source.setEnabled(enabled);
 		if (enabled) {// 同时解锁
 			source.setAccountNonLocked(true);
@@ -364,6 +368,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		if (source == null) {
 			return null;
 		}
+		isIllegal(source);
 		source.getCards().add(card);
 		return transientDetail(source);
 	}
@@ -376,6 +381,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		if (source == null) {
 			return null;
 		}
+		isIllegal(source);
 		source.getCards().clear();
 		source.getCards().addAll(cards);
 		return transientDetail(source);
@@ -388,6 +394,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		if (source == null) {
 			return null;
 		}
+		isIllegal(source);
 		source.getCards().remove(card);
 		return transientDetail(source);
 	}
@@ -511,5 +518,15 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		copy.setNickname(ref.getNickname());
 		copy.setIcon(ref.getIcon());
 		return copy;
+	}
+	
+	/**
+	 * 若是系统内置账号，则触发异常
+	 * @param e
+	 */
+	private void isIllegal(Customer c) {
+		if (Constant.ANONYMOUS_EMAIL.equals(c.getEmail())) {
+			throw new NotAcceptableException("不能删除系统内置账号");
+		}
 	}
 }

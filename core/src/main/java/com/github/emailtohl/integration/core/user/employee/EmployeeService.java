@@ -72,6 +72,7 @@ public interface EmployeeService {
 	 * @param id
 	 * @param newEntity
 	 * @return 返回null表示没找到该平台账号
+	 * @exception NotAcceptableException 不能修改内置账号
 	 */
 	@PreAuthorize("hasAuthority('" + EMPLOYEE + "') or #id == authentication.principal.id")
 	Employee update(@P("id") Long id, Employee newEntity);
@@ -79,6 +80,7 @@ public interface EmployeeService {
 	/**
 	 * 根据ID删除平台账号
 	 * @param id
+	 * @exception NotAcceptableException 不能删除内置账号
 	 */
 	@PreAuthorize("hasAuthority('" + EMPLOYEE_DELETE + "')")
 	void delete(Long id);
@@ -121,6 +123,7 @@ public interface EmployeeService {
 	 * @param id
 	 * @param roleNames
 	 * @return
+	 * @exception NotAcceptableException 不能修改内置账号
 	 */
 	@PreAuthorize("hasAuthority('" + EMPLOYEE_ROLE + "')")
 	Employee grandRoles(Long id, String... roleNames);
@@ -148,6 +151,7 @@ public interface EmployeeService {
 	 * @param id
 	 * @param enabled
 	 * @return
+	 * @exception NotAcceptableException 不能修改内置账号
 	 */
 	@PreAuthorize("hasAuthority('" + EMPLOYEE_ENABLED + "')")
 	Employee enabled(Long id, boolean enabled);
