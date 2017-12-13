@@ -1,6 +1,9 @@
 package com.github.emailtohl.integration.core.auth;
 
+import java.util.Date;
+
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,6 +63,14 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 		return authenticate(principal, password);
 	}
 
+	/**
+	 * 事务从此处开始，可以修改最后登录时间
+	 * @param username
+	 * @param password
+	 * @return
+	 * @throws AuthenticationException
+	 */
+	@Transactional
 	public Authentication authenticate(String username, String password) throws AuthenticationException {
 		User u = userService.find(username);
 		if (u == null) {
@@ -116,6 +127,7 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 		if (publisher != null) {
 			publisher.publishEvent(new LoginEvent(a));
 		}
+		u.setLastLogin(new Date());
 		return a;
 	}
 
