@@ -46,4 +46,11 @@ public interface UserService {
 	 */
 	User find(String username);
 	
+	/**
+	 * 为查找登录而准备的接口，在返回用户时，同时更新最后登录时间
+	 * @param username
+	 * @return
+	 */
+	User findAndRefreshLastLogin(String username);
+	
 }

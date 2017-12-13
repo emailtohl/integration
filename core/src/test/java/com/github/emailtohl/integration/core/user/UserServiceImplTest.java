@@ -5,6 +5,8 @@ import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
 import static com.github.emailtohl.integration.core.user.Constant.ANONYMOUS_EMAIL;
 import static org.junit.Assert.*;
 
+import java.util.Date;
+
 import javax.inject.Inject;
 
 import org.junit.Test;
@@ -86,5 +88,13 @@ public class UserServiceImplTest {
 		assertNotNull(u);
 		u = userService.find(td.baz.getEmail());
 		assertNotNull(u);
+	}
+	
+	@Test
+	public void testFindAndRefreshLastLogin() {
+		User u = userService.find(td.baz.getCellPhone());
+		Date lastLogin = u.getLastLogin();
+		u = userService.findAndRefreshLastLogin(td.baz.getCellPhone());
+		assertNotEquals(lastLogin, u.getLastLogin());
 	}
 }

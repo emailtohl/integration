@@ -1,6 +1,7 @@
 package com.github.emailtohl.integration.core.user;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
@@ -100,6 +101,15 @@ public class UserServiceImpl implements UserService {
 		return u;
 	}
 
+	@Override
+	public User findAndRefreshLastLogin(String username) {
+		User u = find(username);
+		if (u != null) {
+			u.setLastLogin(new Date());
+		}
+		return u;
+	}
+	
 	private User toTransient(User source) {
 		if (source == null) {
 			return null;

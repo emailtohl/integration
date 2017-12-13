@@ -3,7 +3,6 @@ package com.github.emailtohl.integration.core.auth;
 import java.util.Date;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,15 +63,13 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 	}
 
 	/**
-	 * 事务从此处开始，可以修改最后登录时间
-	 * @param username
+	 * @param username 平台账号的empNum，客户账号的手机号或邮箱，不能使用自动审批账号和匿名账号登录
 	 * @param password
 	 * @return
 	 * @throws AuthenticationException
 	 */
-	@Transactional
 	public Authentication authenticate(String username, String password) throws AuthenticationException {
-		User u = userService.find(username);
+		User u = userService.findAndRefreshLastLogin(username);
 		if (u == null) {
 			LOG.warn("Authentication failed for non-existent user {}.", username);
 			throw new UsernameNotFoundException("没有此账号");
