@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
+import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.core.user.customer.CustomerRepository;
 import com.github.emailtohl.integration.core.user.employee.EmployeeRepository;
 import com.github.emailtohl.integration.core.user.entities.User;
@@ -67,7 +68,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-	 * 返回持久化状态的用户实例
+	 * 注意返回的实例是瞬时态的实体对象，若出了事务层后再调用延迟加载字段会报异常
 	 * 
 	 * @param username 在Spring Security中用户唯一性的标识，本系统中可以是平台工号、客户手机或客户邮箱
 	 * @return 若没查找到则返回null
@@ -101,6 +102,11 @@ public class UserServiceImpl implements UserService {
 		return u;
 	}
 
+	/**
+	 * 为查找登录而准备的接口，在返回用户时，同时更新最后登录时间
+	 * @param username
+	 * @return
+	 */
 	@Override
 	public User findAndRefreshLastLogin(String username) {
 		User u = find(username);

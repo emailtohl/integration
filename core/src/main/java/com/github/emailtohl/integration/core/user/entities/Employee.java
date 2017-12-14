@@ -35,7 +35,7 @@ public class Employee extends User {
 	/**
 	 * 4-7位数字默认为工号
 	 */
-	public static final String PATTERN_EMP_NUM = "(^\\d\\d{2,5}\\d$)|" + NO_BOT;
+	public static final String PATTERN_EMP_NUM = "(^\\d\\d{2,5}\\d$)|(" + NO_BOT + ")";
 	/**
 	 * 工号
 	 */

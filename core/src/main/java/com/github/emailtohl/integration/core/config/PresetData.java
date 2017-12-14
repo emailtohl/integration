@@ -1,5 +1,8 @@
 package com.github.emailtohl.integration.core.config;
 
+import static com.github.emailtohl.integration.core.config.Constant.ADMIN_NAME;
+import static com.github.emailtohl.integration.core.config.Constant.ANONYMOUS_EMAIL;
+import static com.github.emailtohl.integration.core.config.Constant.ANONYMOUS_NAME;
 import static com.github.emailtohl.integration.core.role.Authority.AUDIT_ROLE;
 import static com.github.emailtohl.integration.core.role.Authority.AUDIT_USER;
 import static com.github.emailtohl.integration.core.role.Authority.CONTENT;
@@ -18,9 +21,6 @@ import static com.github.emailtohl.integration.core.role.Authority.ORG;
 import static com.github.emailtohl.integration.core.role.Authority.QUERY_ALL_USER;
 import static com.github.emailtohl.integration.core.role.Authority.RESOURCE;
 import static com.github.emailtohl.integration.core.role.Authority.ROLE;
-import static com.github.emailtohl.integration.core.user.Constant.ADMIN_NAME;
-import static com.github.emailtohl.integration.core.user.Constant.ANONYMOUS_EMAIL;
-import static com.github.emailtohl.integration.core.user.Constant.ANONYMOUS_NAME;
 
 import java.io.IOException;
 import java.io.InputStream;

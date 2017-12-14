@@ -2,7 +2,7 @@ package com.github.emailtohl.integration.core.user;
 
 import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
-import static com.github.emailtohl.integration.core.user.Constant.ANONYMOUS_EMAIL;
+import static com.github.emailtohl.integration.core.config.Constant.ANONYMOUS_EMAIL;
 import static org.junit.Assert.*;
 
 import java.util.Date;

@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.user;
+package com.github.emailtohl.integration.core.config;
 
 import java.util.regex.Pattern;
 
@@ -20,4 +20,8 @@ public interface Constant {
 	Pattern PATTERN_EMAIL = Pattern.compile(ConstantPattern.EMAIL);
 	Pattern PATTERN_CELL_PHONE = Pattern.compile(ConstantPattern.CELL_PHONE);
 	Pattern PATTEN_EMP_NUM = Pattern.compile(Employee.PATTERN_EMP_NUM);
+	
+	String SESSION_ID_PROPERTY_NAME = "sessionId";
+	String REMOTE_ADDRESS_PROPERTY_NAME = "remoteAddress";
+	String USER_PRINCIPAL_PROPERTY_NAME = "userPrincipal";
 }

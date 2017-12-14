@@ -29,11 +29,11 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import com.github.emailtohl.integration.common.jpa.envers.Tuple;
 import com.github.emailtohl.integration.core.ExecResult;
+import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleAuditedService;
 import com.github.emailtohl.integration.core.role.RoleService;
-import com.github.emailtohl.integration.core.user.Constant;
 import com.github.emailtohl.integration.core.user.UserRepository;
 import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.UserServiceImpl;

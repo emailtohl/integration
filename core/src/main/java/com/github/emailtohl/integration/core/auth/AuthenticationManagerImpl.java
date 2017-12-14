@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +22,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
-import com.github.emailtohl.integration.core.user.Constant;
+import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;
@@ -112,15 +113,12 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 		}
 		LOG.debug("User {} successfully authenticated.", username);
 
-		// 这是辅助的一些信息
-		Details d = new Details();
-		// ...
 		UserDetails principal = new UserDetailsImpl(u, username/*用登录时的用户名*/);
 
 		AuthenticationImpl a = new AuthenticationImpl(principal);
 		a.setAuthenticated(true);
 		a.eraseCredentials();
-		a.setDetails(d);
+		a.setDetails(getDetails());
 		if (publisher != null) {
 			publisher.publishEvent(new LoginEvent(a));
 		}
@@ -136,4 +134,10 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 		this.privateKey = privateKey;
 	}
 	
+	private Details getDetails() {
+		Details d = new Details();
+		d.setSessionId(ThreadContext.get(Constant.SESSION_ID_PROPERTY_NAME));
+		d.setRemoteAddress(ThreadContext.get(Constant.REMOTE_ADDRESS_PROPERTY_NAME));
+		return d;
+	}
 }
