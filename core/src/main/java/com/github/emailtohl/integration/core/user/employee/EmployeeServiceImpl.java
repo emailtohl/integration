@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.Constant;
@@ -195,8 +194,8 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 			List<Employee> ls = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
 			return new Paging<>(ls, p.getTotalElements(), p.getNumber(), p.getSize());
 		}
-		Page<SearchResult<Employee>> p = employeeRepository.search(query, pageable);
-		List<Employee> ls = p.getContent().stream().map(s -> toTransient(s.getEntity())).collect(Collectors.toList());
+		Page<Employee> p = employeeRepository.search(query, pageable);
+		List<Employee> ls = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
 		return new Paging<>(ls, p.getTotalElements(), p.getNumber(), p.getSize());
 	}
 

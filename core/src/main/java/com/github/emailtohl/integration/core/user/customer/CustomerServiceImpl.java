@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 import com.github.emailtohl.integration.common.exception.InvalidDataException;
 import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.Constant;
@@ -208,8 +207,8 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 			List<Customer> ls = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
 			return new Paging<>(ls, p.getTotalElements(), p.getNumber(), p.getSize());
 		}
-		Page<SearchResult<Customer>> p = customerRepository.search(query, pageable);
-		List<Customer> ls = p.getContent().stream().map(s -> toTransient(s.getEntity())).collect(Collectors.toList());
+		Page<Customer> p = customerRepository.search(query, pageable);
+		List<Customer> ls = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
 		return new Paging<>(ls, p.getTotalElements(), p.getNumber(), p.getSize());
 	}
 	

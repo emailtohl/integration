@@ -15,12 +15,12 @@ import com.github.emailtohl.integration.common.jpa.jpaCriterionQuery.CriterionQu
  */
 public interface SearchableRepository<E extends Serializable> extends CriterionQueryRepository<E> {
 	/**
-	 * 全文搜索
+	 * 全文搜索，包含Lucene的一些附加信息，但有可能查询出的实体结果为null
 	 * @param query 查询内容
 	 * @param pageable 可分页
 	 * @return 一个包含实体类E，相关度以及Lucence的Document的结果集
 	 */
-	Page<SearchResult<E>> search(String query, Pageable pageable);
+	Page<SearchResult<E>> searchWithScore(String query, Pageable pageable);
 	
 	/**
 	 * 全文搜索
@@ -28,7 +28,7 @@ public interface SearchableRepository<E extends Serializable> extends CriterionQ
 	 * @param pageable
 	 * @return 只返回查找到的实体类E
 	 */
-	Page<E> find(String query, Pageable pageable);
+	Page<E> search(String query, Pageable pageable);
 	
 	/**
 	 * 查询所有匹配的实体

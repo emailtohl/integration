@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Paging<User> search(String fulltext, Pageable pageable) {
-		Page<SearchResult<User>> p = userRepository.search(fulltext, pageable);
+		Page<SearchResult<User>> p = userRepository.searchWithScore(fulltext, pageable);
 		List<User> ls = new ArrayList<>();
 		p.forEach(r -> ls.add(toTransient(r.getEntity())));
 		return new Paging<>(ls, pageable, p.getTotalElements());

@@ -54,11 +54,12 @@ public abstract class AbstractSearchableRepository<E extends Serializable> exten
 	}
 	
 	/**
+	 * 全文搜索，包含Lucene的一些附加信息，但有可能查询出的实体结果为null
 	 * 返回Lucene源信息的查询接口，不过排序按评分高低进行
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Page<SearchResult<E>> search(String query, Pageable pageable) {
+	public Page<SearchResult<E>> searchWithScore(String query, Pageable pageable) {
 		FullTextQuery q = getFullTextQuery(query);
 		q.setProjection(FullTextQuery.THIS, FullTextQuery.SCORE, FullTextQuery.DOCUMENT);
 		int total = q.getResultSize();
@@ -75,7 +76,7 @@ public abstract class AbstractSearchableRepository<E extends Serializable> exten
 	 * 返回与查询语句相符的分页结果
 	 */
 	@Override
-	public Page<E> find(String query, Pageable pageable) {
+	public Page<E> search(String query, Pageable pageable) {
 		FullTextQuery q = getFullTextQuery(query);
 		q.setFirstResult(pageable.getOffset()).setMaxResults(pageable.getPageSize());
 		@SuppressWarnings("unchecked")
