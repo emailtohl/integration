@@ -1,16 +1,12 @@
 package com.github.emailtohl.integration.core.user.entities;
 
-import java.io.Serializable;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
-import javax.validation.constraints.Pattern;
-
-import com.github.emailtohl.integration.common.ConstantPattern;
+import javax.validation.constraints.Min;
 
 /**
  * 用户实体经常被外部引用，但由于信息量较大，加载性能低，本实体存储必要信息，并应用用户实体
@@ -19,84 +15,29 @@ import com.github.emailtohl.integration.common.ConstantPattern;
 @org.hibernate.envers.Audited
 @Entity
 @Table(name = "employee_ref")
-public class EmployeeRef implements Serializable {
+public class EmployeeRef extends UserRef {
 	private static final long serialVersionUID = 757273856079174616L;
-	protected Long id;
 	protected Integer empNum;
-	protected String name;
-	protected String nickname;// 可存储第三方昵称
-	@Pattern(// 校验
-		regexp = ConstantPattern.EMAIL,
-		flags = {Pattern.Flag.CASE_INSENSITIVE}
-	)
-	protected String email;
-	protected String icon;
-	@Pattern(regexp = ConstantPattern.CELL_PHONE)
-	protected String cellPhone;
 	protected Employee employee;
 	
-	public EmployeeRef() {}
+	public EmployeeRef() {
+		super();
+	}
 	
 	public EmployeeRef(Employee employee) {
-		id = employee.getId();
+		super(employee);
 		empNum = employee.getEmpNum();
-		name = employee.getName();
-		nickname = employee.getNickname();
-		email = employee.getEmail();
-		cellPhone = employee.getCellPhone();
-		icon = employee.getImage() != null ? employee.getImage().getPath() : null;
 		this.employee = employee;
 	}
 
-	@Id
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-
+	@org.hibernate.envers.NotAudited
+	@Column(name = "emp_num", unique = true, updatable = false)
+	@Min(value = Employee.NO_BOT)
 	public Integer getEmpNum() {
 		return empNum;
 	}
 	public void setEmpNum(Integer empNum) {
 		this.empNum = empNum;
-	}
-
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getNickname() {
-		return nickname;
-	}
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	@org.hibernate.envers.NotAudited
-	public String getIcon() {
-		return icon;
-	}
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
-
-	public String getCellPhone() {
-		return cellPhone;
-	}
-	public void setCellPhone(String cellPhone) {
-		this.cellPhone = cellPhone;
 	}
 
 	@org.hibernate.envers.NotAudited
