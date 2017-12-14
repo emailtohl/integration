@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.user.entities.User;
+import com.github.emailtohl.integration.core.user.entities.UserRef;
 
 /**
  * 统一查询功能
@@ -53,5 +54,12 @@ public interface UserService {
 	 * @return
 	 */
 	User findAndRefreshLastLogin(String username);
+	
+	/**
+	 * 查找用户的引用
+	 * @param username
+	 * @return
+	 */
+	UserRef findRef(String username);
 	
 }

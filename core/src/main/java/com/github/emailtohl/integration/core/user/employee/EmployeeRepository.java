@@ -12,6 +12,10 @@ import com.github.emailtohl.integration.core.user.entities.Employee;
  */
 public interface EmployeeRepository extends JpaRepository<Employee, Long>, EmployeeRepositoryCustomization {
 	
+	Employee findByCellPhone(String cellPhone);
+
+	Employee findByEmail(String email);
+	
 	Employee findByEmpNum(Integer empNum);
 	
 	List<Employee> findByNameLike(String name);

@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.core.config.Constant;
+import com.github.emailtohl.integration.core.user.UserType;
 import com.github.emailtohl.integration.core.user.entities.Classify;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;

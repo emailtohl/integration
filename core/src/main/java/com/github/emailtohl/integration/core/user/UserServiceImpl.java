@@ -17,9 +17,12 @@ import org.springframework.stereotype.Service;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
 import com.github.emailtohl.integration.core.config.Constant;
+import com.github.emailtohl.integration.core.user.customer.CustomerRefRepository;
 import com.github.emailtohl.integration.core.user.customer.CustomerRepository;
+import com.github.emailtohl.integration.core.user.employee.EmployeeRefRepository;
 import com.github.emailtohl.integration.core.user.employee.EmployeeRepository;
 import com.github.emailtohl.integration.core.user.entities.User;
+import com.github.emailtohl.integration.core.user.entities.UserRef;
 
 /**
  * 统一查询功能
@@ -34,17 +37,26 @@ public class UserServiceImpl implements UserService {
 	@Inject
 	EmployeeRepository employeeRepository;
 	@Inject
+	CustomerRefRepository customerRefRepository;
+	@Inject
+	EmployeeRefRepository employeeRefRepository;
+	@Inject
 	UserRepository userRepository;
 
 	public UserServiceImpl() {
 	}
 
 	public UserServiceImpl(CustomerRepository customerRepository, EmployeeRepository employeeRepository,
+			CustomerRefRepository customerRefRepository, EmployeeRefRepository employeeRefRepository,
 			UserRepository userRepository) {
+		super();
 		this.customerRepository = customerRepository;
 		this.employeeRepository = employeeRepository;
+		this.customerRefRepository = customerRefRepository;
+		this.employeeRefRepository = employeeRefRepository;
 		this.userRepository = userRepository;
 	}
+
 
 	@Override
 	public Paging<User> search(String fulltext, Pageable pageable) {
@@ -82,11 +94,17 @@ public class UserServiceImpl implements UserService {
 		Matcher m = Constant.PATTERN_CELL_PHONE.matcher(username);
 		if (m.find()) {
 			u = customerRepository.findByCellPhone(username);
+			if (u == null) {
+				u = employeeRepository.findByCellPhone(username);
+			}
 		}
 		if (u == null) {
 			m = Constant.PATTERN_EMAIL.matcher(username);
 			if (m.find()) {
 				u = customerRepository.findByEmail(username);
+				if (u == null) {
+					u = employeeRepository.findByEmail(username);
+				}
 			}
 		}
 		if (u == null) {
@@ -104,6 +122,7 @@ public class UserServiceImpl implements UserService {
 
 	/**
 	 * 为查找登录而准备的接口，在返回用户时，同时更新最后登录时间
+	 * 
 	 * @param username
 	 * @return
 	 */
@@ -115,7 +134,39 @@ public class UserServiceImpl implements UserService {
 		}
 		return u;
 	}
-	
+
+	@Override
+	public UserRef findRef(String username) {
+		if (username == null) {
+			return null;
+		}
+		UserRef ref = null;
+		Matcher m = Constant.PATTERN_CELL_PHONE.matcher(username);
+		if (m.find()) {
+			ref = customerRefRepository.findByCellPhone(username);
+			if (ref == null) {
+				ref = employeeRefRepository.findByCellPhone(username);
+			}
+		}
+		if (ref == null) {
+			m = Constant.PATTERN_EMAIL.matcher(username);
+			if (m.find()) {
+				ref = customerRefRepository.findByEmail(username);
+				if (ref == null) {
+					ref = employeeRefRepository.findByEmail(username);
+				}
+			}
+		}
+		if (ref == null) {
+			m = Constant.PATTEN_EMP_NUM.matcher(username);
+			if (m.find()) {
+				Integer empNum = Integer.parseInt(username);
+				ref = employeeRefRepository.findByEmpNum(empNum);
+			}
+		}
+		return ref;
+	}
+
 	private User toTransient(User source) {
 		if (source == null) {
 			return null;

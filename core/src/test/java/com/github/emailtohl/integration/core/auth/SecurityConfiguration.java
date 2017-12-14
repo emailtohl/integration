@@ -38,9 +38,11 @@ import com.github.emailtohl.integration.core.user.UserRepository;
 import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.UserServiceImpl;
 import com.github.emailtohl.integration.core.user.customer.CustomerAuditedService;
+import com.github.emailtohl.integration.core.user.customer.CustomerRefRepository;
 import com.github.emailtohl.integration.core.user.customer.CustomerRepository;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.employee.EmployeeAuditedService;
+import com.github.emailtohl.integration.core.user.employee.EmployeeRefRepository;
 import com.github.emailtohl.integration.core.user.employee.EmployeeRepository;
 import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Customer;
@@ -125,14 +127,27 @@ class SecurityConfiguration {
 	}
 	
 	@Bean
+	public CustomerRefRepository customerRefRepository() {
+		CustomerRefRepository dao = mock(CustomerRefRepository.class);
+		return dao;
+	}
+	
+	@Bean
+	public EmployeeRefRepository employeeRefRepository() {
+		EmployeeRefRepository dao = mock(EmployeeRefRepository.class);
+		return dao;
+	}
+	
+	@Bean
 	public UserRepository userRepository() {
 		UserRepository dao = mock(UserRepository.class);
 		return dao;
 	}
 	
 	@Bean
-	public UserService userService(CustomerRepository cr, EmployeeRepository er, UserRepository ur) {
-		UserService service = new UserServiceImpl(cr, er, ur);
+	public UserService userService(CustomerRepository cr, EmployeeRepository er, CustomerRefRepository crr,
+			EmployeeRefRepository err, UserRepository ur) {
+		UserService service = new UserServiceImpl(cr, er, crr, err, ur);
 		return service;
 	}
 

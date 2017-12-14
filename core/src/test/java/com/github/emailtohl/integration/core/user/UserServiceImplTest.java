@@ -22,6 +22,7 @@ import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguratio
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.User;
+import com.github.emailtohl.integration.core.user.entities.UserRef;
 import com.google.gson.Gson;
 
 /**
@@ -88,6 +89,12 @@ public class UserServiceImplTest {
 		assertNotNull(u);
 		u = userService.find(td.baz.getEmail());
 		assertNotNull(u);
+		
+		// 通过平台账号的邮箱以及手机号查询
+		u = userService.find(td.bar.getCellPhone());
+		assertNotNull(u);
+		u = userService.find(td.bar.getEmail());
+		assertNotNull(u);
 	}
 	
 	@Test
@@ -96,5 +103,27 @@ public class UserServiceImplTest {
 		Date lastLogin = u.getLastLogin();
 		u = userService.findAndRefreshLastLogin(td.baz.getCellPhone());
 		assertNotEquals(lastLogin, u.getLastLogin());
+	}
+	
+	@Test
+	public void testFindRef() {
+		UserRef u = userService.findRef("" + Employee.NO_BOT);
+		assertNotNull(u);
+		u = userService.findRef("" + Employee.NO1);
+		assertNotNull(u);
+		u = userService.findRef(ANONYMOUS_EMAIL);
+		assertNotNull(u);
+		u = userService.findRef(td.foo.getEmpNum().toString());
+		assertNotNull(u);
+		u = userService.findRef(td.baz.getCellPhone());
+		assertNotNull(u);
+		u = userService.findRef(td.baz.getEmail());
+		assertNotNull(u);
+		
+		// 通过平台账号的邮箱以及手机号查询
+		u = userService.findRef(td.bar.getCellPhone());
+		assertNotNull(u);
+		u = userService.findRef(td.bar.getEmail());
+		assertNotNull(u);
 	}
 }

@@ -10,7 +10,7 @@ import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
  * 查询平台账号的引用
  * @author HeLei
  */
-interface EmployeeRefRepository extends JpaRepository<EmployeeRef, Long> {
+public interface EmployeeRefRepository extends JpaRepository<EmployeeRef, Long> {
 
 	Page<EmployeeRef> findByCellPhone(String cellPhone, Pageable pageable);
 

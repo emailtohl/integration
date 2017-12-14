@@ -5,9 +5,11 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import javax.validation.constraints.Pattern;
 
 import com.github.emailtohl.integration.common.ConstantPattern;
+import com.github.emailtohl.integration.core.user.UserType;
 
 /**
  * 用户实体经常被外部引用，但由于信息量较大，加载性能低，本实体存储必要信息，并应用用户实体
@@ -49,6 +51,21 @@ public class UserRef implements Serializable {
 		this.id = id;
 	}
 	
+	@Transient
+	public UserType getUserType() {
+		if (this instanceof EmployeeRef) {
+			return UserType.Employee;
+		}
+		if (this instanceof CustomerRef) {
+			return UserType.Customer;
+		}
+		if (this instanceof UserRef) {
+			return UserType.User;
+		}
+		return null;
+	}
+	public void setUserType(UserType userType) {}
+
 	public String getName() {
 		return name;
 	}

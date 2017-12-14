@@ -10,7 +10,7 @@ import com.github.emailtohl.integration.core.user.entities.CustomerRef;
  * 查询顾客引用
  * @author HeLei
  */
-interface CustomerRefRepository extends JpaRepository<CustomerRef, Long> {
+public interface CustomerRefRepository extends JpaRepository<CustomerRef, Long> {
 
 	Page<CustomerRef> findByCellPhone(String cellPhone, Pageable pageable);
 	
