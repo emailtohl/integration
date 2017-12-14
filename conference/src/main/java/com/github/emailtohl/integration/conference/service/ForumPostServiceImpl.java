@@ -30,7 +30,7 @@ public class ForumPostServiceImpl implements ForumPostService {
 
 	@Override
 	public Paging<SearchResult<ForumPostDto>> search(String query, Pageable pageable) {
-		Page<SearchResult<ForumPost>> page = this.forumPostRepository.search(query, pageable);
+		Page<SearchResult<ForumPost>> page = this.forumPostRepository.searchWithScore(query, pageable);
 		/*
 		List<SearchResult<ForumPostDto>> ls = new ArrayList<SearchResult<ForumPostDto>>();
 		page.getContent().forEach((s1) -> {
@@ -58,7 +58,7 @@ public class ForumPostServiceImpl implements ForumPostService {
 	
 	@Override
 	public Paging<ForumPostDto> find(String query, Pageable pageable) {
-		Page<ForumPost> page = forumPostRepository.find(query, pageable);
+		Page<ForumPost> page = forumPostRepository.search(query, pageable);
 		List<ForumPostDto> ls = page.getContent().stream().filter(f -> f != null).map(this::convert).collect(Collectors.toList());
 		return new Paging<ForumPostDto>(ls, page.getTotalElements(), pageable.getPageNumber(), pageable.getPageSize());
 	}

@@ -73,6 +73,8 @@ public class UserServiceImplTest {
 			assertNotNull(uu);
 		});
 		System.out.println(gson.toJson(p));
+		User uu = userService.get(1L);
+		assertNull(uu);
 	}
 	
 	@Test
@@ -83,6 +85,8 @@ public class UserServiceImplTest {
 			assertNotNull(ref);
 			System.out.println(gson.toJson(ref));
 		});
+		UserRef ref = userService.getRef(1L);
+		assertNull(ref);
 	}
 	
 	@Test

@@ -94,8 +94,7 @@ class JpaConfiguration {
 				throw new IllegalArgumentException("仅支持postgresql和mysql");
 			}
 		}
-		adapter.setShowSql(true);
-		adapter.setGenerateDdl(true);
+		adapter.setGenerateDdl(false);
 		return adapter;
 	}
 	

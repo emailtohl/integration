@@ -59,7 +59,7 @@ public class CmsServiceImpl implements CmsService {
 	public Paging<Article> searchArticles(String query, Pageable pageable) {
 		Page<Article> page;
 		if (StringUtils.hasText(query)) {
-			page = articleRepository.find(query.trim(), pageable);
+			page = articleRepository.search(query.trim(), pageable);
 		} else {
 			page = articleRepository.findAll(pageable);
 		}
@@ -192,7 +192,7 @@ public class CmsServiceImpl implements CmsService {
 	public Paging<Comment> queryComments(String query, Pageable pageable) {
 		Page<Comment> page;
 		if (StringUtils.hasText(query))
-			page = commentRepository.find(query, pageable);
+			page = commentRepository.search(query, pageable);
 		else
 			page = commentRepository.findAll(pageable);
 		List<Comment> ls = page.getContent().stream().map(c -> {
