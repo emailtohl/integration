@@ -2,9 +2,14 @@ package com.github.emailtohl.integration.core.user.entities;
 
 import java.io.Serializable;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Pattern;
 
@@ -13,9 +18,15 @@ import com.github.emailtohl.integration.core.user.UserType;
 
 /**
  * 用户实体经常被外部引用，但由于信息量较大，加载性能低，本实体存储必要信息，并应用用户实体
+ * 为了被外部关联查询到用户实体本身，UserRef本身也得是实体，且必须与User的继承配置一致
+ * 
  * @author HeLei
  */
-@MappedSuperclass
+@org.hibernate.envers.Audited
+@Entity
+@Table(name = "users_ref")
+@Access(AccessType.PROPERTY)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class UserRef implements Serializable {
 	private static final long serialVersionUID = -1980610697330696766L;
 	protected Long id;

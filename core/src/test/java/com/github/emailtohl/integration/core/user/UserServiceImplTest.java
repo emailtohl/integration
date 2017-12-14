@@ -76,6 +76,16 @@ public class UserServiceImplTest {
 	}
 	
 	@Test
+	public void testGetRef() {
+		Paging<User> p = userService.query(null, pageable);
+		p.getContent().forEach(u -> {
+			UserRef ref = userService.getRef(u.getId());
+			assertNotNull(ref);
+			System.out.println(gson.toJson(ref));
+		});
+	}
+	
+	@Test
 	public void testFind() {
 		User u = userService.find("" + Employee.NO_BOT);
 		assertNotNull(u);

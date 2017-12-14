@@ -34,6 +34,7 @@ import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleAuditedService;
 import com.github.emailtohl.integration.core.role.RoleService;
+import com.github.emailtohl.integration.core.user.UserRefRepository;
 import com.github.emailtohl.integration.core.user.UserRepository;
 import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.UserServiceImpl;
@@ -145,9 +146,15 @@ class SecurityConfiguration {
 	}
 	
 	@Bean
+	public UserRefRepository userRefRepository() {
+		UserRefRepository dao = mock(UserRefRepository.class);
+		return dao;
+	}
+	
+	@Bean
 	public UserService userService(CustomerRepository cr, EmployeeRepository er, CustomerRefRepository crr,
-			EmployeeRefRepository err, UserRepository ur) {
-		UserService service = new UserServiceImpl(cr, er, crr, err, ur);
+			EmployeeRefRepository err, UserRepository ur, UserRefRepository urr) {
+		UserService service = new UserServiceImpl(cr, er, crr, err, ur, urr);
 		return service;
 	}
 

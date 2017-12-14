@@ -41,6 +41,14 @@ public interface UserService {
 	User get(Long id);
 	
 	/**
+	 * 查看该User的引用
+	 * @param id
+	 * @return
+	 */
+	@PreAuthorize("isAuthenticated()")
+	UserRef getRef(Long id);
+	
+	/**
 	 * 注意返回的实例是瞬时态的实体对象，若出了事务层后再调用延迟加载字段会报异常
 	 * 
 	 * @param username 在Spring Security中用户唯一性的标识，本系统中可以是平台工号、客户手机或客户邮箱

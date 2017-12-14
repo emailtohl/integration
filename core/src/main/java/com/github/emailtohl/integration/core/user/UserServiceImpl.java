@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -21,6 +22,9 @@ import com.github.emailtohl.integration.core.user.customer.CustomerRefRepository
 import com.github.emailtohl.integration.core.user.customer.CustomerRepository;
 import com.github.emailtohl.integration.core.user.employee.EmployeeRefRepository;
 import com.github.emailtohl.integration.core.user.employee.EmployeeRepository;
+import com.github.emailtohl.integration.core.user.entities.CustomerRef;
+import com.github.emailtohl.integration.core.user.entities.Employee;
+import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.User;
 import com.github.emailtohl.integration.core.user.entities.UserRef;
 
@@ -42,19 +46,22 @@ public class UserServiceImpl implements UserService {
 	EmployeeRefRepository employeeRefRepository;
 	@Inject
 	UserRepository userRepository;
+	@Inject
+	UserRefRepository userRefRepository;
 
 	public UserServiceImpl() {
 	}
 
 	public UserServiceImpl(CustomerRepository customerRepository, EmployeeRepository employeeRepository,
 			CustomerRefRepository customerRefRepository, EmployeeRefRepository employeeRefRepository,
-			UserRepository userRepository) {
+			UserRepository userRepository, UserRefRepository userRefRepository) {
 		super();
 		this.customerRepository = customerRepository;
 		this.employeeRepository = employeeRepository;
 		this.customerRefRepository = customerRefRepository;
 		this.employeeRefRepository = employeeRefRepository;
 		this.userRepository = userRepository;
+		this.userRefRepository = userRefRepository;
 	}
 
 
@@ -79,6 +86,13 @@ public class UserServiceImpl implements UserService {
 		return transientDetail(source);
 	}
 
+	@Override
+	public UserRef getRef(Long id) {
+		// 这里只返回一个代理，没有执行SQL，等到访问代理时才执行SQL
+		UserRef ref = userRefRepository.getOne(id);
+		return transientRefDetail(ref);
+	}
+	
 	/**
 	 * 注意返回的实例是瞬时态的实体对象，若出了事务层后再调用延迟加载字段会报异常
 	 * 
@@ -164,7 +178,7 @@ public class UserServiceImpl implements UserService {
 				ref = employeeRefRepository.findByEmpNum(empNum);
 			}
 		}
-		return ref;
+		return transientRefDetail(ref);
 	}
 
 	private User toTransient(User source) {
@@ -182,6 +196,31 @@ public class UserServiceImpl implements UserService {
 		}
 		User target = new User();
 		BeanUtils.copyProperties(source, target, "employeeRef", "customerRef", "password", "roles", "cards");
+		return target;
+	}
+	
+	private Pattern p = Pattern.compile("empNum=(" + Employee.PATTERN_EMP_NUM + ")");
+	private UserRef transientRefDetail(UserRef source) {
+		UserRef target;
+		// 由于OneToOne懒加载，这里的UserRef是一个代理，不能用instanceof来检测source属于哪个类，也不能强转
+		if (source.getUserType() == UserType.Employee) {
+			EmployeeRef _target = new EmployeeRef();
+			Matcher m = p.matcher(source.toString());
+			if (m.find()) {
+				_target.setEmpNum(Integer.parseInt(m.group(1)));
+			}
+			target = _target;
+		} else if (source.getUserType() == UserType.Customer) {
+			target = new CustomerRef();
+		} else {
+			target = new UserRef();
+		}
+		target.setId(source.getId());
+		target.setEmail(source.getEmail());
+		target.setCellPhone(source.getCellPhone());
+		target.setName(source.getName());
+		target.setNickname(source.getNickname());
+		target.setIcon(source.getIcon());
 		return target;
 	}
 
