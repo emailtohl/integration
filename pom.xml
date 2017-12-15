@@ -394,7 +394,11 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-
+			<dependency>
+				<groupId>org.mybatis</groupId>
+				<artifactId>mybatis</artifactId>
+				<version>3.4.5</version>
+			</dependency>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
 				<artifactId>lucene-core</artifactId>

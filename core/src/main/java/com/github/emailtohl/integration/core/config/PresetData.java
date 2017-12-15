@@ -32,6 +32,7 @@ import com.github.emailtohl.integration.core.file.Image;
 import com.github.emailtohl.integration.core.role.Authority;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.user.entities.Address;
+import com.github.emailtohl.integration.core.user.entities.Classify;
 import com.github.emailtohl.integration.core.user.entities.Company;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Customer.Level;
@@ -169,6 +170,7 @@ public class PresetData {
 		user_emailtohl.setDescription("developer");
 		user_emailtohl.setGender(Gender.MALE);
 		user_emailtohl.setLevel(Level.VIP);
+		user_emailtohl.setClassify(Classify.COOPERATE);
 		user_emailtohl.getRoles().addAll(Arrays.asList(role_admin, role_guest));
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-emailtohl.png")) {
 			user_emailtohl.setBirthday(sdf.parse("1982-02-12"));

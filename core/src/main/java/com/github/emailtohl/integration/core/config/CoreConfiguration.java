@@ -1,8 +1,11 @@
 package com.github.emailtohl.integration.core.config;
 
+import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionHandler;
@@ -10,9 +13,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.sql.DataSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.lucene.store.RAMDirectory;
 import org.hibernate.validator.HibernateValidator;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.cache.CacheManager;
@@ -25,6 +30,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.env.Environment;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -60,12 +66,14 @@ import com.google.gson.GsonBuilder;
 @Import(JpaConfiguration.class)
 public class CoreConfiguration implements TransactionManagementConfigurer, AsyncConfigurer, SchedulingConfigurer {
 	private static final Logger LOG = LogManager.getLogger();
-
+	@Inject
+	Environment env;
+	
 	/**
 	 * 初始化数据库中的数据
 	 */
 	@Bean
-	public InitData initData(LocalContainerEntityManagerFactoryBean entityManagerFactory, Environment env) {
+	public InitData initData(LocalContainerEntityManagerFactoryBean entityManagerFactory) {
 		InitData d = new InitData(entityManagerFactory.getObject(), env);
 		d.init();
 		return d;
@@ -179,10 +187,16 @@ public class CoreConfiguration implements TransactionManagementConfigurer, Async
 	 * 注意：如果没有实现接口TransactionManagementConfigurer，且事务管理器的名字不是默认的annotationDrivenTransactionManager，可在注解 @Transactional的value指定。
 	 */
 	@Inject
+	@Named("annotationDrivenTransactionManager")
 	PlatformTransactionManager jpaTransactionManager;
 	@Override
 	public PlatformTransactionManager annotationDrivenTransactionManager() {
 		return jpaTransactionManager;
+	}
+	
+	@Bean
+	public DataSourceTransactionManager dataSourceTransactionManager(DataSource dataSource) {
+		return new DataSourceTransactionManager(dataSource);
 	}
 	
 	/**
@@ -192,6 +206,9 @@ public class CoreConfiguration implements TransactionManagementConfigurer, Async
 	 */
 	@Bean
 	public FileSearch fileSearch(@Named("indexBase") File indexBase) throws IOException {
+		if (contains(DB_RAM_H2)) { // 如果使用内存数据库，那么索引也设置在内存中
+			return new FileSearch(new RAMDirectory());
+		}
 		File indexDir = new File(indexBase, FileSearch.class.getName());
 		if (!indexDir.exists()) {
 			indexDir.mkdir();
@@ -212,9 +229,7 @@ public class CoreConfiguration implements TransactionManagementConfigurer, Async
 			}
 		};
 	}
-	
-	@Inject
-	Environment env;
+
 	@Bean
 	public JavaMailSender mailSender() {
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
@@ -240,4 +255,14 @@ public class CoreConfiguration implements TransactionManagementConfigurer, Async
 		mailSender.setJavaMailProperties(p);
 		return mailSender;
 	}
+
+	/**
+	 * 测试当前环境是否含有此名字
+	 * @param envName
+	 * @return
+	 */
+	public boolean contains(String envName) {
+		return Arrays.stream(env.getActiveProfiles()).anyMatch(s -> envName.equals(s));
+	}
+	
 }
