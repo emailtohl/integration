@@ -21,6 +21,7 @@ import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.user.entities.Employee;
+import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.User;
 import com.github.emailtohl.integration.core.user.entities.UserRef;
 import com.google.gson.Gson;
@@ -41,16 +42,49 @@ public class UserServiceImplTest {
 	Pageable pageable = new PageRequest(0, 20);
 
 	@Test
-	public void testQueryStringPageable() {
+	public void testSearchStringPageable() {
 		Paging<User> p = userService.search(td.baz.getName(), pageable);
 		System.out.println(p.getTotalElements());
 		assertFalse(p.getContent().isEmpty());
 		System.out.println(gson.toJson(p));
 		
-		CoreTestData td = new CoreTestData();
+		p = userService.search(td.foo.getEmail(), pageable);
+		assertFalse(p.getContent().isEmpty());
+		p.getContent().forEach(u -> {
+			if (u.getUserType() == UserType.Employee) {
+				Employee e = (Employee) u;
+				Paging<User> pp = userService.search(e.getEmpNum().toString(), pageable);
+				// 这里为什么查不到，是因为索引的UserRef里面没有empNum字段
+				assertTrue(pp.getContent().isEmpty());
+			}
+		});
+		
 		p = userService.search(td.role_manager.getName(), pageable);
 		assertFalse(p.getContent().isEmpty());
 		System.out.println(gson.toJson(p));
+	}
+	
+	@Test
+	public void testSearchRefStringPageable() {
+		Paging<UserRef> p = userService.searchRef(td.baz.getName(), pageable);
+		System.out.println(p.getTotalElements());
+		assertFalse(p.getContent().isEmpty());
+		System.out.println(gson.toJson(p));
+		
+		p = userService.searchRef(td.foo.getEmail(), pageable);
+		assertFalse(p.getContent().isEmpty());
+		p.getContent().forEach(u -> {
+			if (u.getUserType() == UserType.Employee) {
+				EmployeeRef e = (EmployeeRef) u;
+				Paging<UserRef> pp = userService.searchRef(e.getEmpNum().toString(), pageable);
+				// 这里为什么查不到，是因为索引的UserRef里面没有empNum字段
+				assertTrue(pp.getContent().isEmpty());
+			}
+		});
+		System.out.println(gson.toJson(p));
+		
+		p = userService.searchRef(td.bar.getCellPhone(), pageable);
+		assertFalse(p.getContent().isEmpty());
 	}
 
 	@Test
@@ -63,6 +97,33 @@ public class UserServiceImplTest {
 		System.out.println(p.getTotalElements());
 		assertFalse(p.getContent().isEmpty());
 		System.out.println(gson.toJson(p));
+		
+		Employee ep = new Employee();
+		ep.setEmpNum(td.foo.getEmpNum());
+		p = userService.query(params, pageable);
+		assertFalse(p.getContent().isEmpty());
+		
+		p = userService.query(null, pageable);
+		assertFalse(p.getContent().isEmpty());
+	}
+	
+	@Test
+	public void testQueryUserRefPageable() {
+		UserRef params = new UserRef();
+		params.setName(td.bar.getName());
+		params.setCellPhone(td.bar.getCellPhone());
+		Paging<UserRef> p = userService.queryRef(params, pageable);
+		System.out.println(p.getTotalElements());
+		assertFalse(p.getContent().isEmpty());
+		System.out.println(gson.toJson(p));
+		
+		EmployeeRef refParam = new EmployeeRef();
+		refParam.setEmpNum(td.foo.getEmpNum());
+		p = userService.queryRef(refParam, pageable);
+		assertFalse(p.getContent().isEmpty());
+		
+		p = userService.queryRef(null, pageable);
+		assertFalse(p.getContent().isEmpty());
 	}
 
 	@Test

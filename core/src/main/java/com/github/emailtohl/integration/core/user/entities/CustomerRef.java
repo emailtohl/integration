@@ -10,6 +10,7 @@ import javax.persistence.Table;
  * 用户实体经常被外部引用，但由于信息量较大，加载性能低，本实体存储必要信息，并应用用户实体
  * @author HeLei
  */
+@org.hibernate.search.annotations.Indexed
 @org.hibernate.envers.Audited
 @Entity
 @Table(name = "customer_ref")

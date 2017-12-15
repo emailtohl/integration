@@ -67,7 +67,7 @@ public class Customer extends User {
 	 */
 	private CustomerRef customerRef;
 	
-	//	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = EnumBridge.class))
+	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = EnumBridgeCust.class))
 	@Enumerated(EnumType.STRING)
 	public Level getLevel() {
 		return level;
@@ -111,6 +111,7 @@ public class Customer extends User {
 		this.cards = cards;
 	}
 
+	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = EnumBridgeCust.class))
 	public Classify getClassify() {
 		return classify;
 	}
@@ -204,8 +205,9 @@ public class Customer extends User {
 	
 	@Override
 	public String toString() {
-		return "Customer [level=" + level + ", address=" + address + ", name=" + name + ", email=" + email
-				+ ", cellPhone=" + cellPhone + ", id=" + id + "]";
+		return "Customer [level=" + level + ", address=" + address + ", identification=" + identification + ", points="
+				+ points + ", cards=" + cards + ", classify=" + classify + ", name=" + name + ", email=" + email
+				+ ", cellPhone=" + cellPhone + ", enabled=" + enabled + ", id=" + id + "]";
 	}
 	
 }

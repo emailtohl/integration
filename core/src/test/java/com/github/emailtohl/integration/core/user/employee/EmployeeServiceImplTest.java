@@ -223,6 +223,11 @@ public class EmployeeServiceImplTest {
 		p = employeeService.search(emp.getSalary().toString(), pageable);
 		assertFalse(p.getContent().isEmpty());
 		p.getContent().forEach(e -> System.out.println(e));
+		
+		// test Enum
+		p = employeeService.search(emp.getGender().name(), pageable);
+		assertFalse(p.getContent().isEmpty());
+		p.getContent().forEach(e -> System.out.println(e));
 	}
 	
 	@Test

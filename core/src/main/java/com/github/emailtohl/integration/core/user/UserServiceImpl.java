@@ -1,6 +1,5 @@
 package com.github.emailtohl.integration.core.user;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -15,13 +14,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchResult;
 import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.core.user.customer.CustomerRefRepository;
 import com.github.emailtohl.integration.core.user.customer.CustomerRepository;
 import com.github.emailtohl.integration.core.user.employee.EmployeeRefRepository;
 import com.github.emailtohl.integration.core.user.employee.EmployeeRepository;
+import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.CustomerRef;
+import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.User;
 import com.github.emailtohl.integration.core.user.entities.UserRef;
@@ -34,22 +34,14 @@ import com.github.emailtohl.integration.core.user.entities.UserRef;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
-	@Inject
 	CustomerRepository customerRepository;
-	@Inject
 	EmployeeRepository employeeRepository;
-	@Inject
 	CustomerRefRepository customerRefRepository;
-	@Inject
 	EmployeeRefRepository employeeRefRepository;
-	@Inject
 	UserRepository userRepository;
-	@Inject
 	UserRefRepository userRefRepository;
 
-	public UserServiceImpl() {
-	}
-
+	@Inject
 	public UserServiceImpl(CustomerRepository customerRepository, EmployeeRepository employeeRepository,
 			CustomerRefRepository customerRefRepository, EmployeeRefRepository employeeRefRepository,
 			UserRepository userRepository, UserRefRepository userRefRepository) {
@@ -62,12 +54,17 @@ public class UserServiceImpl implements UserService {
 		this.userRefRepository = userRefRepository;
 	}
 
-
 	@Override
 	public Paging<User> search(String fulltext, Pageable pageable) {
-		Page<SearchResult<User>> p = userRepository.searchWithScore(fulltext, pageable);
-		List<User> ls = new ArrayList<>();
-		p.forEach(r -> ls.add(toTransient(r.getEntity())));
+		Page<User> p = userRepository.search(fulltext, pageable);
+		List<User> ls = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
+		return new Paging<>(ls, pageable, p.getTotalElements());
+	}
+
+	@Override
+	public Paging<UserRef> searchRef(String fulltext, Pageable pageable) {
+		Page<UserRef> p = userRefRepository.search(fulltext, pageable);
+		List<UserRef> ls = p.getContent().stream().map(this::transientRef).collect(Collectors.toList());
 		return new Paging<>(ls, pageable, p.getTotalElements());
 	}
 
@@ -79,6 +76,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public Paging<UserRef> queryRef(UserRef params, Pageable pageable) {
+		Page<UserRef> p = userRefRepository.queryForPage(params, pageable);
+		List<UserRef> ls = p.getContent().stream().map(this::transientRef).collect(Collectors.toList());
+		return new Paging<>(ls, pageable, p.getTotalElements());
+	}
+	
+	@Override
 	public User get(Long id) {
 		User source = userRepository.get(id);
 		return transientDetail(source);
@@ -86,10 +90,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserRef getRef(Long id) {
- 		UserRef ref = userRefRepository.findOne(id);
-		return transientRefDetail(ref);
+		UserRef ref = userRefRepository.findOne(id);
+		return transientRef(ref);
 	}
-	
+
 	/**
 	 * 注意返回的实例是瞬时态的实体对象，若出了事务层后再调用延迟加载字段会报异常
 	 * 
@@ -175,14 +179,23 @@ public class UserServiceImpl implements UserService {
 				ref = employeeRefRepository.findByEmpNum(empNum);
 			}
 		}
-		return transientRefDetail(ref);
+		return transientRef(ref);
 	}
 
 	private User toTransient(User source) {
 		if (source == null) {
 			return null;
 		}
-		User target = new User();
+		User target;
+		if (source.getUserType() == UserType.Employee) {
+			Employee _target = new Employee();
+			_target.setEmpNum(((Employee) source).getEmpNum());
+			target = _target;
+		} else if (source.getUserType() == UserType.Customer) {
+			target = new Customer();
+		} else {
+			target = new User();
+		}
 		BeanUtils.copyProperties(source, target, "employeeRef", "customerRef", "password", "roles", "cards");
 		return target;
 	}
@@ -191,12 +204,21 @@ public class UserServiceImpl implements UserService {
 		if (source == null) {
 			return null;
 		}
-		User target = new User();
+		User target;
+		if (source.getUserType() == UserType.Employee) {
+			Employee _target = new Employee();
+			_target.setEmpNum(((Employee) source).getEmpNum());
+			target = _target;
+		} else if (source.getUserType() == UserType.Customer) {
+			target = new Customer();
+		} else {
+			target = new User();
+		}
 		BeanUtils.copyProperties(source, target, "employeeRef", "customerRef", "password", "roles", "cards");
 		return target;
 	}
-	
-	private UserRef transientRefDetail(UserRef source) {
+
+	private UserRef transientRef(UserRef source) {
 		if (source == null) {
 			return null;
 		}

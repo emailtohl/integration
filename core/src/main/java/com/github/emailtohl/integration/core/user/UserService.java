@@ -15,13 +15,22 @@ import com.github.emailtohl.integration.core.user.entities.UserRef;
 @Validated
 public interface UserService {
 	/**
-	 * 全文搜索
+	 * 全文搜索用户信息
 	 * @param fulltext
 	 * @param pageable
 	 * @return
 	 */
 	@PreAuthorize("isAuthenticated()")
 	Paging<User> search(String fulltext, Pageable pageable);
+	
+	/**
+	 * 全文搜索用户引用信息
+	 * @param fulltext
+	 * @param pageable
+	 * @return
+	 */
+	@PreAuthorize("isAuthenticated()")
+	Paging<UserRef> searchRef(String fulltext, Pageable pageable);
 	
 	/**
 	 * 根据域条件查询
@@ -31,6 +40,15 @@ public interface UserService {
 	 */
 	@PreAuthorize("isAuthenticated()")
 	Paging<User> query(User params, Pageable pageable);
+	
+	/**
+	 * 根据域条件查询用户引用
+	 * @param params
+	 * @param pageable
+	 * @return
+	 */
+	@PreAuthorize("isAuthenticated()")
+	Paging<UserRef> queryRef(UserRef params, Pageable pageable);
 	
 	/**
 	 * 查看该User

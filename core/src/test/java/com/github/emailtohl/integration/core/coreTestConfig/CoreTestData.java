@@ -105,7 +105,7 @@ public class CoreTestData extends PresetData {
 		baz.getRoles().add(role_guest);
 		baz.setLevel(Level.ORDINARY);
 		baz.setIdentification("510104199901013338");
-		qux.setClassify(Classify.COOPERATE);
+		baz.setClassify(Classify.COOPERATE);
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-baz.jpg")) {
 			baz.setBirthday(sdf.parse("1995-11-20"));
 			icon = new byte[is.available()];

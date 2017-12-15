@@ -317,6 +317,12 @@ public class CustomerServiceImplTest {
 		assertFalse(p.getContent().isEmpty());
 		p.getContent().forEach(c -> System.out.println(c));
 		
+		p = customerService.search(td.baz.getLevel().toString(), pageable);
+		assertFalse(p.getContent().isEmpty());
+		
+		p = customerService.search(td.baz.getClassify().toString(), pageable);
+		assertFalse(p.getContent().isEmpty());
+		
 	}
 	
 	@Test

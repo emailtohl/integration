@@ -31,10 +31,14 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.hibernate.search.annotations.Store;
+
 import com.github.emailtohl.integration.common.ConstantPattern;
+import com.github.emailtohl.integration.common.exception.InnerDataStateException;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.core.file.Image;
 import com.github.emailtohl.integration.core.role.Role;
+import com.github.emailtohl.integration.core.user.UserType;
 /**
  * 用户实体类
  * javax校验的注解在field上，JPA约束的注解写在JavaBean属性上
@@ -226,7 +230,7 @@ public class User extends BaseEntity {
 	}
 	
 	@org.hibernate.envers.NotAudited
-//	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = EnumBridge.class))
+	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = EnumBridgeCust.class))
 	// 枚举存入数据库默认为序号，这里指明将枚举名以字符串存入数据库
 	@Enumerated(EnumType.STRING)
 	public Gender getGender() {
@@ -245,7 +249,7 @@ public class User extends BaseEntity {
 	}
 	
 	@org.hibernate.envers.NotAudited
-	@org.hibernate.search.annotations.Field
+	@org.hibernate.search.annotations.Field(store = Store.COMPRESS)
 	public String getDescription() {
 		return description;
 	}
@@ -284,6 +288,21 @@ public class User extends BaseEntity {
 		getRoles().forEach(r -> names.addAll(r.authorityNames()));
 		return names;
 	}
+	
+	@Transient
+	public UserType getUserType() {
+		if (this instanceof Employee) {
+			return UserType.Employee;
+		}
+		if (this instanceof Customer) {
+			return UserType.Customer;
+		}
+		if (this instanceof User) {
+			return UserType.User;
+		}
+		throw new InnerDataStateException("不存在的用户类型");
+	}
+	public void setUserType(UserType userType) {}
 	
 	@Transient
 	public Date getStartDate() {
@@ -326,3 +345,4 @@ public class User extends BaseEntity {
 	}
 	
 }
+

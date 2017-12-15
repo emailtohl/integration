@@ -8,10 +8,13 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 
+import org.hibernate.search.bridge.builtin.IntegerBridge;
+
 /**
  * 用户实体经常被外部引用，但由于信息量较大，加载性能低，本实体存储必要信息，并应用用户实体
  * @author HeLei
  */
+@org.hibernate.search.annotations.Indexed
 @org.hibernate.envers.Audited
 @Entity
 @Table(name = "employee_ref")
@@ -30,6 +33,7 @@ public class EmployeeRef extends UserRef {
 		this.employee = employee;
 	}
 
+	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = IntegerBridge.class))
 	@org.hibernate.envers.NotAudited
 	@Column(name = "emp_num", unique = true, updatable = false)
 	@Min(value = Employee.NO_BOT)

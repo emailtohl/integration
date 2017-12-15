@@ -178,8 +178,9 @@ public class Employee extends User {
 	
 	@Override
 	public String toString() {
-		return "Employee [empNum=" + empNum + ", name=" + name + ", email=" + email + ", cellPhone=" + cellPhone
-				+ ", id=" + id + "]";
+		return "Employee [empNum=" + empNum + ", post=" + post + ", salary=" + salary + ", department=" + department
+				+ ", name=" + name + ", email=" + email + ", cellPhone=" + cellPhone + ", enabled=" + enabled + ", id="
+				+ id + "]";
 	}
 
 }

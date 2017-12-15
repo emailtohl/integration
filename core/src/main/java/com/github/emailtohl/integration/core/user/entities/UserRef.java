@@ -14,6 +14,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Pattern;
 
 import com.github.emailtohl.integration.common.ConstantPattern;
+import com.github.emailtohl.integration.common.exception.InnerDataStateException;
 import com.github.emailtohl.integration.core.user.UserType;
 
 /**
@@ -22,6 +23,7 @@ import com.github.emailtohl.integration.core.user.UserType;
  * 
  * @author HeLei
  */
+@org.hibernate.search.annotations.Indexed
 @org.hibernate.envers.Audited
 @Entity
 @Table(name = "users_ref")
@@ -54,6 +56,7 @@ public class UserRef implements Serializable {
 		this.cellPhone = user.getCellPhone();
 	}
 
+	@org.hibernate.search.annotations.DocumentId
 	@Id
 	public Long getId() {
 		return id;
@@ -62,21 +65,7 @@ public class UserRef implements Serializable {
 		this.id = id;
 	}
 	
-	@Transient
-	public UserType getUserType() {
-		if (this instanceof EmployeeRef) {
-			return UserType.Employee;
-		}
-		if (this instanceof CustomerRef) {
-			return UserType.Customer;
-		}
-		if (this instanceof UserRef) {
-			return UserType.User;
-		}
-		return null;
-	}
-	public void setUserType(UserType userType) {}
-
+	@org.hibernate.search.annotations.Field
 	public String getName() {
 		return name;
 	}
@@ -84,6 +73,7 @@ public class UserRef implements Serializable {
 		this.name = name;
 	}
 	
+	@org.hibernate.search.annotations.Field
 	public String getNickname() {
 		return nickname;
 	}
@@ -91,6 +81,7 @@ public class UserRef implements Serializable {
 		this.nickname = nickname;
 	}
 	
+	@org.hibernate.search.annotations.Field
 	@Column(unique = true, /*nullable = false, */updatable = true)
 	public String getEmail() {
 		return email;
@@ -107,6 +98,7 @@ public class UserRef implements Serializable {
 		this.icon = icon;
 	}
 	
+	@org.hibernate.search.annotations.Field
 	@Column(name = "cell_phone", /*nullable = false, */unique = true, updatable = true)
 	public String getCellPhone() {
 		return cellPhone;
@@ -114,6 +106,21 @@ public class UserRef implements Serializable {
 	public void setCellPhone(String cellPhone) {
 		this.cellPhone = cellPhone;
 	}
+	
+	@Transient
+	public UserType getUserType() {
+		if (this instanceof EmployeeRef) {
+			return UserType.Employee;
+		}
+		if (this instanceof CustomerRef) {
+			return UserType.Customer;
+		}
+		if (this instanceof UserRef) {
+			return UserType.User;
+		}
+		throw new InnerDataStateException("不存在的用户类型");
+	}
+	public void setUserType(UserType userType) {}
 	
 	@Override
 	public int hashCode() {
