@@ -21,11 +21,11 @@ public class Image {
 	public Image() {
 	}
 	
-	public Image(String path, String filename) {
+	public Image(String filename, String path) {
 		this(path, filename, null);
 	}
 	
-	public Image(String path, String filename, byte[] bin) {
+	public Image(String filename, String path, byte[] bin) {
 		super();
 		this.path = path;
 		this.filename = filename;
