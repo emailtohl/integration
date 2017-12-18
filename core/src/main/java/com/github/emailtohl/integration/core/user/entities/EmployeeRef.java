@@ -59,7 +59,7 @@ public class EmployeeRef extends UserRef {
 	@Override
 	public String toString() {
 		return "EmployeeRef [id=" + id + ", empNum=" + empNum + ", name=" + name + ", nickname=" + nickname + ", email="
-				+ email + ", icon=" + icon + ", cellPhone=" + cellPhone + "]";
+				+ email + ", icon=" + iconSrc + ", cellPhone=" + cellPhone + "]";
 	}
 
 }

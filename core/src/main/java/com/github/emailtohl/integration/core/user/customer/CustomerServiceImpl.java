@@ -515,7 +515,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		copy.setEmail(ref.getEmail());
 		copy.setName(ref.getName());
 		copy.setNickname(ref.getNickname());
-		copy.setIcon(ref.getIcon());
+		copy.setIconSrc(ref.getIconSrc());
 		return copy;
 	}
 	

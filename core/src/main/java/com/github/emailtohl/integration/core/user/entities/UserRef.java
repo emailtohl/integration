@@ -39,7 +39,7 @@ public class UserRef implements Serializable {
 		flags = {Pattern.Flag.CASE_INSENSITIVE}
 	)
 	protected String email;
-	protected String icon;
+	protected String iconSrc;
 	@Pattern(regexp = ConstantPattern.CELL_PHONE)
 	protected String cellPhone;
 	
@@ -51,7 +51,7 @@ public class UserRef implements Serializable {
 		this.nickname = user.getNickname();
 		this.email = user.getEmail();
 		if (user.getImage() != null) {
-			this.icon = user.getImage().getPath();
+			this.iconSrc = user.getImage().getSrc();
 		}
 		this.cellPhone = user.getCellPhone();
 	}
@@ -91,11 +91,11 @@ public class UserRef implements Serializable {
 	}
 	
 	@org.hibernate.envers.NotAudited
-	public String getIcon() {
-		return icon;
+	public String getIconSrc() {
+		return iconSrc;
 	}
-	public void setIcon(String icon) {
-		this.icon = icon;
+	public void setIconSrc(String iconSrc) {
+		this.iconSrc = iconSrc;
 	}
 	
 	@org.hibernate.search.annotations.Field
@@ -144,6 +144,12 @@ public class UserRef implements Serializable {
 		} else if (!id.equals(other.getId()))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "UserRef [id=" + id + ", name=" + name + ", nickname=" + nickname + ", email=" + email + ", iconSrc="
+				+ iconSrc + ", cellPhone=" + cellPhone + "]";
 	}
 	
 }

@@ -403,7 +403,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		copy.setEmail(ref.getEmail());
 		copy.setName(ref.getName());
 		copy.setNickname(ref.getNickname());
-		copy.setIcon(ref.getIcon());
+		copy.setIconSrc(ref.getIconSrc());
 		return copy;
 	}
 	

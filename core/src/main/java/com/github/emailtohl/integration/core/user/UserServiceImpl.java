@@ -237,7 +237,7 @@ public class UserServiceImpl implements UserService {
 		target.setCellPhone(source.getCellPhone());
 		target.setName(source.getName());
 		target.setNickname(source.getNickname());
-		target.setIcon(source.getIcon());
+		target.setIconSrc(source.getIconSrc());
 		return target;
 	}
 

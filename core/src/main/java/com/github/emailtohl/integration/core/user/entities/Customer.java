@@ -161,7 +161,7 @@ public class Customer extends User {
 	public void setImage(Image image) {
 		super.image = image;
 		if (customerRef != null && image != null) {
-			customerRef.icon = image.getPath();
+			customerRef.iconSrc = image.getSrc();
 		}
 	}
 	@Override

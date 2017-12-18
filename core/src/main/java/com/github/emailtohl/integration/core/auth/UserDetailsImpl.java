@@ -41,7 +41,7 @@ public class UserDetailsImpl implements UserDetails {
 	private Classify classify; // 跟客户账号相关
 	private Set<String> authorities;
 	private String password;
-	private String iconUrl;// 额外携带用户图片信息
+	private String iconSrc;// 额外携带用户图片信息
 	private Boolean accountNonLocked;
 	private Boolean accountNonExpired;
 	private Boolean credentialsNonExpired;
@@ -76,7 +76,7 @@ public class UserDetailsImpl implements UserDetails {
 		this.authorities = u.authorityNames();
 		this.password = u.getPassword();
 		if (u.getImage() != null) {
-			this.iconUrl = u.getImage().getPath();
+			this.iconSrc = u.getImage().getSrc();
 		}
 		this.accountNonExpired = u.getAccountNonExpired();
 		this.accountNonLocked = u.getAccountNonLocked();
@@ -147,8 +147,8 @@ public class UserDetailsImpl implements UserDetails {
 		this.email = email;
 	}
 
-	public String getIconUrl() {
-		return this.iconUrl;
+	public String getIconSrc() {
+		return this.iconSrc;
 	}
 	
 	public String getRealName() {

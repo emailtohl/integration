@@ -42,7 +42,7 @@ public class CustomerRef extends UserRef {
 	@Override
 	public String toString() {
 		return "CustomerRef [id=" + id + ", name=" + name + ", nickname=" + nickname + ", email=" + email + ", icon="
-				+ icon + ", cellPhone=" + cellPhone + "]";
+				+ iconSrc + ", cellPhone=" + cellPhone + "]";
 	}
 	
 }

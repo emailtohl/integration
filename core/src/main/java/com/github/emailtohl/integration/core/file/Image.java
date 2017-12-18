@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
  */
 @Embeddable
 public class Image {
-	private String path;
+	private String src;
 	@Size(max = 1048576)
 	private byte[] bin;
 	private String filename;
@@ -27,18 +27,18 @@ public class Image {
 	
 	public Image(String filename, String path, byte[] bin) {
 		super();
-		this.path = path;
+		this.src = path;
 		this.filename = filename;
 		this.bin = bin;
 	}
 
-	@Column(name = "image_path")
-	public String getPath() {
-		return path;
+	@Column(name = "image_src")
+	public String getSrc() {
+		return src;
 	}
 
-	public void setPath(String path) {
-		this.path = path;
+	public void setSrc(String src) {
+		this.src = src;
 	}
 
 	@org.hibernate.envers.NotAudited

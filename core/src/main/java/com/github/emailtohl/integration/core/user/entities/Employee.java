@@ -140,7 +140,7 @@ public class Employee extends User {
 	public void setImage(Image image) {
 		super.image = image;
 		if (employeeRef != null && image != null) {
-			employeeRef.icon = image.getPath();
+			employeeRef.iconSrc = image.getSrc();
 		}
 	}
 	@Override
