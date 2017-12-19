@@ -1,5 +1,6 @@
 package com.github.emailtohl.integration.core.user.customer;
 
+import static com.github.emailtohl.integration.core.config.Constant.*;
 import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER;
 import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_DELETE;
 import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_ENABLED;
@@ -49,7 +50,7 @@ public interface CustomerService {
 	 * @param id
 	 * @return
 	 */
-	@PreAuthorize("#id == authentication.principal.id or hasAuthority('" + CUSTOMER + "')")
+	@PreAuthorize("hasAuthority('" + CUSTOMER + "') or" + SPEL_MATCH_ID)
 	Customer get(@P("id") Long id);
 
 	/**
@@ -77,7 +78,7 @@ public interface CustomerService {
 	 * @return 返回null表示没找到该用户
 	 * @exception NotAcceptableException 不能修改内置账号
 	 */
-	@PreAuthorize("#id == authentication.principal.id or hasAuthority('" + CUSTOMER + "')")
+	@PreAuthorize("hasAuthority('" + CUSTOMER + "') or" + SPEL_MATCH_ID)
 	Customer update(@P("id") Long id, Customer newEntity);
 
 	/**
@@ -108,7 +109,7 @@ public interface CustomerService {
 	 * @param cellPhoneOrEmail
 	 * @return
 	 */
-	@PreAuthorize("#cellPhoneOrEmail == authentication.principal.cellPhone or #cellPhoneOrEmail == authentication.principal.email or hasAuthority('" + CUSTOMER + "')")
+	@PreAuthorize("hasAuthority('" + CUSTOMER + "') or" + SPEL_MATCH_CELL_PHONE_OR_EMAIL)
 	Customer findByCellPhoneOrEmail(@P("cellPhoneOrEmail") String cellPhoneOrEmail);
 	
 	/**
@@ -145,7 +146,7 @@ public interface CustomerService {
 	 * @param token 通过邮箱或短信或其他方式获取的令牌，该令牌证明确实是该账号拥有者在修改密码
 	 * @return ExecResult
 	 */
-	@PreAuthorize("#cellPhoneOrEmail == authentication.principal.cellPhone or #cellPhoneOrEmail == authentication.principal.email")
+	@PreAuthorize(SPEL_MATCH_CELL_PHONE_OR_EMAIL)
 	@NotNull ExecResult updatePassword(@P("cellPhoneOrEmail") String cellPhoneOrEmail, String newPassword, String token);
 	
 	/**
@@ -153,7 +154,7 @@ public interface CustomerService {
 	 * @param id
 	 * @return
 	 */
-	@PreAuthorize("#id == authentication.principal.id or hasAuthority('" + CUSTOMER_RESET_PASSWORD + "')")
+	@PreAuthorize("hasAuthority('" + CUSTOMER_RESET_PASSWORD + "') or" + SPEL_MATCH_ID)
 	@NotNull ExecResult resetPassword(@P("id") Long id);
 	
 	/**
@@ -191,7 +192,7 @@ public interface CustomerService {
 	 * @return
 	 * @exception NotAcceptableException 不能修改内置账号
 	 */
-	@PreAuthorize("#id == authentication.principal.id")
+	@PreAuthorize(SPEL_MATCH_ID)
 	Customer addCard(@P("id") Long id, Card card);
 	
 	/**
@@ -201,7 +202,7 @@ public interface CustomerService {
 	 * @return
 	 * @exception NotAcceptableException 不能修改内置账号
 	 */
-	@PreAuthorize("#id == authentication.principal.id")
+	@PreAuthorize(SPEL_MATCH_ID)
 	Customer updateCards(@P("id") Long id, Set<Card> cards);
 	
 	/**
@@ -211,7 +212,7 @@ public interface CustomerService {
 	 * @return
 	 * @exception NotAcceptableException 不能修改内置账号
 	 */
-	@PreAuthorize("#id == authentication.principal.id")
+	@PreAuthorize(SPEL_MATCH_ID)
 	Customer removeCard(@P("id") Long id, Card card);
 	
 	/**

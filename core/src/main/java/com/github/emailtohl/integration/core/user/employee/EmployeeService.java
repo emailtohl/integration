@@ -1,5 +1,6 @@
 package com.github.emailtohl.integration.core.user.employee;
 
+import static com.github.emailtohl.integration.core.config.Constant.*;
 import static com.github.emailtohl.integration.core.role.Authority.EMPLOYEE;
 import static com.github.emailtohl.integration.core.role.Authority.EMPLOYEE_DELETE;
 import static com.github.emailtohl.integration.core.role.Authority.EMPLOYEE_ENABLED;
@@ -46,7 +47,7 @@ public interface EmployeeService {
 	 * @param id
 	 * @return
 	 */
-	@PreAuthorize("hasAuthority('" + EMPLOYEE + "') or #id == authentication.principal.id")
+	@PreAuthorize("hasAuthority('" + EMPLOYEE + "') or" + SPEL_MATCH_ID)
 	Employee get(@P("id") Long id);
 
 	/**
@@ -74,7 +75,7 @@ public interface EmployeeService {
 	 * @return 返回null表示没找到该平台账号
 	 * @exception NotAcceptableException 不能修改内置账号
 	 */
-	@PreAuthorize("hasAuthority('" + EMPLOYEE + "') or #id == authentication.principal.id")
+	@PreAuthorize("hasAuthority('" + EMPLOYEE + "') or" + SPEL_MATCH_ID)
 	Employee update(@P("id") Long id, Employee newEntity);
 
 	/**
@@ -107,7 +108,7 @@ public interface EmployeeService {
 	 * @param empNum
 	 * @return
 	 */
-	@PreAuthorize("#empNum.toString() == authentication.principal.username or hasAuthority('" + EMPLOYEE + "')")
+	@PreAuthorize("hasAuthority('" + EMPLOYEE + "') or" + SPEL_MATCH_EMP_NUM)
 	Employee getByEmpNum(@P("empNum") Integer empNum);
 	
 	/**
@@ -135,7 +136,7 @@ public interface EmployeeService {
 	 * @param newPassword
 	 * @return ExecResult
 	 */
-	@PreAuthorize("#empNum.toString() == authentication.principal.username")
+	@PreAuthorize(SPEL_MATCH_EMP_NUM)
 	@NotNull ExecResult updatePassword(@P("empNum") Integer empNum, String oldPassword, String newPassword);
 	
 	/**
