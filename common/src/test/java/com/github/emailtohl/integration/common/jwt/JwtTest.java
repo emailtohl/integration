@@ -91,6 +91,9 @@ public class JwtTest {
         Profile p2 = jwtService.decrypted(compactJws);
         System.out.println(p2);
         assertTrue(p2.getExp() > p.getExp());
+        
+        System.out.println(response.getHeaderNames());
+        System.out.println(response.getHeader(JwtFilter.HEAD_NAME));
     }
     
     /**

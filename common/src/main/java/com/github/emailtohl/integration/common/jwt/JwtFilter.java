@@ -109,11 +109,11 @@ public class JwtFilter implements Filter {
         ThreadContext.put(USERNAME, profile.getUsername());
         
         if (check(uri, HttpMethod.valueOf(req.getMethod()), profile)) {
+        	// 刷新时效，响应头要在响应体输出前设置，否则无效
+        	profile.setExp(new Date().getTime() + Profile.EXP);
+        	compact = jwtService.encrypt(profile);
+        	resp.addHeader(HEAD_NAME, compact);
             chain.doFilter(req, resp);
-            // 刷新时效
-            profile.setExp(new Date().getTime() + Profile.EXP);
-            compact = jwtService.encrypt(profile);
-            resp.addHeader(HEAD_NAME, compact);
         } else {
             resp.sendError(HttpStatus.FORBIDDEN.value(), "没有权限");
         }
