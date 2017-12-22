@@ -41,6 +41,7 @@
 		<hibernate.search>5.6.2.Final</hibernate.search>
 		<lucene.version>5.5.5</lucene.version>
 		<log4j.version>2.9.1</log4j.version>
+		<activiti.version>6.0.0</activiti.version>
 	</properties>
 
 	<dependencies>
@@ -458,6 +459,16 @@
 				<groupId>io.jsonwebtoken</groupId>
 				<artifactId>jjwt</artifactId>
 				<version>0.8.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.activiti</groupId>
+				<artifactId>activiti-engine</artifactId>
+				<version>6.0.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.activiti</groupId>
+				<artifactId>activiti-spring</artifactId>
+				<version>6.0.0</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

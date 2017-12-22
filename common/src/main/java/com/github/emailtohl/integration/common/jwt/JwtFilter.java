@@ -86,6 +86,7 @@ public class JwtFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) response;
         
         String uri = req.getRequestURI();
+        uri = uri.replaceFirst(req.getContextPath(), "");
         if (isIgnore(uri)) {
             chain.doFilter(request, response);
             return;
@@ -159,8 +160,9 @@ public class JwtFilter implements Filter {
                     res = true;
                     break;
                 }
-                LOG.debug(String.format("%s:%s\n需要权限：%s\n与你拥有权限：%s，方法：%s 不匹配\n", uri, method.name(), map.authorities.toString(),
-                        p.getAuthorities().toString(), map.httpMethod.name()));
+                LOG.debug(String.format("访问地址：%s，方法：%s\n配置项：%s，方法：%s\n你拥有的权限是：%s 校验不匹配",
+                        uri, method.name(), map.authorities.toString(), map.httpMethod.name(), p.getAuthorities().toString()
+                        ));
             }
         }
         // 该uri不被保护则返回true，若在保护下，则返回校验结果
