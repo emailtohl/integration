@@ -11,15 +11,18 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
 import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
+import com.github.emailtohl.integration.core.auth.AuthenticationProviderImpl;
 /**
- * 考虑到集群环境部署，RSA的公钥和私钥没有直接放入ServletContext供整个应用使用？而是存放在了Session中。
+ * 考虑到集群环境部署，RSA的公钥和私钥没有直接放入ServletContext供整个应用使用。而是存放在了Session中。
  * 过滤器初始化时生成RSA的公钥和私钥，然后公钥交个各个客户端用于加密用户密码，私钥在服务端用于解密
  * 
  * Servlet Filter implementation class UserPasswordFilter
  * 
  * @author HeLei
- * @date 2017.02.04
  */
 //@WebFilter("/login")
 public class UserPasswordEncryptionFilter implements Filter {
@@ -36,6 +39,19 @@ public class UserPasswordEncryptionFilter implements Filter {
     public UserPasswordEncryptionFilter() {
     }
 
+	/**
+	 * @see Filter#init(FilterConfig)
+	 */
+	public void init(FilterConfig fConfig) throws ServletException {
+		String[] keyPairs = encipher.getKeyPairs(1024);
+		publicKey = keyPairs[0];
+		privateKey = keyPairs[1];
+		// 从servlet context中获取spring context
+		WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(fConfig.getServletContext());
+		AuthenticationProviderImpl auth = context.getBean("authenticationProvider", AuthenticationProviderImpl.class);
+		auth.setPrivateKey(privateKey);
+	}
+	
 	/**
 	 * @see Filter#destroy()
 	 */
@@ -59,15 +75,6 @@ public class UserPasswordEncryptionFilter implements Filter {
 		} finally {
 			CONCURRENT_SESSION.remove();
 		}
-	}
-
-	/**
-	 * @see Filter#init(FilterConfig)
-	 */
-	public void init(FilterConfig fConfig) throws ServletException {
-		String[] keyPairs = encipher.getKeyPairs(1024);
-		publicKey = keyPairs[0];
-		privateKey = keyPairs[1];
 	}
 
 }

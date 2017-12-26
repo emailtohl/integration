@@ -1,0 +1,9 @@
+require([
+	'employee/module',
+	'employee/service',
+	'employee/list/ctrl',
+	'employee/detail/ctrl',
+	'employee/add/ctrl',
+	'employee/audit/list/ctrl',
+	'employee/audit/detail/ctrl',
+]);

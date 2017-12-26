@@ -15,12 +15,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.StringUtils;
 
-import com.github.emailtohl.integration.web.exception.BadRequestException;
+import com.github.emailtohl.integration.common.exception.InvalidDataException;
 
 /**
  * 获取Spring Security上下文的当前用户
  * @author HeLei
- * @date 2017.06.19
  */
 public final class CtrlUtil {
 	private CtrlUtil() {}
@@ -55,7 +54,7 @@ public final class CtrlUtil {
 	 */
 	public static String multipartOnload(HttpServletRequest request, String uploadPath) {
 		if (request == null) {
-			throw new BadRequestException("传入参数是null");
+			throw new InvalidDataException("传入参数是null");
 		}
 		StringBuilder msg = new StringBuilder();
 		Collection<Part> fileParts = null;

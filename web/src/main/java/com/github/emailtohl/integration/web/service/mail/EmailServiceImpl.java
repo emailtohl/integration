@@ -25,7 +25,6 @@ import freemarker.template.Version;
 /**
  * 邮件服务service
  * @author HeLei
- * @date 2017.02.04
  */
 @Service
 public class EmailServiceImpl implements EmailService {

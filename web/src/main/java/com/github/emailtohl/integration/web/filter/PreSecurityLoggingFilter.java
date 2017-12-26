@@ -15,20 +15,18 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.springframework.web.util.WebUtils;
+
+import com.github.emailtohl.integration.core.config.Constant;
 /**
  * 在spring security过滤器之前执行
  * Servlet Filter implementation class PreSecurityLoggingFilter
  * @author HeLei
- * @date 2017.02.04
  */
 //@WebFilter("/*")
 @SuppressWarnings("unused")
 public class PreSecurityLoggingFilter implements Filter {
 	public static final String ID_PROPERTY_NAME = "id";
 	public static final String REQUEST_ID_PROPERTY_NAME = "Request-Id";
-	public static final String SESSION_ID_PROPERTY_NAME = "sessionId";
-	public static final String REMOTE_ADDRESS_PROPERTY_NAME = "remoteAddress";
-	public static final String USER_PRINCIPAL_PROPERTY_NAME = "userPrincipal";
 	
 	/**
 	 * Default constructor.
@@ -52,16 +50,16 @@ public class PreSecurityLoggingFilter implements Filter {
 		try {
 			HttpServletRequest req = (HttpServletRequest) request;
 			((HttpServletResponse) response).setHeader(REQUEST_ID_PROPERTY_NAME, id);
-			ThreadContext.put(REMOTE_ADDRESS_PROPERTY_NAME, req.getRemoteAddr());
-			ThreadContext.put(SESSION_ID_PROPERTY_NAME, req.getRequestedSessionId());
-			ThreadContext.put(USER_PRINCIPAL_PROPERTY_NAME, req.getUserPrincipal() == null ? "" : req.getUserPrincipal().toString());
+			ThreadContext.put(Constant.REMOTE_ADDRESS_PROPERTY_NAME, req.getRemoteAddr());
+			ThreadContext.put(Constant.SESSION_ID_PROPERTY_NAME, req.getRequestedSessionId());
+			ThreadContext.put(Constant.USER_PRINCIPAL_PROPERTY_NAME, req.getUserPrincipal() == null ? "" : req.getUserPrincipal().toString());
 			chain.doFilter(request, response);
 		} finally {
 			ThreadContext.remove(ID_PROPERTY_NAME);
 			ThreadContext.remove(REQUEST_ID_PROPERTY_NAME);
-			ThreadContext.remove(REMOTE_ADDRESS_PROPERTY_NAME);
-			ThreadContext.remove(SESSION_ID_PROPERTY_NAME);
-			ThreadContext.remove(USER_PRINCIPAL_PROPERTY_NAME);
+			ThreadContext.remove(Constant.REMOTE_ADDRESS_PROPERTY_NAME);
+			ThreadContext.remove(Constant.SESSION_ID_PROPERTY_NAME);
+			ThreadContext.remove(Constant.USER_PRINCIPAL_PROPERTY_NAME);
 		}
 	}
 

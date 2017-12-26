@@ -17,7 +17,6 @@ import org.springframework.web.socket.handler.AbstractWebSocketHandler;
  * 应用程序可以继承Spring提供的适配器（AbstractWebSocketHandler），并在配置文件中将Websocket程序纳入Spring管理
  * 
  * @author HeLei
- * @date 2017.02.04
  */
 @EnableWebSocket
 class WebsocketConfiguration implements WebSocketConfigurer {

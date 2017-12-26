@@ -61,7 +61,7 @@
      <p id="publicKey" style="display:none">${publicKey}</p>
     <form action="${pageContext.request.contextPath}/login" method="post">
       <div class="form-group has-feedback">
-        <input type="email" class="form-control" name="email" placeholder="your email">
+        <input type="text" class="form-control" name="email" placeholder="your email">
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">

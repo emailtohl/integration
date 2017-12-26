@@ -19,6 +19,8 @@
   <link rel="stylesheet" href="lib/adminLTE/css/skins/_all-skins.min.css">
   <!-- Date Picker -->
   <link rel="stylesheet" href="lib/datepicker/datepicker3.css">
+  <!-- toastr -->
+  <link rel="stylesheet" href="lib/toastr/toastr.min.css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -399,12 +401,21 @@
           	<i class="fa fa-angle-left pull-right"></i>
           </a>
           <ul class="treeview-menu">
-            <li data-ng-class="{active: $state.includes('user.list') || $state.includes('user.detail')}"><a ui-sref="user.list" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>账户管理</a></li>
-            <li data-ng-class="{active: $state.includes('user.role')}" data-ng-if="hasAuthority('user_grant_roles')"><a ui-sref="user.role" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>角色配置</a></li>
-            <li data-ng-class="{active: $state.includes('user.audit')}" data-ng-if="hasAuthority('audit_user')"><a ui-sref="user.audit.list" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>用户审计</a></li>
+            <li data-ng-class="{active: $state.includes('employee.list') || $state.includes('employee.detail') || $state.includes('employee.add')}">
+            	<a ui-sref="employee.list" style="margin-left: 35px;">
+            		<i class="fa fa-circle-o"></i>平台账号
+            	</a>
+           	</li>
+            <li data-ng-class="{active: $state.includes('customer.list') || $state.includes('customer.detail') || $state.includes('customer.add')}">
+            	<a ui-sref="customer.list" style="margin-left: 35px;">
+            		<i class="fa fa-circle-o"></i>客户账号
+           		</a>
+         	</li>
+            <li data-ng-class="{active: $state.includes('user.audit')}" ><a style="margin-left: 35px;"><i class="fa fa-circle-o"></i>平台账号审计</a></li>
           </ul>
         </li>
-        <li class="treeview" data-ng-if="hasAuthority('user_role_authority_allocation')" data-ng-class="{active: $state.includes('role') || $state.includes('roleAudit')}">
+        <!-- data-ng-if="hasAuthority('user_role_authority_allocation')" -->
+        <li class="treeview"  data-ng-class="{active: $state.includes('role') || $state.includes('roleAudit')}">
           <a href="#">
             <i class="fa fa-th"></i>
             <span>角色权限关系</span>
@@ -414,7 +425,7 @@
           </a>
           <ul class="treeview-menu">
             <li data-ng-class="{active: $state.includes('role')}"><a ui-sref="role" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>角色配置</a></li>
-            <li data-ng-class="{active: $state.includes('roleAudit')}" data-ng-if="hasAuthority('audit_role')"><a ui-sref="roleAudit.list" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>角色审计</a></li>
+            <li data-ng-class="{active: $state.includes('roleAudit')}" data-ng-if="hasAuthority('audit_role')"><a  style="margin-left: 35px;"><i class="fa fa-circle-o"></i>角色审计</a></li>
           </ul>
         </li>
       </ul>

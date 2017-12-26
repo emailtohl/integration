@@ -1,6 +1,5 @@
 package com.github.emailtohl.integration.web.listener;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -19,12 +18,11 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * 配置一个监听HttpSession变化的Listener，并且纳入Spring管理下
  * 如此可通过Spring容器获取到本监听器，并获取session管理下的对象
  * @author HeLei
- * @date 2017.02.04
  */
 //@WebListener
 public class SessionListener implements HttpSessionListener, HttpSessionIdListener, ServletContextListener {
 	private final static Logger log = LogManager.getLogger();
-	@Inject SessionRegistry sessionRegistry;
+	SessionRegistry sessionRegistry = new SessionRegistry();
 
 	/**
 	 * 初始化本监听器时，先获取Spring容器，然后用编程方式将本实例作为Bean添加到Spring中

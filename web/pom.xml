@@ -23,29 +23,10 @@
 		</dependency>
 		<dependency>
 			<groupId>com.github.emailtohl.integration</groupId>
-			<artifactId>integration-message</artifactId>
+			<artifactId>integration-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.github.emailtohl.integration</groupId>
-			<artifactId>integration-user</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.emailtohl.integration</groupId>
-			<artifactId>integration-cms</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.emailtohl.integration</groupId>
-			<artifactId>integration-flow</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.emailtohl.integration</groupId>
-			<artifactId>integration-conference</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+		
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
@@ -86,6 +67,11 @@
 		<dependency>
 			<groupId>javax.websocket</groupId>
 			<artifactId>javax.websocket-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.websocket</groupId>
+			<artifactId>javax.websocket-client-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -195,6 +181,14 @@
 		<dependency>
 		    <groupId>org.apache.commons</groupId>
 		    <artifactId>commons-email</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-engine</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-spring</artifactId>
 		</dependency>
 	</dependencies>
 

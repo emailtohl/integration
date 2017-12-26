@@ -9,7 +9,7 @@
  * @author HeLei
  * @date 2017.02.04
  */
-define([ 'common/module', 'common/service/util' ], function(commonModule) {
+define([ 'common/module', 'common/service/util', 'toastr' ], function(commonModule, util, toastr) {
 	return commonModule
 	.factory('LoggingInterceptor', [ '$q', function($q) {
 		return {
@@ -91,26 +91,10 @@ define([ 'common/module', 'common/service/util' ], function(commonModule) {
 				return response || $q.when(response);
 			},
 			responseError : function(rejection) {
-				if (rejection.status === 403) {
+				if (rejection.status === 401 || rejection.status === 403) {
 					location.replace('login');
 				} else {
-					var i, p, error, data = [];
-					if (rejection.data && rejection.data.errors instanceof Array) {
-						for (i = 0; i < rejection.data.errors.length; i++) {
-							error =  rejection.data.errors[i];
-							for (p in error) {
-								if (error.hasOwnProperty(p)) {
-									data.push(p + ' : ' + error[p]);
-								}
-							}
-						}
-					}
-					$rootScope.errorModal.open = true;
-					$rootScope.errorModal.status = rejection.status;
-					$rootScope.errorModal.statusText = rejection.statusText;
-					$rootScope.errorModal.data = data.join(', ');
-					$rootScope.$apply();
-					//alert('status: ' + rejection.status + ' , statusText: ' + rejection.statusText);
+					toastr.error(rejection.data);
 				}
 				return $q.reject(rejection);
 			}

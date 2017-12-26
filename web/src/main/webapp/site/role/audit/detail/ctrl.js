@@ -7,7 +7,7 @@ define(['role/module', 'role/service'], function(roleModule) {
 				self.revision = $state.params.revision;
 
 				function roleAtRevision(roleId, revision) {
-					service.roleAtRevision(roleId, revision).then(function(resp) {
+					service.getRoleAtRevision(roleId, revision).then(function(resp) {
 						self.detail = resp.data;
 					});
 				}

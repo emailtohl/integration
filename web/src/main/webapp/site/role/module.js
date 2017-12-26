@@ -13,7 +13,7 @@ define(['angular', 'ui-router', 'common/context'], function(angular) {
 					template: '<div ui-view></div>',
 				})
 				.state('roleAudit.list', {
-					url: '/list',
+					url: '/list/{id}',
 					templateUrl: 'site/role/audit/list/template.html',
 					controller: 'RoleAuditList as ctrl'
 				})

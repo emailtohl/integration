@@ -25,8 +25,7 @@ define(['role/module', 'role/service'], function(roleModule) {
 			 * 在self.authMap中找到被选中的权限名数组
 			 */
 			function getAuthorityNames() {
-				var authorityNames = [],
-					p;
+				var authorityNames = [], p;
 				for(p in self.authMap) {
 					if(self.authMap.hasOwnProperty(p) && self.authMap[p].selected) {
 						authorityNames.push(self.authMap[p].name);
@@ -54,19 +53,36 @@ define(['role/module', 'role/service'], function(roleModule) {
 				type: '',
 				whenConfirm: function() {
 					if(self.form.id) { // 有id的是编辑
-						self.form.authorityNames = getAuthorityNames();
+						var authorityNames = getAuthorityNames();
+						self.form.authorities.length = 0;
+						for (var i = 0; i < authorityNames.length; i++) {
+							self.form.authorities.push({name : authorityNames[i]});
+						}
 						roleService.updateRole(self.form.id, self.form).then(function(resp) {
 							getRoles();
+						}, function(err) {
+							console.log(err);
+							alert('修改失败');
 						});
 					} else { // 没有id的是新增
-						self.form.authorityNames = getAuthorityNames();
+						var authorityNames = getAuthorityNames();
+						self.form.authorities = [];
+						for (var i = 0; i < authorityNames.length; i++) {
+							self.form.authorities.push({name : authorityNames[i]});
+						}
 						roleService.createRole(self.form).then(function(resp) {
 							getRoles();
+						}, function(err) {
+							console.log(err);
+							alert('新增失败');
 						});
 					}
 				},
 			};
-			self.openModal = function(id) {
+			self.openModal = function(id, $event) {
+				if ($event.target.type === 'button') {
+					return;
+				}
 				clearAuthMapSelected(); // 先清理self.authMap中的被属性
 				if(id) { // 如果是编辑
 					roleService.getRole(id).then(function(resp) {
@@ -94,6 +110,10 @@ define(['role/module', 'role/service'], function(roleModule) {
 						getRoles();
 					});
 				}
+			};
+			
+			self.history = function(id) {
+				$state.go('roleAudit.list', {id:id}, { reload : true });
 			};
 		}])
 });

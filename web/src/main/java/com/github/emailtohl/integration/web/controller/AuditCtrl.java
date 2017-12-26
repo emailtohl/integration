@@ -1,114 +1,111 @@
 package com.github.emailtohl.integration.web.controller;
 
-import static com.github.emailtohl.integration.common.jpa.entity.BaseEntity.ID_PROPERTY_NAME;
+import java.util.List;
 
 import javax.inject.Inject;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.user.dto.RoleDto;
-import com.github.emailtohl.integration.user.dto.UserDto;
-import com.github.emailtohl.integration.user.entities.User;
-import com.github.emailtohl.integration.user.security.AuditedService;
+import com.github.emailtohl.integration.common.jpa.envers.Tuple;
+import com.github.emailtohl.integration.core.role.Role;
+import com.github.emailtohl.integration.core.role.RoleAuditedService;
+import com.github.emailtohl.integration.core.user.customer.CustomerAuditedService;
+import com.github.emailtohl.integration.core.user.employee.EmployeeAuditedService;
+import com.github.emailtohl.integration.core.user.entities.Customer;
+import com.github.emailtohl.integration.core.user.entities.Employee;
+import com.google.gson.Gson;
 /**
  * 查阅Hibernate Envers产生的审计记录
  * 
  * @author HeLei
- * @date 2017.02.04
  */
 @RestController
-@RequestMapping("audit")
+@RequestMapping(value = "audit", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class AuditCtrl {
-	private AuditedService auditedService;
-	
 	@Inject
-	public void setAuditedService(AuditedService auditedService) {
-		this.auditedService = auditedService;
-	}
-
+	CustomerAuditedService customerAuditedService;
+	@Inject
+	EmployeeAuditedService employeeAuditedService;
+	@Inject
+	RoleAuditedService roleAuditedService;
+	@Inject
+	Gson gson;
+	
 	/**
-	 * 根据User的email查询某实体所有历史记录
-	 * 
-	 * @param email
-	 * @param pageable
+	 * 查询角色所有的历史记录
+	 * @param id 角色
+	 * @return 元组列表，元组中包含版本详情，实体在该版本时的状态以及该版本的操作（增、改、删）
+	 */
+	@RequestMapping(value = "role/{id}", method = RequestMethod.GET)
+	public List<Tuple<Role>> getRoleRevision(@PathVariable("id") Long id) {
+		List<Tuple<Role>> ls =  roleAuditedService.getRoleRevision(id);
+		return ls;
+	}
+	
+	/**
+	 * 查询角色在某个修订版时的历史记录
+	 * @param id 角色id
+	 * @param revision 版本号，通过AuditReader#getRevisions(Employee.class, ID)获得
 	 * @return
 	 */
-	@RequestMapping(value = "userRevision", method = RequestMethod.GET)
-	public Paging<UserDto> getUserRevision(@RequestParam(required = false) String email,
-			@PageableDefault(page = 0, size = 10, sort = {ID_PROPERTY_NAME}, direction = Direction.DESC) Pageable pageable) {
-		return auditedService.getUserRevision(email, pageable);
+	@RequestMapping(value = "role/{id}/revision/{revision}", method = RequestMethod.GET)
+	public Role getRoleAtRevision(@PathVariable("id") Long id, @PathVariable("revision") Integer revision) {
+		return roleAuditedService.getRoleAtRevision(id, revision);
 	}
-
+	
 	/**
-	 * 查询User某个修订版下所有的历史记录
-	 * 
-	 * @param revision
-	 * @param email
-	 * @param pageable
+	 * 查询客户所有的历史记录
+	 * @param id 平台账号id
+	 * @return 元组列表，元组中包含版本详情，实体在该版本时的状态以及该版本的操作（增、改、删）
+	 */
+	@RequestMapping(value = "customer/{id}", method = RequestMethod.GET)
+	public List<Tuple<Customer>> getCustomerRevision(@PathVariable("id") Long id) {
+		return customerAuditedService.getCustomerRevision(id);
+	}
+	
+	/**
+	 * 查询客户在某个修订版时的历史记录
+	 * @param id 客户的id
+	 * @param revision 版本号，通过AuditReader#getRevisions(Customer.class, ID)获得
 	 * @return
 	 */
-	@RequestMapping(value = "usersAtRevision", method = RequestMethod.GET)
-	public Paging<UserDto> getUsersAtRevision(@RequestParam(required = true) Integer revision, @RequestParam(required = false) String email,
-			@PageableDefault(page = 0, size = 10, sort = {ID_PROPERTY_NAME}, direction = Direction.DESC) Pageable pageable) {
-		return auditedService.getUsersAtRevision(revision, email, pageable);
+	@RequestMapping(value = "customer/{id}/revision/{revision}", method = RequestMethod.GET)
+	public Customer getCustomerAtRevision(@PathVariable("id") Long id, @PathVariable("revision") Integer revision) {
+		return customerAuditedService.getCustomerAtRevision(id, revision);
 	}
-
+	
 	/**
-	 * 查询User在某个修订版时的历史记录
-	 * 
-	 * @param userId
-	 * @param revision
+	 * 查询平台账号所有的历史记录
+	 * @param id 平台账号id
+	 * @return 元组列表，元组中包含版本详情，实体在该版本时的状态以及该版本的操作（增、改、删）
+	 */
+	@RequestMapping(value = "employee/{id}", method = RequestMethod.GET)
+	public List<Tuple<Employee>> getEmployeeRevision(@PathVariable("id") Long id) {
+		return employeeAuditedService.getEmployeeRevision(id);
+	}
+	
+	/**
+	 * 查询平台账号在某个修订版时的历史记录
+	 * @param id 平台账号的id
+	 * @param revision 版本号，通过AuditReader#getRevisions(Employee.class, ID)获得
 	 * @return
 	 */
-	@RequestMapping(value = "userAtRevision", method = RequestMethod.GET)
-	public User getUserAtRevision(@RequestParam(required = true) Long userId, @RequestParam(required = true) Integer revision) {
-		return auditedService.getUserAtRevision(userId, revision);
+	@RequestMapping(value = "employee/{id}/revision/{revision}", method = RequestMethod.GET)
+	public Employee getEmployeeAtRevision(@PathVariable("id") Long id, @PathVariable("revision") Integer revision) {
+		return employeeAuditedService.getEmployeeAtRevision(id, revision);
 	}
 
-	/**
-	 * 根据Role的名字查询某实体所有历史记录
-	 * 
-	 * @param name 实体属性名和属性值
-	 * @param pageable
-	 * @return
-	 */
-	@RequestMapping(value = "roleRevision", method = RequestMethod.GET)
-	public Paging<RoleDto> getRoleRevision(@RequestParam(required = false) String name,
-			@PageableDefault(page = 0, size = 5, sort = {ID_PROPERTY_NAME}, direction = Direction.DESC) Pageable pageable) {
-		return auditedService.getRoleRevision(name, pageable);
-	}
+	public AuditCtrl() {}
 
-	/**
-	 * 查询Role在某个修订版时的历史记录
-	 * 
-	 * @param revision
-	 * @param name
-	 * @param pageable
-	 * @return
-	 */
-	@RequestMapping(value = "rolesAtRevision", method = RequestMethod.GET)
-	public Paging<RoleDto> getRolesAtRevision(@RequestParam(required = true) Integer revision, @RequestParam(required = false) String name,
-			@PageableDefault(page = 0, size = 5, sort = {ID_PROPERTY_NAME}, direction = Direction.DESC) Pageable pageable) {
-		return auditedService.getRolesAtRevision(revision, name, pageable);
-	}
-
-	/**
-	 * 查询Role在某个修订版时的历史记录
-	 * 
-	 * @param id
-	 * @param revision
-	 * @return
-	 */
-	@RequestMapping(value = "roleAtRevision", method = RequestMethod.GET)
-	public RoleDto getRoleAtRevision(@RequestParam(required = true) Long roleId, @RequestParam(required = true) Integer revision) {
-		return auditedService.getRoleAtRevision(roleId, revision);
+	public AuditCtrl(CustomerAuditedService customerAuditedService, EmployeeAuditedService employeeAuditedService,
+			RoleAuditedService roleAuditedService) {
+		this.customerAuditedService = customerAuditedService;
+		this.employeeAuditedService = employeeAuditedService;
+		this.roleAuditedService = roleAuditedService;
 	}
 	
 }

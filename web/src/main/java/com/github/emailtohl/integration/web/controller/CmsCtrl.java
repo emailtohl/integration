@@ -33,15 +33,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.github.emailtohl.integration.cms.entities.Article;
-import com.github.emailtohl.integration.cms.entities.Comment;
-import com.github.emailtohl.integration.cms.entities.Type;
-import com.github.emailtohl.integration.cms.service.CmsService;
+import com.github.emailtohl.integration.common.exception.InvalidDataException;
 import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
-import com.github.emailtohl.integration.web.dto.WebPage;
-import com.github.emailtohl.integration.web.exception.VerifyFailureException;
+import com.github.emailtohl.integration.web.service.cms.CmsService;
+import com.github.emailtohl.integration.web.service.cms.entities.Article;
+import com.github.emailtohl.integration.web.service.cms.entities.Comment;
+import com.github.emailtohl.integration.web.service.cms.entities.Type;
+import com.github.emailtohl.integration.web.service.cms.entities.WebPage;
 import com.google.gson.Gson;
 
 import freemarker.template.Configuration;
@@ -50,7 +50,6 @@ import freemarker.template.TemplateException;
 /**
  * 内容管理的控制器
  * @author HeLei
- * @date 2017.02.16
  */
 @Controller
 public class CmsCtrl {
@@ -100,7 +99,7 @@ public class CmsCtrl {
 			for (ObjectError oe : e.getAllErrors()) {
 				logger.info(oe);
 			}
-			throw new VerifyFailureException(e.toString());
+			throw new InvalidDataException(e.toString());
 		}
 		Article a = new Article(form.title, form.keywords, form.body, form.summary);
 		cmsService.saveArticle(CtrlUtil.getCurrentUsername(), a, form.type);
@@ -159,7 +158,7 @@ public class CmsCtrl {
 			for (ObjectError oe : e.getAllErrors()) {
 				logger.info(oe);
 			}
-			throw new VerifyFailureException(e.toString());
+			throw new InvalidDataException(e.toString());
 		}
 		cmsService.updateArticle(id, form.title, form.keywords, form.body, form.summary, form.type);
 	}

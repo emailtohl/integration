@@ -1,7 +1,5 @@
 package com.github.emailtohl.integration.web.config;
 
-import static com.github.emailtohl.integration.user.entities.Authority.*;
-
 import java.io.IOException;
 
 import javax.inject.Inject;
@@ -25,9 +23,6 @@ import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
-import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -52,23 +47,18 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
 import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
-import com.github.emailtohl.integration.message.event.LoginEvent;
-import com.github.emailtohl.integration.user.security.UserPermissionEvaluator;
-import com.github.emailtohl.integration.web.controller.UserCtrl;
+import com.github.emailtohl.integration.core.auth.LoginEvent;
+import com.github.emailtohl.integration.core.config.CoreConfiguration;
 import com.github.emailtohl.integration.web.filter.UserPasswordEncryptionFilter;
 
 /**
- * Spring Security配置，虽被ServiceConfiguration导入，但需要使用ServiceConfiguration扫描
- * com.github.emailtohl.integration.user.security包中的Bean
+ * Spring Security配置
  * @author HeLei
- * @date 2017.06.18
  */
 @Configuration
 //启动安全过滤器
 @EnableWebSecurity
-@Import({ DataSourceConfiguration.class })
-//@ComponentScan(basePackages = "com.github.emailtohl.integration.user.security", excludeFilters = @ComponentScan.Filter({
-//	Controller.class, ControllerAdvice.class, Configuration.class }))
+@Import({ CoreConfiguration.class })
 class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Inject
 	DataSource dataSource;
@@ -77,14 +67,14 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	 * 自定义AuthenticationProvider，可用它来定制如何认证用户
 	 */
 	@Inject
-	@Named("authenticationProviderImpl")
+	@Named("authenticationProvider")
 	AuthenticationProvider authenticationProvider;
 	
 	/**
 	 * 自定义认证方式所需要的依赖
 	 */
 	@Inject
-	@Named("userDetailsServiceImpl")
+	@Named("userDetailsService")
 	UserDetailsService userDetailsService;
 	
 	/**
@@ -124,16 +114,16 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.and().withUser("foo@test.com").password("123456").authorities("MANAGER")
 				.and().withUser("bar@test.com").password("123456").authorities("EMPLOYEE");
 		*/
-		
-//		自定义的AuthenticationProvider和UserDetailsService
-//		builder.authenticationProvider(authenticationProvider)
-//				.userDetailsService(userDetailsService);
-		
-		/* 基于数据库的配置 */
+
+		/* 基于数据库的配置
 		builder.jdbcAuthentication().dataSource(dataSource)
 				.usersByUsernameQuery("SELECT t.email as username, t.password, t.enabled FROM t_user AS t WHERE t.email = ?")
 				.authoritiesByUsernameQuery("SELECT u.email AS username, a.name AS authority FROM t_user u INNER JOIN t_user_role ur ON u.id = ur.user_id INNER JOIN t_role_authority ra ON ur.role_id = ra.role_id INNER JOIN t_authority a ON ra.authority_id = a.id WHERE u.email = ?")
 				.passwordEncoder(new BCryptPasswordEncoderProxy());
+		 */
+		
+//		自定义的AuthenticationProvider和UserDetailsService
+		builder.authenticationProvider(authenticationProvider).userDetailsService(userDetailsService);
 	}
 	
 	/**
@@ -184,50 +174,21 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.and()*/.authorizeRequests()
 				// 跨域请求登录页面时，要发送一个预访问请求：PreflightRequest，让spring security不做拦截
 				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-				.antMatchers("/login").permitAll()
+				.antMatchers("/").permitAll()
+				.antMatchers("/**").permitAll()
+				/*.antMatchers("/login").permitAll()
 				.antMatchers(permitUrl).permitAll()
 				.antMatchers("/user/**").fullyAuthenticated()
 				.antMatchers("/encryption/**").fullyAuthenticated()
 				.antMatchers("/secure").fullyAuthenticated()
 				.antMatchers("/forum/**").fullyAuthenticated()
-				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-				.antMatchers(HttpMethod.GET, UserCtrl.ICON_DIR + "/**").permitAll()
-				.antMatchers(HttpMethod.GET, "/user/**").hasAnyAuthority(USER_READ_ALL, USER_READ_SELF)
-				.antMatchers(HttpMethod.DELETE, "/user/**").hasAnyAuthority(USER_DELETE)
-				.antMatchers(HttpMethod.POST, "/user/employee").hasAuthority(USER_CREATE_SPECIAL)
-				.antMatchers(HttpMethod.PUT, "/user/**").hasAnyAuthority(USER_UPDATE_ALL, USER_UPDATE_SELF)
-				.antMatchers(HttpMethod.PUT, "/user/grantRoles/**").hasAuthority(USER_GRANT_ROLES)
-				.antMatchers(HttpMethod.PUT, "/user/disableUser/**").hasAuthority(USER_DISABLE)
-				.antMatchers(HttpMethod.POST, "/user/icon").fullyAuthenticated()
-				.antMatchers("/customer/**").hasAuthority(USER_CUSTOMER)
-				.antMatchers(HttpMethod.POST, "/fileUploadServer/**").fullyAuthenticated()
-				.antMatchers(HttpMethod.GET, "/applicationForm/query").hasAuthority(APPLICATION_FORM_TRANSIT)
-				.antMatchers(HttpMethod.PUT, "/applicationForm").hasAuthority(APPLICATION_FORM_TRANSIT)
-				.antMatchers(HttpMethod.GET, "/applicationForm/history").hasAuthority(APPLICATION_FORM_READ_HISTORY)
-				.antMatchers(HttpMethod.DELETE, "/applicationForm").hasAuthority(APPLICATION_FORM_DELETE)
-				.antMatchers(HttpMethod.DELETE, "/forum").hasAuthority(FORUM_DELETE)
-				.antMatchers("/forum/image").authenticated()
-				.antMatchers("/audit/user*").hasAuthority(AUDIT_USER)
-				.antMatchers("/audit/role*").hasAuthority(AUDIT_ROLE)
-				.antMatchers("/role/**").hasAuthority(ROLE_AUTHORITY_ALLOCATION)
-				.antMatchers("/fileUploadServer/**").hasAuthority(RESOURCE_MANAGER)
-				.antMatchers(HttpMethod.POST, "/cms/comment").permitAll()// 发表评论，如果没认证则为匿名
-				.antMatchers(HttpMethod.DELETE, "/cms/article/**").hasAuthority(CONTENT_MANAGER)
-				.antMatchers(HttpMethod.DELETE, "/cms/comment/**").hasAuthority(CONTENT_MANAGER)
-				.antMatchers(HttpMethod.POST, "/cms/approveArticle/**").hasAuthority(CONTENT_MANAGER)
-				.antMatchers(HttpMethod.POST, "/cms/rejectArticle/**").hasAuthority(CONTENT_MANAGER)
-				.antMatchers(HttpMethod.POST, "/cms/openComment/**").hasAuthority(CONTENT_MANAGER)
-				.antMatchers(HttpMethod.POST, "/cms/closeComment/**").hasAuthority(CONTENT_MANAGER)
-				.antMatchers(HttpMethod.POST, "/cms/approvedComment/**").hasAuthority(CONTENT_MANAGER)
-				.antMatchers(HttpMethod.POST, "/cms/rejectComment/**").hasAuthority(CONTENT_MANAGER)
-				.antMatchers("/cms/**").fullyAuthenticated()
-				.anyRequest().authenticated()
+				.anyRequest().authenticated()*/
 			// 登录配置
 			.and().addFilterBefore(new CORSFilter(), ChannelProcessingFilter.class)
 			.formLogin()
 				.loginPage("/login").loginProcessingUrl("/login").failureUrl("/login?error")
 				.successHandler((request, response, authentication) -> {
-					publisher.publishEvent(new LoginEvent(authentication.getName()));
+					publisher.publishEvent(new LoginEvent(authentication));
 					response.sendRedirect(request.getContextPath());
 				})
 				.usernameParameter("email").passwordParameter("password").permitAll()
@@ -276,19 +237,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	 */
 	@Configuration
 	@EnableGlobalMethodSecurity(prePostEnabled = true, order = 0, mode = AdviceMode.PROXY, proxyTargetClass = false)
-	public static class AuthorizationConfiguration extends GlobalMethodSecurityConfiguration {
-		/**
-		 * 自定义访问许可，需要实现PermissionEvaluator接口
-		 * 然后在@PreAuthorize注解中可以调用PermissionEvaluator接口中的方法：
-		 * hasPermission(Authentication authentication, Object targetDomainObject, Object permission)
-		 * hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission)
-		 */
-		@Override
-		public MethodSecurityExpressionHandler createExpressionHandler() {
-			DefaultMethodSecurityExpressionHandler handler = new DefaultMethodSecurityExpressionHandler();
-			handler.setPermissionEvaluator(new UserPermissionEvaluator());
-			return handler;
-		}
+	static class AuthorizationConfiguration extends GlobalMethodSecurityConfiguration {
 	}
 }
 

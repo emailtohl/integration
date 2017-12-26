@@ -36,6 +36,7 @@ requirejs.config({
 		'ng-verify': '../lib/ng-verify/ng-verify',
 		'sparkline' : '../lib/sparkline/jquery.sparkline.min',
 		'knob' : '../lib/knob/jquery.knob',
+		toastr : '../lib/toastr/toastr.min',
 	},
 	shim: {
 		// 他们都遵循AMD规范，所以不必声明
@@ -119,6 +120,10 @@ requirejs.config({
 			deps : [ 'jquery-ui' ],
 			exports : 'knob'
 		},
+		toastr : {
+            deps : ['jquery'],
+            exports : 'toastr'
+        },
 	},
 	// Do not use RequireJS' paths option to configure the path to CodeMirror, since it will break loading submodules through relative paths. Use the packages configuration option instead
 	packages: [{

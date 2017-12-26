@@ -16,12 +16,6 @@
           <div class="box-header">
             <h3 class="box-title">角色审计表</h3>
             <div class="box-tools">
-	          <form ng-submit="ctrl.query()" class="input-group input-group-sm ng-pristine ng-valid" style="width: 150px;">
-	            <input ng-model="ctrl.params.name" name="table_search" class="form-control pull-right ng-pristine ng-valid ng-empty ng-touched" placeholder="以角色名查询" type="text">
-	            <div class="input-group-btn">
-	              <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-	            </div>
-	          </form>
 	      	</div>
           </div>
           <!-- /.box-header -->
@@ -37,12 +31,12 @@
               </tr>
               </thead>
               <tbody>
-              <tr ng-repeat="x in ctrl.page.content" style="cursor:pointer" ng-click="ctrl.detail(x.id, x.revision)">
-                <td ng-bind="x.name" class="col-md-1"></td>
-                <td ng-bind="x.description" class="col-md-1"></td>
+              <tr ng-repeat="x in ctrl.list" style="cursor:pointer" ng-click="ctrl.detail(x.entity.id, x.defaultRevisionEntity.id)">
+                <td ng-bind="x.entity.name" class="col-md-1"></td>
+                <td ng-bind="x.entity.description" class="col-md-1"></td>
                 <td class="col-md-7">
                 	<ul>
-                		<li ng-repeat="y in x.authorities">{{y.name}}({{y.description}})</li>
+                		<li ng-repeat="y in x.entity.authorities">{{y.name}}({{y.description}})</li>
                 	</ul>
                 </td>
                 <td ng-bind="x.revisionDate" class="col-md-2"></td>
@@ -63,7 +57,6 @@
               </tr>
               </tfoot>
             </table>
-            <page page-number="ctrl.page.pageNumber" total-pages="ctrl.page.totalPages" button-count="5" on-click="ctrl.btnClick(pageNumber)">
           </div>
           <!-- /.box-body -->
         </div>

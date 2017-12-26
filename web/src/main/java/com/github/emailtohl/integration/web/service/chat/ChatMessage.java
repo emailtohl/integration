@@ -6,7 +6,6 @@ import java.util.Arrays;
 /**
  * 被websocket序列化的类
  * @author HeLei
- * @date 2017.02.04
  */
 public class ChatMessage implements Cloneable, Serializable {
 	private static final long serialVersionUID = -8697529922899865254L;

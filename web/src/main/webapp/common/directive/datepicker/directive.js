@@ -40,7 +40,9 @@ define([ 'common/module', 'common/service/util', 'jquery', 'jquery-ui' ], functi
 			isRTL : false
 		};
 		$.datepicker.setDefaults($.datepicker.regional['zh-CN']);
-
+		
+		var reg = /(\d{4})\d{4}/;
+		
 		return {
 			restrict : 'A',
 			scope : {
@@ -74,7 +76,13 @@ define([ 'common/module', 'common/service/util', 'jquery', 'jquery-ui' ], functi
 					// Also tell AngularJS that it needs to update the UI
 					$scope.$apply(function() {
 						// Set the data within AngularJS
-						ngModelCtrl.$setViewValue($element.val());
+						var s = $element.val();
+						var m = s.match(reg);
+						if (m && m[1]) {
+							s = s.replace(reg, m[1]);
+						}
+						$element.val(s);
+						ngModelCtrl.$setViewValue(s);
 					});
 				});
 			}

@@ -6,18 +6,15 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpSession;
-
-import org.springframework.stereotype.Component;
 /**
  * 本类可以将容器中的session复制一份，事实上只是它们的引用
  * @author HeLei
- * @date 2017.02.04
  */
-@Component
-public class SessionRegistry {
+//@Component
+class SessionRegistry {
 	private final Map<String, HttpSession> SESSIONS = new ConcurrentHashMap<String, HttpSession>();
 
-	private SessionRegistry() {
+	SessionRegistry() {
 	}
 
 	public void addSession(HttpSession session) {

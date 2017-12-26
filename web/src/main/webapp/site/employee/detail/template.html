@@ -1,0 +1,129 @@
+<section class="content-header">
+  <h1>
+            用户详情
+    <small>查看用户详情</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li ui-sref="dashboard"><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+    <li ui-sref="user.list"><a href="#">User List</a></li>
+    <li class="active">detail</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+	<div class="row">
+	  <div class="box">
+	    <div class="box-header">
+	      <form class="box box-danger form-group image" upload upload-to="user/icon" when-done="ctrl.whenDone()">
+	        <div class="box-body no-padding">
+	        	<div class="col-md-2">
+			        <img style="height: 90px;width: 90px;" ng-src="{{ctrl.detail.iconSrc}}" class="img-circle" alt="User Image">
+			        <a class="users-list-name" href="#">{{ctrl.detail.email}}</a>
+			        <span class="users-list-date">{{ctrl.detail.createDate}}</span>
+	        	</div>
+	        	<div class="col-md-4">
+	        		<div class="form-group">
+	                  <label for="exampleInputFile">浏览</label>
+	                  <input type="file" name="icon" class="btn">
+	                  <p class="help-block">选择你的头像</p>
+	                </div>
+			        <input type="hidden" name="id" value="{{ctrl.detail.id}}">
+			        <div class="form-group">
+				        <input type="submit" id="submit-file" class="btn btn-primary" value="上传头像" disabled="disabled">
+			        </div>
+	        	</div>
+	        </div>
+	      </form>
+	    </div>
+	    <div class="box-body">
+	      <table class="table table-bordered">
+	        <tbody><tr>
+	          <th style="width: 10px">#</th>
+	          <th>属性名</th>
+	          <th>属性值</th>
+	          <!-- <th style="width: 40px">Label</th> -->
+	        </tr>
+	        <tr ng-repeat="(k, v) in ctrl.detail">
+	          <td>{{$index}}</td>
+	          <td>{{k}}</td>
+	          <td>
+	            {{ctrl.getValue(k, v, $index)}}
+	          </td>
+	          <!-- <td><span class="badge bg-red">55%</span></td> -->
+	        </tr>
+	      </tbody></table>
+	    </div>
+	    <!-- /.box-body -->
+	    <div class="box-footer clearfix">
+	      <button type="button" class="btn btn-primary pull-left margin" ng-click="ctrl.edit()">编辑</button>
+	      <button type="button" class="btn btn-success pull-left margin" ng-click="ctrl.enableUser()" ng-if="!ctrl.detail.enabled">激活账户</button>
+	      <button type="button" class="btn btn-warning pull-left margin" ng-click="ctrl.disableUser()" ng-if="hasAuthority('user_disable') && ctrl.detail.enabled">禁用账户</button>
+	      <ul class="pagination pagination-sm no-margin pull-right">
+	        <li><a href="#">«</a></li>
+	        <li><a href="#">1</a></li>
+	        <li><a href="#">2</a></li>
+	        <li><a href="#">3</a></li>
+	        <li><a href="#">»</a></li>
+	      </ul>
+	    </div>
+	  </div>
+	  <!-- /.box -->
+	
+	</div>
+</section>
+
+<div modal open="ctrl.modal.open" title="{{ctrl.modal.title}}" when-confirm="ctrl.modal.whenConfirm()" type="{{ctrl.modal.type}}" disabled="!ctrl.form.name">
+  <form role="form" name="f">
+    <div class="box-body">
+      <div class="form-group has-feedback" ng-class="{'has-success':f.name.$valid,'has-warning':f.name.$error.required,'has-error':f.name.$error.minlength}">
+        <label for="">姓名</label>
+        <input type="text" placeholder="name" name="name" class="form-control" ng-model="ctrl.form.name" required="required">
+        <span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':f.name.$valid,'glyphicon-warning-sign':f.name.$error.required,'glyphicon-remove':f.name.$error.minlength}"></span>
+      </div>
+      <div class="form-group has-feedback" ng-if="hasAuthority('employee_role')" ng-class="{'has-success':f.name.$valid,'has-warning':f.name.$error.required,'has-error':f.name.$error.minlength}">
+        <label for="">角色</label>
+        <select class="form-control select2" style="width: 100%;" multiple="multiple" select2 ng-model="ctrl.form.roleNames">
+	      <option ng-repeat="x in ctrl.roles" value="{{x.name}}">{{x.description}}</option>
+	    </select>
+      </div>
+      <div class="form-group has-feedback" ng-class="{'has-success':f.name.$valid,'has-warning':f.name.$error.required,'has-error':f.name.$error.minlength}">
+        <label for="">性别</label>
+        <select class="form-control select2" style="width: 100%;" select2 ng-model="ctrl.form.gender">
+	      <option value="UNSPECIFIED">未知</option>
+	      <option value="MALE">男</option>
+	      <option value="FEMALE">女</option>
+	    </select>
+      </div>
+      <div class="form-group">
+        <label for="">邮箱</label>
+        <input type="email" placeholder="email" class="form-control" value="{{ctrl.form.email}}" disabled="disabled">
+      </div>
+      <div class="form-group">
+        <label for="">手机</label>
+        <input type="tel" placeholder="cellPhone" class="form-control" ng-model="ctrl.form.cellPhone">
+      </div>
+      <div class="form-group">
+        <label for="">生日</label>
+        <input type="text" datepicker placeholder="生日" class="form-control" ng-model="ctrl.form.birthday">
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">描述</label>
+        <textarea rows="3" placeholder="description" class="form-control" ng-model="ctrl.form.description"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">职位</label>
+        <input type="text" placeholder="post" class="form-control" ng-model="ctrl.form.post">
+      </div>
+      <div class="form-group" ng-if="ctrl.detail.empNum">
+        <label for="exampleInputFile">部门</label>
+        <select class="form-control select2" style="width: 100%;" select2 ng-model="ctrl.form.department.name">
+	      <option value="">请选择</option>
+	      <option value="生产部">生产部</option>
+	      <option value="质量部">质量部</option>
+	    </select>
+      </div>
+    </div>
+    <!-- /.box-body -->
+  </form>
+</div>
+

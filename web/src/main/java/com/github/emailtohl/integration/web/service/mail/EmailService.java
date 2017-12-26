@@ -2,7 +2,6 @@ package com.github.emailtohl.integration.web.service.mail;
 /**
  * 邮箱服务
  * @author HeLei
- * @date 2017.02.04
  */
 public interface EmailService {
 	void sendMail(String to, String subject, String htmlText);

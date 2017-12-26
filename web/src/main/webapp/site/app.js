@@ -2,40 +2,31 @@ define([
 	'angular', 'angular-animate', 'angular-cookies', 'angular-touch', 'ui-router', 
 	'angular-datepicker', 'ng-verify',
 	'common/context',
-	'user/context',
 	'role/context',
-	'crm/context',
+	'employee/context',
+	'cms/context',
+	/*'crm/context',
 	'encryption/context',
 	'forum/context',
-	'applicationForm/context',
-	'cms/context',
+	'applicationForm/context',*/
 	'dashboard/context',
 ], function(angular) {
 	return angular.module('app', [
 			'ui.router', 'ngAnimate', 'ngCookies', 'ngTouch',
 			'commonModule',
-			'userModule',
 			'roleModule',
-			'crmModule',
-			'encryptionModule',
+			'employeeModule',
 			'cmsModule',
+			/*'crmModule',
+			'encryptionModule',
 			'applicationFormModule',
-			'forumModule',
+			'forumModule',*/
 			'dashboardModule',
 		])
 		.run(['$rootScope', '$state', '$stateParams', '$http', function($rootScope, $state, $stateParams, $http) {
 			// 让页面能同步状态，显示出该状态应有的效果，例如某菜单被激活的样式
 			$rootScope.$state = $state;
 			$rootScope.$stateParams = $stateParams;
-			// 执行失败的提示框
-			$rootScope.errorModal = {
-				open: false,
-				title: '失败',
-				type: 'danger',
-				whenConfirm: function() {
-					$rootScope.errorModal = false;
-				},
-			};
 			// 获取当前用户的认证信息，页面可以直接通过{{authentication.username}}获取用户名
 			$rootScope.getAuthentication = function(callback) {
 				var promise = {
@@ -67,21 +58,21 @@ define([
 			};
 			$rootScope.getAuthentication();
 			// 判断是否有此权限
-			$rootScope.hasAuthority = function(authority) {
-				var flag = false,
-					authorities, i;
+			$rootScope.hasAuthority = function(/*authorities*/) {
+				var authorities, i, j;
 				authorities = $rootScope.authentication &&
 					$rootScope.authentication.principal &&
 					$rootScope.authentication.principal.authorities;
-				if(authorities) {
-					for(i = 0; i < authorities.length; i++) {
-						if(authorities[i] == authority || authorities[i].role === authority) {
-							flag = true;
-							break;
+				if (authorities) {
+					for (i = 0; i < authorities.length; i++) {
+						for (j = 0; j < arguments.length; j++) {
+							if (authorities[i].authority == arguments[j]) {
+								return true;
+							}
 						}
 					}
 				}
-				return flag;
+				return false;
 			};
 			// 判断是否登录
 			$rootScope.isAuthenticated = function() {

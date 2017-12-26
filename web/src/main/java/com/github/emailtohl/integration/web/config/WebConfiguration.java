@@ -18,10 +18,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
+
 /**
  * spring mvc的配置
  * @author HeLei
- * @date 2017.02.04
  */
 @Configuration
 @EnableWebMvc
@@ -29,7 +29,7 @@ import org.springframework.web.servlet.view.JstlView;
 // It also registers the PageableHandlerMethodArgumentResolver and SortHandlerMethodArgumentResolver beans, 
 // enabling conversion of Pageables and Sorts from request parameters
 @EnableSpringDataWebSupport
-@ComponentScan(basePackages = "com.github.emailtohl.integration.web.controller", useDefaultFilters = false, includeFilters = @ComponentScan.Filter(Controller.class))
+@ComponentScan(basePackages = "com.github.emailtohl.integration.web", useDefaultFilters = false, includeFilters = @ComponentScan.Filter(Controller.class))
 @Import({ WebsocketConfiguration.class })
 public class WebConfiguration extends WebMvcConfigurerAdapter {
 	/**

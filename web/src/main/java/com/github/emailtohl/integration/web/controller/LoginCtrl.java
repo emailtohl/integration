@@ -5,47 +5,39 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.github.emailtohl.integration.common.exception.NotFoundException;
-import com.github.emailtohl.integration.user.dto.UserDto;
-import com.github.emailtohl.integration.user.entities.Customer;
-import com.github.emailtohl.integration.user.entities.User;
-import com.github.emailtohl.integration.user.service.UserService;
+import com.github.emailtohl.integration.core.user.customer.CustomerService;
+import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.web.service.mail.EmailService;
 import com.google.gson.Gson;
 
 /**
  * 认证控制器，管理用户注册，更改密码，授权等功能
  * @author HeLei
- * @date 2017.02.04
  */
 @CrossOrigin(maxAge = 3600)// 支持跨站（CORS）访问登录页面
 @Controller
 public class LoginCtrl {
 	private static final Logger logger = LogManager.getLogger();
-	@Inject private UserService userService;
+	@Inject private CustomerService customerService;
+	@Inject private EmployeeService employeeService;
 	@Inject private EmailService emailService;
 	@Inject private ThreadPoolTaskScheduler taskScheduler;
 	@Inject private SessionRegistry sessionRegistry;
@@ -88,8 +80,8 @@ public class LoginCtrl {
 	 * @return
 	 * @throws UnsupportedEncodingException 
 	 */
-	@RequestMapping(value = "register", method = RequestMethod.POST, produces = {"text/html;charset=UTF-8"})
-	public String register(HttpServletRequest requet, @Valid UserDto form, org.springframework.validation.Errors e) {
+	/*@RequestMapping(value = "register", method = RequestMethod.POST, produces = {"text/html;charset=UTF-8"})
+	public String register(HttpServletRequest requet, @Valid User form, org.springframework.validation.Errors e) {
 		// 第一步，判断提交表单是否有效
 		if (e.hasErrors()) {
 			StringBuilder s = new StringBuilder();
@@ -112,7 +104,7 @@ public class LoginCtrl {
 		} catch (RuntimeException e1) {
 			return "redirect:register?error=" + encode("邮箱重复");
 		}
-	}
+	}*/
 	
 	/**
 	 * 另立一个私有方法处理URLEncoder.encode的检查型异常
@@ -134,7 +126,7 @@ public class LoginCtrl {
 	 * @return
 	 * @throws NotFoundException 
 	 */
-	@RequestMapping(value = "forgetPassword", method = RequestMethod.POST)
+	/*@RequestMapping(value = "forgetPassword", method = RequestMethod.POST)
 	public void forgetPassword(HttpServletRequest requet, String email, String _csrf) throws NotFoundException {
 		if (!userService.isExist(email)) {
 			throw new NotFoundException();
@@ -144,7 +136,7 @@ public class LoginCtrl {
 		scheduleCleanToken(token);
 		String url = requet.getScheme() + "://" + requet.getServerName() + ":" + requet.getServerPort() + requet.getContextPath() + "/getUpdatePasswordPage";
 		emailService.updatePassword(url, email, token, _csrf);
-	}
+	}*/
 	
 	/**
 	 * 定时清理token
@@ -178,27 +170,27 @@ public class LoginCtrl {
 	 * @param password 修改的密码
 	 * @return
 	 */
-	@RequestMapping(value = "updatePassword", method = RequestMethod.POST)
+	/*@RequestMapping(value = "updatePassword", method = RequestMethod.POST)
 	public String updatePassword(String email, String password, String token) {
 		if (!email.equals(tokenMap.get(token))) {
 			return "redirect:login?error=expire";
 		}
 		userService.changePasswordByEmail(email, password);
 		return "login";
-	}
+	}*/
 	
 	/**
 	 * 激活账号
 	 * 这里的激活与UserCtrl中的激活有些不一样，它会返回一个登录页面，而UserCtrl中激活了用户后不做其他操作
 	 * @param id
 	 */
-	@RequestMapping(value = "enable", method = RequestMethod.GET)
+	/*@RequestMapping(value = "enable", method = RequestMethod.GET)
 	public String enable(long id) {
 		userService.enableUser(id);
 		// 注意，若未给用户授权，则spring security自带的认证器会认为认证失败，所以初始化时必须给予一定权限
 		userService.grantUserRole(id);
 		return "login";
-	}
+	}*/
 
 	/**
 	 * 获取用户的认证信息
@@ -219,30 +211,7 @@ public class LoginCtrl {
 		map.put("username", authentication.getName());
 		map.put("details", authentication.getDetails());
 		map.put("principal", authentication.getPrincipal());
-		/*
-		 * 如果是自定义的AuthenticationProvider，则可以提供含有图片等附加信息 但如果是spring
-		 * security框架提供的UserDetails则不会包含图片信息，可在返回的Map上添加上图片信息
-		 */
-		Object userDetails = authentication.getPrincipal();
-		if (userDetails != null) {
-			try {
-				userDetails.getClass().getDeclaredField("iconSrc");
-			} catch (NoSuchFieldException | SecurityException e1) {// 如果是框架的实现，则无此字段
-				String email = authentication.getName();// UserDetails中的username实则email
-				String iconSrc = iconSrcMap.get(email);// 先查询缓存是否有此信息
-				if (iconSrc == null) {// 若缓存没有则去数据库查询
-					try {// 匿名用户在数据库中查不到，会抛IllegalArgumentException异常
-						User u = userService.getUserByEmail(email);
-						iconSrc = u.getIconSrc();
-						iconSrcMap.put(email, iconSrc);// 先放入缓存供下次查询
-					} catch (IllegalArgumentException | NullPointerException | AccessDeniedException | NotFoundException e2) {
-						// 这里是查询用户的头像，不涉及安全问题，当匿名用户访问时会被拒绝
-						logger.debug("可能是匿名用户，查询不到User，也可能是该用户未上传图片");
-					}
-				}
-				map.put("iconSrc", iconSrc);// 然后放入返回的UserDetails中
-			}
-		}
+		
 		return map;
 	}
 	
@@ -278,8 +247,8 @@ public class LoginCtrl {
 		return "secure";
 	}
 
-	public void setUserService(UserService userService) {
-		this.userService = userService;
+	public void setUserService(CustomerService customerService) {
+		this.customerService = customerService;
 	}
 
 	public void setEmailService(EmailService emailService) {

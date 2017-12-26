@@ -226,6 +226,12 @@ define([ 'common/module' ], function(commonModule) {
 				var i = window.location.pathname.indexOf('/', 1);
 				return window.location.pathname.substring(0, i);
 			},
+			/**
+			 * 克隆对象
+			 */
+			clone : function(src) {
+				return JSON.parse(JSON.stringify(src));
+			},
 		};
 	} ]);
 });

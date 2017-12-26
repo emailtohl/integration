@@ -23,14 +23,17 @@
 			                <tr>
 			                  <th class="col-md-5">角色名</th>
 			                  <th class="col-md-5">角色描述</th>
-			                  <th class="col-md-2">删除</th>
+			                  <th class="col-md-2">操作</th>
 			                </tr>
 		                </thead>
 		                <tbody>
-		                	<tr style="cursor:pointer;" ng-repeat="x in ctrl.roles" ng-click="ctrl.openModal(x.id)">
+		                	<tr style="cursor:pointer;" ng-repeat="x in ctrl.roles" ng-click="ctrl.openModal(x.id, $event)">
                   				<td ng-bind="x.name" class="col-md-5"></td>
                   				<td ng-bind="x.description" class="col-md-5"></td>
-                  				<td class="col-md-2"><button class="btn btn-danger btn-xs" type="button" ng-if="x.canBeDeleted" ng-click="ctrl.delete(x.id, x.name, $event)">删除</button></td>
+                  				<td class="col-md-2">
+                  					<button class="btn btn-danger btn-xs" type="button" ng-click="ctrl.delete(x.id, x.name, $event)">删除</button>
+                  					<button class="btn btn-info btn-xs" type="button" ng-click="ctrl.history(x.id)">历史</button>
+                				</td>
                   			</tr>
 		                </tbody>
 					</table>

@@ -21,7 +21,6 @@ import org.springframework.security.core.userdetails.User;
  * 在spring security过滤器之后执行
  * Servlet Filter implementation class PostSecurityLoggingFilter
  * @author HeLei
- * @date 2017.02.04
  */
 //@WebFilter("/*")
 public class PostSecurityLoggingFilter implements Filter {
