@@ -21,11 +21,6 @@
 	<modules>
 		<module>common</module>
 		<module>core</module>
-		<module>message</module>
-		<module>user</module>
-		<module>cms</module>
-		<module>flow</module>
-		<module>conference</module>
 		<module>web</module>
 	</modules>
 
