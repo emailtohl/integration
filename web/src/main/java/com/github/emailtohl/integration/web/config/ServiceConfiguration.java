@@ -8,6 +8,7 @@ import javax.inject.Named;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Controller;
 
@@ -19,6 +20,8 @@ import freemarker.template.TemplateExceptionHandler;
  * @author HeLei
  */
 @Configuration
+//启动Aspect动态代理
+@EnableAspectJAutoProxy
 @Import({ ActivitiConfiguration.class, SecurityConfiguration.class })
 @ComponentScan(basePackages = "com.github.emailtohl.integration.web", excludeFilters = @ComponentScan.Filter({
 	Controller.class, Configuration.class }))
