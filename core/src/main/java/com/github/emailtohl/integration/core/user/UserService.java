@@ -1,5 +1,7 @@
 package com.github.emailtohl.integration.core.user;
 
+import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -88,4 +90,10 @@ public interface UserService {
 	 */
 	UserRef findRef(String username);
 	
+	/**
+	 * 查找某角色下的所有用户引用
+	 * @param roleName
+	 * @return
+	 */
+	List<UserRef> findRefByRoleName(String roleName);
 }

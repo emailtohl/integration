@@ -182,6 +182,12 @@ public class UserServiceImpl implements UserService {
 		return transientRef(ref);
 	}
 
+	@Override
+	public List<UserRef> findRefByRoleName(String roleName) {
+		return userRefRepository.findUserRefByRoleName(roleName).stream().map(this::transientRef)
+				.collect(Collectors.toList());
+	}
+	
 	private User toTransient(User source) {
 		if (source == null) {
 			return null;

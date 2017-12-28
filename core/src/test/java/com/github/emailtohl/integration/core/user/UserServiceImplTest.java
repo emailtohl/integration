@@ -6,6 +6,7 @@ import static com.github.emailtohl.integration.core.config.Constant.ANONYMOUS_EM
 import static org.junit.Assert.*;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -200,5 +201,15 @@ public class UserServiceImplTest {
 		assertNotNull(u);
 		u = userService.findRef(td.bar.getEmail());
 		assertNotNull(u);
+	}
+	
+	@Test
+	public void testFindRefByRoleName() {
+		List<UserRef> ls = userService.findRefByRoleName(td.role_admin.getName());
+		assertFalse(ls.isEmpty());
+		ls = userService.findRefByRoleName(td.role_manager.getName());
+		assertFalse(ls.isEmpty());
+		ls = userService.findRefByRoleName(td.role_guest.getName());
+		assertFalse(ls.isEmpty());
 	}
 }
