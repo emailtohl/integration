@@ -5,13 +5,12 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.anyVararg;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.security.SecureRandom;
 import java.util.Arrays;
-
-import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
@@ -60,7 +59,7 @@ import com.github.emailtohl.integration.core.user.entities.Employee;
 @EnableGlobalMethodSecurity(prePostEnabled = true, order = 0, mode = AdviceMode.PROXY, proxyTargetClass = false)
 @PropertySource({ "classpath:config.properties" })
 class SecurityConfiguration {
-	public static final Long EMAIL_TO_HL_ID = 1L, FOO_ID = 2L, BAR_ID = 3L, BAZ_ID = 4L, QUX_ID = 5L;
+	public static final Long EMAIL_TO_HL_ID = 8L, FOO_ID = 9L, BAR_ID = 10L, BAZ_ID = 11L, QUX_ID = 12L;
 	
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
@@ -72,25 +71,39 @@ class SecurityConfiguration {
 		return BCrypt.hashpw(password, salt);
 	}
 	
-	private CoreTestData td = new CoreTestData();
-	
 	@Value("${" + Constant.PROP_CUSTOMER_DEFAULT_PASSWORD + "}")
 	private String customerDefaultPassword;
 	@Value("${" + Constant.PROP_EMPLOYEE_DEFAULT_PASSWORD + "}")
 	private String employeeDefaultPassword;
 	
-	@PostConstruct
-	public void init() {
-		td.user_emailtohl.setId(1L);
+	/**
+	 * 预置数据
+	 * @return
+	 */
+	@Bean
+	public CoreTestData coreTestData() {
+		CoreTestData td = new CoreTestData();
+		td.role_admin.setId(1L);
+		td.role_manager.setId(2L);
+		td.role_staff.setId(3L);
+		td.role_guest.setId(4L);
+		td.user_admin.setId(5L);
+		td.user_emailtohl.setPassword(hashpw(employeeDefaultPassword));
+		td.user_bot.setId(6L);
+		td.user_bot.setPassword(hashpw(employeeDefaultPassword));
+		td.user_anonymous.setId(7L);
+		td.user_anonymous.setPassword(hashpw(customerDefaultPassword));
+		td.user_emailtohl.setId(EMAIL_TO_HL_ID);
 		td.user_emailtohl.setPassword(hashpw(customerDefaultPassword));
-		td.foo.setId(2L);
+		td.foo.setId(FOO_ID);
 		td.foo.setPassword(hashpw(employeeDefaultPassword));
-		td.bar.setId(3L);
+		td.bar.setId(BAR_ID);
 		td.bar.setPassword(hashpw(employeeDefaultPassword));
-		td.baz.setId(4L);
+		td.baz.setId(BAZ_ID);
 		td.baz.setPassword(hashpw(customerDefaultPassword));
-		td.qux.setId(5L);
+		td.qux.setId(QUX_ID);
 		td.qux.setPassword(hashpw(customerDefaultPassword));
+		return td;
 	}
 	
 	/**
@@ -104,7 +117,7 @@ class SecurityConfiguration {
 	}
 	
 	@Bean
-	public CustomerRepository customerRepository() {
+	public CustomerRepository customerRepository(CoreTestData td) {
 		CustomerRepository dao = mock(CustomerRepository.class);
 		// 手机号码和邮箱都能查找到
 		when(dao.findByCellPhone(td.user_emailtohl.getCellPhone())).thenReturn(td.user_emailtohl);
@@ -118,7 +131,7 @@ class SecurityConfiguration {
 	}
 	
 	@Bean
-	public EmployeeRepository employeeRepository() {
+	public EmployeeRepository employeeRepository(CoreTestData td) {
 		EmployeeRepository dao = mock(EmployeeRepository.class);
 		when(dao.findByEmpNum(Employee.NO1 + 1)).thenReturn(td.foo);
 		when(dao.findByEmpNum(Employee.NO1 + 2)).thenReturn(td.bar);
@@ -183,7 +196,7 @@ class SecurityConfiguration {
 	}
 	
 	@Bean
-	public RoleAuditedService roleAuditedServiceMock() {
+	public RoleAuditedService roleAuditedServiceMock(CoreTestData td) {
 		RoleAuditedService service = mock(RoleAuditedService.class);
 		when(service.getRoleAtRevision(anyLong(), any())).thenReturn(td.role_guest);
 		when(service.getRoleRevision(anyLong())).thenReturn(Arrays.asList(new Tuple<Role>()));
@@ -191,8 +204,11 @@ class SecurityConfiguration {
 	}
 	
 	@Bean
-	public CustomerService customerServiceMock() {
+	public CustomerService customerServiceMock(CoreTestData td) {
 		CustomerService service = mock(CustomerService.class);
+		when(service.update(eq(EMAIL_TO_HL_ID), any())).thenReturn(td.user_emailtohl);
+		when(service.update(eq(BAZ_ID), any())).thenReturn(td.baz);
+		when(service.update(eq(QUX_ID), any())).thenReturn(td.qux);
 		when(service.get(EMAIL_TO_HL_ID)).thenReturn(td.user_emailtohl);
 		when(service.get(BAZ_ID)).thenReturn(td.baz);
 		when(service.get(QUX_ID)).thenReturn(td.qux);
@@ -209,8 +225,10 @@ class SecurityConfiguration {
 	}
 	
 	@Bean
-	public EmployeeService employeeServiceMock() {
+	public EmployeeService employeeServiceMock(CoreTestData td) {
 		EmployeeService service = mock(EmployeeService.class);
+		when(service.update(eq(FOO_ID), any())).thenReturn(td.foo);
+		when(service.update(eq(BAR_ID), any())).thenReturn(td.bar);
 		when(service.get(FOO_ID)).thenReturn(td.foo);
 		when(service.get(BAR_ID)).thenReturn(td.bar);
 		when(service.grandRoles(anyLong(), anyVararg())).thenReturn(td.bar);
@@ -221,7 +239,7 @@ class SecurityConfiguration {
 	}
 	
 	@Bean
-	public CustomerAuditedService customerAuditedServiceMock() {
+	public CustomerAuditedService customerAuditedServiceMock(CoreTestData td) {
 		CustomerAuditedService service = mock(CustomerAuditedService.class);
 		when(service.getCustomerAtRevision(anyLong(), any())).thenReturn(td.baz);
 		when(service.getCustomerRevision(anyLong())).thenReturn(Arrays.asList(new Tuple<Customer>()));
@@ -229,7 +247,7 @@ class SecurityConfiguration {
 	}
 	
 	@Bean
-	public EmployeeAuditedService employeeAuditedServiceMock() {
+	public EmployeeAuditedService employeeAuditedServiceMock(CoreTestData td) {
 		EmployeeAuditedService service = mock(EmployeeAuditedService.class);
 		when(service.getEmployeeAtRevision(anyLong(), any())).thenReturn(td.bar);
 		when(service.getEmployeeRevision(anyLong())).thenReturn(Arrays.asList(new Tuple<Employee>()));

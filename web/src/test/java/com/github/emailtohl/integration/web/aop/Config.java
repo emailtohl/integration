@@ -1,16 +1,11 @@
 package com.github.emailtohl.integration.web.aop;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.anyVararg;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.security.SecureRandom;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import org.activiti.engine.FormService;
@@ -22,6 +17,9 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.User;
+import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -64,7 +62,7 @@ import com.github.emailtohl.integration.web.WebTestData;
 @EnableAspectJAutoProxy
 @PropertySource({ "classpath:config.properties" })
 class Config {
-	public static final Long EMAIL_TO_HL_ID = 1L, FOO_ID = 2L, BAR_ID = 3L, BAZ_ID = 4L, QUX_ID = 5L;
+	public static final Long EMAIL_TO_HL_ID = 8L, FOO_ID = 9L, BAR_ID = 10L, BAZ_ID = 11L, QUX_ID = 12L;
 	
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
@@ -76,25 +74,39 @@ class Config {
 		return BCrypt.hashpw(password, salt);
 	}
 	
-	private WebTestData td = new WebTestData();
-	
 	@Value("${" + Constant.PROP_CUSTOMER_DEFAULT_PASSWORD + "}")
 	private String customerDefaultPassword;
 	@Value("${" + Constant.PROP_EMPLOYEE_DEFAULT_PASSWORD + "}")
 	private String employeeDefaultPassword;
-	
-	@PostConstruct
-	public void init() {
-		td.user_emailtohl.setId(1L);
+
+	/**
+	 * 预置数据
+	 * @return
+	 */
+	@Bean
+	public WebTestData webTestData() {
+		WebTestData td = new WebTestData();
+		td.role_admin.setId(1L);
+		td.role_manager.setId(2L);
+		td.role_staff.setId(3L);
+		td.role_guest.setId(4L);
+		td.user_admin.setId(5L);
+		td.user_emailtohl.setPassword(hashpw(employeeDefaultPassword));
+		td.user_bot.setId(6L);
+		td.user_bot.setPassword(hashpw(employeeDefaultPassword));
+		td.user_anonymous.setId(7L);
+		td.user_anonymous.setPassword(hashpw(customerDefaultPassword));
+		td.user_emailtohl.setId(8L);
 		td.user_emailtohl.setPassword(hashpw(customerDefaultPassword));
-		td.foo.setId(2L);
+		td.foo.setId(9L);
 		td.foo.setPassword(hashpw(employeeDefaultPassword));
-		td.bar.setId(3L);
+		td.bar.setId(10L);
 		td.bar.setPassword(hashpw(employeeDefaultPassword));
-		td.baz.setId(4L);
+		td.baz.setId(11L);
 		td.baz.setPassword(hashpw(customerDefaultPassword));
-		td.qux.setId(5L);
+		td.qux.setId(12L);
 		td.qux.setPassword(hashpw(customerDefaultPassword));
+		return td;
 	}
 	
 	/**
@@ -108,7 +120,7 @@ class Config {
 	}
 	
 	@Bean
-	public CustomerRepository customerRepository() {
+	public CustomerRepository customerRepository(WebTestData td) {
 		CustomerRepository dao = mock(CustomerRepository.class);
 		// 手机号码和邮箱都能查找到
 		when(dao.findByCellPhone(td.user_emailtohl.getCellPhone())).thenReturn(td.user_emailtohl);
@@ -122,7 +134,7 @@ class Config {
 	}
 	
 	@Bean
-	public EmployeeRepository employeeRepository() {
+	public EmployeeRepository employeeRepository(WebTestData td) {
 		EmployeeRepository dao = mock(EmployeeRepository.class);
 		when(dao.findByEmpNum(Employee.NO1 + 1)).thenReturn(td.foo);
 		when(dao.findByEmpNum(Employee.NO1 + 2)).thenReturn(td.bar);
@@ -132,10 +144,12 @@ class Config {
 	}
 	
 	@Bean
-	public CustomerService customerServiceMock() {
+	public CustomerService customerServiceMock(WebTestData td) {
 		CustomerService service = mock(CustomerService.class);
 		when(service.create(any())).thenReturn(td.baz);
-		when(service.update(any(), any())).thenReturn(td.baz);
+		when(service.update(eq(EMAIL_TO_HL_ID), any())).thenReturn(td.user_emailtohl);
+		when(service.update(eq(BAZ_ID), any())).thenReturn(td.baz);
+		when(service.update(eq(QUX_ID), any())).thenReturn(td.qux);
 		when(service.get(EMAIL_TO_HL_ID)).thenReturn(td.user_emailtohl);
 		when(service.get(BAZ_ID)).thenReturn(td.baz);
 		when(service.get(QUX_ID)).thenReturn(td.qux);
@@ -152,10 +166,11 @@ class Config {
 	}
 	
 	@Bean
-	public EmployeeService employeeServiceMock() {
+	public EmployeeService employeeServiceMock(WebTestData td) {
 		EmployeeService service = mock(EmployeeService.class);
 		when(service.create(any())).thenReturn(td.foo);
-		when(service.update(any(), any())).thenReturn(td.foo);
+		when(service.update(eq(FOO_ID), any())).thenReturn(td.foo);
+		when(service.update(eq(BAR_ID), any())).thenReturn(td.bar);
 		when(service.get(FOO_ID)).thenReturn(td.foo);
 		when(service.get(BAR_ID)).thenReturn(td.bar);
 		when(service.grandRoles(anyLong(), anyVararg())).thenReturn(td.bar);
@@ -163,6 +178,17 @@ class Config {
 		when(service.enabled(anyLong(), anyBoolean())).thenReturn(td.bar);
 		when(service.updatePassword(any(), anyString(), anyString())).thenReturn(new ExecResult(true, "", null));
 		return service;
+	}
+	
+	/**
+	 * 基于内存的配置
+	 * @return
+	 */
+	@Bean
+	public StandaloneInMemProcessEngineConfiguration standaloneInMemProcessEngineConfiguration() {
+		// 基于内存数据库，且有Activiti自行管理事务
+		StandaloneInMemProcessEngineConfiguration cfg = new StandaloneInMemProcessEngineConfiguration();
+		return cfg;
 	}
 	
 	/**
@@ -174,13 +200,13 @@ class Config {
 	public SpringProcessEngineConfiguration processEngineConfiguration() {
 		DataSource dataSource = new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
 		PlatformTransactionManager platformTransactionManager = new DataSourceTransactionManager(dataSource);
-		SpringProcessEngineConfiguration c = new SpringProcessEngineConfiguration();
-		c.setDataSource(dataSource);
-		c.setTransactionManager(platformTransactionManager);
-		c.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
-		c.setActivityFontName("宋体");
-		c.setLabelFontName("宋体");
-		return c;
+		SpringProcessEngineConfiguration cfg = new SpringProcessEngineConfiguration();
+		cfg.setDataSource(dataSource);
+		cfg.setTransactionManager(platformTransactionManager);
+		cfg.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
+		cfg.setActivityFontName("宋体");
+		cfg.setLabelFontName("宋体");
+		return cfg;
 	}
 
 	@Bean
@@ -262,5 +288,85 @@ class Config {
 		return engine.getManagementService();
 	}
 
+	
+	@Bean
+	public Group role_admin(WebTestData td, IdentityService identityService) {
+		Group g = identityService.newGroup(td.role_admin.getId().toString());
+		g.setName(td.role_admin.getName());
+		g.setType("内置角色");
+		identityService.saveGroup(g);
+		return g;
+	}
+	
+	@Bean
+	public Group role_manager(WebTestData td, IdentityService identityService) {
+		Group g = identityService.newGroup(td.role_manager.getId().toString());
+		g.setName(td.role_manager.getName());
+		g.setType("内置角色");
+		identityService.saveGroup(g);
+		return g;
+	}
+	
+	@Bean
+	public Group role_staff(WebTestData td, IdentityService identityService) {
+		Group g = identityService.newGroup(td.role_staff.getId().toString());
+		g.setName(td.role_staff.getName());
+		g.setType("内置角色");
+		identityService.saveGroup(g);
+		return g;
+	}
+	
+	@Bean
+	public Group role_guest(WebTestData td, IdentityService identityService) {
+		Group g = identityService.newGroup(td.role_guest.getId().toString());
+		g.setName(td.role_guest.getName());
+		g.setType("内置角色");
+		identityService.saveGroup(g);
+		return g;
+	}
+	
+	@Bean
+	public User user_admin(WebTestData td, IdentityService identityService) {
+		User u = identityService.newUser(td.user_admin.getId().toString());
+		u.setId(td.user_admin.getId().toString());
+		u.setFirstName(td.user_admin.getName());
+		u.setLastName(td.user_admin.getNickname());
+		u.setEmail(td.user_admin.getEmail());
+		identityService.saveUser(u);
+		return u;
+	}
+	
+	@Bean
+	public User user_bot(WebTestData td, IdentityService identityService) {
+		User u = identityService.newUser(td.user_bot.getId().toString());
+		u.setId(td.user_bot.getId().toString());
+		u.setFirstName(td.user_bot.getName());
+		u.setLastName(td.user_bot.getNickname());
+		u.setEmail(td.user_bot.getEmail());
+		identityService.saveUser(u);
+		return u;
+	}
+	
+	@Bean
+	public User user_anonymous(WebTestData td, IdentityService identityService) {
+		User u = identityService.newUser(td.user_anonymous.getId().toString());
+		u.setId(td.user_anonymous.getId().toString());
+		u.setFirstName(td.user_anonymous.getName());
+		u.setLastName(td.user_anonymous.getNickname());
+		u.setEmail(td.user_anonymous.getEmail());
+		identityService.saveUser(u);
+		return u;
+	}
+	
+	@Bean
+	public User user_emailtohl(WebTestData td, IdentityService identityService) {
+		User u = identityService.newUser(td.user_emailtohl.getId().toString());
+		u.setId(td.user_emailtohl.getId().toString());
+		u.setFirstName(td.user_emailtohl.getName());
+		u.setLastName(td.user_emailtohl.getNickname());
+		u.setEmail(td.user_emailtohl.getEmail());
+		identityService.saveUser(u);
+		return u;
+	}
 	
 }

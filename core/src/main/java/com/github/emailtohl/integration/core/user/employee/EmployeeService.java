@@ -69,7 +69,7 @@ public interface EmployeeService {
 	List<Employee> query(Employee params);
 
 	/**
-	 * 修改平台账号内容，并指明哪些属性忽略
+	 * 修改平台账号基本内容，不包括密码、角色、状态等属性
 	 * @param id
 	 * @param newEntity
 	 * @return 返回null表示没找到该平台账号

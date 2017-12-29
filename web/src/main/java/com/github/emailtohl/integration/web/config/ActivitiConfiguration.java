@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.github.emailtohl.integration.core.config.CoreConfiguration;
@@ -42,14 +43,25 @@ public class ActivitiConfiguration {
 	 */
 	@Bean
 	public SpringProcessEngineConfiguration processEngineConfiguration(DataSource dataSource,
-			@Named("annotationDrivenTransactionManager") PlatformTransactionManager platformTransactionManager) {
-		SpringProcessEngineConfiguration c = new SpringProcessEngineConfiguration();
-		c.setDataSource(dataSource);
-		c.setTransactionManager(platformTransactionManager);
-		c.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
-		c.setActivityFontName("宋体");
-		c.setLabelFontName("宋体");
-		return c;
+			@Named("annotationDrivenTransactionManager") PlatformTransactionManager platformTransactionManager, 
+			LocalContainerEntityManagerFactoryBean jpaEntityManagerFactory) {
+		SpringProcessEngineConfiguration cfg = new SpringProcessEngineConfiguration();
+		cfg.setDataSource(dataSource);
+		cfg.setTransactionManager(platformTransactionManager);
+		// 持久化单元名字默认路径在META-INF/persistence.xml，该属性与jpaEntityManagerFactory选择一个即可
+		// c.setJpaPersistenceUnitName("default");
+		// 实现javax.persistence.EntityManagerFactory的Bean引用，该属性与jpaPersistenceUnitName选择一个即可
+		cfg.setJpaEntityManagerFactory(jpaEntityManagerFactory);
+		// 是否由Activiti引擎来管理事务，由于在JPA环境中由Spring容器进行统一事务管理，所以此处关闭Activiti引擎对事务的管理
+		cfg.setJpaHandleTransaction(false);
+		// 表示Activiti引擎是否应该关闭从jpaEntityManagerFactory获取的EntityManager实例
+		// 和jpaHandleTransaction类似，由于统一交给Spring容器管理，这里就不需要Activiti引擎再处理了
+		cfg.setJpaCloseEntityManager(false);
+		
+		cfg.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
+		cfg.setActivityFontName("宋体");
+		cfg.setLabelFontName("宋体");
+		return cfg;
 	}
 
 	@Bean

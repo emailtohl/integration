@@ -72,7 +72,7 @@ public interface CustomerService {
 	List<Customer> query(Customer params);
 
 	/**
-	 * 修改用户内容，并指明哪些属性忽略
+	 * 修改用户的基本内容，不包括密码、角色、状态等属性
 	 * @param id
 	 * @param newEntity
 	 * @return 返回null表示没找到该用户
