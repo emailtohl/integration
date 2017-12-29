@@ -5,7 +5,6 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.anyVararg;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -206,9 +205,16 @@ class SecurityConfiguration {
 	@Bean
 	public CustomerService customerServiceMock(CoreTestData td) {
 		CustomerService service = mock(CustomerService.class);
-		when(service.update(eq(EMAIL_TO_HL_ID), any())).thenReturn(td.user_emailtohl);
-		when(service.update(eq(BAZ_ID), any())).thenReturn(td.baz);
-		when(service.update(eq(QUX_ID), any())).thenReturn(td.qux);
+		when(service.create(any())).thenAnswer(invocation -> {
+			Customer c = (Customer) invocation.getArguments()[0];
+			c.setId(10001L);
+			return c;
+		});
+		when(service.update(any(), any())).thenAnswer(invocation -> {
+			Customer c = (Customer) invocation.getArguments()[1];
+			c.setId((Long) invocation.getArguments()[0]);
+			return c;
+		});
 		when(service.get(EMAIL_TO_HL_ID)).thenReturn(td.user_emailtohl);
 		when(service.get(BAZ_ID)).thenReturn(td.baz);
 		when(service.get(QUX_ID)).thenReturn(td.qux);
@@ -227,8 +233,16 @@ class SecurityConfiguration {
 	@Bean
 	public EmployeeService employeeServiceMock(CoreTestData td) {
 		EmployeeService service = mock(EmployeeService.class);
-		when(service.update(eq(FOO_ID), any())).thenReturn(td.foo);
-		when(service.update(eq(BAR_ID), any())).thenReturn(td.bar);
+		when(service.create(any())).thenAnswer(invocation -> {
+			Employee e = (Employee) invocation.getArguments()[0];
+			e.setId(10000L);
+			return e;
+		});
+		when(service.update(any(), any())).thenAnswer(invocation -> {
+			Employee e = (Employee) invocation.getArguments()[1];
+			e.setId((Long) invocation.getArguments()[0]);
+			return e;
+		});
 		when(service.get(FOO_ID)).thenReturn(td.foo);
 		when(service.get(BAR_ID)).thenReturn(td.bar);
 		when(service.grandRoles(anyLong(), anyVararg())).thenReturn(td.bar);

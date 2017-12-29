@@ -1,10 +1,16 @@
 package com.github.emailtohl.integration.web.aop;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.security.SecureRandom;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -41,6 +47,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.config.Constant;
+import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.user.customer.CustomerRepository;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.employee.EmployeeRepository;
@@ -109,6 +116,12 @@ class Config {
 		return td;
 	}
 	
+	@Bean
+	public Map<Long, Role> roleMap(WebTestData td) {
+		Map<Long, Role> roleMap = new HashMap<>();
+		return roleMap;
+	}
+	
 	/**
 	 * 简单的缓存管理器的实现
 	 * 
@@ -146,10 +159,16 @@ class Config {
 	@Bean
 	public CustomerService customerServiceMock(WebTestData td) {
 		CustomerService service = mock(CustomerService.class);
-		when(service.create(any())).thenReturn(td.baz);
-		when(service.update(eq(EMAIL_TO_HL_ID), any())).thenReturn(td.user_emailtohl);
-		when(service.update(eq(BAZ_ID), any())).thenReturn(td.baz);
-		when(service.update(eq(QUX_ID), any())).thenReturn(td.qux);
+		when(service.create(any())).thenAnswer(invocation -> {
+			Customer c = (Customer) invocation.getArguments()[0];
+			c.setId(10001L);
+			return c;
+		});
+		when(service.update(any(), any())).thenAnswer(invocation -> {
+			Customer c = (Customer) invocation.getArguments()[1];
+			c.setId((Long) invocation.getArguments()[0]);
+			return c;
+		});
 		when(service.get(EMAIL_TO_HL_ID)).thenReturn(td.user_emailtohl);
 		when(service.get(BAZ_ID)).thenReturn(td.baz);
 		when(service.get(QUX_ID)).thenReturn(td.qux);
@@ -157,6 +176,12 @@ class Config {
 		when(service.findByCellPhoneOrEmail(td.user_emailtohl.getEmail())).thenReturn(td.user_emailtohl);
 		when(service.findByCellPhoneOrEmail(td.baz.getCellPhone())).thenReturn(td.baz);
 		when(service.findByCellPhoneOrEmail(td.baz.getEmail())).thenReturn(td.baz);
+		
+		td.baz.getRoles().forEach(r -> {
+			if (r.getName().equals(td.role_guest.getName())) {
+				r = td.role_guest;
+			}
+		});
 		when(service.grandRoles(anyLong(), anyVararg())).thenReturn(td.baz);
 		when(service.grandLevel(anyLong(), any(Customer.Level.class))).thenReturn(td.baz);
 		when(service.resetPassword(anyLong())).thenReturn(new ExecResult(true, "", null));
@@ -168,11 +193,24 @@ class Config {
 	@Bean
 	public EmployeeService employeeServiceMock(WebTestData td) {
 		EmployeeService service = mock(EmployeeService.class);
-		when(service.create(any())).thenReturn(td.foo);
-		when(service.update(eq(FOO_ID), any())).thenReturn(td.foo);
-		when(service.update(eq(BAR_ID), any())).thenReturn(td.bar);
+		when(service.create(any())).thenAnswer(invocation -> {
+			Employee e = (Employee) invocation.getArguments()[0];
+			e.setId(10000L);
+			return e;
+		});
+		when(service.update(any(), any())).thenAnswer(invocation -> {
+			Employee e = (Employee) invocation.getArguments()[1];
+			e.setId((Long) invocation.getArguments()[0]);
+			return e;
+		});
 		when(service.get(FOO_ID)).thenReturn(td.foo);
 		when(service.get(BAR_ID)).thenReturn(td.bar);
+		
+		td.bar.getRoles().forEach(r -> {
+			if (r.getName().equals(td.role_staff.getName())) {
+				r = td.role_staff;
+			}
+		});
 		when(service.grandRoles(anyLong(), anyVararg())).thenReturn(td.bar);
 		when(service.resetPassword(anyLong())).thenReturn(new ExecResult(true, "", null));
 		when(service.enabled(anyLong(), anyBoolean())).thenReturn(td.bar);

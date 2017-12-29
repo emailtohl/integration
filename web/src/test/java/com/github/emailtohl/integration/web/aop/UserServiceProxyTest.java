@@ -1,9 +1,11 @@
 package com.github.emailtohl.integration.web.aop;
 
+import static org.junit.Assert.*;
 import static org.springframework.aop.support.AopUtils.isAopProxy;
 import static org.springframework.aop.support.AopUtils.isCglibProxy;
 import static org.springframework.aop.support.AopUtils.isJdkDynamicProxy;
-import static org.junit.Assert.*;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -38,58 +40,86 @@ public class UserServiceProxyTest {
 	IdentityService identityService;
 	@Inject
 	WebTestData td;
+	String employeeId, customerId;
 
 	@Before
 	public void setUp() throws Exception {
 		System.out.println(isAopProxy(userServiceProxy));
         System.out.println(isCglibProxy(userServiceProxy));
         System.out.println(isJdkDynamicProxy(userServiceProxy));
-        
+
+		Employee e = new Employee();
+		e.setEmail("hello@world.com");
+		e.setName("hello");
+		e.setNickname("world");
+		e.setPassword("123456");
+		e = employeeService.create(e);
+		assertNotNull(e);
+		
+		employeeId = e.getId().toString();
+		
+		User u = identityService.createUserQuery().userId(employeeId).singleResult();
+		assertNotNull(u);
+		
+		
+		Customer c = new Customer();
+		c.setEmail("hello@world.com");
+		c.setName("hello");
+		c.setNickname("world");
+		c.setPassword("123456");
+		c = customerService.create(c);
+		assertNotNull(c);
+		
+		customerId = c.getId().toString();
+		
+		u = identityService.createUserQuery().userId(customerId).singleResult();
+		assertNotNull(u);
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		employeeService.delete(Long.valueOf(employeeId));
+		User u = identityService.createUserQuery().userId(employeeId).singleResult();
+		assertNull(u);
+		
+		customerService.delete(Long.valueOf(customerId));
+		u = identityService.createUserQuery().userId(customerId).singleResult();
+		assertNull(u);
 	}
 
-	@Test
-	public void testCreate() {
-		Employee e = employeeService.create(new Employee());
-		assertNotNull(e);
-		
-		User u = identityService.createUserQuery().userId(e.getId().toString()).singleResult();
-		assertNotNull(u);
-		System.out.println(u);
-		
-		Customer c = customerService.create(new Customer());
-		assertNotNull(c);
-		u = identityService.createUserQuery().userId(c.getId().toString()).singleResult();
-		assertNotNull(u);
-		System.out.println(u);
-	}
-	
 	@Test
 	public void testUpdate() {
 		Employee e = new Employee();
 		e.setName("update");
 		e.getRoles().add(td.role_manager);
 		e.getRoles().add(td.role_staff);
-		e = employeeService.update(Config.FOO_ID, e);
+		e = employeeService.update(Long.valueOf(employeeId), e);
 		assertNotNull(e);
 		
-		User u = identityService.createUserQuery().userId(e.getId().toString()).singleResult();
-		assertNotNull(u);
-		System.out.println(u);
+		User u = identityService.createUserQuery().userId(employeeId).singleResult();
+		assertEquals("update", u.getFirstName());
 		
 		Customer c = new Customer();
 		c.setName("update");
 		c.getRoles().add(td.role_staff);
-		c = customerService.update(Config.BAZ_ID, c);
+		c = customerService.update(Long.valueOf(customerId), c);
 		assertNotNull(c);
-		u = identityService.createUserQuery().userId(c.getId().toString()).singleResult();
-		assertNotNull(u);
-		System.out.println(u);
+		u = identityService.createUserQuery().userId(customerId).singleResult();
+		assertEquals("update", u.getFirstName());
 		
-		identityService.createUserQuery().userId(Config.FOO_ID.toString());
+	}
+	
+	@Test
+	public void testGrandRoles() {
+		employeeService.grandRoles(Long.valueOf(employeeId), td.role_manager.getName(), td.role_staff.getName());
+		List<Group> ls = identityService.createGroupQuery().groupMember(employeeId).list();
+		assertEquals(2, ls.size());
+		ls.forEach(g -> System.out.println(g.getName()));
+		
+		employeeService.grandRoles(Long.valueOf(employeeId), td.role_guest.getName(), td.role_staff.getName());
+		ls = identityService.createGroupQuery().groupMember(employeeId).list();
+		assertEquals(2, ls.size());
+		ls.forEach(g -> System.out.println(g.getName()));
 	}
 
 }

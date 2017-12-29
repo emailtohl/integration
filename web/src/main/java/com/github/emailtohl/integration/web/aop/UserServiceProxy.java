@@ -98,14 +98,14 @@ public class UserServiceProxy {
 		String userId = u.getId().toString();
 		org.activiti.engine.identity.User user = identityService.createUserQuery().userId(userId).singleResult();
 		if (user == null) {
-			user = identityService.newUser(u.getId().toString());
-			// user.setId(u.getId().toString());
-			user.setEmail(u.getEmail());
-			user.setFirstName(u.getName());
-			user.setLastName(u.getNickname());
-			user.setPassword(u.getPassword());
-			identityService.saveUser(user);
+			user = identityService.newUser(userId);
 		}
+		// user.setId(u.getId().toString());
+		user.setEmail(u.getEmail());
+		user.setFirstName(u.getName());
+		user.setLastName(u.getNickname());
+		user.setPassword(u.getPassword());
+		identityService.saveUser(user);
 		
 		if (membership) {
 			// 查找原先该用户关联的组id
