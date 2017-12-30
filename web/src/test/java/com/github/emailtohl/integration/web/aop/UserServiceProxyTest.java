@@ -121,5 +121,20 @@ public class UserServiceProxyTest {
 		assertEquals(2, ls.size());
 		ls.forEach(g -> System.out.println(g.getName()));
 	}
+	
+	@Test
+	public void testUpdatePassword() {
+		Employee e = employeeService.get(Long.valueOf(employeeId));
+		
+		employeeService.updatePassword(e.getEmpNum(), "oldPassword", "newPassword");
+		
+		employeeService.resetPassword(e.getId());
+		
+		Customer c = customerService.get(Long.valueOf(customerId));
+		
+		customerService.updatePassword(c.getCellPhone(), "newPassword", "token");
+		
+		customerService.resetPassword(c.getId());
+	}
 
 }

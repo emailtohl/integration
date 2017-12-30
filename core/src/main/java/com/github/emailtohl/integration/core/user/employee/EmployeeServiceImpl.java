@@ -271,7 +271,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		String hashPw = hashpw(newPassword);
 		source.setPassword(hashPw);
 		source.setLastChangeCredentials(new Date());
-		return new ExecResult(true, "", null);
+		return new ExecResult(true, "", source);
 	}
 
 	@Override
@@ -280,9 +280,10 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		if (source == null) {
 			return new ExecResult(false, "没有此用户", null);
 		}
-		source.setPassword(hashpw(employeeDefaultPassword));
+		String hashPw = hashpw(employeeDefaultPassword);
+		source.setPassword(hashPw);
 		source.setLastChangeCredentials(new Date());
-		return new ExecResult(true, "", null);
+		return new ExecResult(true, "", source);
 	}
 	
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")

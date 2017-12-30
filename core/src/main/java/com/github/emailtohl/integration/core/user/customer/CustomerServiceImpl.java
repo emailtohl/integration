@@ -305,7 +305,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		String hashPw = hashpw(newPassword);
 		source.setPassword(hashPw);
 		source.setLastChangeCredentials(new Date());
-		return new ExecResult(true, "", null);
+		return new ExecResult(true, "", source);
 	}
 
 	@Override
@@ -317,7 +317,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		String hashPw = hashpw(customerDefaultPassword);
 		source.setPassword(hashPw);
 		source.setLastChangeCredentials(new Date());
-		return new ExecResult(true, "", null);
+		return new ExecResult(true, "", source);
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")

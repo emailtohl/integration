@@ -228,14 +228,16 @@ class Config {
 		return dao;
 	}
 	
+	int empNum = Employee.NO1 + 100;
 	@Bean
 	public EmployeeRepository employeeRepository(WebTestData td) {
 		EmployeeRepository dao = mock(EmployeeRepository.class);
 		when(dao.save(any(Employee.class))).then(invocation -> {
-			Employee c = (Employee) invocation.getArguments()[0];
-			c.setId(id.incrementAndGet());
-			userDB.put(c.getId(), c);
-			return c;
+			Employee e = (Employee) invocation.getArguments()[0];
+			e.setEmpNum(empNum++);
+			e.setId(id.incrementAndGet());
+			userDB.put(e.getId(), e);
+			return e;
 		});
 		when(dao.get(any(Long.class))).then(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];
@@ -311,8 +313,8 @@ class Config {
 			}
 			return target;
 		});
-		when(service.resetPassword(anyLong())).thenReturn(new ExecResult(true, "", null));
-		when(service.updatePassword(anyString(), anyString(), anyString())).thenReturn(new ExecResult(true, "", null));
+		when(service.resetPassword(anyLong())).thenReturn(new ExecResult(true, "", td.baz));
+		when(service.updatePassword(anyString(), anyString(), anyString())).thenReturn(new ExecResult(true, "", td.baz));
 		return service;
 	}
 	
@@ -363,9 +365,9 @@ class Config {
 			}
 			return target;
 		});
-		when(service.resetPassword(anyLong())).thenReturn(new ExecResult(true, "", null));
+		when(service.resetPassword(anyLong())).thenReturn(new ExecResult(true, "", td.bar));
+		when(service.updatePassword(any(), anyString(), anyString())).thenReturn(new ExecResult(true, "", td.bar));
 		when(service.enabled(anyLong(), anyBoolean())).thenReturn(td.bar);
-		when(service.updatePassword(any(), anyString(), anyString())).thenReturn(new ExecResult(true, "", null));
 		return service;
 	}
 	

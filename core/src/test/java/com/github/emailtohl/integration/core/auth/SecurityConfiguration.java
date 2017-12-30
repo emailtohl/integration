@@ -181,14 +181,16 @@ class SecurityConfiguration {
 		return dao;
 	}
 	
+	int empNum = Employee.NO1 + 100;
 	@Bean
 	public EmployeeRepository employeeRepository(CoreTestData td) {
 		EmployeeRepository dao = mock(EmployeeRepository.class);
 		when(dao.save(any(Employee.class))).then(invocation -> {
-			Employee c = (Employee) invocation.getArguments()[0];
-			c.setId(id.incrementAndGet());
-			userDB.put(c.getId(), c);
-			return c;
+			Employee e = (Employee) invocation.getArguments()[0];
+			e.setId(id.incrementAndGet());
+			e.setEmpNum(empNum++);
+			userDB.put(e.getId(), e);
+			return e;
 		});
 		when(dao.get(any(Long.class))).then(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];

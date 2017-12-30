@@ -15,6 +15,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
+import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.user.entities.User;
 
 /**
@@ -85,6 +86,19 @@ public class UserServiceProxy {
 			res = jp.proceed();
 		}
 		return res;
+	}
+	
+	@AfterReturning(value = "execution(* com.github.emailtohl.integration.core.user.*.*.*Password(..))", returning = "returnVal")
+	public void updatePassword(Object returnVal) throws Throwable {
+		if (returnVal instanceof ExecResult) {
+			ExecResult er = (ExecResult) returnVal;
+			if (er.ok && er.attribute instanceof User) {
+				User u = (User) er.attribute;
+				if (u.getId() != null) {
+					saveUser(u, false);
+				}
+			}
+		}
 	}
 	
 	
