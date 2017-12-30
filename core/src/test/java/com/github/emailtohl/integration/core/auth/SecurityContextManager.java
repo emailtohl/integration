@@ -24,9 +24,9 @@ class SecurityContextManager {
 	final String customerDefaultPassword;
 	final String employeeDefaultPassword;
 	
-	final CoreTestData td = new CoreTestData();
+	final CoreTestData td;
 	
-	public SecurityContextManager(AuthenticationManager authenticationManager) {
+	public SecurityContextManager(AuthenticationManager authenticationManager, CoreTestData td) {
 		this.authenticationManager = authenticationManager;
 		Properties prop = new Properties();
 		try (InputStream in = SecurityContextManager.class.getResourceAsStream("/config.properties")) {
@@ -36,6 +36,7 @@ class SecurityContextManager {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		};
+		this.td = td;
 	}
 
 	public void clearContext() {

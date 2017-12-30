@@ -39,6 +39,14 @@ public interface RoleService {
 	Role get(Long id);
 	
 	/**
+	 * 根据ID获取角色
+	 * @param id
+	 * @return
+	 */
+	@PreAuthorize("isAuthenticated()")
+	Role get(String roleName);
+	
+	/**
 	 * 分页查询
 	 * @param params
 	 * @param pageable

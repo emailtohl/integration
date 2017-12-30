@@ -4,6 +4,7 @@ import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -23,9 +24,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
-import com.github.emailtohl.integration.core.role.Authority;
-import com.github.emailtohl.integration.core.role.Role;
-import com.github.emailtohl.integration.core.role.RoleService;
 import com.google.gson.Gson;
 
 /**
@@ -54,6 +52,10 @@ public class RoleServiceImplTest {
 		Long id = r.getId();
 		r = roleService.get(id);
 		assertEquals(2, r.getAuthorities().size());
+		
+		r = roleService.get("test_role");
+		assertNotNull(r);
+		
 		r.getAuthorities().remove(td.auth_customer_lock);
 		r.getAuthorities().add(td.auth_customer_level);
 		r.getAuthorities().add(td.auth_employee_role);

@@ -68,6 +68,15 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 	}
 
 	@Override
+	public Role get(String roleName) {
+		Role r = roleRepository.findByName(roleName);
+		if (r == null) {
+			return null;
+		}
+		return transientDetail(r);
+	}
+
+	@Override
 	public Paging<Role> query(Role params, Pageable pageable) {
 		Page<Role> p;
 		if (params == null) {
@@ -206,4 +215,5 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 		tar.setParent(transientAuthorityDetail(src.getParent()));
 		return tar;
 	}
+
 }

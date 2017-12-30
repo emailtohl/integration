@@ -5,12 +5,17 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.anyVararg;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.security.SecureRandom;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -28,6 +33,7 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringProcessEngineConfiguration;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
@@ -48,6 +54,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.core.role.Role;
+import com.github.emailtohl.integration.core.role.RoleService;
 import com.github.emailtohl.integration.core.user.customer.CustomerRepository;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.employee.EmployeeRepository;
@@ -69,7 +76,10 @@ import com.github.emailtohl.integration.web.WebTestData;
 @EnableAspectJAutoProxy
 @PropertySource({ "classpath:config.properties" })
 class Config {
-	public static final Long EMAIL_TO_HL_ID = 8L, FOO_ID = 9L, BAR_ID = 10L, BAZ_ID = 11L, QUX_ID = 12L;
+	private AtomicLong id = new AtomicLong(1L);
+	private Map<Long, Role> roleDB = new ConcurrentHashMap<>();
+	private Map<String, Role> roleNameDB = new ConcurrentHashMap<>();
+	private Map<Long, com.github.emailtohl.integration.core.user.entities.User> userDB = new ConcurrentHashMap<>();
 	
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
@@ -87,39 +97,62 @@ class Config {
 	private String employeeDefaultPassword;
 
 	/**
-	 * 预置数据
+	 * 预置数据，WebTestData中的User已经与Role建立了关联，所以设置了Role的id影响的是同一个
 	 * @return
 	 */
 	@Bean
 	public WebTestData webTestData() {
 		WebTestData td = new WebTestData();
-		td.role_admin.setId(1L);
-		td.role_manager.setId(2L);
-		td.role_staff.setId(3L);
-		td.role_guest.setId(4L);
-		td.user_admin.setId(5L);
-		td.user_emailtohl.setPassword(hashpw(employeeDefaultPassword));
-		td.user_bot.setId(6L);
+		
+		td.role_admin.setId(id.getAndIncrement());
+		roleDB.put(td.role_admin.getId(), td.role_admin);
+		roleNameDB.put(td.role_admin.getName(), td.role_admin);
+		
+		td.role_manager.setId(id.getAndIncrement());
+		roleDB.put(td.role_manager.getId(), td.role_manager);
+		roleNameDB.put(td.role_manager.getName(), td.role_manager);
+		
+		td.role_staff.setId(id.getAndIncrement());
+		roleDB.put(td.role_staff.getId(), td.role_staff);
+		roleNameDB.put(td.role_staff.getName(), td.role_staff);
+		
+		td.role_guest.setId(id.getAndIncrement());
+		roleDB.put(td.role_guest.getId(), td.role_guest);
+		roleNameDB.put(td.role_guest.getName(), td.role_guest);
+		
+		td.user_admin.setId(id.getAndIncrement());
+		td.user_admin.setPassword(hashpw(employeeDefaultPassword));
+		userDB.put(td.user_admin.getId(), td.user_admin);
+		
+		td.user_bot.setId(id.getAndIncrement());
 		td.user_bot.setPassword(hashpw(employeeDefaultPassword));
-		td.user_anonymous.setId(7L);
+		userDB.put(td.user_bot.getId(), td.user_bot);
+		
+		td.user_anonymous.setId(id.getAndIncrement());
 		td.user_anonymous.setPassword(hashpw(customerDefaultPassword));
-		td.user_emailtohl.setId(8L);
+		userDB.put(td.user_anonymous.getId(), td.user_anonymous);
+		
+		td.user_emailtohl.setId(id.getAndIncrement());
 		td.user_emailtohl.setPassword(hashpw(customerDefaultPassword));
-		td.foo.setId(9L);
+		userDB.put(td.user_emailtohl.getId(), td.user_emailtohl);
+		
+		td.foo.setId(id.getAndIncrement());
 		td.foo.setPassword(hashpw(employeeDefaultPassword));
-		td.bar.setId(10L);
+		userDB.put(td.foo.getId(), td.foo);
+		
+		td.bar.setId(id.getAndIncrement());
 		td.bar.setPassword(hashpw(employeeDefaultPassword));
-		td.baz.setId(11L);
+		userDB.put(td.bar.getId(), td.bar);
+		
+		td.baz.setId(id.getAndIncrement());
 		td.baz.setPassword(hashpw(customerDefaultPassword));
-		td.qux.setId(12L);
+		userDB.put(td.baz.getId(), td.baz);
+		
+		td.qux.setId(id.getAndIncrement());
 		td.qux.setPassword(hashpw(customerDefaultPassword));
+		userDB.put(td.qux.getId(), td.qux);
+		
 		return td;
-	}
-	
-	@Bean
-	public Map<Long, Role> roleMap(WebTestData td) {
-		Map<Long, Role> roleMap = new HashMap<>();
-		return roleMap;
 	}
 	
 	/**
@@ -133,85 +166,203 @@ class Config {
 	}
 	
 	@Bean
+	public RoleService roleService(WebTestData td) {
+		RoleService service = mock(RoleService.class);
+		when(service.create(any())).thenAnswer(invocation -> {
+			Role r = (Role) invocation.getArguments()[0];
+			r.setId(id.getAndIncrement());
+			roleDB.put(r.getId(), r);
+			roleNameDB.put(r.getName(), r);
+			return r;
+		});
+		when(service.get(any(Long.class))).thenAnswer(invocation -> {
+			Long roleId = (Long) invocation.getArguments()[0];
+			return roleDB.get(roleId);
+		});
+		when(service.get(any(String.class))).thenAnswer(invocation -> {
+			String roleName = (String) invocation.getArguments()[0];
+			return roleNameDB.get(roleName);
+		});
+		when(service.update(any(), any())).thenAnswer(invocation -> {
+			Long roleId = (Long) invocation.getArguments()[0];
+			Role target = roleDB.get(roleId);
+			if (target != null) {
+				Role source = (Role) invocation.getArguments()[1];
+				BeanUtils.copyProperties(source, target, Role.getIgnoreProperties("name"));
+			}
+			return target;
+		});
+		doAnswer(invocation -> {
+			Long roleId = (Long) invocation.getArguments()[0];
+			roleDB.remove(roleId);
+			roleNameDB.remove(roleId);
+			return invocation.getMock();
+		}).when(service).delete(any(Long.class));
+		return service;
+	}
+	
+	@Bean
 	public CustomerRepository customerRepository(WebTestData td) {
 		CustomerRepository dao = mock(CustomerRepository.class);
+		when(dao.save(any(Customer.class))).then(invocation -> {
+			Customer c = (Customer) invocation.getArguments()[0];
+			c.setId(id.incrementAndGet());
+			userDB.put(c.getId(), c);
+			return c;
+		});
+		when(dao.get(any(Long.class))).then(invocation -> {
+			Long userId = (Long) invocation.getArguments()[0];
+			return userDB.get(userId);
+		});
+		doAnswer(invocation -> {
+			Long userId = (Long) invocation.getArguments()[0];
+			userDB.remove(userId);
+			return invocation.getMock();
+		}).when(dao).delete(any(Long.class));
+		
 		// 手机号码和邮箱都能查找到
 		when(dao.findByCellPhone(td.user_emailtohl.getCellPhone())).thenReturn(td.user_emailtohl);
 		when(dao.findByEmail(td.user_emailtohl.getEmail())).thenReturn(td.user_emailtohl);
 		when(dao.findByCellPhone(td.baz.getCellPhone())).thenReturn(td.baz);
 		when(dao.findByEmail(td.baz.getEmail())).thenReturn(td.baz);
-		when(dao.get(EMAIL_TO_HL_ID)).thenReturn(td.user_emailtohl);
-		when(dao.get(BAZ_ID)).thenReturn(td.baz);
-		when(dao.get(QUX_ID)).thenReturn(td.qux);
 		return dao;
 	}
 	
 	@Bean
 	public EmployeeRepository employeeRepository(WebTestData td) {
 		EmployeeRepository dao = mock(EmployeeRepository.class);
+		when(dao.save(any(Employee.class))).then(invocation -> {
+			Employee c = (Employee) invocation.getArguments()[0];
+			c.setId(id.incrementAndGet());
+			userDB.put(c.getId(), c);
+			return c;
+		});
+		when(dao.get(any(Long.class))).then(invocation -> {
+			Long userId = (Long) invocation.getArguments()[0];
+			return userDB.get(userId);
+		});
+		doAnswer(invocation -> {
+			Long userId = (Long) invocation.getArguments()[0];
+			userDB.remove(userId);
+			return invocation.getMock();
+		}).when(dao).delete(any(Long.class));
 		when(dao.findByEmpNum(Employee.NO1 + 1)).thenReturn(td.foo);
 		when(dao.findByEmpNum(Employee.NO1 + 2)).thenReturn(td.bar);
-		when(dao.get(FOO_ID)).thenReturn(td.foo);
-		when(dao.get(BAR_ID)).thenReturn(td.bar);
 		return dao;
 	}
 	
 	@Bean
-	public CustomerService customerServiceMock(WebTestData td) {
+	public CustomerService customerServiceMock(CustomerRepository re, WebTestData td) {
 		CustomerService service = mock(CustomerService.class);
 		when(service.create(any())).thenAnswer(invocation -> {
 			Customer c = (Customer) invocation.getArguments()[0];
-			c.setId(10001L);
-			return c;
+			return re.save(c);
+		});
+		when(service.get(any())).thenAnswer(invocation -> {
+			Long userId = (Long) invocation.getArguments()[0];
+			return re.get(userId);
 		});
 		when(service.update(any(), any())).thenAnswer(invocation -> {
-			Customer c = (Customer) invocation.getArguments()[1];
-			c.setId((Long) invocation.getArguments()[0]);
-			return c;
+			Long userId = (Long) invocation.getArguments()[0];
+			Customer target = re.get(userId);
+			if (target != null) {
+				Customer source = (Customer) invocation.getArguments()[1];
+				BeanUtils.copyProperties(source, target, Customer.getIgnoreProperties("password", "roles", "enabled", "email", "cellPhone"));
+			}
+			return target;
 		});
-		when(service.get(EMAIL_TO_HL_ID)).thenReturn(td.user_emailtohl);
-		when(service.get(BAZ_ID)).thenReturn(td.baz);
-		when(service.get(QUX_ID)).thenReturn(td.qux);
+		doAnswer(invocation -> {
+			Long userId = (Long) invocation.getArguments()[0];
+			re.delete(userId);
+			return invocation.getMock();
+		}).when(service).delete(any(Long.class));
 		when(service.findByCellPhoneOrEmail(td.user_emailtohl.getCellPhone())).thenReturn(td.user_emailtohl);
 		when(service.findByCellPhoneOrEmail(td.user_emailtohl.getEmail())).thenReturn(td.user_emailtohl);
 		when(service.findByCellPhoneOrEmail(td.baz.getCellPhone())).thenReturn(td.baz);
 		when(service.findByCellPhoneOrEmail(td.baz.getEmail())).thenReturn(td.baz);
 		
-		td.baz.getRoles().forEach(r -> {
-			if (r.getName().equals(td.role_guest.getName())) {
-				r = td.role_guest;
+		when(service.grandRoles(anyLong(), anyVararg())).thenAnswer(invocation -> {
+			Long userId = (Long) invocation.getArguments()[0];
+			Customer target = re.get(userId);
+			if (target != null && invocation.getArguments().length > 1) {
+				Set<Role> roles = Arrays.stream(invocation.getArguments())
+				.filter(arg -> arg instanceof String)
+				.filter(roleName -> roleNameDB.get(roleName) != null)
+				.map(roleName -> roleNameDB.get(roleName))
+				.collect(Collectors.toSet());
+				target.getRoles().clear();
+				target.getRoles().addAll(roles);
 			}
+			return target;
 		});
-		when(service.grandRoles(anyLong(), anyVararg())).thenReturn(td.baz);
-		when(service.grandLevel(anyLong(), any(Customer.Level.class))).thenReturn(td.baz);
+		when(service.grandLevel(anyLong(), any(Customer.Level.class))).thenAnswer(invocation -> {
+			Long userId = (Long) invocation.getArguments()[0];
+			Customer target = re.get(userId);
+			if (target != null) {
+				target.setLevel((Customer.Level) invocation.getArguments()[1]);
+			}
+			return target;
+		});
+		when(service.enabled(anyLong(), anyBoolean())).thenAnswer(invocation -> {
+			Long userId = (Long) invocation.getArguments()[0];
+			Customer target = re.get(userId);
+			if (target != null) {
+				target.setEnabled((Boolean) invocation.getArguments()[1]);
+			}
+			return target;
+		});
 		when(service.resetPassword(anyLong())).thenReturn(new ExecResult(true, "", null));
-		when(service.enabled(anyLong(), anyBoolean())).thenReturn(td.baz);
 		when(service.updatePassword(anyString(), anyString(), anyString())).thenReturn(new ExecResult(true, "", null));
 		return service;
 	}
 	
 	@Bean
-	public EmployeeService employeeServiceMock(WebTestData td) {
+	public EmployeeService employeeServiceMock(EmployeeRepository re, WebTestData td) {
 		EmployeeService service = mock(EmployeeService.class);
 		when(service.create(any())).thenAnswer(invocation -> {
 			Employee e = (Employee) invocation.getArguments()[0];
-			e.setId(10000L);
-			return e;
+			return re.save(e);
+		});
+		when(service.get(any())).thenAnswer(invocation -> {
+			Long userId = (Long) invocation.getArguments()[0];
+			return re.get(userId);
 		});
 		when(service.update(any(), any())).thenAnswer(invocation -> {
-			Employee e = (Employee) invocation.getArguments()[1];
-			e.setId((Long) invocation.getArguments()[0]);
-			return e;
-		});
-		when(service.get(FOO_ID)).thenReturn(td.foo);
-		when(service.get(BAR_ID)).thenReturn(td.bar);
-		
-		td.bar.getRoles().forEach(r -> {
-			if (r.getName().equals(td.role_staff.getName())) {
-				r = td.role_staff;
+			Long userId = (Long) invocation.getArguments()[0];
+			Employee target = re.get(userId);
+			if (target != null) {
+				Employee source = (Employee) invocation.getArguments()[1];
+				BeanUtils.copyProperties(source, target, Employee.getIgnoreProperties("password", "empNum", "email", "cellPhone", "roles", "enabled"));
 			}
+			return target;
 		});
-		when(service.grandRoles(anyLong(), anyVararg())).thenReturn(td.bar);
+		doAnswer(invocation -> {
+			Long userId = (Long) invocation.getArguments()[0];
+			re.delete(userId);
+			return invocation.getMock();
+		}).when(service).delete(any(Long.class));
+		when(service.grandRoles(anyLong(), anyVararg())).thenAnswer(invocation -> {
+			Long userId = (Long) invocation.getArguments()[0];
+			Employee target = re.get(userId);
+			if (target != null && invocation.getArguments().length > 1) {
+				Set<Role> roles = Arrays.stream(invocation.getArguments())
+				.filter(arg -> arg instanceof String)
+				.filter(roleName -> roleNameDB.get(roleName) != null)
+				.map(roleName -> roleNameDB.get(roleName))
+				.collect(Collectors.toSet());
+				target.getRoles().clear();
+				target.getRoles().addAll(roles);
+			}
+			return target;
+		});
+		when(service.enabled(anyLong(), anyBoolean())).thenAnswer(invocation -> {
+			Long userId = (Long) invocation.getArguments()[0];
+			Employee target = re.get(userId);
+			if (target != null) {
+				target.setEnabled((Boolean) invocation.getArguments()[1]);
+			}
+			return target;
+		});
 		when(service.resetPassword(anyLong())).thenReturn(new ExecResult(true, "", null));
 		when(service.enabled(anyLong(), anyBoolean())).thenReturn(td.bar);
 		when(service.updatePassword(any(), anyString(), anyString())).thenReturn(new ExecResult(true, "", null));

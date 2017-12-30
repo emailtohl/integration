@@ -1,6 +1,5 @@
 package com.github.emailtohl.integration.core.auth;
 
-import static com.github.emailtohl.integration.core.auth.SecurityConfiguration.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -39,7 +38,8 @@ import com.github.emailtohl.integration.core.user.entities.Employee;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SecurityConfiguration.class)
 public class GlobalMethodSecurityTest {
-	CoreTestData td = new CoreTestData();
+	@Inject
+	CoreTestData td;
 	@Inject
 	SecurityContextManager scm;
 	@Inject
@@ -75,13 +75,14 @@ public class GlobalMethodSecurityTest {
 		scm.setEmailtohl();
 		// 登录的用户可以调用该方法
 		roleService.getAuthorities();
-		// 传入参数是否正确并不重要，关键是测试被权限包含的方法是否能被调用，拥有role权限的用户可以调用该方法
-		roleService.update(1L, new Role("test", "for test"));
+		Role r = new Role("test", "test");
+		r = roleService.create(r);
+		roleService.update(r.getId(), new Role("test", "for update"));
 		// 只要登录，即可查询角色列表
 		scm.setBar();
 		roleService.getAuthorities();
 		// bar没有role权限，故会抛出AccessDeniedException
-		roleService.update(1L, new Role("test", "for test"));
+		roleService.update(r.getId(), new Role("test", "for update again"));
 	}
 	
 	@Test
@@ -96,26 +97,26 @@ public class GlobalMethodSecurityTest {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
 		try {
-			bar = employeeService.get(BAR_ID);
+			bar = employeeService.get(td.bar.getId());
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
 		assertNull(bar);
 		try {
 			// 传入参数是否正确并不重要，关键是测试被权限包含的方法是否能被调用
-			bar = employeeService.grandRoles(BAR_ID, "a", "b", "c");
+			bar = employeeService.grandRoles(td.bar.getId(), "a", "b", "c");
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
 		assertNull(bar);
 		try {
-			r = employeeService.resetPassword(BAR_ID);
+			r = employeeService.resetPassword(td.bar.getId());
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
 		assertNull(r);
 		try {
-			bar = employeeService.enabled(BAR_ID, true);
+			bar = employeeService.enabled(td.bar.getId(), true);
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
@@ -128,13 +129,14 @@ public class GlobalMethodSecurityTest {
 		
 		scm.setEmailtohl();
 		employeeService.create(new Employee());
-		bar = employeeService.get(BAR_ID);
+		bar = employeeService.get(td.bar.getId());
 		assertNotNull(bar);
-		bar = employeeService.grandRoles(BAR_ID, "a", "b", "c");
+		bar = employeeService.grandRoles(td.bar.getId(), "a", "b", "c");
 		assertNotNull(bar);
-		r = employeeService.resetPassword(BAR_ID);
+		r = employeeService.resetPassword(td.bar.getId());
 		assertTrue(r.ok);
-		bar = employeeService.enabled(BAR_ID, false);
+		bar = employeeService.enabled(td.bar.getId(), false);
+		bar = employeeService.enabled(td.bar.getId(), true);
 		try {
 			r = employeeService.updatePassword(empNum, "678901", "token");
 		} catch (Exception e) {
@@ -147,20 +149,20 @@ public class GlobalMethodSecurityTest {
 		} catch (Exception e) {
 			assertTrue(e instanceof AccessDeniedException);
 		}
-		bar = employeeService.get(BAR_ID);
+		bar = employeeService.get(td.bar.getId());
 		assertNotNull(bar);
 		try {
-			bar = employeeService.grandRoles(BAR_ID, "a", "b", "c");
+			bar = employeeService.grandRoles(td.bar.getId(), "a", "b", "c");
 		} catch (Exception e) {
 			assertTrue(e instanceof AccessDeniedException);
 		}
 		try {
-			r = employeeService.resetPassword(BAR_ID);
+			r = employeeService.resetPassword(td.bar.getId());
 		} catch (Exception e) {
 			assertTrue(e instanceof AccessDeniedException);
 		}
 		try {
-			bar = employeeService.enabled(BAR_ID, false);
+			bar = employeeService.enabled(td.bar.getId(), false);
 		} catch (Exception e) {
 			assertTrue(e instanceof AccessDeniedException);
 		}
@@ -177,7 +179,7 @@ public class GlobalMethodSecurityTest {
 		scm.clearContext();
 		
 		try {
-			baz = customerService.get(BAZ_ID);
+			baz = customerService.get(td.baz.getId());
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
@@ -189,31 +191,31 @@ public class GlobalMethodSecurityTest {
 		}
 		assertNull(baz);
 		try {
-			baz = customerService.update(BAZ_ID, new Customer());
+			baz = customerService.update(td.baz.getId(), new Customer());
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
 //		assertNull(baz);
 		try {
-			baz = customerService.grandRoles(BAZ_ID, "a", "b", "c");
+			baz = customerService.grandRoles(td.baz.getId(), "a", "b", "c");
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
 		assertNull(baz);
 		try {
-			baz = customerService.grandLevel(BAZ_ID, Customer.Level.VIP);
+			baz = customerService.grandLevel(td.baz.getId(), Customer.Level.VIP);
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
 		assertNull(baz);
 		try {
-			r = customerService.resetPassword(BAZ_ID);
+			r = customerService.resetPassword(td.baz.getId());
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
 		assertNull(r);
 		try {
-			baz = customerService.enabled(BAZ_ID, true);
+			baz = customerService.enabled(td.baz.getId(), true);
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
@@ -225,19 +227,23 @@ public class GlobalMethodSecurityTest {
 		}
 		
 		scm.setEmailtohl();
-		baz = customerService.get(BAZ_ID);
+		baz = customerService.get(td.baz.getId());
 		assertNotNull(baz);
 		baz = customerService.findByCellPhoneOrEmail(randomCellPhoneOrEmail(td.baz));
 		assertNotNull(baz);
-		baz = customerService.update(BAZ_ID, new Customer());
+		td.baz.setName("_baz");
+		baz = customerService.update(td.baz.getId(), td.baz);
+		td.baz.setName("baz");
+		baz = customerService.update(td.baz.getId(), td.baz);
 //		assertNotNull(baz);
-		baz = customerService.grandRoles(BAZ_ID, "a", "b", "c");
+		baz = customerService.grandRoles(td.baz.getId(), "a", "b", "c");
 		assertNotNull(baz);
-		baz = customerService.grandLevel(BAZ_ID, Customer.Level.VIP);
+		baz = customerService.grandLevel(td.baz.getId(), Customer.Level.VIP);
 		assertNotNull(baz);
-		r = employeeService.resetPassword(BAZ_ID);
+		r = employeeService.resetPassword(td.baz.getId());
 		assertTrue(r.ok);
-		baz = customerService.enabled(BAZ_ID, false);
+		baz = customerService.enabled(td.baz.getId(), false);
+		baz = customerService.enabled(td.baz.getId(), true);
 		try {
 			r = customerService.updatePassword(td.baz.getEmail(), "678901", "token");
 		} catch (Exception e) {
@@ -245,29 +251,29 @@ public class GlobalMethodSecurityTest {
 		}
 		
 		scm.setBaz();
-		baz = customerService.get(BAZ_ID);
+		baz = customerService.get(td.baz.getId());
 		assertNotNull(baz);
 		baz = customerService.findByCellPhoneOrEmail(randomCellPhoneOrEmail(td.baz));
 		assertNotNull(baz);
-		baz = customerService.update(BAZ_ID, new Customer());
+		baz = customerService.update(td.baz.getId(), new Customer());
 //		assertNotNull(baz);
 		try {
-			baz = customerService.grandRoles(BAZ_ID, "a", "b", "c");
+			baz = customerService.grandRoles(td.baz.getId(), "a", "b", "c");
 		} catch (Exception e) {
 			assertTrue(e instanceof AccessDeniedException);
 		}
 		try {
-			baz = customerService.grandLevel(BAZ_ID, Customer.Level.VIP);
+			baz = customerService.grandLevel(td.baz.getId(), Customer.Level.VIP);
 		} catch (Exception e) {
 			assertTrue(e instanceof AccessDeniedException);
 		}
 		try {
-			r = customerService.resetPassword(BAZ_ID);
+			r = customerService.resetPassword(td.baz.getId());
 		} catch (Exception e) {
 			assertTrue(e instanceof AccessDeniedException);
 		}
 		try {
-			baz = customerService.enabled(BAZ_ID, false);
+			baz = customerService.enabled(td.baz.getId(), false);
 		} catch (Exception e) {
 			assertTrue(e instanceof AccessDeniedException);
 		}
