@@ -1,6 +1,7 @@
 package com.github.emailtohl.integration.web.config;
 
 import javax.inject.Named;
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.activiti.engine.FormService;
@@ -21,7 +22,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.ContextClosedEvent;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.github.emailtohl.integration.core.config.CoreConfiguration;
@@ -44,7 +44,7 @@ public class ActivitiConfiguration {
 	@Bean
 	public SpringProcessEngineConfiguration processEngineConfiguration(DataSource dataSource,
 			@Named("annotationDrivenTransactionManager") PlatformTransactionManager platformTransactionManager, 
-			LocalContainerEntityManagerFactoryBean jpaEntityManagerFactory) {
+			EntityManagerFactory jpaEntityManagerFactory) {
 		SpringProcessEngineConfiguration cfg = new SpringProcessEngineConfiguration();
 		cfg.setDataSource(dataSource);
 		cfg.setTransactionManager(platformTransactionManager);

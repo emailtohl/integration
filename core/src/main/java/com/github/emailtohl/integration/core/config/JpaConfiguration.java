@@ -98,7 +98,7 @@ class JpaConfiguration {
 		return adapter;
 	}
 	
-	@Bean(name = "entityManagerFactory")
+	@Bean
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		LocalContainerEntityManagerFactoryBean emfb = new LocalContainerEntityManagerFactoryBean();
 		emfb.setDataSource(dataSource);
