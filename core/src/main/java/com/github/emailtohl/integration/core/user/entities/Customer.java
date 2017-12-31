@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Pattern;
 
 import com.github.emailtohl.integration.common.ConstantPattern;
+import com.github.emailtohl.integration.common.jpa.entity.EnumBridgeCust;
 import com.github.emailtohl.integration.core.file.Image;
 
 /**

@@ -30,7 +30,7 @@ public class RoleServiceProxy {
 	@Inject
 	IdentityService identityService;
 	
-	@AfterReturning(value = "execution(* com.github.emailtohl.integration.core.role.*.*.create(..))", returning = "returnVal")
+	@AfterReturning(value = "execution(* com.github.emailtohl.integration.core.role.RoleService.create(..))", returning = "returnVal")
 	public void create(Object returnVal) throws Throwable {
 		if (returnVal instanceof Role) {
 			Role r = (Role) returnVal;
@@ -41,13 +41,7 @@ public class RoleServiceProxy {
 		}
 	}
 	
-	/**
-	 * 实际上EmployeeService或CustomerService不会在update方法里面更新角色关系，这里只是为了扩展，以防变化
-	 * @param jp
-	 * @return
-	 * @throws Throwable
-	 */
-	@AfterReturning(value = "execution(* com.github.emailtohl.integration.core.role.*.*.update(..))", returning = "returnVal")
+	@AfterReturning(value = "execution(* com.github.emailtohl.integration.core.role.RoleService.update(..))", returning = "returnVal")
 	public void update(Object returnVal) throws Throwable {
 		if (returnVal instanceof Role) {
 			Role r = (Role) returnVal;
@@ -58,7 +52,7 @@ public class RoleServiceProxy {
 		}
 	}
 	
-	@Around(value = "execution(* com.github.emailtohl.integration.core.role.*.*.delete(..))")
+	@Around(value = "execution(* com.github.emailtohl.integration.core.role.RoleService.delete(..))")
 	public Object delete(ProceedingJoinPoint jp) throws Throwable {
 		Object res = null;
 		Object[] args = jp.getArgs();
@@ -86,6 +80,7 @@ public class RoleServiceProxy {
 		}
 		// g.setId(roleId);
 		g.setName(r.getName());
+		g.setType(r.getRoleType().name());
 		identityService.saveGroup(g);
 		return g;
 	}

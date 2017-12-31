@@ -335,7 +335,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		}
 		Employee target = new Employee();
 		BeanUtils.copyProperties(source, target, "employeeRef", "password", "roles");
-		source.getRoles().forEach(role -> target.getRoles().add(new Role(role.getName(), role.getDescription())));
+		source.getRoles().forEach(role -> target.getRoles().add(new Role(role.getName(), role.getRoleType(), role.getDescription())));
 		return target;
 	}
 

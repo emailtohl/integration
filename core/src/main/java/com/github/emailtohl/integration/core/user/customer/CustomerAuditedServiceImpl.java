@@ -59,7 +59,7 @@ public class CustomerAuditedServiceImpl implements CustomerAuditedService {
 		Customer target = new Customer();
 		BeanUtils.copyProperties(source, target, "password", "roles", "cards");
 		source.getCards().forEach(card -> target.getCards().add(card));
-		source.getRoles().forEach(role -> target.getRoles().add(new Role(role.getName(), role.getDescription())));
+		source.getRoles().forEach(role -> target.getRoles().add(new Role(role.getName(), role.getRoleType(), role.getDescription())));
 		return target;
 	}
 	

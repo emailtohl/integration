@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.user.entities;
+package com.github.emailtohl.integration.common.jpa.entity;
 
 import org.hibernate.search.bridge.builtin.EnumBridge;
 

@@ -25,6 +25,7 @@ import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleAuditedService;
 import com.github.emailtohl.integration.core.role.RoleService;
+import com.github.emailtohl.integration.core.role.RoleType;
 import com.github.emailtohl.integration.core.user.customer.CustomerAuditedService;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.employee.EmployeeAuditedService;
@@ -75,14 +76,14 @@ public class GlobalMethodSecurityTest {
 		scm.setEmailtohl();
 		// 登录的用户可以调用该方法
 		roleService.getAuthorities();
-		Role r = new Role("test", "test");
+		Role r = new Role("test", RoleType.EMPLOYEE, "test");
 		r = roleService.create(r);
-		roleService.update(r.getId(), new Role("test", "for update"));
+		roleService.update(r.getId(), new Role("test", RoleType.CUSTOMER, "for update"));
 		// 只要登录，即可查询角色列表
 		scm.setBar();
 		roleService.getAuthorities();
 		// bar没有role权限，故会抛出AccessDeniedException
-		roleService.update(r.getId(), new Role("test", "for update again"));
+		roleService.update(r.getId(), new Role("test", RoleType.EMPLOYEE, "for update again"));
 	}
 	
 	@Test

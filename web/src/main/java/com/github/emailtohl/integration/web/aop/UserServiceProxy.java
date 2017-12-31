@@ -44,12 +44,6 @@ public class UserServiceProxy {
 		}
 	}
 	
-	/**
-	 * 实际上EmployeeService或CustomerService不会在update方法里面更新角色关系，这里只是为了扩展，以防变化
-	 * @param jp
-	 * @return
-	 * @throws Throwable
-	 */
 	@AfterReturning(value = "execution(* com.github.emailtohl.integration.core.user.*.*.update(..))", returning = "returnVal")
 	public void update(Object returnVal) throws Throwable {
 		if (returnVal instanceof User) {

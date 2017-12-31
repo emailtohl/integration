@@ -438,7 +438,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		Customer target = new Customer();
 		BeanUtils.copyProperties(source, target, "customerRef", "password", "roles", "cards");
 		source.getCards().forEach(card -> target.getCards().add(card));
-		source.getRoles().forEach(role -> target.getRoles().add(new Role(role.getName(), role.getDescription())));
+		source.getRoles().forEach(role -> target.getRoles().add(new Role(role.getName(), role.getRoleType(), role.getDescription())));
 		return target;
 	}
 

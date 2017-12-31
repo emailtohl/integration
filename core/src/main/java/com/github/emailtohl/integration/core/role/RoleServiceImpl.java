@@ -109,6 +109,9 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 		if (hasText(newEntity.getName())) {
 			source.setName(newEntity.getName());
 		}
+		if (newEntity.getRoleType() != null) {
+			source.setRoleType(newEntity.getRoleType());
+		}
 		if (hasText(newEntity.getDescription())) {
 			source.setDescription(newEntity.getDescription());
 		}

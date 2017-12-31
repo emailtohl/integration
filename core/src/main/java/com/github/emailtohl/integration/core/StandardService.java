@@ -22,7 +22,9 @@ import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 
 /**
- * 抽象的服务，主要就是增删改查功能
+ * 抽象的服务，主要就是增删改查功能。
+ * 
+ * 标准化参数名、参数类型以及返回后，不仅利于维护，更利于在切面层进行扩展。
  * 
  * 默认ID是Long类型
  * 

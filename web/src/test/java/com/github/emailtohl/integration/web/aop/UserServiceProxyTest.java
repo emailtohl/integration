@@ -24,12 +24,16 @@ import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.web.WebTestData;
-import com.google.gson.Gson;
 
+/**
+ * 对切面的测试
+ * 
+ * @author HeLei
+ *
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = Config.class)
 public class UserServiceProxyTest {
-	Gson gson = new Gson();
 	@Inject
 	EmployeeService employeeService;
 	@Inject
@@ -44,9 +48,9 @@ public class UserServiceProxyTest {
 
 	@Before
 	public void setUp() throws Exception {
-		System.out.println(isAopProxy(userServiceProxy));
-        System.out.println(isCglibProxy(userServiceProxy));
-        System.out.println(isJdkDynamicProxy(userServiceProxy));
+		System.out.println(isAopProxy("isAopProxy: " + userServiceProxy));
+        System.out.println(isCglibProxy("isCglibProxy: " + userServiceProxy));
+        System.out.println(isJdkDynamicProxy("isJdkDynamicProxy: " + userServiceProxy));
 
 		Employee e = new Employee();
 		e.setEmail("hello@world.com");

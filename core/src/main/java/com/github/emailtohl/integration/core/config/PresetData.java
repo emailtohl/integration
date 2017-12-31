@@ -31,6 +31,7 @@ import java.util.Arrays;
 import com.github.emailtohl.integration.core.file.Image;
 import com.github.emailtohl.integration.core.role.Authority;
 import com.github.emailtohl.integration.core.role.Role;
+import com.github.emailtohl.integration.core.role.RoleType;
 import com.github.emailtohl.integration.core.user.entities.Address;
 import com.github.emailtohl.integration.core.user.entities.Classify;
 import com.github.emailtohl.integration.core.user.entities.Company;
@@ -68,10 +69,10 @@ public class PresetData {
 			auth_content = new Authority(CONTENT, "内容管理", null);
 	
 	public final Role
-			role_admin = new Role(Role.ADMIN, "超级管理员"),
-			role_manager = new Role("manager", "经理"),
-			role_staff = new Role("staff", "雇员"),
-			role_guest = new Role("guest", "普通用户");
+			role_admin = new Role(Role.ADMIN, RoleType.EMPLOYEE, "超级管理员"),
+			role_manager = new Role("manager", RoleType.EMPLOYEE, "经理"),
+			role_staff = new Role("staff", RoleType.EMPLOYEE, "雇员"),
+			role_guest = new Role("guest", RoleType.CUSTOMER, "普通用户");
 	
 	public final Employee user_admin = new Employee();
 	public final Employee user_bot = new Employee();

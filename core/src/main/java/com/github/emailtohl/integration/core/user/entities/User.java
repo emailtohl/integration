@@ -36,6 +36,7 @@ import org.hibernate.search.annotations.Store;
 import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.exception.InnerDataStateException;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
+import com.github.emailtohl.integration.common.jpa.entity.EnumBridgeCust;
 import com.github.emailtohl.integration.core.file.Image;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.user.UserType;

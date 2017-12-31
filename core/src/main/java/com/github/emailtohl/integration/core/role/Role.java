@@ -6,6 +6,8 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -13,6 +15,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
+import com.github.emailtohl.integration.common.jpa.entity.EnumBridgeCust;
 import com.github.emailtohl.integration.core.user.entities.User;
 /**
  * 角色实体类
@@ -32,15 +35,17 @@ public class Role extends BaseEntity {
 		super();
 	}
 	
-	public Role(String name, String description) {
+	public Role(String name, RoleType roleType, String description) {
 		super();
 		this.name = name;
+		this.roleType = roleType;
 		this.description = description;
 	}
 
 	@NotNull
 	private String name;
 	private String description;
+	private RoleType roleType;
 	private transient Set<User> users = new HashSet<User>();
 	private Set<Authority> authorities = new HashSet<Authority>();
 	
@@ -61,6 +66,16 @@ public class Role extends BaseEntity {
 		this.description = description;
 	}
 	
+	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = EnumBridgeCust.class))
+	// 枚举存入数据库默认为序号，这里指明将枚举名以字符串存入数据库
+	@Enumerated(EnumType.STRING)
+	public RoleType getRoleType() {
+		return roleType;
+	}
+	public void setRoleType(RoleType roleType) {
+		this.roleType = roleType;
+	}
+
 	@org.hibernate.envers.NotAudited
 	// 配合@IndexedEmbedded使用，保证Lucene document的联动更新当前类被用JPA方式标注为@Embeddable时不需要使用@ContainedIn
 	@org.hibernate.search.annotations.ContainedIn
@@ -114,7 +129,7 @@ public class Role extends BaseEntity {
 
 	@Override
 	public String toString() {
-		return "Role [name=" + name + ", description=" + description + "]";
+		return "Role [name=" + name + ", description=" + description + ", roleType=" + roleType + ", id=" + id + "]";
 	}
 	
 }

@@ -69,7 +69,7 @@ public class EmployeeAuditedServiceImpl implements EmployeeAuditedService {
 			d.setName(source.getDepartment().getName());
 			target.setDepartment(d);
 		}
-		source.getRoles().forEach(role -> target.getRoles().add(new Role(role.getName(), role.getDescription())));
+		source.getRoles().forEach(role -> target.getRoles().add(new Role(role.getName(), role.getRoleType(), role.getDescription())));
 		return target;
 	}
 	

@@ -42,7 +42,7 @@ public class RoleAuditedServiceImplTest {
 	@Before
 	public void setUp() throws Exception {
 		CoreTestData td = new CoreTestData();
-		Role r = new Role("test_role", "for test");
+		Role r = new Role("test_role", RoleType.EMPLOYEE, "for test");
 		r.getAuthorities().addAll(Arrays.asList(
 			new Authority("not exist", "不存在的权限", null),
 			td.auth_customer_lock, td.auth_customer_reset_password
