@@ -405,6 +405,6 @@ public class UserRoleConfig {
 				}
 				return false;
 			}
-		}).setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ") .create();
+		}).setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
 	}
 }
