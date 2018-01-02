@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 
 /**
@@ -65,6 +66,7 @@ public class Department extends BaseEntity {
 		this.responsiblePerson = responsiblePerson;
 	}
 
+	@JsonBackReference
 	@org.hibernate.envers.NotAudited
 	@org.hibernate.search.annotations.ContainedIn
 	@OneToMany(mappedBy = "department")

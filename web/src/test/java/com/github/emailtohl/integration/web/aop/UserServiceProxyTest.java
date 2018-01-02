@@ -65,7 +65,6 @@ public class UserServiceProxyTest {
 		User u = identityService.createUserQuery().userId(employeeId).singleResult();
 		assertNotNull(u);
 		
-		
 		Customer c = new Customer();
 		c.setEmail("hello@world.com");
 		c.setName("hello");

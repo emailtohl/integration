@@ -1,5 +1,6 @@
 package com.github.emailtohl.integration.web.controller;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -133,13 +134,54 @@ public class EmployeeCtrl extends RestCtrl<Employee> {
 		return e;
 	}
 	
-	class Form {
+	/**
+	 * jackson 解析内部类必须是static的，且根据getter、setter来识别属性
+	 * @author HeLei
+	 */
+	static class Form implements Serializable {
+		private static final long serialVersionUID = 5619878770794183688L;
 		Long id;
 		String[] roleNames;
 		Integer empNum;
 		String oldPassword;
 		String newPassword;
 		Boolean enabled;
+		public Long getId() {
+			return id;
+		}
+		public void setId(Long id) {
+			this.id = id;
+		}
+		public String[] getRoleNames() {
+			return roleNames;
+		}
+		public void setRoleNames(String[] roleNames) {
+			this.roleNames = roleNames;
+		}
+		public Integer getEmpNum() {
+			return empNum;
+		}
+		public void setEmpNum(Integer empNum) {
+			this.empNum = empNum;
+		}
+		public String getOldPassword() {
+			return oldPassword;
+		}
+		public void setOldPassword(String oldPassword) {
+			this.oldPassword = oldPassword;
+		}
+		public String getNewPassword() {
+			return newPassword;
+		}
+		public void setNewPassword(String newPassword) {
+			this.newPassword = newPassword;
+		}
+		public Boolean getEnabled() {
+			return enabled;
+		}
+		public void setEnabled(Boolean enabled) {
+			this.enabled = enabled;
+		}
 	}
 
 }

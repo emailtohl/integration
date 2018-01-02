@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.core.auth;
+package com.github.emailtohl.integration.web;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -18,83 +18,93 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
-import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.common.jpa.envers.Tuple;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.config.Constant;
-import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.role.Role;
-import com.github.emailtohl.integration.core.role.RoleAuditedService;
 import com.github.emailtohl.integration.core.role.RoleService;
-import com.github.emailtohl.integration.core.user.UserRefRepository;
-import com.github.emailtohl.integration.core.user.UserRepository;
-import com.github.emailtohl.integration.core.user.UserService;
-import com.github.emailtohl.integration.core.user.UserServiceImpl;
-import com.github.emailtohl.integration.core.user.customer.CustomerAuditedService;
-import com.github.emailtohl.integration.core.user.customer.CustomerRefRepository;
 import com.github.emailtohl.integration.core.user.customer.CustomerRepository;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
-import com.github.emailtohl.integration.core.user.employee.EmployeeAuditedService;
-import com.github.emailtohl.integration.core.user.employee.EmployeeRefRepository;
 import com.github.emailtohl.integration.core.user.employee.EmployeeRepository;
 import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.User;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
- * 对接口安全权限的测试
+ * 用户和角色接口依赖core的数据源，要使用它们需要mock
+ * 
  * @author HeLei
  */
-@Configuration
-@EnableCaching
-// 为了在应用层而非过滤器中使用spring security，还可以启动@EnableGlobalMethodSecurity功能
-// 这时候spring会在调用Bean方法时再添加一个切面，执行spring security的安全检查
-@EnableGlobalMethodSecurity(prePostEnabled = true, order = 0, mode = AdviceMode.PROXY, proxyTargetClass = false)
+@Configurable
 @PropertySource({ "classpath:config.properties" })
-class SecurityConfiguration {
+@EnableCaching
+@EnableTransactionManagement
+public class UserRoleConfig {
 	private AtomicLong id = new AtomicLong(1L);
 	private Map<Long, Role> roleDB = new ConcurrentHashMap<>();
 	private Map<String, Role> roleNameDB = new ConcurrentHashMap<>();
 	private Map<Long, com.github.emailtohl.integration.core.user.entities.User> userDB = new ConcurrentHashMap<>();
-	
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
-		return new PropertySourcesPlaceholderConfigurer();
-	}
-	
-	private String hashpw(String password) {
-		String salt = BCrypt.gensalt(10, new SecureRandom());
-		return BCrypt.hashpw(password, salt);
-	}
 	
 	@Value("${" + Constant.PROP_CUSTOMER_DEFAULT_PASSWORD + "}")
 	private String customerDefaultPassword;
 	@Value("${" + Constant.PROP_EMPLOYEE_DEFAULT_PASSWORD + "}")
 	private String employeeDefaultPassword;
 	
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
+		return new PropertySourcesPlaceholderConfigurer();
+	}
+
+	@Bean
+	public CacheManager cacheManager() {
+		return new ConcurrentMapCacheManager();
+	}
+	
+	@Bean
+	public DataSource dataSource() {
+		return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
+	}
+	
+	@Bean
+	public PlatformTransactionManager platformTransactionManager(DataSource dataSource) {
+		return new DataSourceTransactionManager(dataSource);
+	}
+	
+	private String hashpw(String password) {
+		String salt = BCrypt.gensalt(10, new SecureRandom());
+		return BCrypt.hashpw(password, salt);
+	}
+
 	/**
 	 * 预置数据，WebTestData中的User已经与Role建立了关联，所以设置了Role的id影响的是同一个
 	 * @return
 	 */
 	@Bean
-	public CoreTestData coreTestData() {
-		CoreTestData td = new CoreTestData();
+	public WebTestData webTestData() {
+		WebTestData td = new WebTestData();
 		
 		td.role_admin.setId(id.getAndIncrement());
 		roleDB.put(td.role_admin.getId(), td.role_admin);
@@ -147,126 +157,8 @@ class SecurityConfiguration {
 		return td;
 	}
 	
-	/**
-	 * 简单的缓存管理器的实现
-	 * 
-	 * @return
-	 */
 	@Bean
-	public CacheManager cacheManager() {
-		return new ConcurrentMapCacheManager();
-	}
-	
-	@Bean
-	public CustomerRepository customerRepository(CoreTestData td) {
-		CustomerRepository dao = mock(CustomerRepository.class);
-		when(dao.save(any(Customer.class))).then(invocation -> {
-			Customer c = (Customer) invocation.getArguments()[0];
-			c.setId(id.incrementAndGet());
-			userDB.put(c.getId(), c);
-			return c;
-		});
-		when(dao.get(any(Long.class))).then(invocation -> {
-			Long userId = (Long) invocation.getArguments()[0];
-			return userDB.get(userId);
-		});
-		doAnswer(invocation -> {
-			Long userId = (Long) invocation.getArguments()[0];
-			userDB.remove(userId);
-			return invocation.getMock();
-		}).when(dao).delete(any(Long.class));
-		
-		// 手机号码和邮箱都能查找到
-		when(dao.findByCellPhone(td.user_emailtohl.getCellPhone())).thenReturn(td.user_emailtohl);
-		when(dao.findByEmail(td.user_emailtohl.getEmail())).thenReturn(td.user_emailtohl);
-		when(dao.findByCellPhone(td.baz.getCellPhone())).thenReturn(td.baz);
-		when(dao.findByEmail(td.baz.getEmail())).thenReturn(td.baz);
-		return dao;
-	}
-	
-	@Bean
-	public EmployeeRepository employeeRepository(CoreTestData td) {
-		EmployeeRepository dao = mock(EmployeeRepository.class);
-		when(dao.save(any(Employee.class))).then(invocation -> {
-			Employee e = (Employee) invocation.getArguments()[0];
-			e.setId(id.incrementAndGet());
-			userDB.put(e.getId(), e);
-			return e;
-		});
-		when(dao.get(any(Long.class))).then(invocation -> {
-			Long userId = (Long) invocation.getArguments()[0];
-			return userDB.get(userId);
-		});
-		doAnswer(invocation -> {
-			Long userId = (Long) invocation.getArguments()[0];
-			userDB.remove(userId);
-			return invocation.getMock();
-		}).when(dao).delete(any(Long.class));
-		when(dao.findByEmpNum(any())).then(invocation -> {
-			Integer empNum = (Integer) invocation.getArguments()[0];
-			User user = null;
-			for (User u : userDB.values()) {
-				if (u instanceof Employee && empNum.equals(((Employee) u).getEmpNum())) {
-					user = u;
-					break;
-				}
-			}
-			return user;
-		});
-		return dao;
-	}
-	
-	@Bean
-	public CustomerRefRepository customerRefRepository() {
-		CustomerRefRepository dao = mock(CustomerRefRepository.class);
-		return dao;
-	}
-	
-	@Bean
-	public EmployeeRefRepository employeeRefRepository() {
-		EmployeeRefRepository dao = mock(EmployeeRefRepository.class);
-		return dao;
-	}
-	
-	@Bean
-	public UserRepository userRepository() {
-		UserRepository dao = mock(UserRepository.class);
-		return dao;
-	}
-	
-	@Bean
-	public UserRefRepository userRefRepository() {
-		UserRefRepository dao = mock(UserRefRepository.class);
-		return dao;
-	}
-	
-	@Bean
-	public UserService userService(CustomerRepository cr, EmployeeRepository er, CustomerRefRepository crr,
-			EmployeeRefRepository err, UserRepository ur, UserRefRepository urr) {
-		UserService service = new UserServiceImpl(cr, er, crr, err, ur, urr);
-		return service;
-	}
-
-	@Bean
-	public AuthenticationProvider authenticationProvider(UserService userService) {
-		AuthenticationProviderImpl authenticationProviderImpl = new AuthenticationProviderImpl(userService);
-		return authenticationProviderImpl;
-	}
-	
-	@Bean
-	public AuthenticationManager authenticationManager(UserService userService) {
-		AuthenticationManagerImpl authenticationManager = new AuthenticationManagerImpl(userService);
-		return authenticationManager;
-	}
-	
-	// AuthenticationManager来源于com.github.emailtohl.integration.user.auth
-	@Bean
-	public SecurityContextManager securityContextManager(AuthenticationManager authenticationManager, CoreTestData td) {
-		return new SecurityContextManager(authenticationManager, td);
-	}
-	
-	@Bean
-	public RoleService roleServiceMock(CoreTestData td) {
+	public RoleService roleService(WebTestData td) {
 		RoleService service = mock(RoleService.class);
 		when(service.create(any())).thenAnswer(invocation -> {
 			Role r = (Role) invocation.getArguments()[0];
@@ -305,15 +197,66 @@ class SecurityConfiguration {
 	}
 	
 	@Bean
-	public RoleAuditedService roleAuditedServiceMock(CoreTestData td) {
-		RoleAuditedService service = mock(RoleAuditedService.class);
-		when(service.getRoleAtRevision(anyLong(), any())).thenReturn(td.role_guest);
-		when(service.getRoleRevision(anyLong())).thenReturn(Arrays.asList(new Tuple<Role>()));
-		return service;
+	public CustomerRepository customerRepository(WebTestData td) {
+		CustomerRepository dao = mock(CustomerRepository.class);
+		when(dao.save(any(Customer.class))).then(invocation -> {
+			Customer c = (Customer) invocation.getArguments()[0];
+			c.setId(id.incrementAndGet());
+			userDB.put(c.getId(), c);
+			return c;
+		});
+		when(dao.get(any(Long.class))).then(invocation -> {
+			Long userId = (Long) invocation.getArguments()[0];
+			return userDB.get(userId);
+		});
+		doAnswer(invocation -> {
+			Long userId = (Long) invocation.getArguments()[0];
+			userDB.remove(userId);
+			return invocation.getMock();
+		}).when(dao).delete(any(Long.class));
+		
+		// 手机号码和邮箱都能查找到
+		when(dao.findByCellPhone(td.user_emailtohl.getCellPhone())).thenReturn(td.user_emailtohl);
+		when(dao.findByEmail(td.user_emailtohl.getEmail())).thenReturn(td.user_emailtohl);
+		when(dao.findByCellPhone(td.baz.getCellPhone())).thenReturn(td.baz);
+		when(dao.findByEmail(td.baz.getEmail())).thenReturn(td.baz);
+		return dao;
 	}
 	
 	@Bean
-	public CustomerService customerServiceMock(CustomerRepository re, CoreTestData td) {
+	public EmployeeRepository employeeRepository(WebTestData td) {
+		EmployeeRepository dao = mock(EmployeeRepository.class);
+		when(dao.save(any(Employee.class))).then(invocation -> {
+			Employee e = (Employee) invocation.getArguments()[0];
+			e.setId(id.incrementAndGet());
+			userDB.put(e.getId(), e);
+			return e;
+		});
+		when(dao.get(any(Long.class))).then(invocation -> {
+			Long userId = (Long) invocation.getArguments()[0];
+			return userDB.get(userId);
+		});
+		doAnswer(invocation -> {
+			Long userId = (Long) invocation.getArguments()[0];
+			userDB.remove(userId);
+			return invocation.getMock();
+		}).when(dao).delete(any(Long.class));
+		when(dao.findByEmpNum(any())).then(invocation -> {
+			Integer empNum = (Integer) invocation.getArguments()[0];
+			User user = null;
+			for (User u : userDB.values()) {
+				if (u instanceof Employee && empNum.equals(((Employee) u).getEmpNum())) {
+					user = u;
+					break;
+				}
+			}
+			return user;
+		});
+		return dao;
+	}
+	
+	@Bean
+	public CustomerService customerServiceMock(CustomerRepository re, WebTestData td) {
 		CustomerService service = mock(CustomerService.class);
 		when(service.create(any())).thenAnswer(invocation -> {
 			Customer c = (Customer) invocation.getArguments()[0];
@@ -341,6 +284,7 @@ class SecurityConfiguration {
 		when(service.findByCellPhoneOrEmail(td.user_emailtohl.getEmail())).thenReturn(td.user_emailtohl);
 		when(service.findByCellPhoneOrEmail(td.baz.getCellPhone())).thenReturn(td.baz);
 		when(service.findByCellPhoneOrEmail(td.baz.getEmail())).thenReturn(td.baz);
+		
 		when(service.grandRoles(anyLong(), anyVararg())).thenAnswer(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];
 			Customer target = re.get(userId);
@@ -375,14 +319,16 @@ class SecurityConfiguration {
 		when(service.query(any())).thenReturn(ls);
 		when(service.query(any(), any())).thenReturn(new Paging<>(ls));
 		when(service.search(any(), any())).thenReturn(new Paging<>(ls));
-		when(service.resetPassword(anyLong())).thenReturn(new ExecResult(true, "", null));
-		when(service.updatePassword(anyString(), anyString(), anyString())).thenReturn(new ExecResult(true, "", null));
+		when(service.resetPassword(anyLong())).thenReturn(new ExecResult(true, "", td.baz));
+		when(service.updatePassword(anyString(), anyString(), anyString())).thenReturn(new ExecResult(true, "", td.baz));
+		when(service.exist(anyString())).thenReturn(true);
+		when(service.getToken(anyString())).thenReturn("token_str");
 		return service;
 	}
 	
 	int empNum = Employee.NO1 + 100;
 	@Bean
-	public EmployeeService employeeServiceMock(EmployeeRepository re, CoreTestData td) {
+	public EmployeeService employeeServiceMock(EmployeeRepository re, WebTestData td) {
 		EmployeeService service = mock(EmployeeService.class);
 		when(service.create(any())).thenAnswer(invocation -> {
 			Employee e = (Employee) invocation.getArguments()[0];
@@ -437,26 +383,28 @@ class SecurityConfiguration {
 			Integer empNum = (Integer) invocation.getArguments()[0];
 			return re.findByEmpNum(empNum);
 		});
-		when(service.resetPassword(anyLong())).thenReturn(new ExecResult(true, "", null));
+		when(service.resetPassword(anyLong())).thenReturn(new ExecResult(true, "", td.bar));
+		when(service.updatePassword(any(), anyString(), anyString())).thenReturn(new ExecResult(true, "", td.bar));
 		when(service.enabled(anyLong(), anyBoolean())).thenReturn(td.bar);
-		when(service.updatePassword(any(), anyString(), anyString())).thenReturn(new ExecResult(true, "", null));
 		return service;
 	}
 	
 	@Bean
-	public CustomerAuditedService customerAuditedServiceMock(CoreTestData td) {
-		CustomerAuditedService service = mock(CustomerAuditedService.class);
-		when(service.getCustomerAtRevision(anyLong(), any())).thenReturn(td.baz);
-		when(service.getCustomerRevision(anyLong())).thenReturn(Arrays.asList(new Tuple<Customer>()));
-		return service;
-	}
-	
-	@Bean
-	public EmployeeAuditedService employeeAuditedServiceMock(CoreTestData td) {
-		EmployeeAuditedService service = mock(EmployeeAuditedService.class);
-		when(service.getEmployeeAtRevision(anyLong(), any())).thenReturn(td.bar);
-		when(service.getEmployeeRevision(anyLong())).thenReturn(Arrays.asList(new Tuple<Employee>()));
-		return service;
+	public Gson gson() {
+		return new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
+
+			@Override
+			public boolean shouldSkipField(FieldAttributes f) {
+				return false;
+			}
+
+			@Override
+			public boolean shouldSkipClass(Class<?> clazz) {
+				if (clazz == byte[].class) {
+					return true;
+				}
+				return false;
+			}
+		}).setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ") .create();
 	}
 }
-

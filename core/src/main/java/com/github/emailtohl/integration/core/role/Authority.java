@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 /**
  * 角色关联的授权
@@ -153,6 +154,7 @@ public class Authority extends BaseEntity {
 		this.description = description;
 	}
 	
+	@JsonBackReference
 	@org.hibernate.envers.NotAudited
 	@org.hibernate.annotations.Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	@ManyToMany(mappedBy = "authorities")

@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 
 /**
@@ -55,6 +56,7 @@ public class Company extends BaseEntity {
 		this.responsiblePerson = responsiblePerson;
 	}
 
+	@JsonBackReference
 	@OneToMany(mappedBy = "company")
 	public Set<Department> getDepartments() {
 		return departments;

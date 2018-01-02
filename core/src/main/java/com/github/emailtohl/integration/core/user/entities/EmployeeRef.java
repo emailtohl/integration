@@ -10,6 +10,8 @@ import javax.validation.constraints.Min;
 
 import org.hibernate.search.bridge.builtin.IntegerBridge;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 /**
  * 用户实体经常被外部引用，但由于信息量较大，加载性能低，本实体存储必要信息，并应用用户实体
  * @author HeLei
@@ -44,6 +46,7 @@ public class EmployeeRef extends UserRef {
 		this.empNum = empNum;
 	}
 
+	@JsonBackReference
 	@org.hibernate.envers.NotAudited
 	// 若要代理延迟加载，仅在Hibernate清楚存在链接才合理，若属性是可为空，则必须去数据库查询，既然需访问数据库，查询不然早加载
 	// 要使用代理实现延迟加载，optional应为false，这与JPA规范一致

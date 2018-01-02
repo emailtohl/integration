@@ -14,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.common.jpa.entity.EnumBridgeCust;
 import com.github.emailtohl.integration.core.user.entities.User;
@@ -77,6 +78,7 @@ public class Role extends BaseEntity {
 		this.roleType = roleType;
 	}
 
+	@JsonBackReference
 	@org.hibernate.envers.NotAudited
 	// 配合@IndexedEmbedded使用，保证Lucene document的联动更新当前类被用JPA方式标注为@Embeddable时不需要使用@ContainedIn
 	@org.hibernate.search.annotations.ContainedIn

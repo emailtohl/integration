@@ -21,6 +21,7 @@ import javax.persistence.Version;
  * 
  * @author HeLei
  */
+// jackson序列化/反序列化时为该对象或字段添加一个对象识别码，通常是用来解决循环嵌套的问题
 @EntityListeners(EntityListener.class)
 /*
  * @MappedSuperclass 用在父类上面。

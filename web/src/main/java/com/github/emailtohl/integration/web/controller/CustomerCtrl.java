@@ -1,5 +1,6 @@
 package com.github.emailtohl.integration.web.controller;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -162,13 +163,54 @@ public class CustomerCtrl extends RestCtrl<Customer> {
 		return c;
 	}
 	
-	class Form {
+	/**
+	 * jackson 解析内部类必须是static的，且根据getter、setter来识别属性
+	 * @author HeLei
+	 */
+	static class Form implements Serializable {
+		private static final long serialVersionUID = -4556588161350417003L;
 		Long id;
 		String[] roleNames;
 		String cellPhoneOrEmail;
 		String token;
 		String newPassword;
 		Boolean enabled;
+		public Long getId() {
+			return id;
+		}
+		public void setId(Long id) {
+			this.id = id;
+		}
+		public String[] getRoleNames() {
+			return roleNames;
+		}
+		public void setRoleNames(String[] roleNames) {
+			this.roleNames = roleNames;
+		}
+		public String getCellPhoneOrEmail() {
+			return cellPhoneOrEmail;
+		}
+		public void setCellPhoneOrEmail(String cellPhoneOrEmail) {
+			this.cellPhoneOrEmail = cellPhoneOrEmail;
+		}
+		public String getToken() {
+			return token;
+		}
+		public void setToken(String token) {
+			this.token = token;
+		}
+		public String getNewPassword() {
+			return newPassword;
+		}
+		public void setNewPassword(String newPassword) {
+			this.newPassword = newPassword;
+		}
+		public Boolean getEnabled() {
+			return enabled;
+		}
+		public void setEnabled(Boolean enabled) {
+			this.enabled = enabled;
+		}
 	}
 
 }
