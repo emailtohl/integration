@@ -34,7 +34,8 @@ import com.github.emailtohl.integration.core.ExecResult;
 @Service
 public class FileServiceImpl implements FileService {
 	private static final Logger LOG = LogManager.getLogger();
-	final Set<String> charsets = Charset.availableCharsets().keySet();	@Inject
+	final Set<String> charsets = Charset.availableCharsets().keySet();
+	@Inject
 	@Named("resources")
 	File resources;
 	/**

@@ -24,6 +24,7 @@ public interface Constant {
 	String SESSION_ID_PROPERTY_NAME = "sessionId";
 	String REMOTE_ADDRESS_PROPERTY_NAME = "remoteAddress";
 	String USER_PRINCIPAL_PROPERTY_NAME = "userPrincipal";
+	String USERNAME = "username";
 	
 	String TIME_STAMP = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 	

@@ -24,8 +24,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -42,9 +40,7 @@ import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.common.jpa.AbstractJpaRepository;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
-import com.github.emailtohl.integration.core.auth.UserDetailsImpl;
 import com.github.emailtohl.integration.core.user.UserService;
-import com.github.emailtohl.integration.core.user.entities.UserRef;
 
 /**
  * 基本增删改查。基类注解仅做参考，为保证映射有效，导出类同样需添加MVC注解。
@@ -126,51 +122,6 @@ public abstract class RestCtrl<T> {
 	 */
 	public boolean hasText(String text) {
 		return text != null && !text.isEmpty();
-	}
-	
-	/**
-	 * 在Spring Security环境下获取用户名，唯一性的标识。
-	 * 
-	 * 用户名来源于Authentication接口的String getName()，本系统中可以是平台工号、客户手机或客户邮箱
-	 * 
-	 * @return 没有用户名则为null
-	 */
-	protected String getCurrentUsername() {
-		String name = null;
-		Authentication a = SecurityContextHolder.getContext().getAuthentication();
-		if (a != null) {
-			name = a.getName();
-		}
-		return name;
-	}
-	
-	/**
-	 * 在Spring Security环境下，从UserDetailsImpl中获取用户id。
-	 * 
-	 * @return 没有查找到则返回null
-	 */
-	protected Long getCurrentUserId() {
-		Long id = null;
-		Authentication a = SecurityContextHolder.getContext().getAuthentication();
-		if (a != null && a.getPrincipal() instanceof UserDetailsImpl) {
-			UserDetailsImpl principal = (UserDetailsImpl) a.getPrincipal();
-			id = principal.getId();
-		}
-		return id;
-	}
-	
-	/**
-	 * 在Spring Security环境下获取用户引用，需注入UserService。
-	 * 
-	 * @return 没有用户名则为null
-	 */
-	protected UserRef getCurrentUserRef() {
-		UserRef ref = null;
-		String username = getCurrentUsername();
-		if (userService != null && hasText(username)) {
-			ref = userService.findRef(username);
-		}
-		return ref;
 	}
 	
 	/**

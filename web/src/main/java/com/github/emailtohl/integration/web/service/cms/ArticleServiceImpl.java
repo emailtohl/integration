@@ -49,7 +49,6 @@ public class ArticleServiceImpl extends StandardService<Article>{
 		this.articleRepository = articleRepository;
 		this.commentRepository = commentRepository;
 		this.typeRepository = typeRepository;
-		this.userService = userService;
 		this.customerService = customerService;
 	}
 
@@ -80,16 +79,18 @@ public class ArticleServiceImpl extends StandardService<Article>{
 			}
 			entity.setSummary(summary.replaceAll(IMG_PATTERN.pattern(), ""));
 		}
-		if (entity.getAuthor() != null && entity.getAuthor().getId() != null) {
-			UserRef author = userService.getRef(entity.getAuthor().getId());
-			entity.setAuthor(author);
-		}
-		if (entity.getType() != null && hasText(entity.getType().getName())) {
-			Type type = typeRepository.findByName(entity.getType().getName());
-			if (type != null) {
-				entity.setType(type);
-				type.getArticles().add(entity);
+		entity.setAuthor(getCurrentUserRef());
+		Type type = null;
+		if (entity.getType() != null) {
+			if (entity.getType().getId() != null) {
+				type = typeRepository.findOne(entity.getType().getId());
+			} else if (hasText(entity.getType().getName())) {
+				type = typeRepository.findByName(entity.getType().getName());
 			}
+		}
+		if (type != null) {
+			entity.setType(type);
+			type.getArticles().add(entity);
 		}
 		return toTransient(articleRepository.save(entity));
 	}
