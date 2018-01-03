@@ -222,7 +222,7 @@ public class CmsServiceImpl implements CmsService {
 		if (u == null) {
 			u = userService.findRef(Constant.ANONYMOUS_EMAIL);
 		}
-		c.setCritics(u);
+		c.setReviewer(u);
 		c.setContent(content);
 //		c.setApproved(false);
 		c.setArticle(article);
@@ -237,7 +237,7 @@ public class CmsServiceImpl implements CmsService {
 		if (c == null) {
 			throw new NotFoundException("没有此评论");
 		}
-		if (!StringUtils.hasText(username) || !username.equals(c.getCritics())) {
+		if (!StringUtils.hasText(username) || !username.equals(c.getReviewer())) {
 			throw new AccessDeniedException("不是评论用户");
 		}
 		Article a = c.getArticle();

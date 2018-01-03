@@ -157,7 +157,7 @@ public class CoreConfiguration implements TransactionManagementConfigurer, Async
 				}
 				return false;
 			}
-		}).setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
+		}).setDateFormat(Constant.TIME_STAMP).create();
 	}
 
 	/**

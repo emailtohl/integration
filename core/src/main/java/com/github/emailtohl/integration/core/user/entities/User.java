@@ -33,7 +33,6 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.search.annotations.Store;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.exception.InnerDataStateException;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
@@ -268,7 +267,6 @@ public class User extends BaseEntity {
 		this.publicKey = publicKey;
 	}
 	
-	@JsonIgnoreProperties({"users"})
 	// 关联对象会自动被设为@Indexed
 	@org.hibernate.search.annotations.IndexedEmbedded(depth = 1)
 	@ManyToMany

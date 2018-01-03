@@ -12,8 +12,6 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
@@ -47,7 +45,6 @@ import com.github.emailtohl.integration.core.user.org.DepartmentRepository;
 @Transactional
 @Service
 public class EmployeeServiceImpl extends StandardService<Employee> implements EmployeeService {
-	private static final transient Logger LOG = LogManager.getLogger();
 	@Value("${" + Constant.PROP_EMPLOYEE_DEFAULT_PASSWORD + "}")
 	private String employeeDefaultPassword;
 	@Inject

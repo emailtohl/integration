@@ -26,7 +26,7 @@
 
 	<properties>
 		<project.version>1.0.0-RELEASE</project.version>
-		<project.name>admin</project.name>
+		<project.name>integration</project.name>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<springframework.version>4.3.12.RELEASE</springframework.version>
 		<spring.security.version>4.2.3.RELEASE</spring.security.version>

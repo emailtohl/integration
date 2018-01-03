@@ -13,6 +13,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.UserRef;
@@ -144,6 +145,7 @@ public class Article extends BaseEntity implements Comparable<Article> {
 		this.isComment = isComment;
 	}
 	
+	@JsonBackReference
 	// 使用LazyCollectionOption.EXTRA，集合在调用size(),isEmpty(),contains()等操作时不会加载实例
 	@org.hibernate.annotations.LazyCollection(org.hibernate.annotations.LazyCollectionOption.EXTRA)
 	@org.hibernate.search.annotations.IndexedEmbedded(depth = 1)

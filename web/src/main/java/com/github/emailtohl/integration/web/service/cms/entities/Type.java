@@ -12,6 +12,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 
 /**
@@ -70,6 +71,7 @@ public class Type extends BaseEntity {
 		this.parent = parent;
 	}
 
+	@JsonBackReference
 	// 使用LazyCollectionOption.EXTRA，集合在调用size(),isEmpty(),contains()等操作时不会加载实例
 	@org.hibernate.annotations.LazyCollection(org.hibernate.annotations.LazyCollectionOption.EXTRA)
 	/*
@@ -82,7 +84,7 @@ public class Type extends BaseEntity {
 	 * ON DELETE CASCADE is a database-specific thing, it deletes the "child"
 	 * row in the database when the "parent" row is deleted.
 	 */
-	@OneToMany(mappedBy = "type", orphanRemoval = true)
+	@OneToMany(mappedBy = "type", orphanRemoval = false)
 	@OrderBy(BaseEntity.CREATE_DATE_PROPERTY_NAME)
 	public Set<Article> getArticles() {
 		return articles;

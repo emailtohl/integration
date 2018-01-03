@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -41,10 +42,9 @@ import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.common.jpa.AbstractJpaRepository;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.github.emailtohl.integration.core.auth.UserDetailsImpl;
+import com.github.emailtohl.integration.core.user.UserService;
+import com.github.emailtohl.integration.core.user.entities.UserRef;
 
 /**
  * 基本增删改查。基类注解仅做参考，为保证映射有效，导出类同样需添加MVC注解。
@@ -56,21 +56,8 @@ import com.google.gson.GsonBuilder;
 public abstract class RestCtrl<T> {
 	protected static final Logger logger = LogManager.getLogger();
 	protected Class<?> entityClass;
-	protected Gson gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
-		
-		@Override
-		public boolean shouldSkipField(FieldAttributes f) {
-			return false;
-		}
-
-		@Override
-		public boolean shouldSkipClass(Class<?> clazz) {
-			if (clazz == byte[].class) {
-				return true;
-			}
-			return false;
-		}
-	})/* .setDateFormat(Constant.DATE_FORMAT) */.create();
+	@Inject
+	protected UserService userService;
 	
 	@SuppressWarnings("unchecked")
 	public RestCtrl() {
@@ -97,12 +84,22 @@ public abstract class RestCtrl<T> {
 		logger.debug(entityClass);
 	}
 
+	/**
+	 * 转换前端日期格式
+	 * @param request
+	 * @param binder
+	 * @throws Exception
+	 */
 	@InitBinder
 	protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
 		binder.registerCustomEditor(Date.class,
 				new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"), true));
 	}
 	
+	/**
+	 * 校验
+	 * @param errors
+	 */
 	protected void checkErrors(Errors errors) {
 		if (errors.hasErrors()) {
 			for (ObjectError oe : errors.getAllErrors()) {
@@ -112,10 +109,23 @@ public abstract class RestCtrl<T> {
 		}
 	}
 	
+	/**
+	 * 校验
+	 * @param o
+	 */
 	protected void mustExist(Object o) {
 		if (o == null) {
 			throw new NotFoundException(entityClass.getName());
 		}
+	}
+	
+	/**
+	 * 判断字符串是否存在
+	 * @param text
+	 * @return
+	 */
+	public boolean hasText(String text) {
+		return text != null && !text.isEmpty();
 	}
 	
 	/**
@@ -125,7 +135,7 @@ public abstract class RestCtrl<T> {
 	 * 
 	 * @return 没有用户名则为null
 	 */
-	protected String getCurrentName() {
+	protected String getCurrentUsername() {
 		String name = null;
 		Authentication a = SecurityContextHolder.getContext().getAuthentication();
 		if (a != null) {
@@ -133,23 +143,36 @@ public abstract class RestCtrl<T> {
 		}
 		return name;
 	}
-/*	
-	@RequestMapping(method = POST)
-	public ResponseEntity<?> create(@RequestBody @Valid T entity, Errors e) {
-		if (e.hasErrors()) {
-			for (ObjectError oe : e.getAllErrors()) {
-				logger.info(oe);
-			}
-			return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
+	
+	/**
+	 * 在Spring Security环境下，从UserDetailsImpl中获取用户id。
+	 * 
+	 * @return 没有查找到则返回null
+	 */
+	protected Long getCurrentUserId() {
+		Long id = null;
+		Authentication a = SecurityContextHolder.getContext().getAuthentication();
+		if (a != null && a.getPrincipal() instanceof UserDetailsImpl) {
+			UserDetailsImpl principal = (UserDetailsImpl) a.getPrincipal();
+			id = principal.getId();
 		}
-		T result = create(entity);
-		String uri = ServletUriComponentsBuilder.fromCurrentServletMapping().path("/employee/{id}")
-				.buildAndExpand(getId(result)).toString();
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("Location", uri);
-		return new ResponseEntity<>(headers, HttpStatus.CREATED);
+		return id;
 	}
-*/
+	
+	/**
+	 * 在Spring Security环境下获取用户引用，需注入UserService。
+	 * 
+	 * @return 没有用户名则为null
+	 */
+	protected UserRef getCurrentUserRef() {
+		UserRef ref = null;
+		String username = getCurrentUsername();
+		if (userService != null && hasText(username)) {
+			ref = userService.findRef(username);
+		}
+		return ref;
+	}
+	
 	/**
 	 * 成功则在header上返回新资源的地址；失败则返回失败的信息。
 	 * @param entity
@@ -171,20 +194,6 @@ public abstract class RestCtrl<T> {
 	@RequestMapping(method = GET)
 	abstract public List<T> query(T params);
 	
-/*
-	@RequestMapping(value = "{id}", method = PUT)
-	public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody @Valid T newEntity, Errors e) {
-		if (e.hasErrors()) {
-			for (ObjectError oe : e.getAllErrors()) {
-				logger.info(oe);
-			}
-			return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
-		}
-		update(id, newEntity);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	}
-*/
-
 	@RequestMapping(value = "{id}", method = PUT)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	abstract public void update(@PathVariable("id") Long id, @RequestBody @Valid T newEntity, Errors errors) throws InvalidDataException;
@@ -192,28 +201,8 @@ public abstract class RestCtrl<T> {
 	@RequestMapping(value = "{id}", method = DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	abstract public void delete(@PathVariable("id") Long id);
-	
-	/*
-	@SuppressWarnings("unchecked")
-	public T convert(Object entity) {
-		return (T) gson.fromJson(gson.toJson(entity), entityClass);
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
 	}
-	
-	private long getId(T entity) {
-		long id = 0;
-		try {
-			Object v = Introspector.getBeanInfo(entityClass).getBeanDescriptor().getValue("id");
-			if (v != null) {
-				if (v instanceof Long) {
-					id = (Long) v;
-				} else if (v instanceof Integer) {
-					id = (Integer) v;
-				}
-			}
-		} catch (IntrospectionException e) {
-			logger.catching(e);
-		}
-		return id;
-	}
-	*/
 }

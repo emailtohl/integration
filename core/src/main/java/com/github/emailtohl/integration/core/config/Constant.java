@@ -25,6 +25,8 @@ public interface Constant {
 	String REMOTE_ADDRESS_PROPERTY_NAME = "remoteAddress";
 	String USER_PRINCIPAL_PROPERTY_NAME = "userPrincipal";
 	
+	String TIME_STAMP = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+	
 	/**
 	 * id参数要用@org.springframework.security.access.method.P("id")注释
 	 */

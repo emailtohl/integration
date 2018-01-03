@@ -26,7 +26,7 @@ public class Comment extends BaseEntity implements Comparable<Comment> {
 	
 	@NotNull
 	private String content;
-	private UserRef critics;
+	private UserRef reviewer;
 	@NotNull
 	private Article article;
 	private Boolean isApproved;
@@ -44,12 +44,12 @@ public class Comment extends BaseEntity implements Comparable<Comment> {
 
 	@org.hibernate.search.annotations.IndexedEmbedded(depth = 1)
 	@ManyToOne
-	@JoinColumn(name = "critics_customer_id")
-	public UserRef getCritics() {
-		return critics;
+	@JoinColumn(name = "reviewer_user_id")
+	public UserRef getReviewer() {
+		return reviewer;
 	}
-	public void setCritics(UserRef critics) {
-		this.critics = critics;
+	public void setReviewer(UserRef reviewer) {
+		this.reviewer = reviewer;
 	}
 
 	@org.hibernate.envers.NotAudited
@@ -78,6 +78,9 @@ public class Comment extends BaseEntity implements Comparable<Comment> {
 		this.isApproved = isApproved;
 	}
 
+	@org.hibernate.search.annotations.IndexedEmbedded(depth = 1)
+	@ManyToOne
+	@JoinColumn(name = "approver_employee_id")
 	public EmployeeRef getApprover() {
 		return approver;
 	}
@@ -92,7 +95,7 @@ public class Comment extends BaseEntity implements Comparable<Comment> {
 
 	@Override
 	public String toString() {
-		return "Comment [content=" + content + ", critics=" + critics + "]";
+		return "Comment [content=" + content + ", critics=" + reviewer + "]";
 	}
 	
 }
