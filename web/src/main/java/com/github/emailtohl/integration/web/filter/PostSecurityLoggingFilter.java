@@ -1,7 +1,6 @@
 package com.github.emailtohl.integration.web.filter;
 
 import java.io.IOException;
-import java.util.Collection;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -10,30 +9,55 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.activiti.engine.IdentityService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.util.StringUtils;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.github.emailtohl.integration.core.StandardService;
+import com.github.emailtohl.integration.core.auth.UserDetailsImpl;
 import com.github.emailtohl.integration.core.config.Constant;
+import com.github.emailtohl.integration.core.user.customer.CustomerService;
+import com.github.emailtohl.integration.core.user.entities.CustomerRef;
 /**
  * 在spring security过滤器之后执行
+ * 
+ * 在此处设置线程上下文的用户属性，是考虑到或许当前用户信息是来自于前端，如JWT
+ * 
  * Servlet Filter implementation class PostSecurityLoggingFilter
  * @author HeLei
  */
 //@WebFilter("/*")
 public class PostSecurityLoggingFilter implements Filter {
 	public static final Logger LOG = LogManager.getLogger();
+	
+	IdentityService identityService;
+	CustomerService customerService;
+	
+	CustomerRef anonymous;
+	
 	/**
 	 * Default constructor.
 	 */
 	public PostSecurityLoggingFilter() {
 	}
 
+	/**
+	 * @see Filter#init(FilterConfig)
+	 */
+	public void init(FilterConfig fConfig) throws ServletException {
+		WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(fConfig.getServletContext());
+		identityService = context.getBean(IdentityService.class);
+		customerService = context.getBean(CustomerService.class);
+		anonymous = customerService.findRefByCellPhoneOrEmail(Constant.ANONYMOUS_EMAIL);
+	}
+	
 	/**
 	 * @see Filter#destroy()
 	 */
@@ -46,44 +70,30 @@ public class PostSecurityLoggingFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		String username = Constant.ANONYMOUS_NAME;
+		Long userId = anonymous.getId();
 		SecurityContext context = SecurityContextHolder.getContext();
 		if (context != null) {
 			Authentication authentication = context.getAuthentication();
-			if (authentication != null) {
+			if (authentication != null && StringUtils.hasText(authentication.getName())) {
 				username = authentication.getName();
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("username: " + authentication.getName());
-					LOG.debug("Credentials: " + authentication.getCredentials());
-					LOG.debug("Details: " + authentication.getDetails());
-					Collection<? extends GrantedAuthority> grantedAuthorities = authentication.getAuthorities();
-					if (grantedAuthorities != null) {
-						int i = 1;
-						for (GrantedAuthority g : grantedAuthorities) {
-							LOG.debug("authority " + i + ": " + g.getAuthority());
-							i++;
-						}
-					}
-				}
 				Object principal = authentication.getPrincipal();
-				if (principal instanceof User) {
-					User u = (User) principal;
-					if (LOG.isDebugEnabled())
-						LOG.debug("username: " + u.getUsername());
-				} else if (LOG.isDebugEnabled()) {
-					LOG.debug("Principal: " + principal);
+				if (principal instanceof UserDetailsImpl) {
+					UserDetailsImpl u = (UserDetailsImpl) principal;
+					if (u.getId() != null) {
+						userId = u.getId();
+					}
+					LOG.debug("principal: {}", u);
 				}
 			}
-			request.setAttribute("authentication", authentication);
 		}
-		LOG.debug("\n");
+		StandardService.CURRENT_USERNAME.set(username);
 		ThreadContext.put(Constant.USERNAME, username);
+		identityService.setAuthenticatedUserId(userId.toString());
+		
 		chain.doFilter(request, response);
+		
+		StandardService.CURRENT_USERNAME.remove();
 		ThreadContext.remove(Constant.USERNAME);
 	}
-
-	/**
-	 * @see Filter#init(FilterConfig)
-	 */
-	public void init(FilterConfig fConfig) throws ServletException {}
 
 }

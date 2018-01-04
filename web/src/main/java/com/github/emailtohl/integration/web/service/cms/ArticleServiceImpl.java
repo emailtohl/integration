@@ -79,7 +79,10 @@ public class ArticleServiceImpl extends StandardService<Article>{
 			}
 			entity.setSummary(summary.replaceAll(IMG_PATTERN.pattern(), ""));
 		}
-		entity.setAuthor(getCurrentUserRef());
+		String username = CURRENT_USERNAME.get();
+		if (hasText(username)) {
+			entity.setAuthor(userService.findRef(username));
+		}
 		Type type = null;
 		if (entity.getType() != null) {
 			if (entity.getType().getId() != null) {

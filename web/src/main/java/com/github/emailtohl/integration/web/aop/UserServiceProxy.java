@@ -7,6 +7,8 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.activiti.engine.IdentityService;
+import org.activiti.engine.identity.Picture;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,8 +16,10 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.core.ExecResult;
+import com.github.emailtohl.integration.core.file.Image;
 import com.github.emailtohl.integration.core.user.entities.User;
 
 /**
@@ -115,6 +119,8 @@ public class UserServiceProxy {
 		user.setPassword(u.getPassword());
 		identityService.saveUser(user);
 		
+		setUserPicture(u);
+		
 		if (membership) {
 			// 查找原先该用户关联的组id
 			Set<String> preGroupIds = identityService.createGroupQuery().groupMember(userId).list().stream()
@@ -139,4 +145,13 @@ public class UserServiceProxy {
 		return user;
 	}
 	
+	private void setUserPicture(User u) {
+		Image img = u.getImage();
+		if (img != null && img.getBin() != null && StringUtils.hasText(img.getSrc())) {
+			String mimeType = FilenameUtils.getExtension(img.getSrc());
+			mimeType = "image/" + mimeType;
+			Picture pic = new Picture(img.getBin(), mimeType);
+			identityService.setUserPicture(u.getId().toString(), pic);
+		}
+	}
 }

@@ -5,7 +5,6 @@ import java.security.SecureRandom;
 import java.util.List;
 import java.util.Set;
 
-import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -16,15 +15,11 @@ import javax.validation.ValidatorFactory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.core.config.Constant;
-import com.github.emailtohl.integration.core.user.UserService;
-import com.github.emailtohl.integration.core.user.entities.UserRef;
 
 /**
  * 抽象的服务，主要就是增删改查功能。
@@ -37,6 +32,14 @@ import com.github.emailtohl.integration.core.user.entities.UserRef;
  */
 @Transactional
 public abstract class StandardService<E extends Serializable> {
+	/**
+	 * Service尽量做到无状态，但是有些Service需要获取到当前使用的用户名
+	 * 
+	 * 由调用方从上下文获取到当前用户，然后再传值到Service显得过于繁琐
+	 * 
+	 * 这里使用线程本地存储域，显式地让调用方设置当前用户名，以便让Service能正确获取
+	 */
+	public static final ThreadLocal<String> CURRENT_USERNAME = new ThreadLocal<String>();
 	protected static final Logger LOG = LogManager.getLogger();
 	/**
 	 * 由于接口+抽象类的加入使得@Valid注解不能使用，所以可进行手动校验
@@ -45,9 +48,6 @@ public abstract class StandardService<E extends Serializable> {
 	protected Validator validator = FACTORY.getValidator();
 	
 	protected static final transient int HASHING_ROUNDS = 10;
-	
-	@Inject
-	protected UserService userService;
 	
 	/**
 	 * 创建一个实体
@@ -160,24 +160,4 @@ public abstract class StandardService<E extends Serializable> {
 		return text != null && !text.isEmpty();
 	}
 
-	/**
-	 * 在线程上下文中获取用户名，然后再查询用户引用，需注入UserService
-	 * @return 没有用户名则为null
-	 * @throws NotAcceptableException 若没有注入（或设置UserService则该方法不能被调用）
-	 */
-	public UserRef getCurrentUserRef() throws NotAcceptableException {
-		if (userService != null) {
-			throw new UnsupportedOperationException("UserService Not Ready!");
-		}
-		String username = ThreadContext.get(Constant.USERNAME);
-		if (hasText(username)) {
-			throw new UnsupportedOperationException("Not Found username in org.apache.logging.log4j.ThreadContext!");
-		}
-		return userService.findRef(username);
-	}
-	
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
-	
 }
