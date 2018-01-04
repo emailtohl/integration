@@ -3,6 +3,7 @@ package com.github.emailtohl.integration.web.service.cms.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -44,6 +45,7 @@ public class Article extends BaseEntity implements Comparable<Article> {
 	private EmployeeRef approver;
 	private Boolean isComment;
 	private List<Comment> comments = new ArrayList<>();
+	private int commentNumbers;
 	
 	public Article() {}
 	
@@ -150,12 +152,21 @@ public class Article extends BaseEntity implements Comparable<Article> {
 	@org.hibernate.annotations.LazyCollection(org.hibernate.annotations.LazyCollectionOption.EXTRA)
 	@org.hibernate.search.annotations.IndexedEmbedded(depth = 1)
 	@OrderBy(BaseEntity.CREATE_DATE_PROPERTY_NAME + " DESC")
-	@OneToMany(mappedBy = "article")
+	@OneToMany(mappedBy = "article", orphanRemoval = true, cascade = CascadeType.REMOVE)
 	public List<Comment> getComments() {
 		return comments;
 	}
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
+	}
+	
+	@Column(name = "comment_numbers")
+	public int getCommentNumbers() {
+		commentNumbers = getComments().size();
+		return commentNumbers;
+	}
+	public void setCommentNumbers(int commentNumbers) {
+		this.commentNumbers = commentNumbers;
 	}
 	
 	@Override

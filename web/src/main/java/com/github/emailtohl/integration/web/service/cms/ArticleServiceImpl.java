@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -95,52 +96,82 @@ public class ArticleServiceImpl extends StandardService<Article>{
 			entity.setType(type);
 			type.getArticles().add(entity);
 		}
-		return toTransient(articleRepository.save(entity));
+		return transientDetail(articleRepository.save(entity));
 	}
 
 	@Override
 	public boolean exist(Object matcherValue) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Cacheable(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Article get(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		Article a = articleRepository.get(id);
+		return transientDetail(a);
 	}
 
 	@Override
 	public Paging<Article> query(Article params, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+		Page<Article> page = articleRepository.queryForPage(params, pageable);
+		List<Article> ls = page.getContent().stream().map(this::toTransient).collect(Collectors.toList());
+		return new Paging<>(ls, pageable, page.getTotalElements());
 	}
 
 	@Override
 	public List<Article> query(Article params) {
-		// TODO Auto-generated method stub
-		return null;
+		return articleRepository.queryForList(params).stream().map(this::toTransient).collect(Collectors.toList());
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Article update(Long id, Article newEntity) {
-		// TODO Auto-generated method stub
-		return null;
+		Article a = articleRepository.findOne(id);
+		if (a == null) {
+			return null;
+		}
+		if (hasText(newEntity.getTitle())) {
+			a.setTitle(newEntity.getTitle());
+		}
+		if (hasText(newEntity.getSummary())) {
+			a.setSummary(newEntity.getSummary());
+		}
+		if (hasText(newEntity.getBody())) {
+			a.setBody(newEntity.getBody());
+		}
+		if (hasText(newEntity.getKeywords())) {
+			a.setKeywords(newEntity.getKeywords());
+		}
+		if (hasText(newEntity.getCover())) {
+			a.setCover(newEntity.getCover());
+		}
+		Type type = null;
+		if (newEntity.getType() != null) {
+			if (newEntity.getType().getId() != null) {
+				type = typeRepository.findOne(newEntity.getType().getId());
+			} else if (hasText(newEntity.getType().getName())) {
+				type = typeRepository.findByName(newEntity.getType().getName());
+			}
+		}
+		if (type != null) {
+			a.setType(type);
+			type.getArticles().add(newEntity);
+		}
+		return transientDetail(a);
 	}
 
 	@CacheEvict(value = CACHE_NAME, key = "#root.args[0]")
 	@Override
 	public void delete(Long id) {
-		// TODO Auto-generated method stub
-		
+		Article a = articleRepository.findOne(id);
+		if (a == null) {
+			return;
+		}
+		a.getType().getArticles().remove(a);
+		// 评论是级联删除的，所以可以不用手动解除关系 cascade = CascadeType.REMOVE
+		articleRepository.delete(a);
 	}
 
-	/**
-	 * 对于文章来说，只需要展示用户名字，头像等基本信息即可
-	 * 注意：本方法将所有评论载入，而不管该评论是否允许开放
-	 */
 	@Override
 	protected Article toTransient(Article source) {
 		if (source == null) {
@@ -151,17 +182,35 @@ public class ArticleServiceImpl extends StandardService<Article>{
 		// 只获取作者必要信息
 		target.setAuthor(transientUserRef(source.getAuthor()));
 		target.setApprover(transientEmployeeRef(source.getApprover()));
-		// 只获取类型一级父目录
-		target.setType(getType(source.getType()));
-		// 改变评论懒加载状态，且避免article与comment的交叉引用
-		target.setComments(transientComments(source.getComments()));
+		if (source.getType() != null) {
+			Type st = source.getType();
+			Type t = new Type();
+			t.setId(st.getId());
+			t.setCreateDate(st.getCreateDate());
+			t.setModifyDate(st.getModifyDate());
+			t.setName(st.getName());
+			t.setDescription(st.getDescription());
+			target.setType(t);
+		}
 		return target;
 	}
 
+	/**
+	 * 对于文章来说，只需要展示用户名字，头像等基本信息即可
+	 * 注意：本方法将所有评论载入，而不管该评论是否允许开放
+	 */
 	@Override
-	protected Article transientDetail(Article entity) {
-		// TODO Auto-generated method stub
-		return null;
+	protected Article transientDetail(Article source) {
+		if (source == null) {
+			return null;
+		}
+		Article target = new Article();
+		BeanUtils.copyProperties(source, target, "author", "approver", "type", "comments");
+		target.setAuthor(transientUserRef(source.getAuthor()));
+		target.setApprover(transientEmployeeRef(source.getApprover()));
+		target.setType(getType(source.getType()));
+		target.setComments(transientComments(source.getComments()));
+		return target;
 	}
 
 	protected UserRef transientUserRef(UserRef source) {
