@@ -31,7 +31,7 @@ import com.github.emailtohl.integration.web.service.cms.entities.Type;
  */
 @Service
 @Transactional
-public class ArticleServiceImpl extends StandardService<Article>{
+public class ArticleServiceImpl extends StandardService<Article> implements ArticleService {
 	ArticleRepository articleRepository;
 	CommentRepository commentRepository;
 	TypeRepository typeRepository;
@@ -111,6 +111,13 @@ public class ArticleServiceImpl extends StandardService<Article>{
 		return transientDetail(a);
 	}
 
+	@Override
+	public Paging<Article> search(String query, Pageable pageable) {
+		Page<Article> page = articleRepository.search(query, pageable);
+		List<Article> ls = page.getContent().stream().map(this::toTransient).collect(Collectors.toList());
+		return new Paging<>(ls, pageable, page.getTotalElements());
+	}
+	
 	@Override
 	public Paging<Article> query(Article params, Pageable pageable) {
 		Page<Article> page = articleRepository.queryForPage(params, pageable);
@@ -282,4 +289,5 @@ public class ArticleServiceImpl extends StandardService<Article>{
 			return target;
 		}).collect(Collectors.toList());
 	}
+
 }
