@@ -308,7 +308,7 @@ public class CommonTestData {
 		article.setAuthor(foo);
 		
 		comment.setArticle(article);
-		comment.setCritics(bar.getName());
+		comment.setReviewer(bar.getName());
 		comment.setContent("嗨，这是一条评论。评论者头像来自Gravatar。");
 		comment.setIcon(bar.getIconSrc());
 		article.getComments().add(comment);

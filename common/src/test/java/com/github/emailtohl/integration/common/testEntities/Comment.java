@@ -23,7 +23,7 @@ public class Comment extends BaseEntity implements Comparable<Comment> {
 	
 	@NotNull
 	private String content;
-	private String critics;
+	private String reviewer;
 	private String icon = "";
 	@NotNull
 	private Article article;
@@ -40,12 +40,12 @@ public class Comment extends BaseEntity implements Comparable<Comment> {
 	}
 
 	@org.hibernate.search.annotations.Field
-	public String getCritics() {
-		return critics;
+	public String getReviewer() {
+		return reviewer;
 	}
 
-	public void setCritics(String critics) {
-		this.critics = critics;
+	public void setReviewer(String reviewer) {
+		this.reviewer = reviewer;
 	}
 
 	public String getIcon() {
@@ -82,7 +82,7 @@ public class Comment extends BaseEntity implements Comparable<Comment> {
 
 	@Override
 	public String toString() {
-		return "Comment [content=" + content + ", critics=" + critics + "]";
+		return "Comment [content=" + content + ", reviewer=" + reviewer + "]";
 	}
 	
 }

@@ -95,7 +95,7 @@ public class Comment extends BaseEntity implements Comparable<Comment> {
 
 	@Override
 	public String toString() {
-		return "Comment [content=" + content + ", critics=" + reviewer + "]";
+		return "Comment [content=" + content + ", reviewer=" + reviewer + "]";
 	}
 	
 }

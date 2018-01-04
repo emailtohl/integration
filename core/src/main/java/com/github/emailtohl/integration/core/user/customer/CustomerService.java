@@ -1,6 +1,7 @@
 package com.github.emailtohl.integration.core.user.customer;
 
-import static com.github.emailtohl.integration.core.config.Constant.*;
+import static com.github.emailtohl.integration.core.config.Constant.SPEL_MATCH_CELL_PHONE_OR_EMAIL;
+import static com.github.emailtohl.integration.core.config.Constant.SPEL_MATCH_ID;
 import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER;
 import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_DELETE;
 import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_ENABLED;
@@ -229,7 +230,7 @@ public interface CustomerService {
 	 * @return
 	 */
 	@PreAuthorize("isAuthenticated()")
-	CustomerRef findRefByCellPhoneOrEmail(String cellPhoneOrEmail);
+	CustomerRef findRefByCellPhoneOrEmail(@P("cellPhoneOrEmail") String cellPhoneOrEmail);
 	
 	/**
 	 * 查找客户引用

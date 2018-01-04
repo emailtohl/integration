@@ -51,7 +51,7 @@ public class AbstractSearchableRepositoryTest {
 	public void testAbstractSearchableRepository() {
 		assertEquals(Article.class, articleFullTextSearch.getEntityClass());
 		logger.debug(Arrays.toString(articleFullTextSearch.onFields));
-		assertArrayEquals(new String[] {"author.description", "author.email", "author.name", "author.username", "body", "comments.content", "comments.critics", "keywords", "summary", "title"}, articleFullTextSearch.onFields);
+		assertArrayEquals(new String[] {"author.description", "author.email", "author.name", "author.username", "body", "comments.content", "comments.reviewer", "keywords", "summary", "title"}, articleFullTextSearch.onFields);
 	
 		TestFindByField t = new TestFindByField();
 		assertEquals(Relation1.class, t.getEntityClass());

@@ -12,7 +12,7 @@ import com.github.emailtohl.integration.web.service.cms.entities.Comment;
  */
 interface CommentRepository extends JpaRepository<Comment, Long>, CommentRepositoryCustomization {
 	
-	Page<Comment> findByCriticsLike(String critics, Pageable pageable);
+	Page<Comment> findByReviewerLike(String reviewer, Pageable pageable);
 	
 	Page<Comment> findByArticleTitleLike(String articleTitle, Pageable pageable);
 	
