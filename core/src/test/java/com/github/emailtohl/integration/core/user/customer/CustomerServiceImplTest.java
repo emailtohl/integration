@@ -182,11 +182,11 @@ public class CustomerServiceImplTest {
 	}
 
 	@Test
-	public void testFindByCellPhoneOrEmail() {
+	public void testFindByUsername() {
 		CoreTestData td = new CoreTestData();
-		Customer c = customerService.findByCellPhoneOrEmail(td.baz.getCellPhone());
+		Customer c = customerService.findByUsername(td.baz.getCellPhone());
 		assertNotNull(c);
-		c = customerService.findByCellPhoneOrEmail(td.baz.getEmail());
+		c = customerService.findByUsername(td.baz.getEmail());
 		assertNotNull(c);
 		
 		System.out.println(gson.toJson(c));
@@ -248,7 +248,7 @@ public class CustomerServiceImplTest {
 	public void testChangeCellPhone() {
 		String newPhone = "19089023456";
 		customerService.changeCellPhone(id, newPhone);
-		customerService.findByCellPhoneOrEmail(newPhone);
+		customerService.findByUsername(newPhone);
 		ExecResult r = customerService.login(newPhone, password);
 		assertTrue(r.ok);
 	}
@@ -257,7 +257,7 @@ public class CustomerServiceImplTest {
 	public void testChangeEmail() {
 		String newEmail = "newEmail@test.com";
 		customerService.changeEmail(id, newEmail);
-		Customer c = customerService.findByCellPhoneOrEmail(newEmail);
+		Customer c = customerService.findByUsername(newEmail);
 		assertNotNull(c);
 	}
 	
@@ -344,11 +344,11 @@ public class CustomerServiceImplTest {
 	}
 	
 	@Test
-	public void testFindRefByCellPhoneOrEmail() {
+	public void testFindRefByUsername() {
 		CoreTestData td = new CoreTestData();
-		CustomerRef ref = customerService.findRefByCellPhoneOrEmail(td.baz.getCellPhone());
+		CustomerRef ref = customerService.findRefByUsername(td.baz.getCellPhone());
 		assertNotNull(ref);
-		ref = customerService.findRefByCellPhoneOrEmail(td.baz.getEmail());
+		ref = customerService.findRefByUsername(td.baz.getEmail());
 		assertNotNull(ref);
 		System.out.println(gson.toJson(ref));
 	}
@@ -397,7 +397,7 @@ public class CustomerServiceImplTest {
 	
 	@Test(expected = NotAcceptableException.class)
 	public void testDelete() {
-		Customer c = customerService.findByCellPhoneOrEmail(Constant.ANONYMOUS_EMAIL);
+		Customer c = customerService.findByUsername(Constant.ANONYMOUS_EMAIL);
 		customerService.delete(c.getId());
 	}
 }

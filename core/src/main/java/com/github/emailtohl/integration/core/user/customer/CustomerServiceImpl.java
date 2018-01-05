@@ -213,8 +213,11 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	}
 	
 	@Override
-	public ExecResult login(String cellPhoneOrEmail, String password) {
-		Customer c = find(cellPhoneOrEmail);
+	public ExecResult login(String username, String password) {
+		if (!hasText(username) || !hasText(password)) {
+			return new ExecResult(false, LoginResult.notFound.name(), null);
+		}
+		Customer c = customerRepository.findByUsername(username);
 		if (c == null) {
 			return new ExecResult(false, LoginResult.notFound.name(), null);
 		}
@@ -238,8 +241,8 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	}
 
 	@Override
-	public Customer findByCellPhoneOrEmail(String cellPhoneOrEmail) {
-		return transientDetail(find(cellPhoneOrEmail));
+	public Customer findByUsername(String username) {
+		return transientDetail(customerRepository.findByUsername(username));
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
@@ -279,15 +282,15 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	}
 
 	@Override
-	public String getToken(String cellPhoneOrEmail) {
+	public String getToken(String username) {
 		final String key = UUID.randomUUID().toString();
-		TOKEN_MAP.put(key, cellPhoneOrEmail);
+		TOKEN_MAP.put(key, username);
 		taskScheduler.schedule(() -> TOKEN_MAP.remove(key), new Date(System.currentTimeMillis() + tokenExpire));
 		return key;
 	}
 
 	@Override
-	public ExecResult updatePassword(String cellPhoneOrEmail, String newPassword, String token) {
+	public ExecResult updatePassword(String username, String newPassword, String token) {
 		if (token == null) {
 			return new ExecResult(false, "没有token", null);
 		}
@@ -295,9 +298,9 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		if (s == null) {
 			return new ExecResult(false, "token无效或过期", null);
 		}
-		Customer source = find(cellPhoneOrEmail);
+		Customer source = customerRepository.findByUsername(username);
 		if (source == null) {
-			return new ExecResult(false, "没有此用户:" + cellPhoneOrEmail, null);
+			return new ExecResult(false, "没有此用户:" + username, null);
 		}
 		if (!s.equals(source.getCellPhone()) && !s.equals(source.getEmail())) {
 			return new ExecResult(false, "token无效或过期", null);
@@ -398,35 +401,13 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		return transientDetail(source);
 	}
 
-	/**
-	 * @param cellPhoneOrEmail
-	 * @return 持久化的Customer
-	 */
-	private Customer find(String cellPhoneOrEmail) {
-		if (cellPhoneOrEmail == null) {
-			return null;
-		}
-		Customer c = null;
-		Matcher m = Constant.PATTERN_CELL_PHONE.matcher(cellPhoneOrEmail);
-		if (m.find()) {
-			c = customerRepository.findByCellPhone(cellPhoneOrEmail);
-		}
-		if (c == null) {
-			m = Constant.PATTERN_EMAIL.matcher(cellPhoneOrEmail);
-			if (m.find()) {
-				c = customerRepository.findByEmail(cellPhoneOrEmail);
-			}
-		}
-		return c;
-	}
-
 	@Override
 	protected Customer toTransient(Customer source) {
 		if (source == null) {
 			return null;
 		}
 		Customer target = new Customer();
-		BeanUtils.copyProperties(source, target, "customerRef", "password", "roles", "cards");
+		BeanUtils.copyProperties(source, target, "usernames", "customerRef", "password", "roles", "cards");
 		return target;
 	}
 
@@ -436,7 +417,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 			return null;
 		}
 		Customer target = new Customer();
-		BeanUtils.copyProperties(source, target, "customerRef", "password", "roles", "cards");
+		BeanUtils.copyProperties(source, target, "usernames", "customerRef", "password", "roles", "cards");
 		source.getCards().forEach(card -> target.getCards().add(card));
 		source.getRoles().forEach(role -> target.getRoles().add(new Role(role.getName(), role.getRoleType(), role.getDescription())));
 		return target;
@@ -452,22 +433,11 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	}
 
 	@Override
-	public CustomerRef findRefByCellPhoneOrEmail(String cellPhoneOrEmail) {
-		if (cellPhoneOrEmail == null) {
+	public CustomerRef findRefByUsername(String username) {
+		if (!hasText(username)) {
 			return null;
 		}
-		CustomerRef ref = null;
-		Matcher m = Constant.PATTERN_CELL_PHONE.matcher(cellPhoneOrEmail);
-		if (m.find()) {
-			ref = customerRefRepository.findByCellPhone(cellPhoneOrEmail);
-		}
-		if (ref == null) {
-			m = Constant.PATTERN_EMAIL.matcher(cellPhoneOrEmail);
-			if (m.find()) {
-				ref = customerRefRepository.findByEmail(cellPhoneOrEmail);
-			}
-		}
-		return toTransientRef(ref);
+		return toTransientRef(customerRepository.findRefByUsername(username));
 	}
 
 	/**
@@ -509,6 +479,9 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	}
 
 	private CustomerRef toTransientRef(CustomerRef ref) {
+		if (ref == null) {
+			return null;
+		}
 		CustomerRef copy = new CustomerRef();
 		copy.setId(ref.getId());
 		copy.setCellPhone(ref.getCellPhone());

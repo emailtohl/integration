@@ -1,7 +1,10 @@
 package com.github.emailtohl.integration.core.user.customer;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import javax.persistence.NoResultException;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.springframework.stereotype.Repository;
 
 import com.github.emailtohl.integration.common.jpa.fullTextSearch.AbstractSearchableRepository;
@@ -23,10 +26,31 @@ class CustomerRepositoryImpl extends AbstractSearchableRepository<Customer> impl
 		entityManager.persist(ref);
 		return customer;
 	}
-	
+
 	@Override
-	public Page<Customer> queryForPage(Customer params, Pageable pageable) {
-		return super.queryForPage(params, pageable);
+	public Customer findByUsername(String username) {
+		CriteriaBuilder b = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Customer> q = b.createQuery(entityClass);
+		Root<Customer> r = q.from(entityClass);
+		q = q.select(r).where(b.equal(r.join("usernames"), username));
+		Customer result = null;
+		try {
+			result = entityManager.createQuery(q).getSingleResult();
+		} catch (NoResultException e) {}
+		return result;
+	}
+
+	@Override
+	public CustomerRef findRefByUsername(String username) {
+		CriteriaBuilder b = entityManager.getCriteriaBuilder();
+		CriteriaQuery<CustomerRef> q = b.createQuery(CustomerRef.class);
+		Root<Customer> r = q.from(entityClass);
+		q = q.select(r.get("customerRef")).where(b.equal(r.join("usernames"), username));
+		CustomerRef result = null;
+		try {
+			result = entityManager.createQuery(q).getSingleResult();
+		} catch (NoResultException e) {}
+		return result;
 	}
 
 }

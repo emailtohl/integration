@@ -4,12 +4,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -67,6 +69,13 @@ public class Customer extends User {
 	 * 自身引用
 	 */
 	private CustomerRef customerRef;
+	
+	/**
+	 * 客户可能用多种方式登录，如邮箱、手机号等等……
+	 * 为了便于查询，创建客户与多个标识信息的关联
+	 * 当客户添加email或cellPhone时，自动为其添加进usernames
+	 */
+	private Set<String> usernames = new HashSet<String>();
 	
 	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = EnumBridgeCust.class))
 	@Enumerated(EnumType.STRING)
@@ -129,7 +138,17 @@ public class Customer extends User {
 		this.customerRef = customerRef;
 	}
 	
-
+	@org.hibernate.envers.NotAudited
+	@ElementCollection
+	@CollectionTable(name = "customer_username", joinColumns = @JoinColumn(name = "customer_id"))
+	@Column(name = "unique_name", nullable = false, unique = true)
+	public Set<String> getUsernames() {
+		return usernames;
+	}
+	public void setUsernames(Set<String> usernames) {
+		this.usernames = usernames;
+	}
+	
 	@Override
 	public void setId(Long id) {
 		super.id = id;
@@ -153,7 +172,11 @@ public class Customer extends User {
 	}
 	@Override
 	public void setEmail(String email) {
+		usernames.remove(super.email);
 		super.email = email;
+		usernames.add(email);
+		usernames.remove("");
+		usernames.remove(null);
 		if (customerRef != null) {
 			customerRef.email = email;
 		}
@@ -167,9 +190,13 @@ public class Customer extends User {
 	}
 	@Override
 	public void setCellPhone(String cellPhone) {
+		usernames.remove(super.cellPhone);
 		super.cellPhone = cellPhone;
+		usernames.add(cellPhone);
+		usernames.remove("");
+		usernames.remove(null);
 		if (customerRef != null) {
-			customerRef.name = name;
+			customerRef.cellPhone = cellPhone;
 		}
 	}
 	
@@ -210,6 +237,5 @@ public class Customer extends User {
 				+ points + ", cards=" + cards + ", classify=" + classify + ", name=" + name + ", email=" + email
 				+ ", cellPhone=" + cellPhone + ", enabled=" + enabled + ", id=" + id + "]";
 	}
-	
 }
 

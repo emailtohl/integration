@@ -166,10 +166,10 @@ public class UserServiceImplTest {
 		u = userService.find(td.baz.getEmail());
 		assertNotNull(u);
 		
-		// 通过平台账号的邮箱以及手机号查询
-		u = userService.find(td.bar.getCellPhone());
+		// 通过客户账号的邮箱以及手机号查询
+		u = userService.find(td.baz.getCellPhone());
 		assertNotNull(u);
-		u = userService.find(td.bar.getEmail());
+		u = userService.find(td.baz.getEmail());
 		assertNotNull(u);
 	}
 	

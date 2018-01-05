@@ -45,7 +45,7 @@ public class Article extends BaseEntity implements Comparable<Article> {
 	private EmployeeRef approver;
 	private Boolean isComment;
 	private List<Comment> comments = new ArrayList<>();
-	private int commentNumbers;
+	private Integer commentNumbers;
 	
 	public Article() {}
 	
@@ -161,11 +161,11 @@ public class Article extends BaseEntity implements Comparable<Article> {
 	}
 	
 	@Column(name = "comment_numbers")
-	public int getCommentNumbers() {
+	public Integer getCommentNumbers() {
 		commentNumbers = getComments().size();
 		return commentNumbers;
 	}
-	public void setCommentNumbers(int commentNumbers) {
+	public void setCommentNumbers(Integer commentNumbers) {
 		this.commentNumbers = commentNumbers;
 	}
 	

@@ -106,28 +106,12 @@ public class UserServiceImpl implements UserService {
 			return null;
 		}
 		User u = null;
-		Matcher m = Constant.PATTERN_CELL_PHONE.matcher(username);
-		if (m.find()) {
-			u = customerRepository.findByCellPhone(username);
-			if (u == null) {
-				u = employeeRepository.findByCellPhone(username);
-			}
-		}
-		if (u == null) {
-			m = Constant.PATTERN_EMAIL.matcher(username);
-			if (m.find()) {
-				u = customerRepository.findByEmail(username);
-				if (u == null) {
-					u = employeeRepository.findByEmail(username);
-				}
-			}
-		}
-		if (u == null) {
-			m = Constant.PATTEN_EMP_NUM.matcher(username);
-			if (m.find()) {
-				Integer empNum = Integer.parseInt(username);
-				u = employeeRepository.findByEmpNum(empNum);
-			}
+		Matcher m = Constant.PATTEN_EMP_NUM.matcher(username);
+		if (m.matches()) {
+			Integer empNum = Integer.parseInt(username);
+			u = employeeRepository.findByEmpNum(empNum);
+		} else {
+			u = customerRepository.findByUsername(username);
 		}
 		if (u != null) {
 			u.authorityNames();// 加载角色与权限
@@ -202,7 +186,7 @@ public class UserServiceImpl implements UserService {
 		} else {
 			target = new User();
 		}
-		BeanUtils.copyProperties(source, target, "employeeRef", "customerRef", "password", "roles", "cards");
+		BeanUtils.copyProperties(source, target, "usernames", "employeeRef", "customerRef", "password", "roles", "cards");
 		return target;
 	}
 

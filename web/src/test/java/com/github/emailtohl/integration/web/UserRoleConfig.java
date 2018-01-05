@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
@@ -214,7 +215,27 @@ public class UserRoleConfig {
 			userDB.remove(userId);
 			return invocation.getMock();
 		}).when(dao).delete(any(Long.class));
-		
+		when(dao.findByUsername(anyString())).then(invocation -> {
+			String username = (String) invocation.getArguments()[0];
+			Matcher m = Constant.PATTERN_EMAIL.matcher(username);
+			Customer result = null;
+			if (m.matches()) {
+				for (User u : userDB.values()) {
+					if (u instanceof Customer && username.equals(u.getEmail())) {
+						result = (Customer) u;
+						break;
+					}
+				}
+			} else {
+				for (User u : userDB.values()) {
+					if (u instanceof Customer && username.equals(u.getCellPhone())) {
+						result = (Customer) u;
+						break;
+					}
+				}
+			}
+			return result;
+		});
 		// 手机号码和邮箱都能查找到
 		when(dao.findByCellPhone(td.user_emailtohl.getCellPhone())).thenReturn(td.user_emailtohl);
 		when(dao.findByEmail(td.user_emailtohl.getEmail())).thenReturn(td.user_emailtohl);
@@ -280,10 +301,10 @@ public class UserRoleConfig {
 			re.delete(userId);
 			return invocation.getMock();
 		}).when(service).delete(any(Long.class));
-		when(service.findByCellPhoneOrEmail(td.user_emailtohl.getCellPhone())).thenReturn(td.user_emailtohl);
-		when(service.findByCellPhoneOrEmail(td.user_emailtohl.getEmail())).thenReturn(td.user_emailtohl);
-		when(service.findByCellPhoneOrEmail(td.baz.getCellPhone())).thenReturn(td.baz);
-		when(service.findByCellPhoneOrEmail(td.baz.getEmail())).thenReturn(td.baz);
+		when(service.findByUsername(td.user_emailtohl.getCellPhone())).thenReturn(td.user_emailtohl);
+		when(service.findByUsername(td.user_emailtohl.getEmail())).thenReturn(td.user_emailtohl);
+		when(service.findByUsername(td.baz.getCellPhone())).thenReturn(td.baz);
+		when(service.findByUsername(td.baz.getEmail())).thenReturn(td.baz);
 		
 		when(service.grandRoles(anyLong(), anyVararg())).thenAnswer(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];

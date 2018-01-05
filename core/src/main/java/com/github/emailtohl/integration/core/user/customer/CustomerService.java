@@ -99,19 +99,19 @@ public interface CustomerService {
 	Paging<Customer> search(String query, Pageable pageable);
 	/**
 	 * 客户登录
-	 * @param cellPhoneOrEmail
+	 * @param username
 	 * @param password
 	 * @return
 	 */
-	@NotNull ExecResult login(String cellPhoneOrEmail, String password);
+	@NotNull ExecResult login(String username, String password);
 	
 	/**
 	 * 通过手机号码或者邮箱查找客户
-	 * @param cellPhoneOrEmail
+	 * @param username 邮箱或手机号
 	 * @return
 	 */
 	@PreAuthorize("hasAuthority('" + CUSTOMER + "') or" + SPEL_MATCH_CELL_PHONE_OR_EMAIL)
-	Customer findByCellPhoneOrEmail(@P("cellPhoneOrEmail") String cellPhoneOrEmail);
+	Customer findByUsername(@P("username") String username);
 	
 	/**
 	 * 为客户授予角色
@@ -135,20 +135,20 @@ public interface CustomerService {
 	
 	/**
 	 * 用户忘记密码时，通过邮箱或短信获取token令牌，以证明是被修改密码的账号拥有者
-	 * @param cellPhoneOrEmail
+	 * @param username 邮箱或手机号
 	 * @return
 	 */
-	String getToken(String cellPhoneOrEmail);
+	String getToken(String username);
 	
 	/**
 	 * 更新客户的密码，一般是用户忘记密码后，通过邮箱确认后自行修改，所以不需要输入原密码
-	 * @param cellPhoneOrEmail
+	 * @param username 邮箱或手机号
 	 * @param newPassword
 	 * @param token 通过邮箱或短信或其他方式获取的令牌，该令牌证明确实是该账号拥有者在修改密码
 	 * @return ExecResult
 	 */
 	@PreAuthorize(SPEL_MATCH_CELL_PHONE_OR_EMAIL)
-	@NotNull ExecResult updatePassword(@P("cellPhoneOrEmail") String cellPhoneOrEmail, String newPassword, String token);
+	@NotNull ExecResult updatePassword(@P("username") String username, String newPassword, String token);
 	
 	/**
 	 * 重置密码，用于忘记密码无法恢复时
@@ -226,11 +226,11 @@ public interface CustomerService {
 	
 	/**
 	 * 通过手机或邮箱获取客户引用
-	 * @param cellPhoneOrEmail
+	 * @param username 邮箱或手机号
 	 * @return
 	 */
 	@PreAuthorize("isAuthenticated()")
-	CustomerRef findRefByCellPhoneOrEmail(@P("cellPhoneOrEmail") String cellPhoneOrEmail);
+	CustomerRef findRefByUsername(String username);
 	
 	/**
 	 * 查找客户引用

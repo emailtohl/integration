@@ -37,7 +37,7 @@ public interface Constant {
 	 */
 	String SPEL_MATCH_EMP_NUM = " (authentication.principal instanceof T(com.github.emailtohl.integration.core.auth.UserDetailsImpl) and #empNum.toString() EQ authentication.principal.username) ";
 	/**
-	 * cellPhoneOrEmail参数要用org.springframework.security.access.method.P("cellPhoneOrEmail")注释
+	 * username参数要用org.springframework.security.access.method.P("username")注释
 	 */
-	String SPEL_MATCH_CELL_PHONE_OR_EMAIL = " (authentication.principal instanceof T(com.github.emailtohl.integration.core.auth.UserDetailsImpl) and #cellPhoneOrEmail EQ authentication.principal.cellPhone or #cellPhoneOrEmail EQ authentication.principal.email) ";
+	String SPEL_MATCH_CELL_PHONE_OR_EMAIL = " (authentication.principal instanceof T(com.github.emailtohl.integration.core.auth.UserDetailsImpl) and #username EQ authentication.principal.cellPhone or #username EQ authentication.principal.email) ";
 }
