@@ -26,6 +26,12 @@ import com.github.emailtohl.integration.core.user.entities.User;
  * 为Activiti的IdentityService生成代理，在修改用户信息时，同步数据到Activiti库中
  * 考虑做成切面的原因有二：1.不侵入式的修改业务系统的用户管理逻辑；2.在切面中可以共享统一事务。
  * 
+ * 在Activiti的User里，id存储的是业务系统User中的usernames，可以是客户的邮箱、客户的手机号，也可以是平台账号，这样便于部署流程时使用有意义的名字而不是数字id
+ * 
+ * 另外，在Activiti的User的FirstName里，存储的是业务系统User的id，便于删除Activiti的User时，通过业务系统User的id来删除。
+ * 
+ * 此外，在Activiti的User的LastName里，存储的是业务系统User的真实姓名，便于界面展示。
+ * 
  * @author HeLei
  *
  */
@@ -102,7 +108,7 @@ public class UserServiceProxy {
 	
 	/**
 	 * 若查询不到org.activiti.engine.identity.User，则创建一个再返回
-	 * @param u 业务系统中的User，一定含id属性
+	 * @param u 业务系统中的User
 	 * @param membership 是否同时维护与组的关系
 	 * @return org.activiti.engine.identity.User
 	 */
