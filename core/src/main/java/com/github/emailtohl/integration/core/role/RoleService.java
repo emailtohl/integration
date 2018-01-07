@@ -4,6 +4,8 @@ import static com.github.emailtohl.integration.core.role.Authority.ROLE;
 
 import java.util.List;
 
+import javax.annotation.security.PermitAll;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -65,7 +67,7 @@ public interface RoleService {
 	List<Role> query(Role params);
 	
 	/**
-	 * 修改角色内容，并指明哪些属性忽略
+	 * 修改角色内容，但不能修改角色名
 	 * @param id
 	 * @param newEntity
 	 * @return 返回null表示没找到该角色
@@ -85,4 +87,12 @@ public interface RoleService {
 	 * @return
 	 */
 	List<Authority> getAuthorities();
+	
+	/**
+     * 通过id查找角色的名字
+     * @param id 角色id
+     * @return 角色名
+     */
+	@PermitAll
+    String getRoleName(Long id);
 }

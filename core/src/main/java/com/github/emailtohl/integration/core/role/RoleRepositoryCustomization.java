@@ -37,4 +37,11 @@ interface RoleRepositoryCustomization extends CriterionQueryRepository<Role> {
      */
     @Transactional
     boolean exist(String roleName);
+    
+    /**
+     * 通过id查找角色的名字
+     * @param id 角色id
+     * @return 角色名
+     */
+    String getRoleName(Long id);
 }

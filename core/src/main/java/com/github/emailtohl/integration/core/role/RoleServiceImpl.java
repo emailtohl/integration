@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -36,6 +35,7 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 	public Role create(Role entity) {
 		Role r = new Role();
 		r.setName(entity.getName());
+		r.setRoleType(entity.getRoleType());
 		r.setDescription(entity.getDescription());
 		entity.getAuthorities().forEach(a -> {
 			Authority p = null;
@@ -106,9 +106,6 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 		if (source == null) {
 			return null;
 		}
-		if (hasText(newEntity.getName())) {
-			source.setName(newEntity.getName());
-		}
 		if (newEntity.getRoleType() != null) {
 			source.setRoleType(newEntity.getRoleType());
 		}
@@ -163,6 +160,11 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 	public List<Authority> getAuthorities() {
 		return authorityRepository.findAll().stream().map(this::transientAuthority).collect(Collectors.toList());
 	}
+
+	@Override
+	public String getRoleName(Long id) {
+		return roleRepository.getRoleName(id);
+	}
 	
 	@Override
 	protected Role toTransient(Role source) {
@@ -170,26 +172,31 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 			return source;
 		}
 		Role target = new Role();
-		BeanUtils.copyProperties(source, target, "users", "authorities");
-		source.getAuthorities().forEach(a -> target.getAuthorities().add(new Authority(a.getName(), a.getDescription(), null)));
+		target.setId(source.getId());
+		target.setName(source.getName());
+		target.setRoleType(source.getRoleType());
+		target.setDescription(source.getDescription());
+		target.setCreateDate(source.getCreateDate());
+		target.setModifyDate(source.getModifyDate());
 		return target;
 	}
 
 	@Override
-	protected Role transientDetail(Role src) {
-		if (src == null) {
+	protected Role transientDetail(Role source) {
+		if (source == null) {
 			return null;
 		}
-		Role tar = new Role();
-		tar.setId(src.getId());
-		tar.setName(src.getName());
-		tar.setDescription(src.getDescription());
-		tar.setCreateDate(src.getCreateDate());
-		tar.setModifyDate(src.getModifyDate());
-		Set<Authority> authorities = src.getAuthorities().stream()
+		Role target = new Role();
+		target.setId(source.getId());
+		target.setName(source.getName());
+		target.setRoleType(source.getRoleType());
+		target.setDescription(source.getDescription());
+		target.setCreateDate(source.getCreateDate());
+		target.setModifyDate(source.getModifyDate());
+		Set<Authority> authorities = source.getAuthorities().stream()
 				.map(this::transientAuthorityDetail).collect(Collectors.toSet());
-		tar.getAuthorities().addAll(authorities);
-		return tar;
+		target.getAuthorities().addAll(authorities);
+		return target;
 	}
 	
 	protected Authority transientAuthority(Authority src) {
@@ -218,5 +225,4 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 		tar.setParent(transientAuthorityDetail(src.getParent()));
 		return tar;
 	}
-
 }

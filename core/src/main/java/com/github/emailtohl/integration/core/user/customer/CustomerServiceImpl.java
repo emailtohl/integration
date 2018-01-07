@@ -245,6 +245,11 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		return transientDetail(customerRepository.findByUsername(username));
 	}
 
+	@Override
+	public List<String> getUsernames(Long id) {
+		return customerRepository.getUsernames(id);
+	}
+
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer grandRoles(Long id, String... roleNames) {

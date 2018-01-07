@@ -1,5 +1,7 @@
 package com.github.emailtohl.integration.core.user.customer;
 
+import java.util.List;
+
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -51,6 +53,15 @@ class CustomerRepositoryImpl extends AbstractSearchableRepository<Customer> impl
 			result = entityManager.createQuery(q).getSingleResult();
 		} catch (NoResultException e) {}
 		return result;
+	}
+
+	@Override
+	public List<String> getUsernames(Long id) {
+		CriteriaBuilder b = entityManager.getCriteriaBuilder();
+		CriteriaQuery<String> q = b.createQuery(String.class);
+		Root<Customer> r = q.from(entityClass);
+		q = q.select(r.join("usernames")).where(b.equal(r.get("id"), id));
+		return entityManager.createQuery(q).getResultList();
 	}
 
 }

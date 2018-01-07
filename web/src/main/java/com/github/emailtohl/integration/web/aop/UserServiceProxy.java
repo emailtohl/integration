@@ -28,9 +28,7 @@ import com.github.emailtohl.integration.core.user.entities.User;
  * 
  * 在Activiti的User里，id存储的是业务系统User中的usernames，可以是客户的邮箱、客户的手机号，也可以是平台账号，这样便于部署流程时使用有意义的名字而不是数字id
  * 
- * 另外，在Activiti的User的FirstName里，存储的是业务系统User的id，便于删除Activiti的User时，通过业务系统User的id来删除。
- * 
- * 此外，在Activiti的User的LastName里，存储的是业务系统User的真实姓名，便于界面展示。
+ * 另外，在Activiti的User的FirstName里，存储的是业务系统User的name，LastName里，存储的是业务系统User的nickname，便于界面展示。
  * 
  * @author HeLei
  *

@@ -1,9 +1,5 @@
 package com.github.emailtohl.integration.web.controller;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -12,16 +8,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
-import java.util.Arrays;
 import java.util.Locale;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import javax.inject.Inject;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.mockito.stubbing.Answer;
+import org.junit.runner.RunWith;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
@@ -29,12 +23,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
+import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleService;
+import com.github.emailtohl.integration.core.role.RoleType;
+import com.github.emailtohl.integration.web.UserRoleConfig;
 import com.github.emailtohl.integration.web.WebTestData;
 import com.google.gson.Gson;
 
@@ -42,34 +41,27 @@ import com.google.gson.Gson;
  * 控制层测试
  * @author HeLei
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = UserRoleConfig.class)
 public class RoleCtrlTest {
-	private static final Logger logger = LogManager.getLogger();
-	Gson gson = new Gson();
+	@Inject
+	Gson gson;
+	@Inject
 	WebTestData td;
-	final Long id = 777L;
+	@Inject
+	RoleService roleService;
+	
+	Long id;
 	Pageable pageable = new PageRequest(0, 20);
 	MockMvc mockMvc;
 
 	@Before
 	public void setUp() throws Exception {
-		td = new WebTestData();
-		Answer<Object> answer = invocation -> {
-			logger.debug(invocation.getMethod());
-			logger.debug(invocation.getArguments());
-			return invocation.getMock();
-		};
-		RoleService roleService = Mockito.mock(RoleService.class);
-		when(roleService.create(any())).thenReturn(td.role_guest);
-		when(roleService.get(id)).thenReturn(td.role_guest);
-		when(roleService.update(id, td.role_guest)).thenReturn(td.role_guest);
-		when(roleService.exist(eq(td.role_staff.getName()))).thenReturn(true);
-		when(roleService.getAuthorities()).thenReturn(Arrays.asList(td.auth_customer_lock, td.auth_customer));
-		doAnswer(answer).when(roleService).delete(id);
-		
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setCharacterEncoding("UTF-8");
 	    MockHttpServletResponse response = new MockHttpServletResponse();
 	    response.getContentLength();
+	    
 	    RoleCtrl ctrl = new RoleCtrl();
 	    ctrl.setRoleService(roleService);
 	    mockMvc = standaloneSetup(ctrl)
@@ -81,13 +73,15 @@ public class RoleCtrlTest {
 	                }
 	            })
 	    		.build();
-	    
+	    Role entity = new Role("test", RoleType.CUSTOMER, "for test");
+	    entity = roleService.create(entity);
+	    id = entity.getId();
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		roleService.delete(id);
 	}
-
 
 	@Test
 	public void testCreate() throws Exception {

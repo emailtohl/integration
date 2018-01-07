@@ -191,6 +191,14 @@ public class CustomerServiceImplTest {
 		
 		System.out.println(gson.toJson(c));
 	}
+	
+	@Test
+	public void testGetUsernames() {
+		CoreTestData td = new CoreTestData();
+		Customer c = customerService.findByUsername(td.user_emailtohl.getCellPhone());
+		List<String> ls = customerService.getUsernames(c.getId());
+		assertEquals(2, ls.size());// email and cellPhone
+	}
 
 	@Test
 	public void testGrandRoles() {

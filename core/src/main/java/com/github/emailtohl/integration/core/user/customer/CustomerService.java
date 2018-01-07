@@ -12,6 +12,7 @@ import static com.github.emailtohl.integration.core.role.Authority.CUSTOMER_ROLE
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.security.PermitAll;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -112,6 +113,14 @@ public interface CustomerService {
 	 */
 	@PreAuthorize("hasAuthority('" + CUSTOMER + "') or" + SPEL_MATCH_CELL_PHONE_OR_EMAIL)
 	Customer findByUsername(@P("username") String username);
+	
+	/**
+	 * 通过id查找所有的用户名：邮箱、手机等用户唯一标识
+	 * @param id
+	 * @return
+	 */
+	@PermitAll
+	List<String> getUsernames(Long id);
 	
 	/**
 	 * 为客户授予角色

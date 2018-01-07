@@ -10,6 +10,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -168,13 +169,21 @@ public class UserRoleConfig {
 			roleNameDB.put(r.getName(), r);
 			return r;
 		});
-		when(service.get(any(Long.class))).thenAnswer(invocation -> {
+		when(service.get(anyLong())).thenAnswer(invocation -> {
 			Long roleId = (Long) invocation.getArguments()[0];
 			return roleDB.get(roleId);
 		});
-		when(service.get(any(String.class))).thenAnswer(invocation -> {
+		when(service.get(anyString())).thenAnswer(invocation -> {
 			String roleName = (String) invocation.getArguments()[0];
 			return roleNameDB.get(roleName);
+		});
+		when(service.getRoleName(anyLong())).thenAnswer(invocation -> {
+			Long roleId = (Long) invocation.getArguments()[0];
+			Role r = roleDB.get(roleId);
+			if (r == null) {
+				return null;
+			}
+			return r.getName();
 		});
 		when(service.update(any(), any())).thenAnswer(invocation -> {
 			Long roleId = (Long) invocation.getArguments()[0];
@@ -286,6 +295,17 @@ public class UserRoleConfig {
 		when(service.get(any())).thenAnswer(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];
 			return re.get(userId);
+		});
+		when(service.getUsernames(anyLong())).thenAnswer(invocation -> {
+			Long userId = (Long) invocation.getArguments()[0];
+			User u = re.get(userId);
+			List<String> usernames;
+			if (u instanceof Customer) {
+				usernames = new ArrayList<String>(((Customer) u).getUsernames());
+			} else {
+				usernames = new ArrayList<String>();
+			}
+			return usernames;
 		});
 		when(service.update(any(), any())).thenAnswer(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];

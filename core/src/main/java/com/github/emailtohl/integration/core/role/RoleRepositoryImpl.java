@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -96,5 +97,18 @@ class RoleRepositoryImpl extends AbstractCriterionQueryRepository<Role> implemen
 		q = q.select(cb.count(r)).where(cb.equal(r.get("name"), roleName));
 		Long count = em.createQuery(q).getSingleResult();
 		return count > 0;
+	}
+
+	@Override
+	public String getRoleName(Long id) {
+		CriteriaBuilder b = em.getCriteriaBuilder();
+		CriteriaQuery<String> q = b.createQuery(String.class);
+		Root<Role> r = q.from(Role.class);
+		q = q.select(r.get("name")).where(b.equal(r.get("id"), id));
+		String roleName = null;
+		try {
+			roleName = em.createQuery(q).getSingleResult();
+		} catch (NoResultException e) {}
+		return roleName;
 	}
 }

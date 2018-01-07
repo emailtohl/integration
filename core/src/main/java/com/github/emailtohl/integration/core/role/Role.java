@@ -51,7 +51,7 @@ public class Role extends BaseEntity {
 	private Set<Authority> authorities = new HashSet<Authority>();
 	
 	@org.hibernate.search.annotations.Field
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false, unique = true, updatable = false)
 	public String getName() {
 		return name;
 	}
