@@ -58,9 +58,6 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 	public Article create(Article entity) {
 		// 实际上这里就可以校验body与title是必填项
 		validate(entity);
-		if (entity == null) {
-			return null;
-		}
 		String body = entity.getBody();
 		// 若没有设置封面，则将第一幅图作为封面
 		if (!hasText(entity.getCover()) && hasText(body)) {
@@ -89,7 +86,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 			if (entity.getType().getId() != null) {
 				type = typeRepository.findOne(entity.getType().getId());
 			} else if (hasText(entity.getType().getName())) {
-				type = typeRepository.findByName(entity.getType().getName());
+				type = typeRepository.getByName(entity.getType().getName());
 			}
 		}
 		if (type != null) {
@@ -157,7 +154,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 			if (newEntity.getType().getId() != null) {
 				type = typeRepository.findOne(newEntity.getType().getId());
 			} else if (hasText(newEntity.getType().getName())) {
-				type = typeRepository.findByName(newEntity.getType().getName());
+				type = typeRepository.getByName(newEntity.getType().getName());
 			}
 		}
 		if (type != null) {

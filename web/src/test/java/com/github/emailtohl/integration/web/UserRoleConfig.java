@@ -321,10 +321,10 @@ public class UserRoleConfig {
 			re.delete(userId);
 			return invocation.getMock();
 		}).when(service).delete(any(Long.class));
-		when(service.findByUsername(td.user_emailtohl.getCellPhone())).thenReturn(td.user_emailtohl);
-		when(service.findByUsername(td.user_emailtohl.getEmail())).thenReturn(td.user_emailtohl);
-		when(service.findByUsername(td.baz.getCellPhone())).thenReturn(td.baz);
-		when(service.findByUsername(td.baz.getEmail())).thenReturn(td.baz);
+		when(service.getByUsername(td.user_emailtohl.getCellPhone())).thenReturn(td.user_emailtohl);
+		when(service.getByUsername(td.user_emailtohl.getEmail())).thenReturn(td.user_emailtohl);
+		when(service.getByUsername(td.baz.getCellPhone())).thenReturn(td.baz);
+		when(service.getByUsername(td.baz.getEmail())).thenReturn(td.baz);
 		
 		when(service.grandRoles(anyLong(), anyVararg())).thenAnswer(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];

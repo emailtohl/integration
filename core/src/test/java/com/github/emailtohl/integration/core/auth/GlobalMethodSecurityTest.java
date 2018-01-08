@@ -186,7 +186,7 @@ public class GlobalMethodSecurityTest {
 		}
 		assertNull(baz);
 		try {
-			baz = customerService.findByUsername(randomCellPhoneOrEmail(td.baz));
+			baz = customerService.getByUsername(randomCellPhoneOrEmail(td.baz));
 		} catch (Exception e) {
 			assertTrue(e instanceof AuthenticationCredentialsNotFoundException);
 		}
@@ -230,7 +230,7 @@ public class GlobalMethodSecurityTest {
 		scm.setEmailtohl();
 		baz = customerService.get(td.baz.getId());
 		assertNotNull(baz);
-		baz = customerService.findByUsername(randomCellPhoneOrEmail(td.baz));
+		baz = customerService.getByUsername(randomCellPhoneOrEmail(td.baz));
 		assertNotNull(baz);
 		td.baz.setName("_baz");
 		baz = customerService.update(td.baz.getId(), td.baz);
@@ -254,7 +254,7 @@ public class GlobalMethodSecurityTest {
 		scm.setBaz();
 		baz = customerService.get(td.baz.getId());
 		assertNotNull(baz);
-		baz = customerService.findByUsername(randomCellPhoneOrEmail(td.baz));
+		baz = customerService.getByUsername(randomCellPhoneOrEmail(td.baz));
 		assertNotNull(baz);
 		baz = customerService.update(td.baz.getId(), new Customer());
 //		assertNotNull(baz);

@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -318,6 +319,10 @@ public class User extends BaseEntity {
 	}
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+	
+	public Set<String> roleNames() {
+		return roles.stream().map(r -> r.getName()).collect(Collectors.toSet());
 	}
 	
 	@Override

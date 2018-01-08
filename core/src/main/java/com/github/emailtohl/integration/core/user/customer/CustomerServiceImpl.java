@@ -219,7 +219,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	}
 
 	@Override
-	public Customer findByUsername(String username) {
+	public Customer getByUsername(String username) {
 		return transientDetail(customerRepository.findByUsername(username));
 	}
 

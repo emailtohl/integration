@@ -112,7 +112,7 @@ public interface CustomerService {
 	 * @return
 	 */
 	@PreAuthorize("hasAuthority('" + CUSTOMER + "') or" + SPEL_MATCH_CELL_PHONE_OR_EMAIL)
-	Customer findByUsername(@P("username") String username);
+	Customer getByUsername(@P("username") String username);
 	
 	/**
 	 * 通过id查找所有的用户名：邮箱、手机等用户唯一标识

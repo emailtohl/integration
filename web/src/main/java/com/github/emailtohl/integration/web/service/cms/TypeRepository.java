@@ -16,7 +16,7 @@ interface TypeRepository extends JpaRepository<Type, Long> {
 	 * @param name
 	 * @return
 	 */
-	Type findByName(String name);
+	Type getByName(String name);
 	
 	/**
 	 * 分页查询文章类型

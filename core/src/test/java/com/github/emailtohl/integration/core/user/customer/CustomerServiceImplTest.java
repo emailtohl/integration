@@ -182,11 +182,11 @@ public class CustomerServiceImplTest {
 	}
 
 	@Test
-	public void testFindByUsername() {
+	public void testGetByUsername() {
 		CoreTestData td = new CoreTestData();
-		Customer c = customerService.findByUsername(td.baz.getCellPhone());
+		Customer c = customerService.getByUsername(td.baz.getCellPhone());
 		assertNotNull(c);
-		c = customerService.findByUsername(td.baz.getEmail());
+		c = customerService.getByUsername(td.baz.getEmail());
 		assertNotNull(c);
 		
 		System.out.println(gson.toJson(c));
@@ -195,7 +195,7 @@ public class CustomerServiceImplTest {
 	@Test
 	public void testGetUsernames() {
 		CoreTestData td = new CoreTestData();
-		Customer c = customerService.findByUsername(td.baz.getCellPhone());
+		Customer c = customerService.getByUsername(td.baz.getCellPhone());
 		List<String> ls = customerService.getUsernames(c.getId());
 		assertEquals(2, ls.size());// email and cellPhone
 	}
@@ -256,7 +256,7 @@ public class CustomerServiceImplTest {
 	public void testChangeCellPhone() {
 		String newPhone = "19089023456";
 		customerService.changeCellPhone(id, newPhone);
-		customerService.findByUsername(newPhone);
+		customerService.getByUsername(newPhone);
 		ExecResult r = customerService.login(newPhone, password);
 		assertTrue(r.ok);
 	}
@@ -265,7 +265,7 @@ public class CustomerServiceImplTest {
 	public void testChangeEmail() {
 		String newEmail = "newEmail@test.com";
 		customerService.changeEmail(id, newEmail);
-		Customer c = customerService.findByUsername(newEmail);
+		Customer c = customerService.getByUsername(newEmail);
 		assertNotNull(c);
 	}
 	
@@ -405,7 +405,7 @@ public class CustomerServiceImplTest {
 	
 	@Test(expected = NotAcceptableException.class)
 	public void testDelete() {
-		Customer c = customerService.findByUsername(Constant.ANONYMOUS_EMAIL);
+		Customer c = customerService.getByUsername(Constant.ANONYMOUS_EMAIL);
 		customerService.delete(c.getId());
 	}
 }

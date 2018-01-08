@@ -94,7 +94,7 @@ public class CmsServiceImpl implements CmsService {
 			tn = article.getType().getName();
 		}
 		if (StringUtils.hasText(tn)) {
-			Type t = typeRepository.findByName(tn);
+			Type t = typeRepository.getByName(tn);
 			if (t != null) {
 				a.setType(t);
 				t.getArticles().add(a);
@@ -121,7 +121,7 @@ public class CmsServiceImpl implements CmsService {
 			if (pa.getType() != null) {
 				pa.getType().getArticles().remove(pa);
 			}
-			Type pt = typeRepository.findByName(t.getName());
+			Type pt = typeRepository.getByName(t.getName());
 			pa.setType(pt);
 			pt.getArticles().add(pa);
 		}
@@ -140,7 +140,7 @@ public class CmsServiceImpl implements CmsService {
 		if (StringUtils.hasText(summary))
 			article.setSummary(summary);
 		if (StringUtils.hasText(type)) {
-			Type t = typeRepository.findByName(type);
+			Type t = typeRepository.getByName(type);
 			if (t != null) {
 				article.setType(t);
 			}
@@ -292,7 +292,7 @@ public class CmsServiceImpl implements CmsService {
 
 	@Override
 	public Type findTypeByName(String name) {
-		Type p = typeRepository.findByName(name);
+		Type p = typeRepository.getByName(name);
 		return typeFilter(p);
 	}
 
@@ -302,7 +302,7 @@ public class CmsServiceImpl implements CmsService {
 		t.setName(name);
 		t.setDescription(description);
 		if (StringUtils.hasText(parent)) {
-			Type p = typeRepository.findByName(parent);
+			Type p = typeRepository.getByName(parent);
 			if (p != null) {
 				t.setParent(p);
 			}
@@ -321,7 +321,7 @@ public class CmsServiceImpl implements CmsService {
 		if (StringUtils.hasText(description))
 			pt.setDescription(description);
 		if (StringUtils.hasText(parent)) {
-			Type pa = typeRepository.findByName(parent);
+			Type pa = typeRepository.getByName(parent);
 			if (pa != null) {
 				pt.setParent(pa);
 			}

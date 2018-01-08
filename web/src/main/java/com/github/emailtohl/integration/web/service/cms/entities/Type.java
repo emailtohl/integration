@@ -34,6 +34,15 @@ public class Type extends BaseEntity {
 	 */
 	private String description;
 	
+	public Type() {}
+	
+	public Type(String name, String description, Type parent) {
+		super();
+		this.name = name;
+		this.description = description;
+		this.parent = parent;
+	}
+
 	/**
 	 * 上一级分类
 	 */
