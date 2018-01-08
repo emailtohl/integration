@@ -19,7 +19,8 @@ import com.github.emailtohl.integration.core.user.entities.CustomerRef;
  */
 @Repository
 class CustomerRepositoryImpl extends AbstractSearchableRepository<Customer> implements CustomerRepositoryCustomization {
-
+	private static final String USERNAMES_PROPERTY_NAME = "usernames";
+	
 	@Override
 	public Customer create(Customer customer) {
 		entityManager.persist(customer);
@@ -30,11 +31,20 @@ class CustomerRepositoryImpl extends AbstractSearchableRepository<Customer> impl
 	}
 
 	@Override
+	public boolean usernameIsExist(String username) {
+		CriteriaBuilder b = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Boolean> q = b.createQuery(Boolean.class);
+		Root<Customer> r = q.from(entityClass);
+		q = q.select(b.greaterThan(b.count(r), 0L)).where(b.equal(r.join(USERNAMES_PROPERTY_NAME), username));
+		return entityManager.createQuery(q).getSingleResult();
+	}
+	
+	@Override
 	public Customer findByUsername(String username) {
 		CriteriaBuilder b = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Customer> q = b.createQuery(entityClass);
 		Root<Customer> r = q.from(entityClass);
-		q = q.select(r).where(b.equal(r.join("usernames"), username));
+		q = q.select(r).where(b.equal(r.join(USERNAMES_PROPERTY_NAME), username));
 		Customer result = null;
 		try {
 			result = entityManager.createQuery(q).getSingleResult();
@@ -47,7 +57,7 @@ class CustomerRepositoryImpl extends AbstractSearchableRepository<Customer> impl
 		CriteriaBuilder b = entityManager.getCriteriaBuilder();
 		CriteriaQuery<CustomerRef> q = b.createQuery(CustomerRef.class);
 		Root<Customer> r = q.from(entityClass);
-		q = q.select(r.get("customerRef")).where(b.equal(r.join("usernames"), username));
+		q = q.select(r.get("customerRef")).where(b.equal(r.join(USERNAMES_PROPERTY_NAME), username));
 		CustomerRef result = null;
 		try {
 			result = entityManager.createQuery(q).getSingleResult();
@@ -60,7 +70,7 @@ class CustomerRepositoryImpl extends AbstractSearchableRepository<Customer> impl
 		CriteriaBuilder b = entityManager.getCriteriaBuilder();
 		CriteriaQuery<String> q = b.createQuery(String.class);
 		Root<Customer> r = q.from(entityClass);
-		q = q.select(r.join("usernames")).where(b.equal(r.get("id"), id));
+		q = q.select(r.join(USERNAMES_PROPERTY_NAME)).where(b.equal(r.get("id"), id));
 		return entityManager.createQuery(q).getResultList();
 	}
 

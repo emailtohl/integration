@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -62,17 +61,6 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	ThreadPoolTaskScheduler taskScheduler;
 
 	/**
-	 * 用于匹配的邮箱的matcher
-	 */
-	private ExampleMatcher emailMatcher = ExampleMatcher.matching().withMatcher("email",
-			GenericPropertyMatchers.caseSensitive());
-	/**
-	 * 用于匹配的电话的matcher
-	 */
-	private ExampleMatcher cellPhoneMatcher = ExampleMatcher.matching().withMatcher("cellPhone",
-			GenericPropertyMatchers.caseSensitive());
-
-	/**
 	 * 缓存名
 	 */
 	public static final String CACHE_NAME = "customer_cache";
@@ -106,17 +94,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	@Override
 	public boolean exist(Object matcherValue) {
 		String _matcherValue = (String) matcherValue;
-		Customer c = new Customer();
-		Example<Customer> example;
-		Matcher m = Constant.PATTERN_EMAIL.matcher(_matcherValue);
-		if (m.find()) {
-			c.setEmail(_matcherValue);
-			example = Example.<Customer>of(c, emailMatcher);
-		} else {
-			c.setCellPhone(_matcherValue);
-			example = Example.<Customer>of(c, cellPhoneMatcher);
-		}
-		return customerRepository.exists(example);
+		return customerRepository.usernameIsExist(_matcherValue);
 	}
 
 	@Cacheable(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")

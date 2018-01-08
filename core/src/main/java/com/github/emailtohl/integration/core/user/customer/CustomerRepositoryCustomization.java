@@ -14,6 +14,8 @@ interface CustomerRepositoryCustomization extends SearchableRepository<Customer>
 	
 	Customer create(Customer customer);
 	
+	boolean usernameIsExist(String username);
+	
 	Customer findByUsername(String username);
 	
 	CustomerRef findRefByUsername(String username);
