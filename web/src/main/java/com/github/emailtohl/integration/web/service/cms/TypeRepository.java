@@ -1,5 +1,7 @@
 package com.github.emailtohl.integration.web.service.cms;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,5 +27,12 @@ interface TypeRepository extends JpaRepository<Type, Long> {
 	 * @return
 	 */
 	Page<Type> findByNameLike(String name, Pageable pageable);
+	
+	/**
+	 * 查询父id下的所有类型
+	 * @param id
+	 * @return
+	 */
+	List<Type> findByParentId(Long id);
 	
 }

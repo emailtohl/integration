@@ -60,6 +60,7 @@ public interface CompanyService {
 
 	/**
 	 * 修改公司内容，并指明哪些属性忽略
+	 * 若修改父级节点，则父级节点不能是本实例的下级节点，否则会出现循环引用
 	 * @param id
 	 * @param newEntity
 	 * @return 返回null表示没找到该公司

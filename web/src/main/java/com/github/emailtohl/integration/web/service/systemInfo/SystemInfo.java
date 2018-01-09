@@ -59,5 +59,5 @@ public class SystemInfo {
 	public void remove(Observe o) {
 		observes.remove(o);
 	}
-	
+
 }

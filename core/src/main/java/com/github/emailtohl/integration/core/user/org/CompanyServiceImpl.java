@@ -117,12 +117,20 @@ public class CompanyServiceImpl extends StandardService<Company> implements Comp
 		if (newEntity.getResponsiblePerson() != null) {
 			src.setResponsiblePerson(newEntity.getResponsiblePerson());
 		}
-		Company p = newEntity.getParent();
-		if (p != null && hasText(p.getName())) {
-			Company pc = companyRepository.findByName(p.getName());
-			if (pc != null) {
-				src.setParent(pc);
+		
+		Company parent = null;
+		if (newEntity.getParent() != null) {
+			if (newEntity.getParent().getId() != null) {
+				parent = companyRepository.findOne(newEntity.getParent().getId());
+			} else if (hasText(newEntity.getParent().getName())) {
+				parent = companyRepository.findByName(newEntity.getParent().getName());
 			}
+		}
+		// 父级节点不能是本实例的下级节点，否则会出现循环引用
+		if (parent != null && (parent.getParent() == null || !parent.getParent().equals(src))) {
+			// 将本节点的下级节点全部连接到本节点的上级节点（本节点的上级节点可以是null）
+			companyRepository.findByParentId(id).forEach(sub -> sub.setParent(src.getParent()));
+			src.setParent(parent);
 		}
 		return transientDetail(src);
 	}
@@ -134,9 +142,8 @@ public class CompanyServiceImpl extends StandardService<Company> implements Comp
 		if (src == null) {
 			return;
 		}
-		Company parent = src.getParent();
 		// 将本公司的下级公司连接到本公司的上级公司（本公司的上级公司可以是null）
-		companyRepository.findByParentId(src.getId()).forEach(d -> d.setParent(parent));
+		companyRepository.findByParentId(id).forEach(sub -> sub.setParent(src.getParent()));
 		src.getDepartments().forEach(d -> d.setCompany(null));
 		src.getDepartments().clear();
 		companyRepository.delete(src);

@@ -27,7 +27,7 @@ import com.github.emailtohl.integration.web.service.cms.entities.Type;
  */
 @Service
 @Transactional
-public class TypeServiceImpl extends StandardService<Type> {
+public class TypeServiceImpl extends StandardService<Type> implements TypeService {
 	TypeRepository typeRepository;
 
 	/**
@@ -117,16 +117,20 @@ public class TypeServiceImpl extends StandardService<Type> {
 		if (newEntity.getDescription() != null) {
 			source.setDescription(newEntity.getDescription());
 		}
+		Type parent = null;
 		if (newEntity.getParent() != null) {
-			Type parent = null;
+			// 先将本type所有子类型的parent更改为本type的parent
 			if (newEntity.getParent().getId() != null) {
 				parent = typeRepository.findOne(newEntity.getParent().getId());
 			} else if (hasText(newEntity.getParent().getName())) {
 				parent = typeRepository.getByName(newEntity.getParent().getName());
 			}
-			if (parent != null) {
-				source.setParent(parent);
-			}
+		}
+		// 父级节点不能是本实例的下级节点，否则会出现循环引用
+		if (parent != null && (parent.getParent() == null || !parent.getParent().equals(source))) {
+			// 将本节点的下级节点全部连接到本节点的上级节点（本节点的上级节点可以是null）
+			typeRepository.findByParentId(id).forEach(sub -> sub.setParent(source.getParent()));
+			source.setParent(parent);
 		}
 		return transientDetail(source);
 	}
@@ -141,6 +145,8 @@ public class TypeServiceImpl extends StandardService<Type> {
 		source.getArticles().forEach(a -> {
 			a.setType(null);
 		});
+		// 将原先以本type为parent的下级type改为连接到本type的上级（本type的上级type可以是null）
+		typeRepository.findByParentId(id).forEach(sub -> sub.setParent(source.getParent()));
 		typeRepository.delete(source);
 	}
 
@@ -167,5 +173,5 @@ public class TypeServiceImpl extends StandardService<Type> {
 		tar.setModifyDate(entity.getModifyDate());
 		return tar;
 	}
-
+	
 }

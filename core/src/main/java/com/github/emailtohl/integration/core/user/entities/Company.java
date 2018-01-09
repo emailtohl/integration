@@ -73,7 +73,7 @@ public class Company extends BaseEntity {
 	public void setParent(Company parent) {
 		this.parent = parent;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "Company [name=" + name + ", description=" + description + ", responsiblePerson=" + responsiblePerson

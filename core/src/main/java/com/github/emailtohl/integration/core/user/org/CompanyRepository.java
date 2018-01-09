@@ -12,8 +12,18 @@ import com.github.emailtohl.integration.core.user.entities.Company;
  */
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 	
+	/**
+	 * 根据公司名查询公司
+	 * @param name
+	 * @return
+	 */
 	Company findByName(String name);
 	
+	/**
+	 * 查询父id下的所有公司
+	 * @param id
+	 * @return
+	 */
 	List<Company> findByParentId(Long id);
 	
 }

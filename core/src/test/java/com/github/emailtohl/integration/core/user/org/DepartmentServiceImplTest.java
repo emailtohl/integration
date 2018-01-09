@@ -144,6 +144,7 @@ public class DepartmentServiceImplTest {
 		ud.setDescription("update");
 		Department son1 = departmentService.get(sid1);
 		ud.setParent(son1);
+		// 更新son2，并将son1作为son2的父节点
 		Department newDepart = departmentService.update(sid2, ud);
 		assertEquals("update", newDepart.getName());
 		assertEquals("update", newDepart.getDescription());

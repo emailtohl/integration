@@ -130,12 +130,19 @@ public class DepartmentServiceImpl extends StandardService<Department> implement
 		if (newEntity.getResponsiblePerson() != null) {
 			src.setResponsiblePerson(newEntity.getResponsiblePerson());
 		}
-		Department p = newEntity.getParent();
-		if (p != null && hasText(p.getName())) {
-			Department pd = departmentRepository.findByName(p.getName());
-			if (pd != null) {
-				src.setParent(pd);
+		Department parent = null;
+		if (newEntity.getParent() != null) {
+			if (newEntity.getParent().getId() != null) {
+				parent = departmentRepository.getOne(newEntity.getParent().getId());
+			} else if (hasText(newEntity.getParent().getName())) {
+				parent = departmentRepository.findByName(newEntity.getParent().getName());
 			}
+		}
+		// 父级节点不能是本实例的下级节点，否则会出现循环引用
+		if (parent != null && (parent.getParent() == null || !parent.getParent().equals(src))) {
+			// 将本节点的下级节点全部连接到本节点的上级节点（本节点的上级节点可以是null）
+			departmentRepository.findByParentId(id).forEach(sub -> sub.setParent(src.getParent()));
+			src.setParent(parent);
 		}
 		Company c = newEntity.getCompany();
 		if (c != null && hasText(c.getName())) {
@@ -159,9 +166,8 @@ public class DepartmentServiceImpl extends StandardService<Department> implement
 			c.getDepartments().remove(src);
 		}
 		src.setCompany(null);
-		Department parent = src.getParent();
 		// 将本部门的下级部门连接到本部门的上级部门（本部门的上级部门可以是null）
-		departmentRepository.findByParentId(src.getId()).forEach(d -> d.setParent(parent));
+		departmentRepository.findByParentId(id).forEach(d -> d.setParent(src.getParent()));
 		src.getEmployees().forEach(e -> e.setDepartment(null));
 		src.getEmployees().clear();
 		departmentRepository.delete(src);

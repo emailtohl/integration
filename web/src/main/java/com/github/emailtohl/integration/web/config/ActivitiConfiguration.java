@@ -1,5 +1,8 @@
 package com.github.emailtohl.integration.web.config;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.inject.Named;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -59,8 +62,17 @@ public class ActivitiConfiguration {
 		cfg.setJpaCloseEntityManager(false);
 		
 		cfg.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
-		cfg.setActivityFontName("宋体");
-		cfg.setLabelFontName("宋体");
+		
+		// Windows环境下设置字体
+		String os = System.getenv().get("OS");
+		if (os != null) {
+			Pattern p = Pattern.compile("Windows", Pattern.CASE_INSENSITIVE);
+			Matcher m = p.matcher(os);
+			if (m.find()) {
+				cfg.setActivityFontName("宋体");
+				cfg.setLabelFontName("宋体");
+			}
+		}
 		return cfg;
 	}
 
