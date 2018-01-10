@@ -5,12 +5,13 @@ import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
+import org.activiti.engine.IdentityService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,8 +23,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
+import com.github.emailtohl.integration.core.config.PresetData;
 import com.github.emailtohl.integration.web.WebTestConfig;
-import com.github.emailtohl.integration.web.WebTestData;
 import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
 import com.google.gson.Gson;
@@ -41,7 +42,10 @@ public class ArticleServiceImplTest {
 	@Inject
 	ArticleService articleService;
 	@Inject
-	WebTestData td;
+	IdentityService identityService;
+	@Inject
+	@Named("presetData")
+	PresetData pd;
 	@Inject
 	Gson gson;
 	
@@ -55,7 +59,8 @@ public class ArticleServiceImplTest {
 		typeId = tp.getId();
 		Article a = new Article("文章名", "关键词", "正文", "概述");
 		a.setType(tp);
-		StandardService.CURRENT_USERNAME.set(td.baz.getEmail());
+		StandardService.CURRENT_USERNAME.set(pd.user_emailtohl.getEmail());
+		identityService.setAuthenticatedUserId(pd.user_emailtohl.getId().toString());
 		a = articleService.create(a);
 		articleId = a.getId();
 	}

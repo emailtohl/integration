@@ -14,14 +14,14 @@ import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;
-import com.github.emailtohl.integration.web.config.ActivitiConfiguration;
+import com.github.emailtohl.integration.web.config.DataConfiguration;
 
 /**
  * 对Web层测试的配置
  * @author HeLei
  */
 @Configurable
-@Import(ActivitiConfiguration.class)
+@Import(DataConfiguration.class)
 @ComponentScan({"com.github.emailtohl.integration.web.aop", "com.github.emailtohl.integration.web.service"})
 @EnableAspectJAutoProxy
 public class WebTestConfig {

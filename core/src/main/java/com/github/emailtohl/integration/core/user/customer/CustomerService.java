@@ -89,7 +89,7 @@ public interface CustomerService {
 	 * @exception NotAcceptableException 不能删除内置账号
 	 */
 	@PreAuthorize("hasAuthority('" + CUSTOMER_DELETE + "')")
-	void delete(Long id);
+	void delete(Long id) throws NotAcceptableException;
 	/**
 	 * 全文查询
 	 * @param query

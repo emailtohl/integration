@@ -111,8 +111,8 @@ public class Article extends BaseEntity implements Comparable<Article> {
 	}
 	
 	@org.hibernate.envers.NotAudited
-	@ManyToOne
-	@JoinColumn(name = "article_type_id", nullable = true)
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "article_type_id")
 	public Type getType() {
 		return type;
 	}
@@ -129,7 +129,7 @@ public class Article extends BaseEntity implements Comparable<Article> {
 	}
 	
 	@org.hibernate.search.annotations.IndexedEmbedded(depth = 1)
-	@ManyToOne(optional = false)
+	@ManyToOne
 	@JoinColumn(name = "approver_id")
 	public EmployeeRef getApprover() {
 		return approver;

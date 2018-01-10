@@ -9,6 +9,7 @@ import javax.annotation.security.PermitAll;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 
 /**
@@ -78,9 +79,10 @@ public interface RoleService {
 	/**
 	 * 根据ID删除角色
 	 * @param id
+	 * @exception NotAcceptableException 不能删除内置角色
 	 */
 	@PreAuthorize("hasAuthority('" + ROLE + "')")
-	void delete(Long id);
+	void delete(Long id) throws NotAcceptableException;
 	
 	/**
 	 * 获取所有权限

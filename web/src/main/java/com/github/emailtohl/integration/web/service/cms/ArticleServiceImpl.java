@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
+import com.github.emailtohl.integration.core.config.PresetData;
 import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
@@ -37,6 +38,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 	TypeRepository typeRepository;
 	UserService userService;
 	CustomerService customerService;
+	PresetData presetData;
 	
 	private static final Pattern IMG_PATTERN = Pattern.compile("<img\\b[^<>]*?\\bsrc[\\s\\t\\r\\n]*=[\\s\\t\\r\\n]*[\"\"']?[\\s\\t\\r\\n]*(?<imgUrl>[^\\s\\t\\r\\n\"\"'<>]*)[^<>]*?/?[\\s\\t\\r\\n]*>");
 	/**
@@ -45,12 +47,15 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 	public static final String CACHE_NAME = "article_cache";
 
 	public ArticleServiceImpl(ArticleRepository articleRepository, CommentRepository commentRepository,
-			TypeRepository typeRepository, UserService userService, CustomerService customerService) {
+			TypeRepository typeRepository, UserService userService, CustomerService customerService,
+			PresetData presetData) {
 		super();
 		this.articleRepository = articleRepository;
 		this.commentRepository = commentRepository;
 		this.typeRepository = typeRepository;
+		this.userService = userService;
 		this.customerService = customerService;
+		this.presetData = presetData;
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#result.id")
@@ -78,9 +83,16 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 			entity.setSummary(summary.replaceAll(IMG_PATTERN.pattern(), ""));
 		}
 		String username = CURRENT_USERNAME.get();
-		if (hasText(username)) {
-			entity.setAuthor(userService.findRef(username));
+		UserRef userRef;
+		if (!hasText(username)) {
+			userRef = presetData.user_anonymous.getCustomerRef();
+		} else {
+			userRef = userService.findRef(username);
 		}
+		if (userRef == null) {
+			userRef = presetData.user_anonymous.getCustomerRef();
+		}
+		entity.setAuthor(userRef);
 		Type type = null;
 		if (entity.getType() != null) {
 			if (entity.getType().getId() != null) {

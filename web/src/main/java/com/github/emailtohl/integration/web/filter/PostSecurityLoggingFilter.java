@@ -3,11 +3,6 @@ package com.github.emailtohl.integration.web.filter;
 import java.io.IOException;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -30,7 +25,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.auth.UserDetailsImpl;
 import com.github.emailtohl.integration.core.config.Constant;
-import com.github.emailtohl.integration.core.user.entities.Customer;
+import com.github.emailtohl.integration.core.config.PresetData;
 /**
  * 在spring security过滤器之后执行
  * 
@@ -46,7 +41,7 @@ public class PostSecurityLoggingFilter implements Filter {
 	@Inject
 	IdentityService identityService;
 	@Inject
-	EntityManagerFactory entityManagerFactory;
+	PresetData presetData;
 	
 	Long anonymousId;
 	
@@ -64,16 +59,7 @@ public class PostSecurityLoggingFilter implements Filter {
 		AutowireCapableBeanFactory factory = context.getAutowireCapableBeanFactory();
 		factory.autowireBeanProperties(this, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
 		factory.initializeBean(this, "PostSecurityLoggingFilter");
-		// 直接访问数据库，避开初始化时各种校验层的影响
-		EntityManager em = entityManagerFactory.createEntityManager();
-		em.getTransaction().begin();
-		CriteriaBuilder b = em.getCriteriaBuilder();
-		CriteriaQuery<Long> q = b.createQuery(Long.class);
-		Root<Customer> r = q.from(Customer.class);
-		q = q.select(r.get("id")).where(b.equal(r.<String>get("email"), Constant.ANONYMOUS_EMAIL));
-		anonymousId = em.createQuery(q).getSingleResult();
-		em.getTransaction().commit();
-		em.close();
+		anonymousId = presetData.user_anonymous.getId();
 	}
 	
 	/**

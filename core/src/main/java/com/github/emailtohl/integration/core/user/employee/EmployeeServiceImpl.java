@@ -29,6 +29,7 @@ import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.Constant;
+import com.github.emailtohl.integration.core.config.PresetData;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleRepository;
 import com.github.emailtohl.integration.core.user.entities.Department;
@@ -55,6 +56,8 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 	DepartmentRepository departmentRepository;
 	@Inject
 	EmployeeRefRepository employeeRefRepository;
+	@Inject
+	PresetData presetData;
 
 	/**
 	 * 缓存名
@@ -168,6 +171,9 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 	@CacheEvict(value = CACHE_NAME, key = "#root.args[0]")
 	@Override
 	public void delete(Long id) {
+		if (presetData.user_admin.getId().equals(id) || presetData.user_bot.getId().equals(id)) {
+			throw new NotAcceptableException("不能删除内置账号");
+		}
 		Employee source = employeeRepository.getOne(id);
 		if (source == null) {
 			return;

@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.user.entities.Employee;
@@ -84,7 +85,7 @@ public interface EmployeeService {
 	 * @exception NotAcceptableException 不能删除内置账号
 	 */
 	@PreAuthorize("hasAuthority('" + EMPLOYEE_DELETE + "')")
-	void delete(Long id);
+	void delete(Long id) throws NotAcceptableException;
 	
 	/**
 	 * 全文查询

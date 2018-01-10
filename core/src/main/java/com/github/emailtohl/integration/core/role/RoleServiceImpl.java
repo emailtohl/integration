@@ -15,8 +15,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
+import com.github.emailtohl.integration.core.config.PresetData;
 import com.github.emailtohl.integration.core.user.entities.User;
 /**
  * 角色管理服务的实现
@@ -27,8 +29,12 @@ import com.github.emailtohl.integration.core.user.entities.User;
 public class RoleServiceImpl extends StandardService<Role> implements RoleService {
 	private static final String CACHE_NAME_ROLE = "roleCache";
 	private static final String CACHE_NAME_AUTHORITY = "authorityListCache";
-	@Inject RoleRepository roleRepository;
-	@Inject AuthorityRepository authorityRepository;
+	@Inject
+	RoleRepository roleRepository;
+	@Inject
+	AuthorityRepository authorityRepository;
+	@Inject
+	PresetData presetData;
 
 	@CachePut(value = CACHE_NAME_ROLE, key = "#result.id")
 	@Override
@@ -137,6 +143,10 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 	@CacheEvict(value = CACHE_NAME_ROLE, key = "#root.args[0]")
 	@Override
 	public void delete(Long id) {
+		if (presetData.role_admin.getId().equals(id) || presetData.role_manager.getId().equals(id)
+				|| presetData.role_staff.getId().equals(id) || presetData.role_guest.getId().equals(id)) {
+			throw new NotAcceptableException("不能删除内置角色");
+		}
 		Role source = roleRepository.get(id);
 		if (source == null) {
 			return;

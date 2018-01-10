@@ -22,7 +22,7 @@ import freemarker.template.TemplateExceptionHandler;
 @Configuration
 //启动Aspect动态代理
 @EnableAspectJAutoProxy
-@Import({ ActivitiConfiguration.class, SecurityConfiguration.class })
+@Import({ DataConfiguration.class, SecurityConfiguration.class })
 @ComponentScan(basePackages = "com.github.emailtohl.integration.web", excludeFilters = @ComponentScan.Filter({
 	Controller.class, Configuration.class }))
 public class ServiceConfiguration {

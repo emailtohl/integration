@@ -30,6 +30,7 @@ import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.Constant;
+import com.github.emailtohl.integration.core.config.PresetData;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleRepository;
 import com.github.emailtohl.integration.core.user.entities.Card;
@@ -59,6 +60,8 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	RoleRepository roleRepository;
 	@Inject
 	ThreadPoolTaskScheduler taskScheduler;
+	@Inject
+	PresetData presetData;
 
 	/**
 	 * 缓存名
@@ -164,6 +167,9 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	@CacheEvict(value = CACHE_NAME, key = "#root.args[0]")
 	@Override
 	public void delete(Long id) {
+		if (presetData.user_anonymous.getId().equals(id)) {
+			throw new NotAcceptableException("不能删除内置账号");
+		}
 		Customer source = customerRepository.getOne(id);
 		if (source == null) {
 			return;
