@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.user.entities.Company;
 
@@ -59,14 +60,15 @@ public interface CompanyService {
 	List<Company> query(Company params);
 
 	/**
-	 * 修改公司内容，并指明哪些属性忽略
+	 * 修改公司的基本属性
 	 * 若修改父级节点，则父级节点不能是本实例的下级节点，否则会出现循环引用
 	 * @param id
 	 * @param newEntity
 	 * @return 返回null表示没找到该公司
+	 * @throws NotAcceptableException 父级节点不能是本实例的下级节点，否则会出现循环引用
 	 */
 	@PreAuthorize("hasAuthority('" + ORG + "')")
-	Company update(Long id, Company newEntity);
+	Company update(Long id, Company newEntity) throws NotAcceptableException;
 
 	/**
 	 * 根据ID删除公司

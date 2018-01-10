@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
@@ -117,20 +118,21 @@ public class TypeServiceImpl extends StandardService<Type> implements TypeServic
 		if (newEntity.getDescription() != null) {
 			source.setDescription(newEntity.getDescription());
 		}
-		Type parent = null;
+		Type targetParent = null;
 		if (newEntity.getParent() != null) {
 			// 先将本type所有子类型的parent更改为本type的parent
 			if (newEntity.getParent().getId() != null) {
-				parent = typeRepository.findOne(newEntity.getParent().getId());
+				targetParent = typeRepository.findOne(newEntity.getParent().getId());
 			} else if (hasText(newEntity.getParent().getName())) {
-				parent = typeRepository.getByName(newEntity.getParent().getName());
+				targetParent = typeRepository.getByName(newEntity.getParent().getName());
 			}
 		}
 		// 父级节点不能是本实例的下级节点，否则会出现循环引用
-		if (parent != null && (parent.getParent() == null || !parent.getParent().equals(source))) {
-			// 将本节点的下级节点全部连接到本节点的上级节点（本节点的上级节点可以是null）
-			typeRepository.findByParentId(id).forEach(sub -> sub.setParent(source.getParent()));
-			source.setParent(parent);
+		if (targetParent != null) {
+			if (source.isAncestorOf(targetParent)) {
+				throw new NotAcceptableException("父级节点不能是本实例的下级节点，否则会出现循环引用");
+			}
+			source.setParent(targetParent);
 		}
 		return transientDetail(source);
 	}

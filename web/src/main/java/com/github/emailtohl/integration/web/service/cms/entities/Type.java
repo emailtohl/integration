@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
+import com.github.emailtohl.integration.core.common.SelfRef;
 
 /**
  * 文章的分类
@@ -21,7 +22,7 @@ import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
  */
 @Entity
 @Table(name = "article_type")
-public class Type extends BaseEntity {
+public class Type extends BaseEntity implements SelfRef {
 	private static final long serialVersionUID = -1103006931831197370L;
 	/**
 	 * 分类的名字

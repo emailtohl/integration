@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.user.entities.Department;
 
@@ -58,14 +59,14 @@ public interface DepartmentService {
 	List<Department> query(Department params);
 
 	/**
-	 * 修改部门内容，并指明哪些属性忽略
-	 * 若修改父级节点，则父级节点不能是本实例的下级节点，否则会出现循环引用
+	 * 修改部门的基本属性
 	 * @param id
 	 * @param newEntity
 	 * @return 返回null表示没找到该部门
+	 * @throws NotAcceptableException 父级节点不能是本实例的下级节点，否则会出现循环引用
 	 */
 	@PreAuthorize("hasAuthority('" + ORG + "')")
-	Department update(Long id, Department newEntity);
+	Department update(Long id, Department newEntity) throws NotAcceptableException;
 
 	/**
 	 * 根据ID删除部门

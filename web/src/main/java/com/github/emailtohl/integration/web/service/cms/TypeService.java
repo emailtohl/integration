@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
 
@@ -55,13 +56,14 @@ public interface TypeService {
 
 	/**
 	 * 更新文章类型
-	 * 若修改父级节点，则父级节点不能是本实例的下级节点，否则会出现循环引用
+	 * 
 	 * @param id
 	 * @param newEntity
 	 * @return
+	 * @throws NotAcceptableException 父级节点不能是本实例的下级节点，否则会出现循环引用
 	 */
 	@PreAuthorize("hasAuthority('" + CONTENT + "')")
-	Type update(Long id, Type newEntity);
+	Type update(Long id, Type newEntity) throws NotAcceptableException;
 
 	/**
 	 * 删除文章类型

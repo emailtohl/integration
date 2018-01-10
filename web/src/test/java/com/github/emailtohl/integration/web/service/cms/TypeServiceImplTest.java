@@ -17,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.web.WebTestConfig;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
@@ -57,6 +58,7 @@ public class TypeServiceImplTest {
 		typeService.delete(id);
 		Type sup = typeService.get(superId);
 		Type sub = typeService.get(subId);
+		// 本节点被删除后，下级节点的父节点是本节点的上级节点
 		assertEquals(sup, sub.getParent());
 		
 		typeService.delete(superId);
@@ -79,23 +81,27 @@ public class TypeServiceImplTest {
 		assertFalse(p.getContent().isEmpty());
 	}
 	
-	@Test
-	public void testUpdate() {
+	@Test(expected = NotAcceptableException.class)
+	public void testUpdateNotAcceptableException() {
 		Type sub = typeService.get(subId);
+		// 将目标的父节点修改为其原先的子节点，这样会得到报错
 		Type newEntity = new Type("typename", "for update test", sub);
 		Type after = typeService.update(id, newEntity);
-		// 不能将子节点作为当前被修改节点的父节点
-		assertNotEquals(sub, after.getParent());
-		
+		fail("不会到达此处" + after.toString());
+	}
+	
+	@Test
+	public void testUpdate() {
 		Type other = new Type("other", "for other test", null);
 		other = typeService.create(other);
-		if (other == null || other.getId() == null) {
-			fail("未能创建新的Type，测试失败");
-		}
+		Type newEntity = new Type("again", "for update again test", other);
 		try {
-			newEntity = new Type("again", "for update again test", other);
-			after = typeService.update(id, newEntity);
+			Type after = typeService.update(id, newEntity);
 			assertEquals(other, after.getParent());
+			// 为了让 tearDown保持正确，再修改回来
+			Type targetParent = typeService.get(superId);
+			newEntity.setParent(targetParent);
+			after = typeService.update(id, newEntity);
 		} finally {
 			typeService.delete(other.getId());
 		}

@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.user.entities.Company;
@@ -118,19 +119,20 @@ public class CompanyServiceImpl extends StandardService<Company> implements Comp
 			src.setResponsiblePerson(newEntity.getResponsiblePerson());
 		}
 		
-		Company parent = null;
+		Company targetParent = null;
 		if (newEntity.getParent() != null) {
 			if (newEntity.getParent().getId() != null) {
-				parent = companyRepository.findOne(newEntity.getParent().getId());
+				targetParent = companyRepository.findOne(newEntity.getParent().getId());
 			} else if (hasText(newEntity.getParent().getName())) {
-				parent = companyRepository.findByName(newEntity.getParent().getName());
+				targetParent = companyRepository.findByName(newEntity.getParent().getName());
 			}
 		}
 		// 父级节点不能是本实例的下级节点，否则会出现循环引用
-		if (parent != null && (parent.getParent() == null || !parent.getParent().equals(src))) {
-			// 将本节点的下级节点全部连接到本节点的上级节点（本节点的上级节点可以是null）
-			companyRepository.findByParentId(id).forEach(sub -> sub.setParent(src.getParent()));
-			src.setParent(parent);
+		if (targetParent != null) {
+			if (src.isAncestorOf(targetParent)) {
+				throw new NotAcceptableException("父级节点不能是本实例的下级节点，否则会出现循环引用");
+			}
+			src.setParent(targetParent);
 		}
 		return transientDetail(src);
 	}

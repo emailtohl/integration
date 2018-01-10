@@ -11,6 +11,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
+import com.github.emailtohl.integration.core.common.SelfRef;
 
 /**
  * 公司实体
@@ -19,7 +20,7 @@ import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
  */
 @Entity
 @Table(name = "company")
-public class Company extends BaseEntity {
+public class Company extends BaseEntity implements SelfRef {
 	private static final long serialVersionUID = 2560110793039918070L;
 	private String name;
 	private String description;
