@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
+import com.github.emailtohl.integration.web.config.WebPresetData;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
 
 /**
@@ -30,6 +31,7 @@ import com.github.emailtohl.integration.web.service.cms.entities.Type;
 @Transactional
 public class TypeServiceImpl extends StandardService<Type> implements TypeService {
 	TypeRepository typeRepository;
+	WebPresetData webPresetData;
 
 	/**
 	 * 缓存名
@@ -37,9 +39,10 @@ public class TypeServiceImpl extends StandardService<Type> implements TypeServic
 	public static final String CACHE_NAME = "article_type_cache";
 	
 	@Inject
-	public TypeServiceImpl(TypeRepository typeRepository) {
+	public TypeServiceImpl(TypeRepository typeRepository, WebPresetData webPresetData) {
 		super();
 		this.typeRepository = typeRepository;
+		this.webPresetData = webPresetData;
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#result.id")
@@ -145,7 +148,7 @@ public class TypeServiceImpl extends StandardService<Type> implements TypeServic
 			return;
 		}
 		source.getArticles().forEach(a -> {
-			a.setType(null);
+			a.setType(webPresetData.unclassified);
 		});
 		// 将原先以本type为parent的下级type改为连接到本type的上级（本type的上级type可以是null）
 		typeRepository.findByParentId(id).forEach(sub -> sub.setParent(source.getParent()));

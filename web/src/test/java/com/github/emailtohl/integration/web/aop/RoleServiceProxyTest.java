@@ -2,6 +2,7 @@ package com.github.emailtohl.integration.web.aop;
 
 import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.springframework.aop.support.AopUtils.isAopProxy;
@@ -73,10 +74,8 @@ public class RoleServiceProxyTest {
 	public void testUpdate() {
 		Role newRole = new Role("update", RoleType.EMPLOYEE, "update for test");
 		newRole = roleService.update(roleId, newRole);
-		Group g = identityService.createGroupQuery().groupType(RoleType.CUSTOMER.name()).singleResult();
-        assertNull(g);
-        g = identityService.createGroupQuery().groupType(RoleType.EMPLOYEE.name()).singleResult();
-        assertNotNull(g);
+		Group g = identityService.createGroupQuery().groupId(groupId).singleResult();
+        assertEquals(RoleType.EMPLOYEE.name(), g.getType());
 	}
 
 }

@@ -2,8 +2,8 @@ package com.github.emailtohl.integration.web.service.cms;
 
 import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -26,6 +26,7 @@ import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.web.WebTestConfig;
+import com.github.emailtohl.integration.web.config.WebPresetData;
 import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
 import com.google.gson.Gson;
@@ -51,6 +52,8 @@ public class ArticleServiceImplTest {
 	CorePresetData pd;
 	@Inject
 	Gson gson;
+	@Inject
+	WebPresetData webPresetData;
 	
 	Long typeId;
 	Long articleId;
@@ -73,7 +76,7 @@ public class ArticleServiceImplTest {
 		// 先删类型，测试文章的类型引用为空
 		typeService.delete(typeId);
 		Article a = articleService.get(articleId);
-		assertNull(a.getType());
+		assertEquals(webPresetData.unclassified, a.getType());
 		articleService.delete(articleId);
 	}
 
@@ -84,12 +87,26 @@ public class ArticleServiceImplTest {
 		// query
 		Article params = new Article("文章名", "关键词", "正文", "概述");
 		List<Article> ls = articleService.query(params);
-		gson.toJson(ls);
+		System.out.println(gson.toJson(ls));
 		assertFalse(ls.isEmpty());
 
 		Paging<Article> p = articleService.query(params, new PageRequest(0, 20));
-		gson.toJson(p);
+		System.out.println(gson.toJson(p));
 		assertFalse(p.getContent().isEmpty());
+	}
+	
+	@Test
+	public void testUpdate() {
+		Type other = new Type("other", "for other test", null);
+		try {
+			other = typeService.create(other);
+			Article update = new Article("update", "update", "update", "update");
+			update.setType(other);
+			update = articleService.update(articleId, update);
+			assertEquals(other, update.getType());
+		} finally {
+			typeService.delete(other.getId());
+		}
 	}
 
 }

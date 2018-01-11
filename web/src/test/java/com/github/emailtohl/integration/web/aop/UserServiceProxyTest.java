@@ -1,6 +1,6 @@
 package com.github.emailtohl.integration.web.aop;
 
-import static com.github.emailtohl.integration.core.Profiles.DB_CONFIG;
+import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
 import static org.junit.Assert.*;
 import static org.springframework.aop.support.AopUtils.isAopProxy;
@@ -37,7 +37,7 @@ import com.github.emailtohl.integration.web.WebTestData;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = WebTestConfig.class)
-@ActiveProfiles({ DB_CONFIG, ENV_NO_SERVLET })
+@ActiveProfiles({ DB_RAM_H2, ENV_NO_SERVLET })
 public class UserServiceProxyTest {
 	@Inject
 	EmployeeService employeeService;

@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.BeanUtils;
@@ -22,6 +23,7 @@ import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.UserRef;
+import com.github.emailtohl.integration.web.config.WebPresetData;
 import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Comment;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
@@ -39,6 +41,8 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 	UserService userService;
 	CustomerService customerService;
 	CorePresetData presetData;
+	WebPresetData webPresetData;
+	
 	
 	private static final Pattern IMG_PATTERN = Pattern.compile("<img\\b[^<>]*?\\bsrc[\\s\\t\\r\\n]*=[\\s\\t\\r\\n]*[\"\"']?[\\s\\t\\r\\n]*(?<imgUrl>[^\\s\\t\\r\\n\"\"'<>]*)[^<>]*?/?[\\s\\t\\r\\n]*>");
 	/**
@@ -46,9 +50,10 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 	 */
 	public static final String CACHE_NAME = "article_cache";
 
+	@Inject
 	public ArticleServiceImpl(ArticleRepository articleRepository, CommentRepository commentRepository,
 			TypeRepository typeRepository, UserService userService, CustomerService customerService,
-			CorePresetData presetData) {
+			CorePresetData presetData, WebPresetData webPresetData) {
 		super();
 		this.articleRepository = articleRepository;
 		this.commentRepository = commentRepository;
@@ -56,6 +61,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 		this.userService = userService;
 		this.customerService = customerService;
 		this.presetData = presetData;
+		this.webPresetData = webPresetData;
 	}
 
 	@CachePut(value = CACHE_NAME, key = "#result.id")
@@ -102,9 +108,10 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 			}
 		}
 		if (type != null) {
-			entity.setType(type);
-			type.getArticles().add(entity);
+			type = webPresetData.unclassified;
 		}
+		entity.setType(type);
+		type.getArticles().add(entity);
 		return transientDetail(articleRepository.save(entity));
 	}
 
