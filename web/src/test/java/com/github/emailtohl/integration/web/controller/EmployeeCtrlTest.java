@@ -27,7 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Employee;
-import com.github.emailtohl.integration.web.UserRoleConfig;
+import com.github.emailtohl.integration.web.MockConfig;
 import com.github.emailtohl.integration.web.WebTestData;
 import com.google.gson.Gson;
 
@@ -36,7 +36,7 @@ import com.google.gson.Gson;
  * @author HeLei
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = UserRoleConfig.class)
+@ContextConfiguration(classes = MockConfig.class)
 public class EmployeeCtrlTest {
 	@Inject
 	Gson gson;

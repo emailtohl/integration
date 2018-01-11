@@ -25,7 +25,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.auth.UserDetailsImpl;
 import com.github.emailtohl.integration.core.config.Constant;
-import com.github.emailtohl.integration.core.config.PresetData;
+import com.github.emailtohl.integration.core.config.CorePresetData;
 /**
  * 在spring security过滤器之后执行
  * 
@@ -41,7 +41,7 @@ public class PostSecurityLoggingFilter implements Filter {
 	@Inject
 	IdentityService identityService;
 	@Inject
-	PresetData presetData;
+	CorePresetData presetData;
 	
 	Long anonymousId;
 	

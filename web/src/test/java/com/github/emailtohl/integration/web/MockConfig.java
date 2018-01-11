@@ -41,6 +41,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.config.Constant;
+import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleService;
 import com.github.emailtohl.integration.core.user.customer.CustomerRepository;
@@ -64,7 +65,7 @@ import com.google.gson.GsonBuilder;
 @PropertySource({ "classpath:config.properties" })
 @EnableCaching
 @EnableTransactionManagement
-public class UserRoleConfig {
+public class MockConfig {
 	private AtomicLong id = new AtomicLong(1L);
 	private Map<Long, Role> roleDB = new ConcurrentHashMap<>();
 	private Map<String, Role> roleNameDB = new ConcurrentHashMap<>();
@@ -101,45 +102,51 @@ public class UserRoleConfig {
 	}
 
 	/**
-	 * 预置数据，WebTestData中的User已经与Role建立了关联，所以设置了Role的id影响的是同一个
+	 * 预置数据，PresetData中的User已经与Role建立了关联，所以设置了Role的id影响的是同一个
 	 * @return
 	 */
 	@Bean
-	public WebTestData webTestData() {
-		WebTestData td = new WebTestData();
+	public CorePresetData presetData() {
+		CorePresetData pd = new CorePresetData();
 		
-		td.role_admin.setId(id.getAndIncrement());
-		roleDB.put(td.role_admin.getId(), td.role_admin);
-		roleNameDB.put(td.role_admin.getName(), td.role_admin);
+		pd.role_admin.setId(id.getAndIncrement());
+		roleDB.put(pd.role_admin.getId(), pd.role_admin);
+		roleNameDB.put(pd.role_admin.getName(), pd.role_admin);
 		
-		td.role_manager.setId(id.getAndIncrement());
-		roleDB.put(td.role_manager.getId(), td.role_manager);
-		roleNameDB.put(td.role_manager.getName(), td.role_manager);
+		pd.role_manager.setId(id.getAndIncrement());
+		roleDB.put(pd.role_manager.getId(), pd.role_manager);
+		roleNameDB.put(pd.role_manager.getName(), pd.role_manager);
 		
-		td.role_staff.setId(id.getAndIncrement());
-		roleDB.put(td.role_staff.getId(), td.role_staff);
-		roleNameDB.put(td.role_staff.getName(), td.role_staff);
+		pd.role_staff.setId(id.getAndIncrement());
+		roleDB.put(pd.role_staff.getId(), pd.role_staff);
+		roleNameDB.put(pd.role_staff.getName(), pd.role_staff);
 		
-		td.role_guest.setId(id.getAndIncrement());
-		roleDB.put(td.role_guest.getId(), td.role_guest);
-		roleNameDB.put(td.role_guest.getName(), td.role_guest);
+		pd.role_guest.setId(id.getAndIncrement());
+		roleDB.put(pd.role_guest.getId(), pd.role_guest);
+		roleNameDB.put(pd.role_guest.getName(), pd.role_guest);
 		
-		td.user_admin.setId(id.getAndIncrement());
-		td.user_admin.setPassword(hashpw(employeeDefaultPassword));
-		userDB.put(td.user_admin.getId(), td.user_admin);
+		pd.user_admin.setId(id.getAndIncrement());
+		pd.user_admin.setPassword(hashpw(employeeDefaultPassword));
+		userDB.put(pd.user_admin.getId(), pd.user_admin);
 		
-		td.user_bot.setId(id.getAndIncrement());
-		td.user_bot.setPassword(hashpw(employeeDefaultPassword));
-		userDB.put(td.user_bot.getId(), td.user_bot);
+		pd.user_bot.setId(id.getAndIncrement());
+		pd.user_bot.setPassword(hashpw(employeeDefaultPassword));
+		userDB.put(pd.user_bot.getId(), pd.user_bot);
 		
-		td.user_anonymous.setId(id.getAndIncrement());
-		td.user_anonymous.setPassword(hashpw(customerDefaultPassword));
-		userDB.put(td.user_anonymous.getId(), td.user_anonymous);
+		pd.user_anonymous.setId(id.getAndIncrement());
+		pd.user_anonymous.setPassword(hashpw(customerDefaultPassword));
+		userDB.put(pd.user_anonymous.getId(), pd.user_anonymous);
 		
-		td.user_emailtohl.setId(id.getAndIncrement());
-		td.user_emailtohl.setPassword(hashpw(customerDefaultPassword));
-		userDB.put(td.user_emailtohl.getId(), td.user_emailtohl);
-		
+		pd.user_emailtohl.setId(id.getAndIncrement());
+		pd.user_emailtohl.setPassword(hashpw(customerDefaultPassword));
+		userDB.put(pd.user_emailtohl.getId(), pd.user_emailtohl);
+		return pd;
+	}
+	
+	@Bean
+	public WebTestData webTestData(CorePresetData pd) {
+		WebTestData td = new WebTestData(pd);
+
 		td.foo.setId(id.getAndIncrement());
 		td.foo.setPassword(hashpw(employeeDefaultPassword));
 		userDB.put(td.foo.getId(), td.foo);
@@ -160,7 +167,7 @@ public class UserRoleConfig {
 	}
 	
 	@Bean
-	public RoleService roleService(WebTestData td) {
+	public RoleService roleService() {
 		RoleService service = mock(RoleService.class);
 		when(service.create(any())).thenAnswer(invocation -> {
 			Role r = (Role) invocation.getArguments()[0];
@@ -246,8 +253,8 @@ public class UserRoleConfig {
 			return result;
 		});
 		// 手机号码和邮箱都能查找到
-		when(dao.findByCellPhone(td.user_emailtohl.getCellPhone())).thenReturn(td.user_emailtohl);
-		when(dao.findByEmail(td.user_emailtohl.getEmail())).thenReturn(td.user_emailtohl);
+		when(dao.findByCellPhone(td.pd.user_emailtohl.getCellPhone())).thenReturn(td.pd.user_emailtohl);
+		when(dao.findByEmail(td.pd.user_emailtohl.getEmail())).thenReturn(td.pd.user_emailtohl);
 		when(dao.findByCellPhone(td.baz.getCellPhone())).thenReturn(td.baz);
 		when(dao.findByEmail(td.baz.getEmail())).thenReturn(td.baz);
 		return dao;
@@ -321,8 +328,8 @@ public class UserRoleConfig {
 			re.delete(userId);
 			return invocation.getMock();
 		}).when(service).delete(any(Long.class));
-		when(service.getByUsername(td.user_emailtohl.getCellPhone())).thenReturn(td.user_emailtohl);
-		when(service.getByUsername(td.user_emailtohl.getEmail())).thenReturn(td.user_emailtohl);
+		when(service.getByUsername(td.pd.user_emailtohl.getCellPhone())).thenReturn(td.pd.user_emailtohl);
+		when(service.getByUsername(td.pd.user_emailtohl.getEmail())).thenReturn(td.pd.user_emailtohl);
 		when(service.getByUsername(td.baz.getCellPhone())).thenReturn(td.baz);
 		when(service.getByUsername(td.baz.getEmail())).thenReturn(td.baz);
 		

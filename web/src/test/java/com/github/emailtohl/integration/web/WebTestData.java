@@ -4,12 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.SecureRandom;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.HashSet;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import com.github.emailtohl.integration.core.config.PresetData;
+import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.file.Image;
 import com.github.emailtohl.integration.core.user.entities.Address;
 import com.github.emailtohl.integration.core.user.entities.Customer;
@@ -18,17 +19,25 @@ import com.github.emailtohl.integration.core.user.entities.Department;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.Gender;
 
-public class WebTestData extends PresetData {
+public class WebTestData {
+	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	private final String DEFAULT_PASSWORD = "123456";
+	public final CorePresetData pd;
 	public final Employee foo = new Employee();
 	public final Employee bar = new Employee();
 	public final Customer baz = new Customer();
 	public final Customer qux = new Customer();
 	
+	public WebTestData(CorePresetData pd) {
+		this.pd = pd;
+		set();
+	}
+
+	private void set() 
 	{
-		role_manager.getUsers().add(foo);
-		role_staff.getUsers().add(bar);
-		role_guest.getUsers().addAll(Arrays.asList(baz, qux));
+		pd.role_manager.getUsers().add(foo);
+		pd.role_staff.getUsers().add(bar);
+		pd.role_guest.getUsers().addAll(Arrays.asList(baz, qux));
 		
 		ClassLoader cl = WebTestData.class.getClassLoader();
 		byte[] icon;
@@ -36,17 +45,17 @@ public class WebTestData extends PresetData {
 		/*
 		 * 下面是创建一对多对一数据模型
 		 */
-		company.setName("XXX注册公司");
-		company.setDescription("公司上面还有集团公司");
+		pd.company.setName("XXX注册公司");
+		pd.company.setDescription("公司上面还有集团公司");
 
-		product.setName("生产部");
-		product.setDescription("研发生产部门");
-		product.setCompany(company);
-		qa.setName("质量部");
-		qa.setDescription("质量与测试部门");
-		qa.setCompany(company);
+		pd.product.setName("生产部");
+		pd.product.setDescription("研发生产部门");
+		pd.product.setCompany(pd.company);
+		pd.qa.setName("质量部");
+		pd.qa.setDescription("质量与测试部门");
+		pd.qa.setCompany(pd.company);
 
-		company.setDepartments(new HashSet<Department>(Arrays.asList(product, qa)));
+		pd.company.setDepartments(new HashSet<Department>(Arrays.asList(pd.product, pd.qa)));
 		
 		foo.setName("foo");
 		foo.setNickname("foo");
@@ -57,7 +66,7 @@ public class WebTestData extends PresetData {
 		foo.setPassword(hashpw(DEFAULT_PASSWORD));
 		foo.setDescription("业务管理人员");
 		foo.setGender(Gender.MALE);
-		foo.getRoles().add(role_manager);
+		foo.getRoles().add(pd.role_manager);
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-foo.jpg")) {
 			foo.setBirthday(sdf.parse("1990-12-13"));
 			icon = new byte[is.available()];
@@ -69,7 +78,7 @@ public class WebTestData extends PresetData {
 		foo.setEmpNum(Employee.NO1 + 1);
 		foo.setPost("系统分析师");
 		foo.setSalary(10000.00);
-		foo.setDepartment(product);
+		foo.setDepartment(pd.product);
 		
 		bar.setName("bar");
 		bar.setNickname("bar");
@@ -80,7 +89,7 @@ public class WebTestData extends PresetData {
 		bar.setPassword(hashpw(DEFAULT_PASSWORD));
 		bar.setDescription("普通职员");
 		bar.setGender(Gender.FEMALE);
-		bar.getRoles().add(role_staff);
+		bar.getRoles().add(pd.role_staff);
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-bar.jpg")) {
 			bar.setBirthday(sdf.parse("1991-10-24"));
 			icon = new byte[is.available()];
@@ -92,7 +101,7 @@ public class WebTestData extends PresetData {
 		bar.setEmpNum(Employee.NO1 + 2);
 		bar.setPost("QA人员");
 		bar.setSalary(6000.00);
-		bar.setDepartment(qa);
+		bar.setDepartment(pd.qa);
 		
 		baz.setName("baz");
 		baz.setCellPhone("19012345678");
@@ -105,7 +114,7 @@ public class WebTestData extends PresetData {
 		baz.setPassword(hashpw(DEFAULT_PASSWORD));
 		baz.setDescription("普通客户");
 		baz.setGender(Gender.FEMALE);
-		baz.getRoles().add(role_guest);
+		baz.getRoles().add(pd.role_guest);
 		baz.setLevel(Level.ORDINARY);
 		baz.setIdentification("510104199901013338");
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-baz.jpg")) {
@@ -127,7 +136,7 @@ public class WebTestData extends PresetData {
 		qux.setPassword(hashpw(DEFAULT_PASSWORD));
 		qux.setDescription("高级客户");
 		qux.setGender(Gender.FEMALE);
-		qux.getRoles().add(role_guest);
+		qux.getRoles().add(pd.role_guest);
 		qux.setLevel(Level.ORDINARY);
 		qux.setIdentification("510104199901016176");
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-qux.jpg")) {
@@ -138,8 +147,8 @@ public class WebTestData extends PresetData {
 		} catch (ParseException | IOException e) {
 			e.printStackTrace();
 		}
-		product.setEmployees(new HashSet<Employee>(Arrays.asList(foo)));
-		qa.setEmployees(new HashSet<Employee>(Arrays.asList(bar)));
+		pd.product.setEmployees(new HashSet<Employee>(Arrays.asList(foo)));
+		pd.qa.setEmployees(new HashSet<Employee>(Arrays.asList(bar)));
 		
 	}
 	

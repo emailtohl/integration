@@ -1,5 +1,7 @@
 package com.github.emailtohl.integration.web.aop;
 
+import static com.github.emailtohl.integration.core.Profiles.DB_CONFIG;
+import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
 import static org.junit.Assert.*;
 import static org.springframework.aop.support.AopUtils.isAopProxy;
 import static org.springframework.aop.support.AopUtils.isCglibProxy;
@@ -16,6 +18,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -23,6 +26,7 @@ import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;
+import com.github.emailtohl.integration.web.WebTestConfig;
 import com.github.emailtohl.integration.web.WebTestData;
 
 /**
@@ -32,7 +36,8 @@ import com.github.emailtohl.integration.web.WebTestData;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = Config.class)
+@ContextConfiguration(classes = WebTestConfig.class)
+@ActiveProfiles({ DB_CONFIG, ENV_NO_SERVLET })
 public class UserServiceProxyTest {
 	@Inject
 	EmployeeService employeeService;
@@ -94,8 +99,8 @@ public class UserServiceProxyTest {
 	public void testUpdate() {
 		Employee e = new Employee();
 		e.setName("update");
-		e.getRoles().add(td.role_manager);
-		e.getRoles().add(td.role_staff);
+		e.getRoles().add(td.pd.role_manager);
+		e.getRoles().add(td.pd.role_staff);
 		e = employeeService.update(Long.valueOf(employeeId), e);
 		assertNotNull(e);
 		
@@ -104,7 +109,7 @@ public class UserServiceProxyTest {
 		
 		Customer c = new Customer();
 		c.setName("update");
-		c.getRoles().add(td.role_staff);
+		c.getRoles().add(td.pd.role_staff);
 		c = customerService.update(Long.valueOf(customerId), c);
 		assertNotNull(c);
 		u = identityService.createUserQuery().userId(customerId).singleResult();
@@ -114,12 +119,12 @@ public class UserServiceProxyTest {
 	
 	@Test
 	public void testGrandRoles() {
-		employeeService.grandRoles(Long.valueOf(employeeId), td.role_manager.getName(), td.role_staff.getName());
+		employeeService.grandRoles(Long.valueOf(employeeId), td.pd.role_manager.getName(), td.pd.role_staff.getName());
 		List<Group> ls = identityService.createGroupQuery().groupMember(employeeId).list();
 		assertEquals(2, ls.size());
 		ls.forEach(g -> System.out.println(g.getName()));
 		
-		employeeService.grandRoles(Long.valueOf(employeeId), td.role_guest.getName(), td.role_staff.getName());
+		employeeService.grandRoles(Long.valueOf(employeeId), td.pd.role_guest.getName(), td.pd.role_staff.getName());
 		ls = identityService.createGroupQuery().groupMember(employeeId).list();
 		assertEquals(2, ls.size());
 		ls.forEach(g -> System.out.println(g.getName()));

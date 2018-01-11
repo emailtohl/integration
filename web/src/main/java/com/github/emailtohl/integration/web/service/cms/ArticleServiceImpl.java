@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
-import com.github.emailtohl.integration.core.config.PresetData;
+import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
@@ -38,7 +38,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 	TypeRepository typeRepository;
 	UserService userService;
 	CustomerService customerService;
-	PresetData presetData;
+	CorePresetData presetData;
 	
 	private static final Pattern IMG_PATTERN = Pattern.compile("<img\\b[^<>]*?\\bsrc[\\s\\t\\r\\n]*=[\\s\\t\\r\\n]*[\"\"']?[\\s\\t\\r\\n]*(?<imgUrl>[^\\s\\t\\r\\n\"\"'<>]*)[^<>]*?/?[\\s\\t\\r\\n]*>");
 	/**
@@ -48,7 +48,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 
 	public ArticleServiceImpl(ArticleRepository articleRepository, CommentRepository commentRepository,
 			TypeRepository typeRepository, UserService userService, CustomerService customerService,
-			PresetData presetData) {
+			CorePresetData presetData) {
 		super();
 		this.articleRepository = articleRepository;
 		this.commentRepository = commentRepository;

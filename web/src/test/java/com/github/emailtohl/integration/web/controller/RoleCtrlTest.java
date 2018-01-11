@@ -33,7 +33,7 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleService;
 import com.github.emailtohl.integration.core.role.RoleType;
-import com.github.emailtohl.integration.web.UserRoleConfig;
+import com.github.emailtohl.integration.web.MockConfig;
 import com.github.emailtohl.integration.web.WebTestData;
 import com.google.gson.Gson;
 
@@ -42,7 +42,7 @@ import com.google.gson.Gson;
  * @author HeLei
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = UserRoleConfig.class)
+@ContextConfiguration(classes = MockConfig.class)
 public class RoleCtrlTest {
 	@Inject
 	Gson gson;
@@ -88,7 +88,7 @@ public class RoleCtrlTest {
 		mockMvc.perform(post("/role")
 				.characterEncoding("UTF-8")
 				.contentType(MediaType.APPLICATION_JSON)  
-				.content(gson.toJson(td.role_guest).getBytes()))
+				.content(gson.toJson(td.pd.role_guest).getBytes()))
 		.andExpect(status().is2xxSuccessful());
 		
 		mockMvc.perform(post("/role")
@@ -131,12 +131,12 @@ public class RoleCtrlTest {
 
 	@Test
 	public void testUpdate() throws Exception {
-		System.out.println(gson.toJson(td.role_guest));
-		td.role_guest.setId(id);
+		System.out.println(gson.toJson(td.pd.role_guest));
+		td.pd.role_guest.setId(id);
 		mockMvc.perform(put("/role/" + id)
 				.characterEncoding("UTF-8")
 				.contentType(MediaType.APPLICATION_JSON)  
-				.content(gson.toJson(td.role_guest).getBytes()))
+				.content(gson.toJson(td.pd.role_guest).getBytes()))
 		.andExpect(status().is2xxSuccessful());
 		
 		mockMvc.perform(put("/role/" + id)
@@ -154,7 +154,7 @@ public class RoleCtrlTest {
 	
 	@Test
 	public void testExist() throws Exception {
-		mockMvc.perform(get("/role/exist?roleName=" + td.role_staff.getName()))
+		mockMvc.perform(get("/role/exist?roleName=" + td.pd.role_staff.getName()))
 		.andExpect(status().is2xxSuccessful());
 	}
 

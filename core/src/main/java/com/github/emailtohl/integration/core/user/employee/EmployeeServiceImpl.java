@@ -29,7 +29,7 @@ import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.Constant;
-import com.github.emailtohl.integration.core.config.PresetData;
+import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleRepository;
 import com.github.emailtohl.integration.core.user.entities.Department;
@@ -57,7 +57,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 	@Inject
 	EmployeeRefRepository employeeRefRepository;
 	@Inject
-	PresetData presetData;
+	CorePresetData presetData;
 
 	/**
 	 * 缓存名
@@ -338,7 +338,11 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		}
 		Employee target = new Employee();
 		BeanUtils.copyProperties(source, target, "employeeRef", "password", "roles");
-		source.getRoles().forEach(role -> target.getRoles().add(new Role(role.getName(), role.getRoleType(), role.getDescription())));
+		source.getRoles().forEach(role -> {
+			Role r = new Role(role.getName(), role.getRoleType(), role.getDescription());
+			r.setId(role.getId());
+			target.getRoles().add(r);
+		});
 		return target;
 	}
 

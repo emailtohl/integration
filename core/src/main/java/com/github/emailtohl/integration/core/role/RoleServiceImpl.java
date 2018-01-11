@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
-import com.github.emailtohl.integration.core.config.PresetData;
+import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.user.entities.User;
 /**
  * 角色管理服务的实现
@@ -34,7 +34,7 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 	@Inject
 	AuthorityRepository authorityRepository;
 	@Inject
-	PresetData presetData;
+	CorePresetData presetData;
 
 	@CachePut(value = CACHE_NAME_ROLE, key = "#result.id")
 	@Override

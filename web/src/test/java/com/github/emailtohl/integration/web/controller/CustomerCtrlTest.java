@@ -34,7 +34,7 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.entities.Customer;
-import com.github.emailtohl.integration.web.UserRoleConfig;
+import com.github.emailtohl.integration.web.MockConfig;
 import com.github.emailtohl.integration.web.WebTestData;
 import com.github.emailtohl.integration.web.service.mail.EmailService;
 import com.google.gson.Gson;
@@ -44,7 +44,7 @@ import com.google.gson.Gson;
  * @author HeLei
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = UserRoleConfig.class)
+@ContextConfiguration(classes = MockConfig.class)
 public class CustomerCtrlTest {
 	@Inject
 	Gson gson;

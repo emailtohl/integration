@@ -6,7 +6,7 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import com.github.emailtohl.integration.core.config.PresetData;
+import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.file.Image;
 import com.github.emailtohl.integration.core.user.entities.Address;
 import com.github.emailtohl.integration.core.user.entities.Classify;
@@ -19,7 +19,7 @@ import com.github.emailtohl.integration.core.user.entities.Gender;
  * 用于测试的数据
  * @author HeLei
  */
-public class CoreTestData extends PresetData {
+public class CoreTestData extends CorePresetData {
 	public final Employee foo = new Employee();
 	public final Employee bar = new Employee();
 	public final Customer baz = new Customer();

@@ -38,20 +38,20 @@ class InitData {
 	
 	private Environment env;
 	
-	private PresetData pd;
+	private CorePresetData pd;
 
 	public InitData(EntityManagerFactory factory, Environment env) {
 		this.factory = factory;
 		this.env = env;
 	}
 	
-	public PresetData init() {
+	public CorePresetData init() {
 		if (exec)
 			return pd;
 		synchronized (getClass()) {
 			if (exec)
 				return pd;
-			PresetData pd = new PresetData();
+			CorePresetData pd = new CorePresetData();
 			EntityManager em = factory.createEntityManager();
 			em.getTransaction().begin();
 			authority(em, pd);
@@ -66,7 +66,7 @@ class InitData {
 		}
 	}
 	
-	private void authority(EntityManager em, PresetData pd) {
+	private void authority(EntityManager em, CorePresetData pd) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Boolean> q = cb.createQuery(boolean.class);
 		Root<Authority> r = q.from(Authority.class);
@@ -118,7 +118,7 @@ class InitData {
 		}
 	}
 	
-	private void role(EntityManager em, PresetData pd) {
+	private void role(EntityManager em, CorePresetData pd) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Role> q = cb.createQuery(Role.class);
 		Root<Role> r = q.from(Role.class);
@@ -173,7 +173,7 @@ class InitData {
 		}
 	}
 	
-	private void company(EntityManager em, PresetData pd) {
+	private void company(EntityManager em, CorePresetData pd) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Company> q = cb.createQuery(Company.class);
 		Root<Company> r = q.from(Company.class);
@@ -189,7 +189,7 @@ class InitData {
 		}
 	}
 	
-	private void department(EntityManager em, PresetData pd) {
+	private void department(EntityManager em, CorePresetData pd) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Department> q = cb.createQuery(Department.class);
 		Root<Department> r = q.from(Department.class);
@@ -218,7 +218,7 @@ class InitData {
 		}
 	}
 	
-	private void user(EntityManager em, PresetData pd) {
+	private void user(EntityManager em, CorePresetData pd) {
 		String adminPassword = env.getProperty("admin.password");
 		adminPassword = hashpw(adminPassword);
 		String employeeDefaultPassword = env.getProperty(Constant.PROP_EMPLOYEE_DEFAULT_PASSWORD);

@@ -73,7 +73,7 @@ public class CoreConfiguration implements TransactionManagementConfigurer, Async
 	 * 初始化数据库中的数据
 	 */
 	@Bean
-	public PresetData presetData(LocalContainerEntityManagerFactoryBean entityManagerFactory) {
+	public CorePresetData presetData(LocalContainerEntityManagerFactoryBean entityManagerFactory) {
 		InitData d = new InitData(entityManagerFactory.getObject(), env);
 		return d.init();
 	}

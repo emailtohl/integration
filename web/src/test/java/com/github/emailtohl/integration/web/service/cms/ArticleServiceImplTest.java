@@ -11,6 +11,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.activiti.engine.FormService;
 import org.activiti.engine.IdentityService;
 import org.junit.After;
 import org.junit.Before;
@@ -23,7 +24,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
-import com.github.emailtohl.integration.core.config.PresetData;
+import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.web.WebTestConfig;
 import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
@@ -44,8 +45,10 @@ public class ArticleServiceImplTest {
 	@Inject
 	IdentityService identityService;
 	@Inject
+	FormService formService;
+	@Inject
 	@Named("presetData")
-	PresetData pd;
+	CorePresetData pd;
 	@Inject
 	Gson gson;
 	

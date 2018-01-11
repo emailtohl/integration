@@ -131,19 +131,19 @@ public class UserServiceProxy {
 			Set<String> preGroupIds = identityService.createGroupQuery().groupMember(userId).list().stream()
 					.map(group -> group.getId()).collect(Collectors.toSet());
 			// 用户应该关联的组id
-			Set<String> newGroupIds = u.getRoles().stream().filter(r -> r.getId() != null).map(r -> r.getId().toString())
+			Set<String> newGroupIds = u.getRoles().stream().filter(r -> r.getName() != null).map(r -> r.getName())
 					.collect(Collectors.toSet());
 			
 			// 删除没有的关系
-			preGroupIds.forEach(roleId -> {
-				if (!newGroupIds.contains(roleId)) {
-					identityService.deleteMembership(userId, roleId);
+			preGroupIds.forEach(groupId -> {
+				if (!newGroupIds.contains(groupId)) {
+					identityService.deleteMembership(userId, groupId);
 				}
 			});
 			// 创建新的关系
-			newGroupIds.forEach(roleId -> {
-				if (!preGroupIds.contains(roleId)) {
-					identityService.createMembership(userId, roleId);
+			newGroupIds.forEach(groupId -> {
+				if (!preGroupIds.contains(groupId)) {
+					identityService.createMembership(userId, groupId);
 				}
 			});
 		}

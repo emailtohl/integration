@@ -23,17 +23,19 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.github.emailtohl.integration.web.UserRoleConfig;
-import com.github.emailtohl.integration.web.WebTestData;
+import com.github.emailtohl.integration.core.config.CorePresetData;
+import com.github.emailtohl.integration.web.MockConfig;
 
 /**
  * 尽量在真实环境中，包括事务层、缓存层、但没有包括安全层
+ * 
+ * 现在此配置未在使用，aop的测试统一在同一个环境中测试
  * 
  * @author HeLei
  *
  */
 @Configurable
-@Import(UserRoleConfig.class)
+@Import(MockConfig.class)
 @ComponentScan("com.github.emailtohl.integration.web.aop")
 @EnableAspectJAutoProxy
 class Config {
@@ -146,81 +148,81 @@ class Config {
 
 	// -----------下面是初始化内置数据-------------------
 	@Bean
-	public Group role_admin(WebTestData td, IdentityService identityService) {
-		Group g = identityService.newGroup(td.role_admin.getId().toString());
-		g.setName(td.role_admin.getName());
+	public Group role_admin(CorePresetData pd, IdentityService identityService) {
+		Group g = identityService.newGroup(pd.role_admin.getId().toString());
+		g.setName(pd.role_admin.getName());
 		g.setType("内置角色");
 		identityService.saveGroup(g);
 		return g;
 	}
 	
 	@Bean
-	public Group role_manager(WebTestData td, IdentityService identityService) {
-		Group g = identityService.newGroup(td.role_manager.getId().toString());
-		g.setName(td.role_manager.getName());
+	public Group role_manager(CorePresetData pd, IdentityService identityService) {
+		Group g = identityService.newGroup(pd.role_manager.getId().toString());
+		g.setName(pd.role_manager.getName());
 		g.setType("内置角色");
 		identityService.saveGroup(g);
 		return g;
 	}
 	
 	@Bean
-	public Group role_staff(WebTestData td, IdentityService identityService) {
-		Group g = identityService.newGroup(td.role_staff.getId().toString());
-		g.setName(td.role_staff.getName());
+	public Group role_staff(CorePresetData pd, IdentityService identityService) {
+		Group g = identityService.newGroup(pd.role_staff.getId().toString());
+		g.setName(pd.role_staff.getName());
 		g.setType("内置角色");
 		identityService.saveGroup(g);
 		return g;
 	}
 	
 	@Bean
-	public Group role_guest(WebTestData td, IdentityService identityService) {
-		Group g = identityService.newGroup(td.role_guest.getId().toString());
-		g.setName(td.role_guest.getName());
+	public Group role_guest(CorePresetData pd, IdentityService identityService) {
+		Group g = identityService.newGroup(pd.role_guest.getId().toString());
+		g.setName(pd.role_guest.getName());
 		g.setType("内置角色");
 		identityService.saveGroup(g);
 		return g;
 	}
 	
 	@Bean
-	public User user_admin(WebTestData td, IdentityService identityService) {
-		User u = identityService.newUser(td.user_admin.getId().toString());
-		u.setId(td.user_admin.getId().toString());
-		u.setFirstName(td.user_admin.getName());
-		u.setLastName(td.user_admin.getNickname());
-		u.setEmail(td.user_admin.getEmail());
+	public User user_admin(CorePresetData pd, IdentityService identityService) {
+		User u = identityService.newUser(pd.user_admin.getId().toString());
+		u.setId(pd.user_admin.getId().toString());
+		u.setFirstName(pd.user_admin.getName());
+		u.setLastName(pd.user_admin.getNickname());
+		u.setEmail(pd.user_admin.getEmail());
 		identityService.saveUser(u);
 		return u;
 	}
 	
 	@Bean
-	public User user_bot(WebTestData td, IdentityService identityService) {
-		User u = identityService.newUser(td.user_bot.getId().toString());
-		u.setId(td.user_bot.getId().toString());
-		u.setFirstName(td.user_bot.getName());
-		u.setLastName(td.user_bot.getNickname());
-		u.setEmail(td.user_bot.getEmail());
+	public User user_bot(CorePresetData pd, IdentityService identityService) {
+		User u = identityService.newUser(pd.user_bot.getId().toString());
+		u.setId(pd.user_bot.getId().toString());
+		u.setFirstName(pd.user_bot.getName());
+		u.setLastName(pd.user_bot.getNickname());
+		u.setEmail(pd.user_bot.getEmail());
 		identityService.saveUser(u);
 		return u;
 	}
 	
 	@Bean
-	public User user_anonymous(WebTestData td, IdentityService identityService) {
-		User u = identityService.newUser(td.user_anonymous.getId().toString());
-		u.setId(td.user_anonymous.getId().toString());
-		u.setFirstName(td.user_anonymous.getName());
-		u.setLastName(td.user_anonymous.getNickname());
-		u.setEmail(td.user_anonymous.getEmail());
+	public User user_anonymous(CorePresetData pd, IdentityService identityService) {
+		User u = identityService.newUser(pd.user_anonymous.getId().toString());
+		u.setId(pd.user_anonymous.getId().toString());
+		u.setFirstName(pd.user_anonymous.getName());
+		u.setLastName(pd.user_anonymous.getNickname());
+		u.setEmail(pd.user_anonymous.getEmail());
 		identityService.saveUser(u);
 		return u;
 	}
 	
 	@Bean
-	public User user_emailtohl(WebTestData td, IdentityService identityService) {
-		User u = identityService.newUser(td.user_emailtohl.getId().toString());
-		u.setId(td.user_emailtohl.getId().toString());
-		u.setFirstName(td.user_emailtohl.getName());
-		u.setLastName(td.user_emailtohl.getNickname());
-		u.setEmail(td.user_emailtohl.getEmail());
+	public User user_emailtohl(CorePresetData pd, IdentityService identityService) {
+		User u = identityService.newUser(pd.user_emailtohl.getId().toString());
+		u.setId(pd.user_emailtohl.getId().toString());
+		u.setFirstName(pd.user_emailtohl.getName());
+		u.setLastName(pd.user_emailtohl.getNickname());
+		u.setEmail(pd.user_emailtohl.getEmail());
 		identityService.saveUser(u);
 		return u;
 	}

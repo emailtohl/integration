@@ -45,7 +45,7 @@ import com.github.emailtohl.integration.core.user.entities.Gender;
  * 预置数据
  * @author HeLei
  */
-public class PresetData {
+public class CorePresetData {
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	
 	public final Authority
@@ -110,7 +110,7 @@ public class PresetData {
 		role_admin.getUsers().add(user_admin);
 		role_guest.getUsers().addAll(Arrays.asList(user_emailtohl));
 		
-		ClassLoader cl = PresetData.class.getClassLoader();
+		ClassLoader cl = CorePresetData.class.getClassLoader();
 		byte[] icon;
 
 		// 下面是创建一对多对一数据模型
