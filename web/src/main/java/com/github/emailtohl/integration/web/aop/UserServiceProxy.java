@@ -26,7 +26,7 @@ import com.github.emailtohl.integration.core.user.entities.User;
  * 为Activiti的IdentityService生成代理，在修改用户信息时，同步数据到Activiti库中
  * 考虑做成切面的原因有二：1.不侵入式的修改业务系统的用户管理逻辑；2.在切面中可以共享统一事务。
  * 
- * 在业务系统中，标识Customer有邮箱、手机，而且它们还可以修改，根据id不变性，Activiti的User里也是用业务系统User中的id
+ * 在业务系统中，标识Customer有邮箱、手机，而且它们还可以修改，根据id不变性（若改变了，将其作为外键的所有关联将会错误）Activiti的User里也是用业务系统User中的id
  * 尽管使用数字id不便于在流程部署时指定具体签收人，但是考虑到业务上一般是指定用户组（角色），暂时可以接受
  * 
  * 另外，在Activiti的User的FirstName里，存储的是业务系统User的name，LastName里，存储的是业务系统User的nickname，便于界面展示。

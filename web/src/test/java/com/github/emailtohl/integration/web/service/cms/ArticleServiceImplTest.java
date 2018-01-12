@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -65,6 +66,7 @@ public class ArticleServiceImplTest {
 		typeId = tp.getId();
 		Article a = new Article("文章名", "关键词", "正文", "概述");
 		a.setType(tp);
+		StandardService.CURRENT_USER_ID.set(pd.user_emailtohl.getId());
 		StandardService.CURRENT_USERNAME.set(pd.user_emailtohl.getEmail());
 		identityService.setAuthenticatedUserId(pd.user_emailtohl.getId().toString());
 		a = articleService.create(a);
@@ -78,6 +80,9 @@ public class ArticleServiceImplTest {
 		Article a = articleService.get(articleId);
 		assertEquals(webPresetData.unclassified, a.getType());
 		articleService.delete(articleId);
+		
+		StandardService.CURRENT_USER_ID.remove();
+		StandardService.CURRENT_USERNAME.remove();
 	}
 
 	@Test
@@ -90,8 +95,19 @@ public class ArticleServiceImplTest {
 		System.out.println(gson.toJson(ls));
 		assertFalse(ls.isEmpty());
 
-		Paging<Article> p = articleService.query(params, new PageRequest(0, 20));
+		Pageable pageable = new PageRequest(0, 20);
+		Paging<Article> p = articleService.query(params, pageable);
 		System.out.println(gson.toJson(p));
+		assertFalse(p.getContent().isEmpty());
+		
+		// 全文搜索
+		p = articleService.search("文章名", pageable);
+		assertFalse(p.getContent().isEmpty());
+		p = articleService.search("关键词", pageable);
+		assertFalse(p.getContent().isEmpty());
+		p = articleService.search("正文", pageable);
+		assertFalse(p.getContent().isEmpty());
+		p = articleService.search("概述", pageable);
 		assertFalse(p.getContent().isEmpty());
 	}
 	

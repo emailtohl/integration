@@ -172,14 +172,11 @@ public class Customer extends User {
 	}
 	@Override
 	public void setEmail(String email) {
-		usernames.remove(super.email);
 		super.email = email;
-		usernames.add(email);
-		usernames.remove("");
-		usernames.remove(null);
 		if (customerRef != null) {
 			customerRef.email = email;
 		}
+		refreshUsernames();
 	}
 	@Override
 	public void setImage(Image image) {
@@ -190,14 +187,11 @@ public class Customer extends User {
 	}
 	@Override
 	public void setCellPhone(String cellPhone) {
-		usernames.remove(super.cellPhone);
 		super.cellPhone = cellPhone;
-		usernames.add(cellPhone);
-		usernames.remove("");
-		usernames.remove(null);
 		if (customerRef != null) {
 			customerRef.cellPhone = cellPhone;
 		}
+		refreshUsernames();
 	}
 	
 	@Override
@@ -236,6 +230,16 @@ public class Customer extends User {
 		return "Customer [level=" + level + ", address=" + address + ", identification=" + identification + ", points="
 				+ points + ", cards=" + cards + ", classify=" + classify + ", name=" + name + ", email=" + email
 				+ ", cellPhone=" + cellPhone + ", enabled=" + enabled + ", id=" + id + "]";
+	}
+	
+	private void refreshUsernames() {
+		this.usernames.clear();
+		if (super.email != null && !super.email.isEmpty()) {
+			this.usernames.add(super.getEmail());
+		}
+		if (super.cellPhone != null && !super.cellPhone.isEmpty()) {
+			this.usernames.add(super.getCellPhone());
+		}
 	}
 }
 

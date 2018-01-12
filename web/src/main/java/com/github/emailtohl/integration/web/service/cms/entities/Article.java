@@ -150,7 +150,7 @@ public class Article extends BaseEntity implements Comparable<Article> {
 	@JsonBackReference
 	// 使用LazyCollectionOption.EXTRA，集合在调用size(),isEmpty(),contains()等操作时不会加载实例
 	@org.hibernate.annotations.LazyCollection(org.hibernate.annotations.LazyCollectionOption.EXTRA)
-	@org.hibernate.search.annotations.IndexedEmbedded(depth = 1)
+	@org.hibernate.search.annotations.IndexedEmbedded(depth = 2)
 	@OrderBy(BaseEntity.CREATE_DATE_PROPERTY_NAME + " DESC")
 	@OneToMany(mappedBy = "article", orphanRemoval = true, cascade = CascadeType.REMOVE)
 	public List<Comment> getComments() {

@@ -90,6 +90,7 @@ public class PostSecurityLoggingFilter implements Filter {
 				}
 			}
 		}
+		StandardService.CURRENT_USER_ID.set(userId);
 		StandardService.CURRENT_USERNAME.set(username);
 		ThreadContext.put(Constant.USERNAME, username);
 		if (userId != null) {
@@ -98,6 +99,7 @@ public class PostSecurityLoggingFilter implements Filter {
 		
 		chain.doFilter(request, response);
 		
+		StandardService.CURRENT_USER_ID.remove();
 		StandardService.CURRENT_USERNAME.remove();
 		ThreadContext.remove(Constant.USERNAME);
 	}

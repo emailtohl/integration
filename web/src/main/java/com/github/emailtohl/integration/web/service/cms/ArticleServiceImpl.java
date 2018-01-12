@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.activiti.engine.FormService;
+import org.activiti.engine.TaskService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -35,31 +37,34 @@ import com.github.emailtohl.integration.web.service.cms.entities.Type;
 @Service
 @Transactional
 public class ArticleServiceImpl extends StandardService<Article> implements ArticleService {
-	ArticleRepository articleRepository;
-	CommentRepository commentRepository;
-	TypeRepository typeRepository;
-	UserService userService;
-	CustomerService customerService;
-	CorePresetData presetData;
-	WebPresetData webPresetData;
-	
-	
 	private static final Pattern IMG_PATTERN = Pattern.compile("<img\\b[^<>]*?\\bsrc[\\s\\t\\r\\n]*=[\\s\\t\\r\\n]*[\"\"']?[\\s\\t\\r\\n]*(?<imgUrl>[^\\s\\t\\r\\n\"\"'<>]*)[^<>]*?/?[\\s\\t\\r\\n]*>");
 	/**
 	 * 缓存名
 	 */
 	public static final String CACHE_NAME = "article_cache";
-
+	
+	ArticleRepository articleRepository;
+	CommentRepository commentRepository;
+	TypeRepository typeRepository;
+	UserService userService;
+	CustomerService customerService;
+	FormService formService;
+	TaskService taskService;
+	CorePresetData presetData;
+	WebPresetData webPresetData;
+	
 	@Inject
 	public ArticleServiceImpl(ArticleRepository articleRepository, CommentRepository commentRepository,
 			TypeRepository typeRepository, UserService userService, CustomerService customerService,
-			CorePresetData presetData, WebPresetData webPresetData) {
+			FormService formService, TaskService taskService, CorePresetData presetData, WebPresetData webPresetData) {
 		super();
 		this.articleRepository = articleRepository;
 		this.commentRepository = commentRepository;
 		this.typeRepository = typeRepository;
 		this.userService = userService;
 		this.customerService = customerService;
+		this.formService = formService;
+		this.taskService = taskService;
 		this.presetData = presetData;
 		this.webPresetData = webPresetData;
 	}
@@ -88,12 +93,12 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 			}
 			entity.setSummary(summary.replaceAll(IMG_PATTERN.pattern(), ""));
 		}
-		String username = CURRENT_USERNAME.get();
+		Long userId = CURRENT_USER_ID.get();
 		UserRef userRef;
-		if (!hasText(username)) {
+		if (userId == null) {
 			userRef = presetData.user_anonymous.getCustomerRef();
 		} else {
-			userRef = userService.findRef(username);
+			userRef = userService.getRef(userId);
 		}
 		if (userRef == null) {
 			userRef = presetData.user_anonymous.getCustomerRef();

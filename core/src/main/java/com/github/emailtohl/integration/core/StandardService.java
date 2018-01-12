@@ -33,13 +33,13 @@ import com.github.emailtohl.integration.common.jpa.Paging;
 @Transactional
 public abstract class StandardService<E extends Serializable> {
 	/**
-	 * Service尽量做到无状态，但是有些Service需要获取到当前使用的用户名
-	 * 
-	 * 由调用方从上下文获取到当前用户，然后再传值到Service显得过于繁琐
-	 * 
-	 * 这里使用线程本地存储域，显式地让调用方设置当前用户名，以便让Service能正确获取
+	 * Service尽量做到无状态，但是有些Service需要获取到当前用户信息
+	 * 这里使用线程本地存储域，在Service外部统一设置当前用户id或唯一识别用户名
+	 * Service内部就能根据id查询到当前用户信息
 	 */
+	public static final ThreadLocal<Long> CURRENT_USER_ID = new ThreadLocal<Long>();
 	public static final ThreadLocal<String> CURRENT_USERNAME = new ThreadLocal<String>();
+	
 	protected static final Logger LOG = LogManager.getLogger();
 	/**
 	 * 由于接口+抽象类的加入使得@Valid注解不能使用，所以可进行手动校验
