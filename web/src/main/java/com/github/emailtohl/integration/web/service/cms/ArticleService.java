@@ -3,12 +3,14 @@ package com.github.emailtohl.integration.web.service.cms;
 import static com.github.emailtohl.integration.core.role.Authority.CONTENT;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.web.service.cms.entities.Article;
+import com.github.emailtohl.integration.web.service.cms.entities.Type;
 
 /**
  * 文章服务
@@ -74,4 +76,31 @@ public interface ArticleService {
 	 */
 	@PreAuthorize("hasAuthority('" + CONTENT + "')")
 	void delete(Long id);
+	
+	/**
+	 * 同意还是拒绝文章发布
+	 * @param articleId
+	 * @param approved 同意还是拒绝
+	 */
+	@PreAuthorize("hasAuthority('" + CONTENT + "')")
+	Article approve(long articleId, boolean approved);
+	
+	/**
+	 * 前端获取最近文章列表，会排除未被审批的文章
+	 * @return
+	 */
+	List<Article> frontRecentArticles();
+	
+	/**
+	 * 前端打开文章，会排除未被审批的文章
+	 * @param id
+	 * @return
+	 */
+	Article frontArticle(long id);
+	
+	/**
+	 * 根据文章类型进行分类
+	 * @return
+	 */
+	Map<Type, List<Article>> classify();
 }

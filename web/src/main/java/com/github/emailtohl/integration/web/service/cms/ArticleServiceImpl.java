@@ -1,6 +1,7 @@
 package com.github.emailtohl.integration.web.service.cms;
 
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -200,6 +201,40 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 		articleRepository.delete(a);
 	}
 
+	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
+	@Override
+	public Article approve(long id, boolean approved) {
+		Article a = articleRepository.findOne(id);
+		if (a == null) {
+			return null;
+		}
+		a.setApproved(approved);
+		return toTransient(a);
+	}
+
+	@Override
+	public List<Article> frontRecentArticles() {
+		return articleRepository.findAll().stream().limit(10).filter(pa -> pa.isApproved()).map(this::toTransient)
+				.peek(this::filterCommentOfArticle).collect(Collectors.toList());
+	}
+
+	@Override
+	public Article frontArticle(long id) {
+		Article a = articleRepository.findOne(id);
+		if (a == null || !a.isApproved()) {
+			return null;
+		}
+		filterCommentOfArticle(a);
+		return transientDetail(a);
+	}
+
+	@Override
+	public Map<Type, List<Article>> classify() {
+		// 本系统中article.getType()是一定存在的
+		return articleRepository.findAll().stream().limit(100).filter(a -> a.isApproved()).map(this::toTransient)
+				.peek(this::filterCommentOfArticle).collect(Collectors.groupingBy(article -> article.getType()));
+	}
+	
 	@Override
 	protected Article toTransient(Article source) {
 		if (source == null) {
@@ -310,5 +345,17 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 			return target;
 		}).collect(Collectors.toList());
 	}
-
+	
+	/**
+	 * 过滤文章下的评论，主要用于前端
+	 * 
+	 * @param article
+	 */
+	private void filterCommentOfArticle(Article article) {
+		if (!article.isComment()) {
+			article.getComments().clear();
+		} else {
+			article.getComments().removeIf(comment -> !comment.isApproved());
+		}
+	}
 }
