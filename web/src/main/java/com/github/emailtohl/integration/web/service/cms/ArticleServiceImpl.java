@@ -19,11 +19,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
+import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.UserRef;
 import com.github.emailtohl.integration.web.config.WebPresetData;
@@ -43,12 +45,14 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 	 * 缓存名
 	 */
 	public static final String CACHE_NAME = "article_cache";
+	public static final String CACHE_ALL = "article_cache_all";
 	
 	ArticleRepository articleRepository;
 	CommentRepository commentRepository;
 	TypeRepository typeRepository;
 	UserService userService;
 	CustomerService customerService;
+	EmployeeService employeeService;
 	FormService formService;
 	TaskService taskService;
 	CorePresetData presetData;
@@ -57,19 +61,22 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 	@Inject
 	public ArticleServiceImpl(ArticleRepository articleRepository, CommentRepository commentRepository,
 			TypeRepository typeRepository, UserService userService, CustomerService customerService,
-			FormService formService, TaskService taskService, CorePresetData presetData, WebPresetData webPresetData) {
+			EmployeeService employeeService, FormService formService, TaskService taskService,
+			CorePresetData presetData, WebPresetData webPresetData) {
 		super();
 		this.articleRepository = articleRepository;
 		this.commentRepository = commentRepository;
 		this.typeRepository = typeRepository;
 		this.userService = userService;
 		this.customerService = customerService;
+		this.employeeService = employeeService;
 		this.formService = formService;
 		this.taskService = taskService;
 		this.presetData = presetData;
 		this.webPresetData = webPresetData;
 	}
 
+	@CacheEvict(value = CACHE_ALL)
 	@CachePut(value = CACHE_NAME, key = "#result.id")
 	@Override
 	public Article create(Article entity) {
@@ -189,7 +196,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 		return transientDetail(a);
 	}
 
-	@CacheEvict(value = CACHE_NAME, key = "#root.args[0]")
+	@CacheEvict(value = { CACHE_NAME, CACHE_ALL }, allEntries = true)
 	@Override
 	public void delete(Long id) {
 		Article a = articleRepository.findOne(id);
@@ -201,6 +208,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 		articleRepository.delete(a);
 	}
 
+	@CacheEvict(value = CACHE_ALL)
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Article approve(long id, boolean approved) {
@@ -209,30 +217,42 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 			return null;
 		}
 		a.setApproved(approved);
+		Long userId = CURRENT_USER_ID.get();
+		EmployeeRef empRef;
+		if (userId == null) {
+			empRef = presetData.user_bot.getEmployeeRef();
+		} else {
+			empRef = employeeService.getRef(userId);
+		}
+		if (empRef == null) {
+			empRef = presetData.user_bot.getEmployeeRef();
+		}
+		a.setApprover(empRef);
 		return toTransient(a);
 	}
 
+	@Cacheable(value = CACHE_ALL)
 	@Override
-	public List<Article> frontRecentArticles() {
-		return articleRepository.findAll().stream().limit(10).filter(pa -> pa.isApproved()).map(this::toTransient)
-				.peek(this::filterCommentOfArticle).collect(Collectors.toList());
+	public Map<Type, List<Article>> articleClassify() {
+		// 本系统中article.getType()是一定存在的
+		return articleRepository.findAll().stream()
+				.limit(100).filter(a -> a.isApproved() == null || a.isApproved())
+				.map(this::toTransient).peek(this::filterCommentOfArticle)
+				.collect(Collectors.groupingBy(article -> article.getType()));
 	}
-
+	
+	@Cacheable(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
-	public Article frontArticle(long id) {
+	public Article readArticle(Long id) throws NotAcceptableException {
 		Article a = articleRepository.findOne(id);
-		if (a == null || !a.isApproved()) {
+		if (a == null) {
 			return null;
+		}
+		if (a.isApproved() != null && !a.isApproved()) {
+			throw new NotAcceptableException("该文章还未审核通过！");
 		}
 		filterCommentOfArticle(a);
 		return transientDetail(a);
-	}
-
-	@Override
-	public Map<Type, List<Article>> classify() {
-		// 本系统中article.getType()是一定存在的
-		return articleRepository.findAll().stream().limit(100).filter(a -> a.isApproved()).map(this::toTransient)
-				.peek(this::filterCommentOfArticle).collect(Collectors.groupingBy(article -> article.getType()));
 	}
 	
 	@Override
@@ -242,6 +262,8 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 		}
 		Article target = new Article();
 		BeanUtils.copyProperties(source, target, "author", "approver", "type", "comments");
+		// BeanUtils不处理is开头的访问器
+		target.setApproved(source.isApproved());
 		// 只获取作者必要信息
 		target.setAuthor(transientUserRef(source.getAuthor()));
 		target.setApprover(transientEmployeeRef(source.getApprover()));
@@ -269,6 +291,8 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 		}
 		Article target = new Article();
 		BeanUtils.copyProperties(source, target, "author", "approver", "type", "comments");
+		// BeanUtils不处理is开头的访问器
+		target.setApproved(source.isApproved());
 		target.setAuthor(transientUserRef(source.getAuthor()));
 		target.setApprover(transientEmployeeRef(source.getApprover()));
 		target.setType(getType(source.getType()));
@@ -352,7 +376,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 	 * @param article
 	 */
 	private void filterCommentOfArticle(Article article) {
-		if (!article.isComment()) {
+		if (article.isComment() != null && !article.isComment()) {
 			article.getComments().clear();
 		} else {
 			article.getComments().removeIf(comment -> !comment.isApproved());

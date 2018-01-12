@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
@@ -86,21 +87,16 @@ public interface ArticleService {
 	Article approve(long articleId, boolean approved);
 	
 	/**
-	 * 前端获取最近文章列表，会排除未被审批的文章
+	 * 前端首页，按类型加载所有审核通过的文章
 	 * @return
 	 */
-	List<Article> frontRecentArticles();
+	Map<Type, List<Article>> articleClassify();
 	
 	/**
-	 * 前端打开文章，会排除未被审批的文章
+	 * 前端打开文章
 	 * @param id
 	 * @return
+	 * @throws NotAcceptableException 访问审核未通过的文章会明确地通知前端不可访问
 	 */
-	Article frontArticle(long id);
-	
-	/**
-	 * 根据文章类型进行分类
-	 * @return
-	 */
-	Map<Type, List<Article>> classify();
+	Article readArticle(Long id) throws NotAcceptableException;
 }

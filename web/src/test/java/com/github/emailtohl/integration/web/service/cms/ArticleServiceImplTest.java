@@ -4,6 +4,7 @@ import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -23,6 +24,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.CorePresetData;
@@ -120,6 +122,29 @@ public class ArticleServiceImplTest {
 			update.setType(other);
 			update = articleService.update(articleId, update);
 			assertEquals(other, update.getType());
+			
+			// test approve and front read
+			update = articleService.approve(articleId, false);
+			assertFalse(update.isApproved());
+			
+			// 测试前端不能读取，同时测试articleClassify、readArticle两个方法
+			boolean isExec = false;
+			try {
+				articleService.readArticle(articleId);
+			} catch (NotAcceptableException e) {
+				isExec = true;
+			}
+			assertTrue(isExec);
+			
+			final Article dontRead = update;
+			boolean isMatch = articleService.articleClassify().values().stream().anyMatch(a -> a.contains(dontRead));
+			assertFalse(isMatch);
+			
+			update = articleService.approve(articleId, true);
+			assertTrue(update.isApproved());
+			update = articleService.readArticle(articleId);
+			assertNotNull(update);
+			
 		} finally {
 			typeService.delete(other.getId());
 		}
