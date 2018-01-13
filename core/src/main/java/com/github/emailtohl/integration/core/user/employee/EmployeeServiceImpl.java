@@ -170,15 +170,9 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 
 	@CacheEvict(value = CACHE_NAME, key = "#root.args[0]")
 	@Override
-	public void delete(Long id) {
-		if (presetData.user_admin.getId().equals(id) || presetData.user_bot.getId().equals(id)) {
-			throw new NotAcceptableException("不能删除内置账号");
-		}
+	public void delete(Long id) throws NotAcceptableException {
 		Employee source = employeeRepository.getOne(id);
 		if (source == null) {
-			return;
-		}
-		if (source.getEmpNum() == null) {
 			return;
 		}
 		isIllegal(source);
@@ -461,7 +455,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 	 * @param e
 	 */
 	private void isIllegal(Employee e) {
-		if (e.getEmpNum() == Employee.NO1 || e.getEmpNum() == Employee.NO_BOT) {
+		if (presetData.user_admin.equals(e) || presetData.user_bot.equals(e)) {
 			throw new NotAcceptableException("不能修改系统内置账号");
 		}
 	}

@@ -77,7 +77,7 @@ public interface EmployeeService {
 	 * @exception NotAcceptableException 不能修改内置账号
 	 */
 	@PreAuthorize("hasAuthority('" + EMPLOYEE + "') or" + SPEL_MATCH_ID)
-	Employee update(@P("id") Long id, Employee newEntity);
+	Employee update(@P("id") Long id, Employee newEntity) throws NotAcceptableException;
 
 	/**
 	 * 根据ID删除平台账号

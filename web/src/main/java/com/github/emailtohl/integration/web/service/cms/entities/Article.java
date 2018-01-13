@@ -3,7 +3,6 @@ package com.github.emailtohl.integration.web.service.cms.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -152,7 +151,7 @@ public class Article extends BaseEntity implements Comparable<Article> {
 	@org.hibernate.annotations.LazyCollection(org.hibernate.annotations.LazyCollectionOption.EXTRA)
 	@org.hibernate.search.annotations.IndexedEmbedded(depth = 2)
 	@OrderBy(BaseEntity.CREATE_DATE_PROPERTY_NAME + " DESC")
-	@OneToMany(mappedBy = "article", orphanRemoval = true, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "article")
 	public List<Comment> getComments() {
 		return comments;
 	}

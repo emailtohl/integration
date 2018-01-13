@@ -359,7 +359,7 @@ public class CmsServiceImpl implements CmsService {
 	
 	@Override
 	public List<Comment> recentComments() {
-		return commentRepository.findAll().stream().limit(10).filter(pc -> pc.isApproved())
+		return commentRepository.findAll().stream().limit(10).filter(pc -> pc.getApproved())
 				.collect(Collectors.toList());
 	}
 
@@ -413,7 +413,7 @@ public class CmsServiceImpl implements CmsService {
 		// 只获取类型一级父目录
 		ta.setType(typeFilter(pa.getType()));
 		// 改变评论懒加载状态，且避免article与comment的交叉引用
-		ta.setComments(pa.getComments().stream().filter(c -> c.isApproved()).map(pc -> {
+		ta.setComments(pa.getComments().stream().filter(c -> c.getApproved()).map(pc -> {
 			Comment tc = new Comment();
 			BeanUtils.copyProperties(pc, tc, "article");
 			return tc;
@@ -455,7 +455,7 @@ public class CmsServiceImpl implements CmsService {
 		if (!article.isComment()) {
 			article.getComments().clear();
 		} else {
-			article.getComments().removeIf(comment -> !comment.isApproved());
+			article.getComments().removeIf(comment -> !comment.getApproved());
 		}
 	}
 

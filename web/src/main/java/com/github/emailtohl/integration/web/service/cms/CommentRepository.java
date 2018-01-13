@@ -1,7 +1,7 @@
 package com.github.emailtohl.integration.web.service.cms;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.github.emailtohl.integration.web.service.cms.entities.Comment;
@@ -12,9 +12,12 @@ import com.github.emailtohl.integration.web.service.cms.entities.Comment;
  */
 interface CommentRepository extends JpaRepository<Comment, Long>, CommentRepositoryCustomization {
 	
-	Page<Comment> findByReviewerLike(String reviewer, Pageable pageable);
-	
-	Page<Comment> findByArticleTitleLike(String articleTitle, Pageable pageable);
+	/**
+	 * 查询有多少评论引用了本评论
+	 * @param id
+	 * @return
+	 */
+	List<Comment> findByCommentId(Long id);
 	
 	/**
 	 * 计算某文章有多少评论

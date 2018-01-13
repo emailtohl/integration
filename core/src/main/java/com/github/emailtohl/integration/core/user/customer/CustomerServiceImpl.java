@@ -167,10 +167,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	@CacheEvict(value = CACHE_NAME, key = "#root.args[0]")
 	@Override
 	public void delete(Long id) {
-		if (presetData.user_anonymous.getId().equals(id)) {
-			throw new NotAcceptableException("不能删除内置账号");
-		}
-		Customer source = customerRepository.getOne(id);
+		Customer source = customerRepository.get(id);
 		if (source == null) {
 			return;
 		}
@@ -490,7 +487,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	 * @param e
 	 */
 	private void isIllegal(Customer c) {
-		if (Constant.ANONYMOUS_EMAIL.equals(c.getEmail())) {
+		if (presetData.user_anonymous.equals(c)) {
 			throw new NotAcceptableException("不能删除系统内置账号");
 		}
 	}

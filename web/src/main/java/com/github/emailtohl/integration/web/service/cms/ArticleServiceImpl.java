@@ -203,8 +203,8 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 		if (a == null) {
 			return;
 		}
-		a.getType().getArticles().remove(a);
-		// 评论是级联删除的，所以可以不用手动解除关系 cascade = CascadeType.REMOVE
+		a.getType().getArticles().remove(a); // 文章一定有个类型，所以连续调用
+		a.getComments().forEach(c -> c.setArticle(null));
 		articleRepository.delete(a);
 	}
 
@@ -357,7 +357,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 		if (comments == null) {
 			return null;
 		}
-		return comments.stream().filter(c -> c == null || c.isApproved()).map(source -> {
+		return comments.stream().filter(c -> c.getApproved() == null || c.getApproved()).map(source -> {
 			Comment target = new Comment();
 			target.setId(source.getId());
 			target.setCreateDate(source.getCreateDate());
@@ -365,7 +365,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 			target.setContent(source.getContent());
 			target.setReviewer(transientUserRef(source.getReviewer()));
 			target.setApprover(transientEmployeeRef(source.getApprover()));
-			target.setApproved(source.getIsApproved());
+			target.setApproved(source.getApproved());
 			return target;
 		}).collect(Collectors.toList());
 	}
@@ -379,7 +379,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 		if (article.isComment() != null && !article.isComment()) {
 			article.getComments().clear();
 		} else {
-			article.getComments().removeIf(comment -> !comment.isApproved());
+			article.getComments().removeIf(comment -> !comment.getApproved());
 		}
 	}
 }

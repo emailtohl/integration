@@ -1,6 +1,5 @@
 package com.github.emailtohl.integration.web.service.cms.entities;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -13,7 +12,7 @@ import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.UserRef;
 
 /**
- * 评论嵌入类
+ * 评论实体类，评论可以是针对于文章的，也可以是针对于评论的
  * @author HeLei
  */
 @org.hibernate.envers.Audited
@@ -27,9 +26,15 @@ public class Comment extends BaseEntity implements Comparable<Comment> {
 	@NotNull
 	private String content;
 	private UserRef reviewer;
-	@NotNull
+	/**
+	 * 针对于文章
+	 */
 	private Article article;
-	private Boolean isApproved;
+	/**
+	 * 针对于评论
+	 */
+	private Comment comment;
+	private Boolean approved;
 	private EmployeeRef approver;
 	
 	@org.hibernate.search.annotations.Field
@@ -55,7 +60,7 @@ public class Comment extends BaseEntity implements Comparable<Comment> {
 	@org.hibernate.envers.NotAudited
 	@org.hibernate.search.annotations.ContainedIn
 	@ManyToOne
-	@JoinColumn(name = "article_id", nullable = false)
+	@JoinColumn(name = "article_id")
 	public Article getArticle() {
 		return article;
 	}
@@ -63,19 +68,21 @@ public class Comment extends BaseEntity implements Comparable<Comment> {
 		this.article = article;
 	}
 
-	@Column(name = "is_approved")
-	public boolean isApproved() {
-		return isApproved;
+	@org.hibernate.envers.NotAudited
+	@ManyToOne
+	@JoinColumn(name = "target_comment_id")
+	public Comment getComment() {
+		return comment;
 	}
-	public void setApproved(boolean isApproved) {
-		this.isApproved = isApproved;
+	public void setComment(Comment comment) {
+		this.comment = comment;
 	}
 
-	public Boolean getIsApproved() {
-		return isApproved;
+	public Boolean getApproved() {
+		return approved;
 	}
-	public void setIsApproved(Boolean isApproved) {
-		this.isApproved = isApproved;
+	public void setApproved(Boolean approved) {
+		this.approved = approved;
 	}
 
 	@org.hibernate.search.annotations.IndexedEmbedded(depth = 1)

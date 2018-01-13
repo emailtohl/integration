@@ -80,11 +80,11 @@ public interface ArticleService {
 	
 	/**
 	 * 同意还是拒绝文章发布
-	 * @param articleId
+	 * @param id
 	 * @param approved 同意还是拒绝
 	 */
 	@PreAuthorize("hasAuthority('" + CONTENT + "')")
-	Article approve(long articleId, boolean approved);
+	Article approve(long id, boolean approved);
 	
 	/**
 	 * 前端首页，按类型加载所有审核通过的文章

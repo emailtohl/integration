@@ -85,7 +85,7 @@ public class TypeServiceImpl extends StandardService<Type> implements TypeServic
 			.withIgnorePaths("articles", "parent")
 			.withMatcher("id", GenericPropertyMatchers.exact())
 			.withMatcher("name", GenericPropertyMatchers.caseSensitive())
-			.withMatcher("description", GenericPropertyMatchers.caseSensitive());
+			.withMatcher("description", GenericPropertyMatchers.ignoreCase());
 	@Override
 	public Paging<Type> query(Type params, Pageable pageable) {
 		Page<Type> page;
@@ -96,7 +96,7 @@ public class TypeServiceImpl extends StandardService<Type> implements TypeServic
 			page = typeRepository.findAll(example, pageable);
 		}
 		List<Type> ls = page.getContent().stream().map(this::toTransient).collect(Collectors.toList());
-		return new Paging<Type>(ls, pageable, page.getTotalElements());
+		return new Paging<>(ls, pageable, page.getTotalElements());
 	}
 
 	@Override
