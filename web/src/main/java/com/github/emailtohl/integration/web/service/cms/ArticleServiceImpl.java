@@ -228,9 +228,19 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 			empRef = presetData.user_bot.getEmployeeRef();
 		}
 		a.setApprover(empRef);
-		return toTransient(a);
+		return transientDetail(a);
 	}
 
+	@Override
+	public Article canBeCommented(Long id, boolean isComment) {
+		Article a = articleRepository.findOne(id);
+		if (a == null) {
+			return null;
+		}
+		a.setComment(isComment);
+		return transientDetail(a);
+	}
+	
 	@Cacheable(value = CACHE_ALL)
 	@Override
 	public Map<Type, List<Article>> articleClassify() {
@@ -382,4 +392,5 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 			article.getComments().removeIf(comment -> !comment.getApproved());
 		}
 	}
+
 }

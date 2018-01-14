@@ -27,6 +27,11 @@ public interface CommentService {
 
 	void delete(Long id);
 	
+	/**
+	 * 同意还是拒绝评论发布
+	 * @param id
+	 * @param approved 同意还是拒绝
+	 */
 	Comment approve(long id, boolean approved);
 	
 	/**

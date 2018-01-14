@@ -87,6 +87,14 @@ public interface ArticleService {
 	Article approve(long id, boolean approved);
 	
 	/**
+	 * 让文章是否能被评论
+	 * @param id
+	 * @param isComment
+	 * @return
+	 */
+	Article canBeCommented(Long id, boolean isComment);
+	
+	/**
 	 * 前端首页，按类型加载所有审核通过的文章
 	 * @return
 	 */
