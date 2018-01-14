@@ -139,7 +139,11 @@ public class CommentServiceImplTest {
 
 	@Test
 	public void testUpdateLongComment() {
-		fail("Not yet implemented");
+		Comment c = new Comment();
+		c.setContent("update");
+		c = commentService.update(commentId2, c);
+		c = commentService.get(commentId2);
+		assertEquals("update", c.getContent());
 	}
 
 }
