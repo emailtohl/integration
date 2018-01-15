@@ -89,10 +89,10 @@ public interface ArticleService {
 	/**
 	 * 让文章是否能被评论
 	 * @param id
-	 * @param isComment
+	 * @param canComment
 	 * @return
 	 */
-	Article canBeCommented(Long id, boolean isComment);
+	Article canComment(Long id, boolean canComment);
 	
 	/**
 	 * 前端首页，按类型加载所有审核通过的文章

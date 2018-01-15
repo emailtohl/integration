@@ -161,28 +161,28 @@ public class CmsServiceImpl implements CmsService {
 	@Override
 	public Article approveArticle(long articleId) {
 		Article a = articleRepository.findOne(articleId);
-		a.setApproved(true);
+		a.setCanApproved(true);
 		return articlefilter(a);
 	}
 
 	@Override
 	public Article rejectArticle(long articleId) {
 		Article a = articleRepository.findOne(articleId);
-		a.setApproved(false);
+		a.setCanApproved(false);
 		return articlefilter(a);
 	}
 
 	@Override
 	public Article openComment(long articleId) {
 		Article a = articleRepository.findOne(articleId);
-		a.setComment(true);
+		a.setCanComment(true);
 		return articlefilter(a);
 	}
 
 	@Override
 	public Article closeComment(long articleId) {
 		Article a = articleRepository.findOne(articleId);
-		a.setComment(false);
+		a.setCanComment(false);
 		return articlefilter(a);
 	}
 
@@ -341,7 +341,7 @@ public class CmsServiceImpl implements CmsService {
 
 	@Override
 	public List<Article> recentArticles() {
-		return articleRepository.findAll().stream().limit(10).filter(pa -> pa.isApproved()).map(this::articlefilter)
+		return articleRepository.findAll().stream().limit(10).filter(pa -> pa.getCanApproved()).map(this::articlefilter)
 				.peek(this::filterCommentOfArticle).collect(Collectors.toList());
 	}
 
@@ -349,7 +349,7 @@ public class CmsServiceImpl implements CmsService {
 	public Article readArticle(long id) {
 		Article ta = articlefilter(articleRepository.findOne(id));
 		if (ta != null) {
-			if (ta.isApproved())
+			if (ta.getCanApproved())
 				filterCommentOfArticle(ta);
 			else
 				ta = null;
@@ -375,7 +375,7 @@ public class CmsServiceImpl implements CmsService {
 
 	@Override
 	public Map<Type, List<Article>> classify() {
-		return articleRepository.findAll().stream().limit(100).filter(a -> a.isApproved()).map(this::articlefilter)
+		return articleRepository.findAll().stream().limit(100).filter(a -> a.getCanApproved()).map(this::articlefilter)
 				.peek(this::filterCommentOfArticle).collect(Collectors.groupingBy(article -> {
 					Type t = article.getType();
 					if (t == null) {
@@ -452,7 +452,7 @@ public class CmsServiceImpl implements CmsService {
 	 * @param article
 	 */
 	private void filterCommentOfArticle(Article article) {
-		if (!article.isComment()) {
+		if (!article.getCanComment()) {
 			article.getComments().clear();
 		} else {
 			article.getComments().removeIf(comment -> !comment.getApproved());

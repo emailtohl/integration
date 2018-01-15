@@ -1,5 +1,6 @@
 package com.github.emailtohl.integration.web.service.cms.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -36,6 +37,7 @@ public class Comment extends BaseEntity implements Comparable<Comment> {
 	private Comment comment;
 	private Boolean approved;
 	private EmployeeRef approver;
+	private Boolean canComment;
 	
 	@org.hibernate.search.annotations.Field
 	@Lob
@@ -93,6 +95,14 @@ public class Comment extends BaseEntity implements Comparable<Comment> {
 	}
 	public void setApprover(EmployeeRef approver) {
 		this.approver = approver;
+	}
+
+	@Column(name = "can_comment")
+	public Boolean getCanComment() {
+		return canComment;
+	}
+	public void setCanComment(Boolean canComment) {
+		this.canComment = canComment;
 	}
 
 	@Override

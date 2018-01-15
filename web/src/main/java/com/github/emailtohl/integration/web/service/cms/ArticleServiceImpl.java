@@ -211,12 +211,12 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 	@CacheEvict(value = CACHE_ALL)
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
-	public Article approve(long id, boolean approved) {
+	public Article approve(long id, boolean canApproved) {
 		Article a = articleRepository.findOne(id);
 		if (a == null) {
 			return null;
 		}
-		a.setApproved(approved);
+		a.setCanApproved(canApproved);
 		Long userId = CURRENT_USER_ID.get();
 		EmployeeRef empRef;
 		if (userId == null) {
@@ -231,13 +231,14 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 		return transientDetail(a);
 	}
 
+	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
-	public Article canBeCommented(Long id, boolean isComment) {
+	public Article canComment(Long id, boolean canComment) {
 		Article a = articleRepository.findOne(id);
 		if (a == null) {
 			return null;
 		}
-		a.setComment(isComment);
+		a.setCanComment(canComment);
 		return transientDetail(a);
 	}
 	
@@ -246,7 +247,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 	public Map<Type, List<Article>> articleClassify() {
 		// 本系统中article.getType()是一定存在的
 		return articleRepository.findAll().stream()
-				.limit(100).filter(a -> a.isApproved() == null || a.isApproved())
+				.limit(100).filter(a -> a.getCanApproved() == null || a.getCanApproved())
 				.map(this::toTransient).peek(this::filterCommentOfArticle)
 				.collect(Collectors.groupingBy(article -> article.getType()));
 	}
@@ -258,7 +259,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 		if (a == null) {
 			return null;
 		}
-		if (a.isApproved() != null && !a.isApproved()) {
+		if (a.getCanApproved() != null && !a.getCanApproved()) {
 			throw new NotAcceptableException("该文章还未审核通过！");
 		}
 		filterCommentOfArticle(a);
@@ -273,7 +274,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 		Article target = new Article();
 		BeanUtils.copyProperties(source, target, "author", "approver", "type", "comments");
 		// BeanUtils不处理is开头的访问器
-		target.setApproved(source.isApproved());
+		target.setCanApproved(source.getCanApproved());
 		// 只获取作者必要信息
 		target.setAuthor(transientUserRef(source.getAuthor()));
 		target.setApprover(transientEmployeeRef(source.getApprover()));
@@ -301,8 +302,6 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 		}
 		Article target = new Article();
 		BeanUtils.copyProperties(source, target, "author", "approver", "type", "comments");
-		// BeanUtils不处理is开头的访问器
-		target.setApproved(source.isApproved());
 		target.setAuthor(transientUserRef(source.getAuthor()));
 		target.setApprover(transientEmployeeRef(source.getApprover()));
 		target.setType(getType(source.getType()));
@@ -386,7 +385,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 	 * @param article
 	 */
 	private void filterCommentOfArticle(Article article) {
-		if (article.isComment() != null && !article.isComment()) {
+		if (article.getCanApproved() != null && !article.getCanApproved()) {
 			article.getComments().clear();
 		} else {
 			article.getComments().removeIf(comment -> !comment.getApproved());

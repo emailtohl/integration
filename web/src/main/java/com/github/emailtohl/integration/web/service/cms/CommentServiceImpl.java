@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.CorePresetData;
@@ -65,7 +66,7 @@ public class CommentServiceImpl extends StandardService<Comment> implements Comm
 
 	@CachePut(value = CACHE_NAME, key = "#result.id")
 	@Override
-	public Comment create(Comment entity) {
+	public Comment create(Comment entity) throws NotAcceptableException {
 		validate(entity);
 		Long userId = CURRENT_USER_ID.get();
 		UserRef userRef;
@@ -78,15 +79,22 @@ public class CommentServiceImpl extends StandardService<Comment> implements Comm
 			userRef = presetData.user_anonymous.getCustomerRef();
 		}
 		entity.setReviewer(userRef);
+		// 评论总是有关联的，要么是与文章，要么是与评论
 		if (entity.getArticle() != null && entity.getArticle().getId() != null) {
 			Article a = articleRepository.findOne(entity.getArticle().getId());
 			if (a != null) {
+				if (a.getCanComment() != null && !a.getCanComment()) {
+					throw new NotAcceptableException(a.getTitle() + "关闭了评论");
+				}
 				entity.setArticle(a);
 			}
 		}
 		if (entity.getComment() != null && entity.getComment().getId() != null) {
 			Comment targetComment = commentRepository.get(entity.getComment().getId());
 			if (targetComment != null) {
+				if (targetComment.getCanComment() != null && !targetComment.getCanComment()) {
+					throw new NotAcceptableException("评论被关闭");
+				}
 				entity.setComment(targetComment);
 			}
 		}
@@ -185,6 +193,7 @@ public class CommentServiceImpl extends StandardService<Comment> implements Comm
 		commentRepository.delete(c);
 	}
 
+	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Comment approve(long id, boolean approved) {
 		Comment c = commentRepository.findOne(id);
@@ -203,6 +212,17 @@ public class CommentServiceImpl extends StandardService<Comment> implements Comm
 			empRef = presetData.user_bot.getEmployeeRef();
 		}
 		c.setApprover(empRef);
+		return transientDetail(c);
+	}
+
+	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
+	@Override
+	public Comment canComment(Long id, boolean canComment) {
+		Comment c = commentRepository.findOne(id);
+		if (c == null) {
+			return null;
+		}
+		c.setCanComment(canComment);
 		return transientDetail(c);
 	}
 	

@@ -40,9 +40,9 @@ public class Article extends BaseEntity implements Comparable<Article> {
 //	@NotNull
 	private UserRef author;
 	private Type type;
-	private Boolean isApproved;
+	private Boolean canApproved;
 	private EmployeeRef approver;
-	private Boolean isComment;
+	private Boolean canComment;
 	private List<Comment> comments = new ArrayList<>();
 	private Integer commentNumbers;
 	
@@ -119,14 +119,14 @@ public class Article extends BaseEntity implements Comparable<Article> {
 		this.type = type;
 	}
 	
-	@Column(name = "is_approved")
-	public Boolean isApproved() {
-		return isApproved;
+	@Column(name = "can_approved")
+	public Boolean getCanApproved() {
+		return canApproved;
 	}
-	public void setApproved(Boolean isApproved) {
-		this.isApproved = isApproved;
+	public void setCanApproved(Boolean canApproved) {
+		this.canApproved = canApproved;
 	}
-	
+
 	@org.hibernate.search.annotations.IndexedEmbedded(depth = 1)
 	@ManyToOne
 	@JoinColumn(name = "approver_id")
@@ -136,16 +136,15 @@ public class Article extends BaseEntity implements Comparable<Article> {
 	public void setApprover(EmployeeRef approver) {
 		this.approver = approver;
 	}
-
-	@org.hibernate.envers.NotAudited
-	@Column(name = "is_comment")
-	public Boolean isComment() {
-		return isComment;
-	}
-	public void setComment(Boolean isComment) {
-		this.isComment = isComment;
-	}
 	
+	@Column(name = "can_comment")
+	public Boolean getCanComment() {
+		return canComment;
+	}
+	public void setCanComment(Boolean canComment) {
+		this.canComment = canComment;
+	}
+
 	@JsonBackReference
 	// 使用LazyCollectionOption.EXTRA，集合在调用size(),isEmpty(),contains()等操作时不会加载实例
 	@org.hibernate.annotations.LazyCollection(org.hibernate.annotations.LazyCollectionOption.EXTRA)

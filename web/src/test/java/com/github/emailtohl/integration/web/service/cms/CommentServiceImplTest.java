@@ -21,7 +21,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
+import com.github.emailtohl.integration.common.utils.BeanUtil;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.web.WebTestConfig;
@@ -144,6 +146,25 @@ public class CommentServiceImplTest {
 		c = commentService.update(commentId2, c);
 		c = commentService.get(commentId2);
 		assertEquals("update", c.getContent());
+		
+		c = commentService.approve(commentId2, false);
+		final Comment copy = BeanUtil.deepCopy(c);
+		boolean f = commentService.recentComments().stream().anyMatch(cm -> cm.equals(copy));
+		assertFalse(f);
+		
+		c = commentService.approve(commentId2, true);
+		commentService.canComment(commentId2, false);
+		
+		Comment newComment = new Comment();
+		newComment.setContent("针对评论2的一个新的评论");
+		newComment.setComment(c);
+		boolean exec = false;
+		try {
+			commentService.create(newComment);
+		} catch (NotAcceptableException e) {
+			exec = true;
+		}
+		assertTrue(exec);
 	}
 
 }

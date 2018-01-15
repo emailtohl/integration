@@ -128,7 +128,7 @@ public class ArticleServiceImplTest {
 			
 			// test approve and front read
 			update = articleService.approve(articleId, false);
-			assertFalse(update.isApproved());
+			assertFalse(update.getCanApproved());
 			
 			// 测试前端不能读取，同时测试articleClassify、readArticle两个方法
 			boolean isExec = false;
@@ -144,7 +144,7 @@ public class ArticleServiceImplTest {
 			assertFalse(isMatch);
 			
 			update = articleService.approve(articleId, true);
-			assertTrue(update.isApproved());
+			assertTrue(update.getCanApproved());
 			update = articleService.readArticle(articleId);
 			assertNotNull(update);
 			
