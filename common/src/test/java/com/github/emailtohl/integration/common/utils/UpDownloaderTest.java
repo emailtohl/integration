@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -66,14 +68,23 @@ public class UpDownloaderTest {
 	@Test
 	public void testGetBaseName() {
 		assertEquals("test", upDownloader.getBaseName());
-		UpDownloader ud = new UpDownloader("D:\\program\\apache-tomcat-9.0.0.M15\\wtpwebapps\\integration-data\\resources");
-		assertEquals("resources", ud.getBaseName());
-		ud = new UpDownloader("/opt/apache-tomcat-9.0.0.M15/wtpwebapps/integration-data/resources");
-		assertEquals("resources", ud.getBaseName());
-		ud = new UpDownloader("/");
-		assertEquals(File.separator, ud.getBaseName());
-		ud = new UpDownloader("\\");
-		assertEquals(File.separator, ud.getBaseName());
+		UpDownloader ud;
+		String os = System.getenv().get("OS");
+		if (os != null) {
+			Pattern p = Pattern.compile("Windows", Pattern.CASE_INSENSITIVE);
+			Matcher m = p.matcher(os);
+			if (m.find()) {
+				ud = new UpDownloader("D:\\program\\apache-tomcat-9.0.0.M15\\wtpwebapps\\integration-data\\resources");
+				assertEquals("resources", ud.getBaseName());
+				ud = new UpDownloader("\\");
+				assertEquals(File.separator, ud.getBaseName());
+			} else {
+				ud = new UpDownloader("/opt/apache-tomcat-9.0.0.M15/wtpwebapps/integration-data/resources");
+				assertEquals("resources", ud.getBaseName());
+				ud = new UpDownloader("/");
+				assertEquals(File.separator, ud.getBaseName());
+			}
+		}
 		ud = new UpDownloader("abc");
 		assertEquals("abc", ud.getBaseName());
 		UpDownloader.deleteDir(ud.getAbsolutePath(""));
