@@ -61,14 +61,14 @@ public class EmployeeCtrl extends RestCtrl<Employee> {
 			@PageableDefault(page = 0, size = 10, sort = { BaseEntity.ID_PROPERTY_NAME,
 					BaseEntity.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
 		Paging<Employee> p = employeeService.query(params, pageable);
-		p.getContent().stream().peek(this::filter);
+		p.getContent().forEach(this::filter);
 		return p;
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
 	public List<Employee> query(Employee params) {
 		List<Employee> ls = employeeService.query(params);
-		ls.stream().peek(this::filter);
+		ls.forEach(this::filter);
 		return ls;
 	}
 
@@ -90,7 +90,7 @@ public class EmployeeCtrl extends RestCtrl<Employee> {
 			@PageableDefault(page = 0, size = 10, sort = { BaseEntity.ID_PROPERTY_NAME,
 					BaseEntity.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
 		Paging<Employee> p = employeeService.search(query, pageable);
-		p.getContent().stream().peek(this::filter);
+		p.getContent().forEach(this::filter);
 		return p;
 	}
 	

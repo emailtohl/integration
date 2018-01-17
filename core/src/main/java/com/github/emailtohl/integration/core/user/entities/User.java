@@ -33,7 +33,9 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.search.annotations.Store;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.exception.InnerDataStateException;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
@@ -179,6 +181,8 @@ public class User extends BaseEntity {
 		this.accountNonLocked = accountNonLocked;
 	}
 	
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	@org.hibernate.envers.NotAudited
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "last_login")
@@ -189,6 +193,8 @@ public class User extends BaseEntity {
 		this.lastLogin = lastLogin;
 	}
 	
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	@org.hibernate.envers.NotAudited
 	@Temporal(TemporalType.DATE)
 	@Column(name = "last_change_credentials")
@@ -199,6 +205,8 @@ public class User extends BaseEntity {
 		this.lastChangeCredentials = lastChangeCredentials;
 	}
 	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
 //	@org.hibernate.search.annotations.Field(index = org.hibernate.search.annotations.Index.YES, analyze=org.hibernate.search.annotations.Analyze.NO, store = org.hibernate.search.annotations.Store.YES)
 //	@org.hibernate.search.annotations.DateBridge(resolution = org.hibernate.search.annotations.Resolution.DAY)
 	@org.hibernate.envers.NotAudited
@@ -306,6 +314,8 @@ public class User extends BaseEntity {
 	}
 	public void setUserType(UserType userType) {}
 	
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	@Transient
 	public Date getStartDate() {
 		return startDate;
@@ -313,6 +323,9 @@ public class User extends BaseEntity {
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
+	
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	@Transient
 	public Date getEndDate() {
 		return endDate;

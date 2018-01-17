@@ -145,11 +145,17 @@ public class EmployeeCtrlTest {
 
 	@Test
 	public void testSearch() throws Exception {
-		mockMvc.perform(get("/employee/search"))
-		.andExpect(status().is2xxSuccessful());
+		String result = mockMvc.perform(get("/employee/search"))
+		.andExpect(status().is2xxSuccessful())
+		.andReturn().getResponse().getContentAsString();
 		
-		mockMvc.perform(get("/employee/search?query=foo"))
-		.andExpect(status().is2xxSuccessful());
+		System.out.println(result);
+		
+		result = mockMvc.perform(get("/employee/search?query=foo"))
+		.andExpect(status().is2xxSuccessful())
+		.andReturn().getResponse().getContentAsString();
+		
+		System.out.println(result);
 	}
 	
 	@Test

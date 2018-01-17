@@ -37,7 +37,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.emailtohl.integration.common.exception.ConflictException;
 import com.github.emailtohl.integration.common.exception.InvalidDataException;
 import com.github.emailtohl.integration.common.exception.NotFoundException;
-import com.github.emailtohl.integration.common.jpa.AbstractJpaRepository;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.core.user.UserService;
@@ -58,7 +57,7 @@ public abstract class RestCtrl<T> {
 	@SuppressWarnings("unchecked")
 	public RestCtrl() {
 		Class<?> clz = this.getClass();
-		while (clz != AbstractJpaRepository.class) {
+		while (clz != RestCtrl.class) {
 			Type genericSuperclass = clz.getGenericSuperclass();
 			if (genericSuperclass instanceof ParameterizedType) {
 				ParameterizedType type = (ParameterizedType) genericSuperclass;
