@@ -1,6 +1,6 @@
 define([
-	'angular', 'angular-animate', 'angular-cookies', 'angular-touch', 'ui-router', 
-	'angular-datepicker', 'ng-verify',
+	'angular', 'common/i18n', 'angular-animate', 'angular-cookies', 'angular-touch', 'ui-router', 
+	'angular-datepicker', 'ng-verify', 'angular-translate',
 	'common/context',
 	'role/context',
 	'employee/context',
@@ -10,9 +10,9 @@ define([
 	'forum/context',
 	'applicationForm/context',*/
 	'dashboard/context',
-], function(angular) {
+], function(angular, i18n) {
 	return angular.module('app', [
-			'ui.router', 'ngAnimate', 'ngCookies', 'ngTouch',
+			'ui.router', 'ngAnimate', 'ngCookies', 'ngTouch', 'pascalprecht.translate',
 			'commonModule',
 			'roleModule',
 			'employeeModule',
@@ -23,7 +23,7 @@ define([
 			'forumModule',*/
 			'dashboardModule',
 		])
-		.run(['$rootScope', '$state', '$stateParams', '$http', function($rootScope, $state, $stateParams, $http) {
+		.run(['$rootScope', '$state', '$stateParams', '$http', '$translate', function($rootScope, $state, $stateParams, $http, $translate) {
 			// 让页面能同步状态，显示出该状态应有的效果，例如某菜单被激活的样式
 			$rootScope.$state = $state;
 			$rootScope.$stateParams = $stateParams;
@@ -104,7 +104,26 @@ define([
 				if(!iconSrc)
 					iconSrc = 'lib/adminLTE/img/user2-160x160.jpg';
 				return iconSrc;
-			}
+			};
+			
+			var date = new Date();
+			$rootScope._date = {
+				year: date.getFullYear(),
+				month: date.getMonth() + 1,
+				day: date.getDate()
+			};
+			$rootScope.changeLang = function(langKey) {
+				if (langKey) {
+					$translate.use(langKey);
+				} else {
+					var lang = $translate.proposedLanguage();
+					if (lang.startsWith('zh')) {
+						$translate.use('en');
+					} else {
+						$translate.use('zh');
+					}
+				}
+			};
 
 		}])
 		.animation('.pop', ["$animateCss", function($animateCss) {
@@ -140,5 +159,16 @@ define([
 		.config(function($httpProvider) {
 			$httpProvider.defaults.withCredentials = true;
 		})
+		.config(['$translateProvider', function ($translateProvider) {
+			for (var p in i18n) {
+				if (!i18n.hasOwnProperty(p)) {
+					continue;
+				}
+				$translateProvider.translations(p, i18n[p]);
+			}
+			$translateProvider.preferredLanguage('zh');
+			// 浏览器默认语言
+//			$translateProvider.determinePreferredLanguage();
+		}])
 		;
 });

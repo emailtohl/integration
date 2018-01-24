@@ -1,6 +1,6 @@
 # Java项目的集成
 
-**Java JavaScript 业务框架 spring springmvc springsecurity springdata JPA Hibernate search Envers Lucene angularjs1.× AdminLTE**
+**Java JavaScript 业务框架 spring springmvc springsecurity springdata JPA Hibernate search Envers Lucene Activiti angularjs1.× AdminLTE**
 
 说明
 ----

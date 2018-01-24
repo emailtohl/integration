@@ -22,6 +22,7 @@ requirejs.config({
 		'angular-touch': '../lib/angular/angular-touch.min',
 		'ui-router': '../lib/ui/router/angular-ui-router.min',
 		'ui-select': '../lib/ui/select/select.min',
+		'angular-translate': '../lib/angular-translate/angular-translate.min',
 		'ui-bootstrap': '../lib/ui/bootstrap/require-ui-bootstrap',
 		'jquery-slimscroll': '../lib/assets/js/jquery.slimscroll.min',
 		fastclick: '../lib/assets/js/fastclick.min',
@@ -69,6 +70,10 @@ requirejs.config({
 		'ui-router': {
 			deps: ['angular'],
 			exports: 'uiRouter',
+		},
+		'angular-translate': {
+			deps: ['angular'],
+			exports: 'translate',
 		},
 		'jquery-slimscroll': {
 			deps: ['jquery'],

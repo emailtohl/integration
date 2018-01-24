@@ -60,9 +60,15 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </a>
-
+	  
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
+          <li class="dropdown messages-menu">
+            <a href="#" class="dropdown-toggle" data-ng-click="changeLang()">
+              <i class="fa"></i>
+              <span class="label label-success">change language</span>
+            </a>
+          </li>
           <!-- Messages: style can be found in dropdown.less-->
           <li class="dropdown messages-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -334,17 +340,17 @@
       <!-- /.search form -->
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
-        <li class="header">MAIN NAVIGATION</li>
+        <li class="header">MAIN NAVIGATION {{'date' | translate:_date}}</li>
         <li data-ng-class="{active: $state.includes('dashboard')}">
         	<a ui-sref="dashboard">
         		<i class="fa fa-dashboard"></i>
-        		<span>首页</span>
+        		<span translate="home"></span>
         	</a>
         </li>
         <li class="treeview" data-ng-class="{active: $state.includes('forum')}">
           <a href="#">
             <i class="fa fa-forumbee"></i>
-            <span>论坛</span>
+            <span translate="forum"></span>
             <i class="fa fa-angle-left pull-right"></i>
           </a>
           <ul class="treeview-menu">
@@ -352,16 +358,10 @@
             <li data-ng-class="{active: $state.includes('forum.add')}"><a ui-sref="forum.add" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>发帖</a></li>
           </ul>
         </li>
-        <li class="" data-ng-if="hasAuthority('user_customer')" data-ng-class="{active: $state.includes('crm')}" ui-sref="crm">
-          <a href="#">
-            <i class="fa fa-user-md"></i>
-            <span>客户管理</span>
-          </a>
-        </li>
         <li class="treeview" data-ng-class="{active: $state.includes('applicationForm')}">
           <a href="#">
           	  <i class="fa fa-tasks"></i>
-	          <span>申请表</span>
+	          <span translate="flow"></span>
 	          <i class="fa fa-angle-left pull-right"></i>
 	      </a>
           <ul class="treeview-menu">
@@ -370,10 +370,10 @@
             <li data-ng-if="hasAuthority('application_form_read_history')" data-ng-class="{active: $state.includes('applicationForm.history')}"><a ui-sref="applicationForm.history" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>处理记录</a></li>
           </ul>
         </li>
-        <li class="treeview" data-ng-class="{active: $state.includes('cms')}" data-ng-if="hasAuthority('resource_manager')">
+        <li class="treeview" data-ng-class="{active: $state.includes('cms')}" >
           <a href="#">
           	  <i class="fa fa-file-o"></i>
-	          <span>内容管理</span>
+	          <span translate="content"></span>
 	          <i class="fa fa-angle-left pull-right"></i>
 	      </a>
           <ul class="treeview-menu">
@@ -386,7 +386,7 @@
         <li class="treeview" data-ng-class="{active: $state.includes('encryption')}" >
           <a href="#">
           	  <i class="fa fa-key"></i>
-	          <span>密钥管理</span>
+	          <span translate="keys"></span>
 	          <i class="fa fa-angle-left pull-right"></i>
 	      </a>
           <ul class="treeview-menu">
@@ -397,28 +397,28 @@
         <li class="treeview" data-ng-class="{active: $state.includes('user')}">
           <a href="#">
           	<i class="fa fa-users"></i>
-          	<span>用户管理</span>
+          	<span translate="user"></span>
           	<i class="fa fa-angle-left pull-right"></i>
           </a>
           <ul class="treeview-menu">
             <li data-ng-class="{active: $state.includes('employee.list') || $state.includes('employee.detail') || $state.includes('employee.add')}">
             	<a ui-sref="employee.list" style="margin-left: 35px;">
-            		<i class="fa fa-circle-o"></i>平台账号
+            		<i class="fa fa-circle-o"></i>{{'user-platform' | translate}}
             	</a>
            	</li>
             <li data-ng-class="{active: $state.includes('customer.list') || $state.includes('customer.detail') || $state.includes('customer.add')}">
             	<a ui-sref="customer.list" style="margin-left: 35px;">
-            		<i class="fa fa-circle-o"></i>客户账号
+            		<i class="fa fa-circle-o"></i>{{'user-customer' | translate}}
            		</a>
          	</li>
-            <li data-ng-class="{active: $state.includes('user.audit')}" ><a style="margin-left: 35px;"><i class="fa fa-circle-o"></i>平台账号审计</a></li>
+            <li data-ng-class="{active: $state.includes('user.audit')}" ><a style="margin-left: 35px;"><i class="fa fa-circle-o"></i>{{'user-audit' | translate}}</a></li>
           </ul>
         </li>
         <!-- data-ng-if="hasAuthority('user_role_authority_allocation')" -->
         <li class="treeview"  data-ng-class="{active: $state.includes('role') || $state.includes('roleAudit')}">
           <a href="#">
             <i class="fa fa-th"></i>
-            <span>角色权限关系</span>
+            <span translate="role"></span>
             <span class="pull-right-container">
               <small class="label pull-right bg-red">notice</small>
             </span>
