@@ -1,5 +1,5 @@
 define([
-	'angular', 'common/i18n', 'angular-animate', 'angular-cookies', 'angular-touch', 'ui-router', 
+	'angular', 'i18n', 'angular-animate', 'angular-cookies', 'angular-touch', 'ui-router', 
 	'angular-datepicker', 'ng-verify', 'angular-translate',
 	'common/context',
 	'role/context',
@@ -124,7 +124,9 @@ define([
 					}
 				}
 			};
-
+			$rootScope.currentLanguage = function() {
+				return $translate.proposedLanguage();
+			};
 		}])
 		.animation('.pop', ["$animateCss", function($animateCss) {
 			return {
@@ -170,5 +172,13 @@ define([
 			// 浏览器默认语言
 //			$translateProvider.determinePreferredLanguage();
 		}])
+		/**
+		 * 指定可信任的html代码
+		 */
+		.filter('trustHtml', function($sce) {
+			return function(input) {
+				return $sce.trustAsHtml(input);
+			}
+		})
 		;
 });

@@ -2,8 +2,11 @@ package com.github.emailtohl.integration.core.user;
 
 import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
-import static com.github.emailtohl.integration.core.config.Constant.ANONYMOUS_EMAIL;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 import java.util.List;
@@ -21,6 +24,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
+import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.User;
@@ -157,7 +161,7 @@ public class UserServiceImplTest {
 		assertNotNull(u);
 		u = userService.find("" + Employee.NO1);
 		assertNotNull(u);
-		u = userService.find(ANONYMOUS_EMAIL);
+		u = userService.find(Customer.ANONYMOUS_EMAIL);
 		assertNotNull(u);
 		u = userService.find(td.foo.getEmpNum().toString());
 		assertNotNull(u);
@@ -187,7 +191,7 @@ public class UserServiceImplTest {
 		assertNotNull(u);
 		u = userService.findRef("" + Employee.NO1);
 		assertNotNull(u);
-		u = userService.findRef(ANONYMOUS_EMAIL);
+		u = userService.findRef(Customer.ANONYMOUS_EMAIL);
 		assertNotNull(u);
 		u = userService.findRef(td.foo.getEmpNum().toString());
 		assertNotNull(u);

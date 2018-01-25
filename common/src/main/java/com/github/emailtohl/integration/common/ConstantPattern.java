@@ -5,7 +5,6 @@ package com.github.emailtohl.integration.common;
  * @author HeLei
  */
 public interface ConstantPattern {
-	
 	/**
 	 * 匹配中文字符的正则表达式
 	 */
@@ -17,6 +16,7 @@ public interface ConstantPattern {
 	String EMAIL = "^[a-zA-Z0-9`!#$%^&*'{}?/+=|_~-]+(\\.[a-zA-Z0-9`!#$%^&*'{}?/+=" +
 			"|_~-]+)*@([a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)+(\\.[a-zA-Z0-9]" +
 			"([a-zA-Z0-9-]*[a-zA-Z0-9])?)*$";
+	
 	/**
 	 * 匹配YYYY-MM-DD的正则表达式
 	 */

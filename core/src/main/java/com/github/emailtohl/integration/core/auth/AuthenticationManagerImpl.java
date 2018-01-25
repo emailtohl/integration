@@ -80,7 +80,7 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 			LOG.warn("Authentication Don't login this account {}.", username);
 			throw new UsernameNotFoundException("没有此账号");
 		}
-		if (u instanceof Customer && Constant.ANONYMOUS_EMAIL.equals(u.getEmail())) {
+		if (u instanceof Customer && Customer.ANONYMOUS_EMAIL.equals(u.getEmail())) {
 			LOG.warn("Authentication Don't login this account {}.", username);
 			throw new UsernameNotFoundException("没有此账号");
 		}

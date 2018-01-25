@@ -70,8 +70,8 @@ public class UserDetailsImpl implements UserDetails {
 			} else if (StringUtils.hasText(u.getCellPhone())) {
 				this.username = u.getCellPhone();
 			}
-		} else if (u instanceof User && Constant.ADMIN_NAME.equals(u.getName())) {
-			this.username = Constant.ADMIN_NAME;
+		} else if (u instanceof User && Employee.ADMIN_NAME.equals(u.getName())) {
+			this.username = Employee.ADMIN_NAME;
 		}
 		this.authorities = u.authorityNames();
 		this.password = u.getPassword();

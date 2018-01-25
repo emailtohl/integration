@@ -1,8 +1,5 @@
 package com.github.emailtohl.integration.core.config;
 
-import static com.github.emailtohl.integration.core.config.Constant.ADMIN_NAME;
-import static com.github.emailtohl.integration.core.config.Constant.ANONYMOUS_EMAIL;
-import static com.github.emailtohl.integration.core.config.Constant.ANONYMOUS_NAME;
 import static com.github.emailtohl.integration.core.role.Authority.AUDIT_ROLE;
 import static com.github.emailtohl.integration.core.role.Authority.AUDIT_USER;
 import static com.github.emailtohl.integration.core.role.Authority.CONTENT;
@@ -119,6 +116,7 @@ public class CorePresetData {
 		company.getDepartments().addAll(Arrays.asList(product, qa));
 
 		user_bot.setEmpNum(Employee.NO_BOT);
+		user_bot.setEmail("bot@localhost");
 		user_bot.setName("bot");
 		user_bot.setNickname("bot");
 		user_bot.setAccountNonLocked(true);
@@ -134,8 +132,9 @@ public class CorePresetData {
 		}
 		
 		user_admin.setEmpNum(Employee.NO1);
-		user_admin.setName(ADMIN_NAME);
-		user_admin.setNickname(ADMIN_NAME);
+		user_admin.setEmail(Employee.ADMIN_EMAIL);
+		user_admin.setName(Employee.ADMIN_NAME);
+		user_admin.setNickname(Employee.ADMIN_NAME);
 		user_admin.setDescription("系统管理员");
 		user_admin.setGender(Gender.UNSPECIFIED);
 		user_admin.getRoles().add(role_admin);
@@ -147,9 +146,9 @@ public class CorePresetData {
 			e.printStackTrace();
 		}
 		
-		user_anonymous.setName(ANONYMOUS_NAME);
-		user_anonymous.setNickname(ANONYMOUS_NAME);
-		user_anonymous.setEmail(ANONYMOUS_EMAIL);
+		user_anonymous.setName(Customer.ANONYMOUS_NAME);
+		user_anonymous.setNickname(Customer.ANONYMOUS_NAME);
+		user_anonymous.setEmail(Customer.ANONYMOUS_EMAIL);
 		user_anonymous.setDescription("系统中的匿名用户; anonymous in system");
 		user_anonymous.setGender(Gender.UNSPECIFIED);
 		user_anonymous.getRoles().addAll(Arrays.asList(role_guest));
@@ -181,7 +180,6 @@ public class CorePresetData {
 		} catch (ParseException | IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 	
 }

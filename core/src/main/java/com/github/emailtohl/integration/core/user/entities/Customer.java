@@ -33,6 +33,14 @@ import com.github.emailtohl.integration.core.file.Image;
 public class Customer extends User {
 	private static final long serialVersionUID = -1136305533524407299L;
 	/**
+	 * 内置账号匿名
+	 */
+	public static final String ANONYMOUS_NAME = "anonymous";
+	/**
+	 * 内置账号匿名邮箱
+	 */
+	public static final String ANONYMOUS_EMAIL = "anonymous@localhost";
+	/**
 	 * 客户的等级
 	 * @author HeLei
 	 */

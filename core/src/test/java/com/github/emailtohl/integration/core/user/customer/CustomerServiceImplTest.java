@@ -405,7 +405,7 @@ public class CustomerServiceImplTest {
 	
 	@Test(expected = NotAcceptableException.class)
 	public void testDelete() {
-		Customer c = customerService.getByUsername(Constant.ANONYMOUS_EMAIL);
+		Customer c = customerService.getByUsername(Customer.ANONYMOUS_EMAIL);
 		customerService.delete(c.getId());
 	}
 }

@@ -10,10 +10,6 @@ import com.github.emailtohl.integration.core.user.entities.Employee;
  * @author HeLei
  */
 public interface Constant {
-	String ADMIN_NAME = "admin";
-	String ANONYMOUS_NAME = "anonymous";
-	String ANONYMOUS_EMAIL = "anonymous@anonymous.com";
-	
 	String PROP_CUSTOMER_DEFAULT_PASSWORD = "customer.default.password";
 	String PROP_EMPLOYEE_DEFAULT_PASSWORD = "employee.default.password";
 	

@@ -33,6 +33,22 @@ public class Employee extends User {
 	 */
 	public static final int NO_BOT = NO1 - 1;
 	/**
+	 * 内置账号管理员名字
+	 */
+	public static final String ADMIN_NAME = "admin";
+	/**
+	 * 内置账号管理员邮箱
+	 */
+	public static final String ADMIN_EMAIL = "admin@localhost";
+	/**
+	 * 内置账号机器人名字
+	 */
+	public static final String BOT_NAME = "bot";
+	/**
+	 * 内置账号机器人邮箱
+	 */
+	public static final String BOT_EMAIL = "bot@localhost";
+	/**
 	 * 4-7位数字默认为工号
 	 */
 	public static final String PATTERN_EMP_NUM = "(^\\d\\d{2,5}\\d$)|(" + NO_BOT + ")";

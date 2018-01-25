@@ -66,7 +66,8 @@
           <li class="dropdown messages-menu">
             <a href="#" class="dropdown-toggle" data-ng-click="changeLang()">
               <i class="fa"></i>
-              <span class="label label-success">change language</span>
+              <span class="label label-success" data-ng-if="currentLanguage().startsWith('zh')">English</span>
+              <span class="label label-success" data-ng-if="currentLanguage().startsWith('en')">中文</span>
             </a>
           </li>
           <!-- Messages: style can be found in dropdown.less-->

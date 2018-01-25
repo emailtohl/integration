@@ -21,8 +21,8 @@ import org.springframework.util.StringUtils;
 import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
-import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.core.user.UserService;
+import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.UserRef;
 import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Comment;
@@ -220,7 +220,7 @@ public class CmsServiceImpl implements CmsService {
 		Comment c = new Comment();
 		UserRef u = userService.findRef(username);
 		if (u == null) {
-			u = userService.findRef(Constant.ANONYMOUS_EMAIL);
+			u = userService.findRef(Customer.ANONYMOUS_EMAIL);
 		}
 		c.setReviewer(u);
 		c.setContent(content);

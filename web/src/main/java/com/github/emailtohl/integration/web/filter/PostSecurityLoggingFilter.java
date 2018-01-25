@@ -26,6 +26,7 @@ import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.auth.UserDetailsImpl;
 import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.core.config.CorePresetData;
+import com.github.emailtohl.integration.core.user.entities.Customer;
 /**
  * 在spring security过滤器之后执行
  * 
@@ -73,7 +74,7 @@ public class PostSecurityLoggingFilter implements Filter {
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		String username = Constant.ANONYMOUS_NAME;
+		String username = Customer.ANONYMOUS_NAME;
 		Long userId = anonymousId;
 		SecurityContext context = SecurityContextHolder.getContext();
 		if (context != null) {
