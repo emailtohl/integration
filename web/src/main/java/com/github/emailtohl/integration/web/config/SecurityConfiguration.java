@@ -169,9 +169,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			"/systemInfo",
 		};
 		security
-			// HTTP Basic Authentication是基于REST风格，通过HTTP状态码与访问它的应用程序进行沟通
-			/*.httpBasic()
-			.and()*/.authorizeRequests()
+			.authorizeRequests()
 				// 跨域请求登录页面时，要发送一个预访问请求：PreflightRequest，让spring security不做拦截
 				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 				.antMatchers("/").permitAll()
@@ -214,8 +212,25 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.and().and().csrf()/*.disable()*/.ignoringAntMatchers("/cms/comment")
 			.csrfTokenRepository(csrfTokenRepository())
 			.and().addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
-			// rememberMe默认的过期时间是2周，这里设为四周；默认的私钥名是SpringSecured，这里设为"building"
-			.rememberMe().tokenValiditySeconds(2419200).key("building");
+			// rememberMe默认的过期时间是2周，这里设为四周；默认的私钥名是SpringSecured，这里设为"integration-web"
+			.rememberMe().tokenValiditySeconds(2419200).key("integration-web")
+			//认证不通过后的处理
+			/*
+			.and().exceptionHandling()
+			.authenticationEntryPoint((HttpServletRequest request, HttpServletResponse response,
+					AuthenticationException authException) -> {
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				PrintWriter writer = response.getWriter();
+				writer.println(authException.getMessage());
+			})
+			.accessDeniedHandler((HttpServletRequest request,
+					HttpServletResponse response, AccessDeniedException accessDeniedException) -> {
+				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+				PrintWriter writer = response.getWriter();
+				writer.println(accessDeniedException.getMessage());
+			})
+			*/
+			;
 		
 	}
 	

@@ -2,7 +2,6 @@
  * 封装select2，选择项可为字符串、甚至是对象（以json形式表示）
  * 注意：对于对象，在回调过程中select2会报异常，但对功能无明显影响
  * @author HeLei
- * @date 2017.02.04
  */
 define([ 'common/module', 'common/service/util', 'select2' ], function(common) {
 	common.directive('select2', [ 'util', function(util) {

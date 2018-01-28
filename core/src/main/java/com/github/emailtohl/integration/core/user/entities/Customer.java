@@ -217,18 +217,18 @@ public class Customer extends User {
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof Customer))
 			return false;
 		Customer other = (Customer) obj;
 		if (cellPhone == null) {
-			if (other.cellPhone != null)
+			if (other.getCellPhone() != null)
 				return false;
-		} else if (!cellPhone.equals(other.cellPhone))
+		} else if (!cellPhone.equals(other.getCellPhone()))
 			return false;
 		if (email == null) {
-			if (other.email != null)
+			if (other.getEmail() != null)
 				return false;
-		} else if (!email.equals(other.email))
+		} else if (!email.equals(other.getEmail()))
 			return false;
 		return true;
 	}

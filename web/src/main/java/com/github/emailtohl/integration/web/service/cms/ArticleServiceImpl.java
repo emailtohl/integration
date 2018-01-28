@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import org.activiti.engine.FormService;
-import org.activiti.engine.TaskService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -53,16 +51,13 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 	UserService userService;
 	CustomerService customerService;
 	EmployeeService employeeService;
-	FormService formService;
-	TaskService taskService;
 	CorePresetData presetData;
 	WebPresetData webPresetData;
 	
 	@Inject
 	public ArticleServiceImpl(ArticleRepository articleRepository, CommentRepository commentRepository,
 			TypeRepository typeRepository, UserService userService, CustomerService customerService,
-			EmployeeService employeeService, FormService formService, TaskService taskService,
-			CorePresetData presetData, WebPresetData webPresetData) {
+			EmployeeService employeeService, CorePresetData presetData, WebPresetData webPresetData) {
 		super();
 		this.articleRepository = articleRepository;
 		this.commentRepository = commentRepository;
@@ -70,8 +65,6 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 		this.userService = userService;
 		this.customerService = customerService;
 		this.employeeService = employeeService;
-		this.formService = formService;
-		this.taskService = taskService;
 		this.presetData = presetData;
 		this.webPresetData = webPresetData;
 	}

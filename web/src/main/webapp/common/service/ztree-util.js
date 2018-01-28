@@ -1,7 +1,6 @@
 /**
  * 为使用zTree的辅助工具，可将字符串的文件名转换为ztree识别的对象
  * @author HeLei
- * @date 2017.02.04
  */
 define([ 'common/module'/*, 'ztree'*/ ], function(commonModule) {
 	return commonModule.factory('ztreeutil', [ function() {

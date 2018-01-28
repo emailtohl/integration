@@ -1,7 +1,6 @@
 /**
  * 工具类，提供基础功能
  * @author HeLei
- * @date 2017.02.04
  */
 define([ 'common/module' ], function(commonModule) {
 	function Promise() {

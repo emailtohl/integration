@@ -3,6 +3,8 @@ package com.github.emailtohl.integration.core.config;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -119,54 +121,45 @@ class InitData {
 	}
 	
 	private void role(EntityManager em, CorePresetData pd) {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Role> q = cb.createQuery(Role.class);
-		Root<Role> r = q.from(Role.class);
-		q = q.select(r).where(cb.equal(r.get("name"), pd.role_admin.getName()));
-		Role admin = null;
-		try {
-			admin = em.createQuery(q).getSingleResult();
-		} catch (NoResultException e) {}
+		Role admin = getRole(em, pd.role_admin.getName());
 		if (admin == null) {
+			Set<Authority> authorities = pd.role_admin.getAuthorities().stream().map(a -> getAuthority(em, a.getName()))
+					.filter(a -> a != null).peek(a -> a.getRoles().add(pd.role_admin)).collect(Collectors.toSet());
+			pd.role_admin.getAuthorities().clear();
+			pd.role_admin.getAuthorities().addAll(authorities);
 			em.persist(pd.role_admin);
 		} else {
 			pd.role_admin.setId(admin.getId());
 		}
 		
-		q = cb.createQuery(Role.class);
-		r = q.from(Role.class);
-		q = q.select(r).where(cb.equal(r.get("name"), pd.role_manager.getName()));
-		Role manager = null;
-		try {
-			manager = em.createQuery(q).getSingleResult();
-		} catch (NoResultException e) {}
+		Role manager = getRole(em, pd.role_manager.getName());
 		if (manager == null) {
+			Set<Authority> authorities = pd.role_manager.getAuthorities().stream().map(a -> getAuthority(em, a.getName()))
+					.filter(a -> a != null).peek(a -> a.getRoles().add(pd.role_manager)).collect(Collectors.toSet());
+			pd.role_manager.getAuthorities().clear();
+			pd.role_manager.getAuthorities().addAll(authorities);
 			em.persist(pd.role_manager);
 		} else {
 			pd.role_manager.setId(manager.getId());
 		}
 
-		q = cb.createQuery(Role.class);
-		r = q.from(Role.class);
-		q = q.select(r).where(cb.equal(r.get("name"), pd.role_staff.getName()));
-		Role staff = null;
-		try {
-			staff = em.createQuery(q).getSingleResult();
-		} catch (NoResultException e) {}
+		Role staff = getRole(em, pd.role_staff.getName());
 		if (staff == null) {
+			Set<Authority> authorities = pd.role_staff.getAuthorities().stream().map(a -> getAuthority(em, a.getName()))
+					.filter(a -> a != null).peek(a -> a.getRoles().add(pd.role_staff)).collect(Collectors.toSet());
+			pd.role_staff.getAuthorities().clear();
+			pd.role_staff.getAuthorities().addAll(authorities);
 			em.persist(pd.role_staff);
 		} else {
 			pd.role_staff.setId(staff.getId());
 		}
 		
-		q = cb.createQuery(Role.class);
-		r = q.from(Role.class);
-		q = q.select(r).where(cb.equal(r.get("name"), pd.role_guest.getName()));
-		Role guest = null;
-		try {
-			guest = em.createQuery(q).getSingleResult();
-		} catch (NoResultException e) {}
+		Role guest = getRole(em, pd.role_guest.getName());
 		if (guest == null) {
+			Set<Authority> authorities = pd.role_guest.getAuthorities().stream().map(a -> getAuthority(em, a.getName()))
+					.filter(a -> a != null).peek(a -> a.getRoles().add(pd.role_guest)).collect(Collectors.toSet());
+			pd.role_guest.getAuthorities().clear();
+			pd.role_guest.getAuthorities().addAll(authorities);
 			em.persist(pd.role_guest);
 		} else {
 			pd.role_guest.setId(guest.getId());
@@ -237,6 +230,10 @@ class InitData {
 		} catch (NoResultException ex) {}
 		if (bot == null) {
 			pd.user_bot.setPassword(employeeDefaultPassword);
+			Set<Role> roles = pd.user_bot.getRoles().stream().map(r -> getRole(em, r.getName())).filter(r -> r != null)
+					.peek(r -> r.getUsers().add(pd.user_bot)).collect(Collectors.toSet());
+			pd.user_bot.getRoles().clear();
+			pd.user_bot.getRoles().addAll(roles);
 			em.persist(pd.user_bot);
 			EmployeeRef ref = new EmployeeRef(pd.user_bot);
 			pd.user_bot.setEmployeeRef(ref);
@@ -256,6 +253,10 @@ class InitData {
 		} catch (NoResultException ex) {}
 		if (admin == null) {
 			pd.user_admin.setPassword(adminPassword);
+			Set<Role> roles = pd.user_admin.getRoles().stream().map(r -> getRole(em, r.getName()))
+					.filter(r -> r != null).peek(r -> r.getUsers().add(pd.user_admin)).collect(Collectors.toSet());
+			pd.user_admin.getRoles().clear();
+			pd.user_admin.getRoles().addAll(roles);
 			em.persist(pd.user_admin);
 			EmployeeRef ref = new EmployeeRef(pd.user_admin);
 			pd.user_admin.setEmployeeRef(ref);
@@ -275,6 +276,10 @@ class InitData {
 		} catch (NoResultException ex) {}
 		if (anon == null) {
 			pd.user_anonymous.setPassword(customerDefaultPassword);
+			Set<Role> roles = pd.user_anonymous.getRoles().stream().map(r -> getRole(em, r.getName()))
+					.filter(r -> r != null).peek(r -> r.getUsers().add(pd.user_anonymous)).collect(Collectors.toSet());
+			pd.user_anonymous.getRoles().clear();
+			pd.user_anonymous.getRoles().addAll(roles);
 			em.persist(pd.user_anonymous);
 			CustomerRef ref = new CustomerRef(pd.user_anonymous);
 			pd.user_anonymous.setCustomerRef(ref);
@@ -294,6 +299,10 @@ class InitData {
 		} catch (NoResultException ex) {}
 		if (emailtohl == null) {
 			pd.user_emailtohl.setPassword(customerDefaultPassword);
+			Set<Role> roles = pd.user_emailtohl.getRoles().stream().map(r -> getRole(em, r.getName()))
+					.filter(r -> r != null).peek(r -> r.getUsers().add(pd.user_emailtohl)).collect(Collectors.toSet());
+			pd.user_emailtohl.getRoles().clear();
+			pd.user_emailtohl.getRoles().addAll(roles);
 			em.persist(pd.user_emailtohl);
 			CustomerRef ref = new CustomerRef(pd.user_emailtohl);
 			pd.user_emailtohl.setCustomerRef(ref);
@@ -308,5 +317,30 @@ class InitData {
 	private String hashpw(String password) {
 		String salt = BCrypt.gensalt(10, new SecureRandom());
 		return BCrypt.hashpw(password, salt);
+	}
+	
+	private Role getRole(EntityManager em, String roleName) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Role> q = cb.createQuery(Role.class);
+		Root<Role> r = q.from(Role.class);
+		q = q.select(r).where(cb.equal(r.get("name"), roleName));
+		Role role = null;
+		try {
+			role = em.createQuery(q).getSingleResult();
+		} catch (NoResultException e) {}
+		return role;
+	}
+	
+	private Authority getAuthority(EntityManager em, String authorityName) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Authority> q = cb.createQuery(Authority.class);
+		Root<Authority> r = q.from(Authority.class);
+		q = q.select(r).where(cb.equal(r.get("name"), authorityName));
+		Authority authority = null;
+		try {
+			authority = em.createQuery(q).getSingleResult();
+		} catch (NoResultException e) {
+		}
+		return authority;
 	}
 }

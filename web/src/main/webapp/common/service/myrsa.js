@@ -1,7 +1,6 @@
 /**
  * 自定义RSA实现，与后端使用同样编码和加解密协议
  * @author HeLei
- * @date 2017.01.24
  */
 define(['lib/cryptico/cryptico.min', 'lib/base64/base64.min'], function() {
 	return {

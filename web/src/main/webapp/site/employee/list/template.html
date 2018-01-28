@@ -76,14 +76,14 @@
                 </tr>
                 </tfoot>
               </table>
-              <page page-number="ctrl.page.pageNumber" total-pages="ctrl.page.totalPages" button-count="5" on-click="ctrl.btnClick(pageNumber)">
+              <page page-number="ctrl.page.pageNumber" total-pages="ctrl.page.totalPages" button-count="5" on-click="ctrl.btnClick(pageNumber)"></page>
+              <button ng-if="hasAuthority('employee')" ui-sref="employee.add" type="button" class="btn btn-primary pull-right" style="margin-top: 18px;">
+	            <i class="fa fa-plus"></i> 新增
+	          </button>
             </div>
             <!-- /.box-body -->
           </div>
           <!-- /.box -->
-	      <div class="box-footer clearfix" ng-if="hasAuthority('user_create_special')">
-	        <button type="button" class="btn btn-primary btn-block" ui-sref="user.add">新增</button>
-	      </div>
         </div>
     </div>
     <!-- /.row -->

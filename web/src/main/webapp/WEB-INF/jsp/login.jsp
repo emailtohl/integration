@@ -4,6 +4,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
+  <meta name="login">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>AdminLTE 2 | Log in</title>
   <!-- Tell the browser to be responsive to screen width -->

@@ -1,7 +1,6 @@
 /**
  * jqueryui的插件
  * @author HeLei
- * @date 2017.02.04
  */
 define([ 'common/module', 'common/service/util', 'jquery', 'jquery-ui' ], function(commonModule, util, $) {
 	commonModule.directive('datepicker', [ 'util', function(util) {

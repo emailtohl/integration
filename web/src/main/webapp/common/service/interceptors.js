@@ -7,7 +7,6 @@
  * 5. 前端的页码是从第1页开始，而后端为了跟Spring data统一，页码从第0页开始，发送请求前和发送请求后进行统一转换
  * 
  * @author HeLei
- * @date 2017.02.04
  */
 define([ 'common/module', 'common/service/util', 'toastr' ], function(commonModule, util, toastr) {
 	return commonModule
@@ -74,8 +73,8 @@ define([ 'common/module', 'common/service/util', 'toastr' ], function(commonModu
 			// 如果是下载的页面
 			if (response.config.url == 'fileUploadServer/loadText')
 				return false;
-			// 当spring security拦截后，会将默认页面返回，这个页面带有<!DOCTYPE html>，所以根据这个标记进行识别
-			if (response.data.indexOf('<!DOCTYPE html>') > -1)
+			// 当spring security拦截后，会将默认页面返回，这个页面带有<meta name="login">，所以根据这个标记进行识别
+			if (response.data.search('<meta name="login">') > -1)
 				return true;
 			else
 				return false;

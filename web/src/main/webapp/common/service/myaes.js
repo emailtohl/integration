@@ -1,7 +1,6 @@
 /**
  * 基于cryptico，不过cryptico不支持中文，包装后让其支持中文
  * @author HeLei
- * @date 2017.01.26
  */
 define(['lib/cryptico/cryptico.min', 'lib/base64/base64.min'], function() {
 	return {

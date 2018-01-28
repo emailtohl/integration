@@ -181,13 +181,13 @@ public class Employee extends User {
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof Employee))
 			return false;
 		Employee other = (Employee) obj;
 		if (empNum == null) {
-			if (other.empNum != null)
+			if (other.getEmpNum() != null)
 				return false;
-		} else if (!empNum.equals(other.empNum))
+		} else if (!empNum.equals(other.getEmpNum()))
 			return false;
 		return true;
 	}

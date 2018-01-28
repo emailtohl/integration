@@ -6,7 +6,6 @@
  * 定义angular的指令后，只需监控当前页pageNumber和总页数totalPages，指令会自动更新页码按钮
  * 
  * @author HeLei
- * @date 2017.02.04
  */
 define([ 'common/module' ], function(common) {
 	common

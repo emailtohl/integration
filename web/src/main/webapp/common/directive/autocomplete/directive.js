@@ -1,7 +1,6 @@
 /**
  * 自动补全指令
  * @author HeLei
- * @date 2017.02.04
  */
 define([ 'common/module', 'jquery-ui' ], function(common) {
 	common.directive('autocomplete', [ function() {
