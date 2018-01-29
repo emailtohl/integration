@@ -19,7 +19,7 @@
 	        <div class="col-md-6">
 	          <div class="form-group has-feedback" ng-class="{'has-success':addUserform.name.$valid,'has-warning':addUserform.name.$error.required,'has-error':addUserform.name.$error.minlength}">
 		        <label for="">姓名</label>
-		        <input asynvalidation local="customer/exist?cellPhoneOrEmail=" result="ctrl.asynvalidation(exist)" type="text" placeholder="name" name="name" class="form-control" ng-model="ctrl.form.name" required="required">
+		        <input type="text" placeholder="name" name="name" class="form-control" ng-model="ctrl.form.name" required="required">
 		        <span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':addUserform.name.$valid,'glyphicon-warning-sign':addUserform.name.$error.required,'glyphicon-remove':addUserform.name.$error.minlength}"></span>
 			    <span ng-show="addUserform.name.$error.required">
 				This is a required field
@@ -34,13 +34,16 @@
 		      </div>
 		      <div class="form-group has-feedback" ng-class="{'has-success':addUserform.email.$valid,'has-warning':addUserform.email.$error.required,'has-error':addUserform.email.$invalid}">
 		        <label for="">邮箱</label>
-		        <input type="email" placeholder="email" name="email" class="form-control" ng-model="ctrl.form.email" required="required">
+		        <input asynvalidation local="employee/exist?cellPhoneOrEmail=" result="ctrl.emailValidation(exist)" type="email" placeholder="email" name="email" class="form-control" ng-model="ctrl.form.email" required="required">
 		        <span class="glyphicon glyphicon-ok form-control-feedback" ng-class="{'glyphicon-ok':addUserform.email.$valid,'glyphicon-warning-sign':addUserform.email.$error.required,'glyphicon-remove':addUserform.email.$invalid}"></span>
 		      	<span ng-show="addUserform.email.$error.required">
 				This is a required field
 				</span>
 				<span ng-show="addUserform.email.$invalid">
 				This field is invalid
+				</span>
+				<span ng-show="addUserform.email.$error.exist">
+				This field is exist
 				</span>
 		      </div>
 		      <div class="form-group has-feedback" ng-class="{'has-success':addUserform.password.$valid,'has-warning':addUserform.password.$error.required,'has-error':addUserform.password.$error.minlength}">
@@ -85,9 +88,12 @@
 		        <label for="">联系电话</label>
 		        <input type="tel" placeholder="telephone" class="form-control" ng-model="ctrl.form.telephone">
 		      </div>
-		      <div class="form-group">
+		      <div class="form-group has-feedback" ng-class="{'has-success':addUserform.cellPhone.$valid,'has-error':addUserform.cellPhone.$error.exist}">
 		        <label for="">手机</label>
-		        <input type="text" placeholder="mobile" class="form-control" ng-model="ctrl.form.subsidiary.mobile">
+		        <input asynvalidation local="employee/exist?cellPhoneOrEmail=" result="ctrl.cellPhoneValidation(exist)" type="text" placeholder="cellPhone" class="form-control" name="cellPhone" ng-model="ctrl.form.cellPhone">
+		      	<span ng-show="addUserform.cellPhone.$error.exist">
+				This field is exist
+				</span>
 		      </div>
 			  <div class="form-group" ng-init="ctrl.form.userType = 'EMPLOYEE'">
 		        <div class="radio">

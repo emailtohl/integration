@@ -6,6 +6,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -102,9 +103,29 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		return transientDetail(e);
 	}
 
+	private ExampleMatcher emailMatcher = ExampleMatcher.matching().withMatcher("email",
+			GenericPropertyMatchers.exact());
+	private ExampleMatcher cellPhoneMatcher = ExampleMatcher.matching().withMatcher("cellPhone",
+			GenericPropertyMatchers.exact());
 	@Override
-	public boolean exist(Object matcherValue) {
-		// 以工号为唯一识别，故始终为false
+	public boolean exist(Object cellPhoneOrEmail) {
+		if (!(cellPhoneOrEmail instanceof String)) {
+			return false;
+		}
+		String ce = (String) cellPhoneOrEmail;
+		Matcher m = Constant.PATTERN_EMAIL.matcher(ce);
+		Employee params;
+		if (m.find()) {
+			params = new Employee();
+			params.setEmail(ce);
+			return employeeRepository.exists(Example.of(params, emailMatcher));
+		}
+		m = Constant.PATTERN_CELL_PHONE.matcher(ce);
+		if (m.find()) {
+			params = new Employee();
+			params.setCellPhone(ce);
+			return employeeRepository.exists(Example.of(params, cellPhoneMatcher));
+		}
 		return false;
 	}
 

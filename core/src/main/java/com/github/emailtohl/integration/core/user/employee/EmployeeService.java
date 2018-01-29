@@ -36,12 +36,11 @@ public interface EmployeeService {
 	Employee create(Employee entity);
 	
 	/**
-	 * 根据平台账号工号查找是否已存在
-	 * @param matcherValue
+	 * 查询该手机号码或邮箱是否已使用
+	 * @param cellPhoneOrEmail
 	 * @return
 	 */
-	@PreAuthorize("isAuthenticated()")
-	boolean exist(Object matcherValue);
+	boolean exist(Object cellPhoneOrEmail);
 	
 	/**
 	 * 根据ID获取平台账号

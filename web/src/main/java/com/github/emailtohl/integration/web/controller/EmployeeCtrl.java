@@ -44,9 +44,9 @@ public class EmployeeCtrl extends RestCtrl<Employee> {
 		return filter(employeeService.create(entity));
 	}
 	
-	@RequestMapping(value = "exist/{empNum}", method = RequestMethod.GET)
-	public String exist(@PathVariable("empNum") Integer empNum) {
-		return String.format("{\"exist\":%b}", employeeService.exist(empNum));
+	@RequestMapping(value = "exist", method = RequestMethod.GET)
+	public String exist(@RequestParam(name = "cellPhoneOrEmail") String cellPhoneOrEmail) {
+		return String.format("{\"exist\":%b}", employeeService.exist(cellPhoneOrEmail));
 	}
 	
 	@RequestMapping(value = "{id}", method = RequestMethod.GET)

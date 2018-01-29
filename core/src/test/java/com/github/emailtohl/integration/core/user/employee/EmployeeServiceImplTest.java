@@ -65,7 +65,7 @@ public class EmployeeServiceImplTest {
 		e.setNickname("haha");
 		e.setPassword("112233");
 		e.setEmail("haha@test.com");
-		e.setTelephone("17812345678");
+		e.setCellPhone("17767853456");
 		e.setDescription("做单元测试");
 		e.setGender(Gender.MALE);
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-foo.jpg")) {
@@ -90,8 +90,10 @@ public class EmployeeServiceImplTest {
 
 	@Test
 	public void testExist() {
-		// 以工号为唯一标识，由系统自动生成，所以Exist返回均为false
 		assertFalse(employeeService.exist(null));
+		assertTrue(employeeService.exist("haha@test.com"));
+		assertTrue(employeeService.exist("17767853456"));
+		assertFalse(employeeService.exist("12321312353"));
 	}
 
 	@Test

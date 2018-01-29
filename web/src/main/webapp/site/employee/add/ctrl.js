@@ -4,8 +4,11 @@ define(['employee/module', 'employee/service'], function(employeeModule) {
 			var self = this;
 			$scope.getAuthentication();
 
-			self.asynvalidation = function(exist) {
-				console.log(exist);
+			self.emailValidation = function(exist) {
+				$scope.addUserform.email.$setValidity('exist', exist);
+			};
+			self.cellPhoneValidation = function(exist) {
+				$scope.addUserform.cellPhone.$setValidity('exist', exist);
 			};
 			
 			self.form = {};
