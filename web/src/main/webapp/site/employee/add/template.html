@@ -1,12 +1,12 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
-  <h1>新增职员
+  <h1>新增平台账号
     <small>Preview</small>
   </h1>
   <ol class="breadcrumb">
     <li ui-sref="dashboard"><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
     <li ui-sref="employee.list"><a href="#">Employee List</a></li>
-    <li class="active">新增职员</li>
+    <li class="active">新增平台账号</li>
   </ol>
 </section>
 <!-- Main content -->
@@ -19,7 +19,7 @@
 	        <div class="col-md-6">
 	          <div class="form-group has-feedback" ng-class="{'has-success':addUserform.name.$valid,'has-warning':addUserform.name.$error.required,'has-error':addUserform.name.$error.minlength}">
 		        <label for="">姓名</label>
-		        <input type="text" placeholder="name" name="name" class="form-control" ng-model="ctrl.form.name" required="required">
+		        <input asynvalidation local="customer/exist?cellPhoneOrEmail=" result="ctrl.asynvalidation(exist)" type="text" placeholder="name" name="name" class="form-control" ng-model="ctrl.form.name" required="required">
 		        <span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':addUserform.name.$valid,'glyphicon-warning-sign':addUserform.name.$error.required,'glyphicon-remove':addUserform.name.$error.minlength}"></span>
 			    <span ng-show="addUserform.name.$error.required">
 				This is a required field
@@ -93,7 +93,7 @@
 		        <div class="radio">
 		          <label>
 		            <input name="userType" value="EMPLOYEE" type="radio" ng-model="ctrl.form.userType">
-		            	 普通职员
+		            	 普通平台账号
 		          </label>
 		        </div>
 		        <div class="radio" ng-if="hasAuthority('user_create_special')">

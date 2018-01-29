@@ -4,6 +4,10 @@ define(['employee/module', 'employee/service'], function(employeeModule) {
 			var self = this;
 			$scope.getAuthentication();
 
+			self.asynvalidation = function(exist) {
+				console.log(exist);
+			};
+			
 			self.form = {};
 
 			self.submit = function() {

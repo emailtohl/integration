@@ -38,6 +38,7 @@ requirejs.config({
 		'sparkline' : '../lib/sparkline/jquery.sparkline.min',
 		'knob' : '../lib/knob/jquery.knob',
 		toastr : '../lib/toastr/toastr.min',
+		rx : '../lib/RxJS/rx.all.min'
 	},
 	shim: {
 		// 他们都遵循AMD规范，所以不必声明

@@ -12,5 +12,5 @@ require([
 	'common/directive/datepicker/directive',
 	'common/directive/fileupload/directive',
 	'common/directive/select2/directive',
-	
+	'common/directive/asynvalidation/directive',
 ]);
