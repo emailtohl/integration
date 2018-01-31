@@ -33,6 +33,7 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleService;
 import com.github.emailtohl.integration.core.role.RoleType;
+import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.web.MockConfig;
 import com.github.emailtohl.integration.web.WebTestData;
 import com.google.gson.Gson;
@@ -95,6 +96,20 @@ public class RoleCtrlTest {
 				.characterEncoding("UTF-8")  
 				.contentType(MediaType.APPLICATION_JSON)  
 				.content("{name:null}".getBytes()))
+		.andExpect(status().is(HttpStatus.BAD_REQUEST.value()));
+		
+		MockMvc empMockMvc = standaloneSetup(new EmployeeCtrl()).build();
+		Employee emp = new Employee();
+		emp.setName("福");
+		emp.setEmail("foo@localhost");
+		emp.setCellPhone("777777728888888");
+		emp.setPassword("123456");
+		emp.setDescription("for test");
+		emp.setPost("dev");
+		empMockMvc.perform(post("/employee")
+				.characterEncoding("UTF-8")  
+				.contentType(MediaType.APPLICATION_JSON)  
+				.content(gson.toJson(emp).getBytes()))
 		.andExpect(status().is(HttpStatus.BAD_REQUEST.value()));
 	}
 

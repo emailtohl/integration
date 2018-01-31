@@ -97,10 +97,13 @@ public abstract class RestCtrl<T> {
 	 */
 	protected void checkErrors(Errors errors) {
 		if (errors.hasErrors()) {
+			StringBuilder msg = new StringBuilder();
 			for (ObjectError oe : errors.getAllErrors()) {
 				logger.info(oe);
+				String cause = oe.toString().split(";")[0];
+				msg.append(cause).append("\t").append(oe.getDefaultMessage()).append("\n");
 			}
-			throw new InvalidDataException(errors.toString());
+			throw new InvalidDataException(msg.toString());
 		}
 	}
 	

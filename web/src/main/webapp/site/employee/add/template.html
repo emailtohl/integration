@@ -32,23 +32,23 @@
 				</span>
 		        <span class="glyphicon glyphicon-ok form-control-feedback"></span>
 		      </div>
-		      <div class="form-group has-feedback" ng-class="{'has-success':addUserform.email.$valid,'has-warning':addUserform.email.$error.required,'has-error':addUserform.email.$invalid}">
+		      <div class="form-group has-feedback" ng-class="{'has-success':addUserform.email.$valid,'has-warning':addUserform.email.$error.required,'has-error':addUserform.email.$invalid || addUserform.email.$error.notexist}">
 		        <label for="">邮箱</label>
 		        <input asynvalidation local="employee/exist?cellPhoneOrEmail=" result="ctrl.emailValidation(exist)" type="email" placeholder="email" name="email" class="form-control" ng-model="ctrl.form.email" required="required">
-		        <span class="glyphicon glyphicon-ok form-control-feedback" ng-class="{'glyphicon-ok':addUserform.email.$valid,'glyphicon-warning-sign':addUserform.email.$error.required,'glyphicon-remove':addUserform.email.$invalid}"></span>
+		        <span class="glyphicon glyphicon-ok form-control-feedback" ng-class="{'glyphicon-ok':addUserform.email.$valid,'glyphicon-warning-sign':addUserform.email.$error.required,'glyphicon-remove':addUserform.email.$invalid || addUserform.email.$error.notexist}"></span>
 		      	<span ng-show="addUserform.email.$error.required">
 				This is a required field
 				</span>
 				<span ng-show="addUserform.email.$invalid">
 				This field is invalid
 				</span>
-				<span ng-show="addUserform.email.$error.exist">
+				<span ng-show="addUserform.email.$error.notexist">
 				This field is exist
 				</span>
 		      </div>
 		      <div class="form-group has-feedback" ng-class="{'has-success':addUserform.password.$valid,'has-warning':addUserform.password.$error.required,'has-error':addUserform.password.$error.minlength}">
 		        <label for="">输入密码</label>
-		        <input type="password" placeholder="password min 6" name="password" class="form-control" ng-model="ctrl.form.plainPassword" required="required" ng-minlength="6">
+		        <input type="password" placeholder="password min 6" name="password" class="form-control" ng-model="ctrl.form.password" required="required" ng-minlength="6">
 		      	<span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':addUserform.password.$valid,'glyphicon-warning-sign':addUserform.password.$error.required,'glyphicon-remove':addUserform.password.$error.minlength}"></span>
 			    <span ng-show="addUserform.password.$error.required">
 				This is a required field
@@ -60,11 +60,11 @@
 				This field is invalid
 				</span>
 		      </div>
-		      <div class="form-group has-feedback" ng-class="{'has-success':addUserform.password.$valid,'has-warning':addUserform.password.$error.required,'has-error':addUserform.password.$error.minlength || ctrl.form.plainPassword != ctrl.form.confirmPassword}">
+		      <div class="form-group has-feedback" ng-class="{'has-success':addUserform.confirmPassword.$valid,'has-warning':addUserform.confirmPassword.$error.required,'has-error':addUserform.confirmPassword.$error.minlength || ctrl.form.password != ctrl.form.confirmPassword}">
 		        <label for="">确认密码</label>
 		        <input type="password" placeholder="password min 6" name="confirmPassword" class="form-control" ng-model="ctrl.form.confirmPassword" required="required" ng-minlength="6">
-		      	<span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':addUserform.confirmPassword.$valid && ctrl.form.plainPassword == ctrl.form.confirmPassword,'glyphicon-warning-sign':addUserform.password.$error.required || ctrl.form.plainPassword != ctrl.form.confirmPassword,'glyphicon-remove':addUserform.password.$error.minlength}"></span>
-			    <span ng-show="ctrl.form.plainPassword != ctrl.form.confirmPassword">
+		      	<span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':addUserform.confirmPassword.$valid && ctrl.form.password == ctrl.form.confirmPassword,'glyphicon-warning-sign':addUserform.password.$error.required || ctrl.form.password != ctrl.form.confirmPassword,'glyphicon-remove':addUserform.confirmPassword.$error.minlength}"></span>
+			    <span ng-show="ctrl.form.password != ctrl.form.confirmPassword">
 				确认密码不匹配
 				</span>
 			    <span ng-show="addUserform.confirmPassword.$error.required">
@@ -88,26 +88,16 @@
 		        <label for="">联系电话</label>
 		        <input type="tel" placeholder="telephone" class="form-control" ng-model="ctrl.form.telephone">
 		      </div>
-		      <div class="form-group has-feedback" ng-class="{'has-success':addUserform.cellPhone.$valid,'has-error':addUserform.cellPhone.$error.exist}">
+		      <div class="form-group has-feedback" ng-class="{'has-success':addUserform.cellPhone.$valid,'has-warning':addUserform.cellPhone.$error.pattern,'has-error':addUserform.cellPhone.$error.notexist}">
 		        <label for="">手机</label>
-		        <input asynvalidation local="employee/exist?cellPhoneOrEmail=" result="ctrl.cellPhoneValidation(exist)" type="text" placeholder="cellPhone" class="form-control" name="cellPhone" ng-model="ctrl.form.cellPhone">
-		      	<span ng-show="addUserform.cellPhone.$error.exist">
+		        <input asynvalidation local="employee/exist?cellPhoneOrEmail=" result="ctrl.cellPhoneValidation(exist)" type="text" placeholder="cellPhone" class="form-control" name="cellPhone" ng-model="ctrl.form.cellPhone" pattern="^1[0-9]{10}$"/>
+		      	<span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':addUserform.cellPhone.$valid,'glyphicon-warning-sign':addUserform.cellPhone.$error.pattern,'glyphicon-remove':addUserform.cellPhone.$error.notexist}"></span>
+			    <span ng-show="addUserform.cellPhone.$error.notexist">
 				This field is exist
 				</span>
-		      </div>
-			  <div class="form-group" ng-init="ctrl.form.userType = 'EMPLOYEE'">
-		        <div class="radio">
-		          <label>
-		            <input name="userType" value="EMPLOYEE" type="radio" ng-model="ctrl.form.userType">
-		            	 普通平台账号
-		          </label>
-		        </div>
-		        <div class="radio" ng-if="hasAuthority('user_create_special')">
-		          <label>
-		            <input name="userType" value="MANAGER" type="radio" ng-model="ctrl.form.userType">
-		             	经理
-		          </label>
-		        </div>
+		      	<span ng-show="addUserform.cellPhone.$error.pattern">
+				This field is invalid
+				</span>
 		      </div>
 		      <div class="form-group has-feedback"  ng-class="{'has-success':addUserform.post.$valid,'has-warning':addUserform.post.$error.required,'has-error':addUserform.post.$error.minlength}">
 		        <label for="">岗位</label>
@@ -132,15 +122,15 @@
 			    </select>
 		      </div>
 		      <div class="form-group">
-		        <label for="exampleInputPassword1">描述</label>
+		        <label>描述</label>
 		        <textarea rows="3" type="text" placeholder="description" class="form-control" ng-model="ctrl.form.description" ng-maxlength="300"></textarea>
 		      </div>
 	        </div>
 	        
 	        <div class="col-md-12">
-      		  <div class="box-body">
-		        <input type="submit" class="btn btn-primary btn-block" ng-disabled="addUserform.$invalid || ctrl.form.plainPassword != ctrl.form.confirmPassword" ng-click="ctrl.submit()">
-		      </div>
+			  <button type="submit" ng-disabled="addUserform.$invalid || ctrl.form.password != ctrl.form.confirmPassword" ng-click="ctrl.submit()" class="btn btn-primary pull-right" style="margin-top: 18px;">
+	            <i class="fa fa-plus"></i> 提交
+	          </button>
 	        </div>
 	        
 	      </div>

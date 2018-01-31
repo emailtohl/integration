@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.core.env.Environment;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.github.emailtohl.integration.core.config.CoreConfiguration;
@@ -38,7 +39,7 @@ import com.github.emailtohl.integration.core.config.CoreConfiguration;
 @Import(CoreConfiguration.class)
 public class ActivitiConfiguration {
 	private static final Logger LOG = LogManager.getLogger();
-
+	
 	/**
 	 * 可以集成到Spring管理的事务中
 	 * 
@@ -47,7 +48,7 @@ public class ActivitiConfiguration {
 	@Bean
 	public SpringProcessEngineConfiguration processEngineConfiguration(DataSource dataSource,
 			@Named("annotationDrivenTransactionManager") PlatformTransactionManager platformTransactionManager, 
-			EntityManagerFactory jpaEntityManagerFactory) {
+			EntityManagerFactory jpaEntityManagerFactory, Environment env) {
 		SpringProcessEngineConfiguration cfg = new SpringProcessEngineConfiguration();
 		cfg.setDataSource(dataSource);
 		cfg.setTransactionManager(platformTransactionManager);
@@ -62,6 +63,11 @@ public class ActivitiConfiguration {
 		cfg.setJpaCloseEntityManager(false);
 		
 		cfg.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
+		cfg.setJobExecutorActivate(true);
+		cfg.setMailServerHost(env.getProperty("mailserver.host"));
+		cfg.setMailServerPort(Integer.valueOf(env.getProperty("mailserver.port")));
+		cfg.setMailServerUsername(env.getProperty("mailserver.username"));
+		cfg.setMailServerPassword(env.getProperty("mailserver.password"));
 		
 		// Windows环境下设置字体
 		String os = System.getenv().get("OS");
