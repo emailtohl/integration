@@ -425,8 +425,8 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li data-ng-class="{active: $state.includes('role')}"><a ui-sref="role" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>角色配置</a></li>
-            <li data-ng-class="{active: $state.includes('roleAudit')}" data-ng-if="hasAuthority('audit_role')"><a  style="margin-left: 35px;"><i class="fa fa-circle-o"></i>角色审计</a></li>
+            <li data-ng-class="{active: $state.includes('role')}"><a ui-sref="role" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>{{'role-config' | translate}}</a></li>
+            <li data-ng-class="{active: $state.includes('roleAudit')}" data-ng-if="hasAuthority('audit_role')"><a  style="margin-left: 35px;"><i class="fa fa-circle-o"></i>{{'role-audit' | translate}}</a></li>
           </ul>
         </li>
       </ul>

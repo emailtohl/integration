@@ -2,10 +2,6 @@ define(['employee/module', 'employee/service'], function(employeeModule) {
 	return employeeModule
 		.controller('EmployeeDetail', ['$scope', '$http', '$state', 'employeeService', 'roleService', 'util', function($scope, $http, $state, service, roleService, util) {
 			var self = this;
-			self.form = {
-				roleNames : [],
-				department : {},
-			}; // 要提交的表单数据
 			$scope.getAuthentication();
 			roleService.getRoles().then(function(resp) {
 				self.roles = resp.data;
@@ -16,12 +12,6 @@ define(['employee/module', 'employee/service'], function(employeeModule) {
 				});
 			};
 			self.getDetail($state.params.id);
-			self.whenDone = function() {
-				setTimeout(function() {
-					self.getDetail($state.params.id);
-					$scope.getAuthentication();
-				}, 1000);
-			};
 			self.dictionary = {
 				// 'ADMIN' : '系统管理员',
 				// 'EMPLOYEE' : '职员',
@@ -75,48 +65,6 @@ define(['employee/module', 'employee/service'], function(employeeModule) {
 				return result;
 			};
 
-			self.modal = {
-				open: false,
-				title: '编辑用户信息',
-				type: '',
-				whenConfirm: function() {
-					self.form.roles = [];
-					for (var i = 0; i < self.form.roleNames.length; i++) {
-						self.form.roles.push({name : self.form.roleNames[i]});
-					}
-					service.update(self.form.id, self.form).then(function(resp) {
-						// $state.go('user.detail', { id : self.form.id }, { reload : true });
-						self.getDetail(self.form.id);
-					});
-				},
-			};
-			self.edit = function() {
-				self.form = util.clone(self.detail);
-				self.form.roleNames = [];
-				for (var i = 0; i < self.detail.roles.length; i++) {
-					self.form.roleNames.push(self.detail.roles[i].name);
-				}
-				self.modal.open = true;
-			};
-
-			self.enableUser = function() {
-				var id = self.detail.id;
-				if(!id) {
-					return;
-				}
-				service.enableUser(id).then(function(resp) {
-					self.getDetail(id);
-				});
-			};
-			self.disableUser = function() {
-				var id = self.detail.id;
-				if(!id) {
-					return;
-				}
-				service.disableUser(id).then(function(resp) {
-					self.getDetail(id);
-				});
-			};
 			$('input[name="icon"]').on('change', function(e) {
 				$('#submit-file').attr('disabled', null);
 			});
@@ -135,6 +83,26 @@ define(['employee/module', 'employee/service'], function(employeeModule) {
 			self.cellPhoneValidation = function(exist) {
 				$scope.f.cellPhone.$setValidity('notexist', !exist);
 				$scope.$apply();
+			};
+			
+			self.openModal = function(id, $event) {
+				self.modal.open = true;
+			}
+			self.modal = {
+				open: false,
+				title: '角色',
+				type: '',
+				whenConfirm: function() {
+					var i, roleNames = [];
+					for (i = 0; i < self.roles.length; i++) {
+						if (self.roles[i].selected) {
+							roleNames.push(self.roles[i].name);
+						}
+					}
+					service.grandRoles(self.detail.id, roleNames).then(function() {
+						self.getDetail($state.params.id);
+					});
+				},
 			};
 		}]);
 });

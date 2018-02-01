@@ -15,6 +15,9 @@ define([], function() {
 			'user-customer' : '客户账号',
 			'user-audit' : '账号审计',
 			'role': '角色权限关系',
+			'role-config': '配置',
+			'role-audit': '审计',
+			'resource': '资源',
 		},
 		en : {
 			'date': '{{month}}/{{day}}/{{year}}',
@@ -28,6 +31,9 @@ define([], function() {
 			'user-customer' : 'customer',
 			'user-audit' : 'audit',
 			'role': 'role',
+			'role-config': 'config',
+			'role-audit': 'audit',
+			'resource': 'resource',
 		},
 	};
 });

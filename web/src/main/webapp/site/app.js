@@ -176,13 +176,5 @@ define([
 			// 浏览器默认语言
 //			$translateProvider.determinePreferredLanguage();
 		}])
-		/**
-		 * 指定可信任的html代码
-		 */
-		.filter('trustHtml', function($sce) {
-			return function(input) {
-				return $sce.trustAsHtml(input);
-			}
-		})
 		;
 });

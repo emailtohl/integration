@@ -56,8 +56,7 @@
 	    <!-- /.box-body -->
 	    <div class="box-footer clearfix">
 	      <button type="button" class="btn btn-primary pull-left margin" ui-sref="employee.edit({id:ctrl.detail.id})" ng-if="ctrl.editable()">编辑</button>
-	      <button type="button" class="btn btn-success pull-left margin" ng-click="ctrl.enableUser()" ng-if="ctrl.editable() && !ctrl.detail.enabled">激活账户</button>
-	      <button type="button" class="btn btn-warning pull-left margin" ng-click="ctrl.disableUser()" ng-if="ctrl.editable() && hasAuthority('user_disable') && ctrl.detail.enabled">禁用账户</button>
+	      <button type="button" class="btn btn-primary pull-left margin" ng-click="ctrl.openModal()" ng-if="hasAuthority('employee_role')">角色</button>
 	      <ul class="pagination pagination-sm no-margin pull-right">
 	        <li><a href="#">«</a></li>
 	        <li><a href="#">1</a></li>
@@ -72,75 +71,23 @@
 	</div>
 </section>
 
-<div modal open="ctrl.modal.open" title="{{ctrl.modal.title}}" when-confirm="ctrl.modal.whenConfirm()" type="{{ctrl.modal.type}}" disabled="!ctrl.form.name">
+<div modal open="ctrl.modal.open" title="{{ctrl.modal.title}}" when-confirm="ctrl.modal.whenConfirm()" type="{{ctrl.modal.type}}">
   <form role="form" name="f">
     <div class="box-body">
-      <div class="form-group has-feedback" ng-class="{'has-success':f.name.$valid,'has-warning':f.name.$error.required,'has-error':f.name.$error.minlength}">
-        <label for="">姓名</label>
-        <input type="text" placeholder="name" name="name" class="form-control" ng-model="ctrl.form.name" required="required">
-        <span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':f.name.$valid,'glyphicon-warning-sign':f.name.$error.required,'glyphicon-remove':f.name.$error.minlength}"></span>
-      </div>
-      <div class="form-group has-feedback" ng-if="hasAuthority('employee_role')" ng-class="{'has-success':f.name.$valid,'has-warning':f.name.$error.required,'has-error':f.name.$error.minlength}">
-        <label for="">角色</label>
-        <select class="form-control select2" style="width: 100%;" multiple="multiple" select2 ng-model="ctrl.form.roleNames">
-	      <option ng-repeat="x in ctrl.roles" value="{{x.name}}">{{x.description}}</option>
-	    </select>
-      </div>
-      <div class="form-group has-feedback" ng-class="{'has-success':f.name.$valid,'has-warning':f.name.$error.required,'has-error':f.name.$error.minlength}">
-        <label for="">性别</label>
-        <select class="form-control select2" style="width: 100%;" select2 ng-model="ctrl.form.gender">
-	      <option value="UNSPECIFIED">未知</option>
-	      <option value="MALE">男</option>
-	      <option value="FEMALE">女</option>
-	    </select>
-      </div>
-      <div class="form-group has-feedback" ng-class="{'has-success':f.email.$valid,'has-warning':f.email.$error.required,'has-error':f.email.$invalid || f.email.$error.notexist}">
-        <label for="">邮箱</label>
-        <input asynvalidation local="employee/exist?cellPhoneOrEmail=" result="ctrl.emailValidation(exist)" type="email" placeholder="email" name="email" class="form-control" ng-model="ctrl.form.email" required="required">
-        <span class="glyphicon glyphicon-ok form-control-feedback" ng-class="{'glyphicon-ok':f.email.$valid,'glyphicon-warning-sign':f.email.$error.required,'glyphicon-remove':f.email.$invalid || f.email.$error.notexist}"></span>
-      	<span ng-show="f.email.$error.required">
-		This is a required field
-		</span>
-		<span ng-show="f.email.$invalid">
-		This field is invalid
-		</span>
-		<span ng-show="f.email.$error.notexist">
-		This field is exist
-		</span>
-      </div>
-	  <div class="form-group has-feedback" ng-class="{'has-success':f.cellPhone.$valid,'has-warning':f.cellPhone.$error.pattern,'has-error':f.cellPhone.$error.notexist}">
-        <label for="">手机</label>
-        <input asynvalidation local="employee/exist?cellPhoneOrEmail=" result="ctrl.cellPhoneValidation(exist)" type="text" placeholder="cellPhone" class="form-control" name="cellPhone" ng-model="ctrl.form.cellPhone" pattern="^1[0-9]{10}$"/>
-      	<span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':f.cellPhone.$valid,'glyphicon-warning-sign':f.cellPhone.$error.pattern,'glyphicon-remove':f.cellPhone.$error.notexist}"></span>
-	    <span ng-show="f.cellPhone.$error.notexist">
-		This field is exist
-		</span>
-      	<span ng-show="f.cellPhone.$error.pattern">
-		This field is invalid
-		</span>
+      <div class="form-group">
+        <label>用户名</label>
+        <input type="text" placeholder="name" class="form-control" ng-bind="ctrl.detail.name" disabled="disabled">
       </div>
       <div class="form-group">
-        <label for="">生日</label>
-        <input type="text" datepicker placeholder="生日" class="form-control" ng-model="ctrl.form.birthday">
-      </div>
-      <div class="form-group">
-        <label for="exampleInputPassword1">描述</label>
-        <textarea rows="3" placeholder="description" class="form-control" ng-model="ctrl.form.description"></textarea>
-      </div>
-      <div class="form-group">
-        <label for="exampleInputPassword1">职位</label>
-        <input type="text" placeholder="post" class="form-control" ng-model="ctrl.form.post">
-      </div>
-      <div class="form-group" ng-if="ctrl.detail.empNum">
-        <label for="exampleInputFile">部门</label>
-        <select class="form-control select2" style="width: 100%;" select2 ng-model="ctrl.form.department.name">
-	      <option value="">请选择</option>
-	      <option value="生产部">生产部</option>
-	      <option value="质量部">质量部</option>
-	    </select>
+        <div class="checkbox" ng-repeat="x in ctrl.roles | orderBy:x.name">
+		  <label>
+		    <input type="checkbox" value="{{x.name}}" ng-model="x.selected" ng-true-value="true" ng-false-value="false">
+		    {{$index + 1}}
+		    {{x.description}}
+		  </label>
+		</div>
       </div>
     </div>
     <!-- /.box-body -->
   </form>
 </div>
-

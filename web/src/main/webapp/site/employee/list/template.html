@@ -36,8 +36,9 @@
                   <th class="col-md-1">电话</th>
                   <th class="col-md-1">启动</th>
                   <th class="col-md-1">有效</th>
+                  <th class="col-md-1">年龄</th>
                   <th class="col-md-1">性别</th>
-                  <th class="col-md-4">操作</th>
+                  <th class="col-md-3">操作</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -49,8 +50,9 @@
                   <td ng-bind="x.cellPhone" class="col-md-1"></td>
                   <td ng-bind="x.enabled ? '是' : '否'" class="col-md-1"></td>
                   <td ng-bind="x.accountNonExpired ? '是' : '否'" class="col-md-1"></td>
+                  <td ng-bind="x.age" class="col-md-1"></td>
                   <td ng-bind="x.gender == MALE ? '男' : x.gender == FEMALE ? '女' : '未知'" class="col-md-1"></td>
-                  <td class="col-md-4" ng-if="hasAuthority('employee') || x.empNum == authentication.username">
+                  <td class="col-md-3" ng-if="hasAuthority('employee') || x.empNum == authentication.username">
                     <div class="btn-group">
                       <button type="button" class="btn btn-default btn-xs margin" ui-sref="employee.detail({id : x.id})">查看</button>
                       <button type="button" class="btn btn-default btn-xs margin" ng-if="x.enabled && !ctrl.isPresetUserId(x.id)" ng-click="ctrl.enabled(x, false)">禁用</button>
@@ -70,8 +72,9 @@
                   <th class="col-md-1">电话</th>
                   <th class="col-md-1">启动</th>
                   <th class="col-md-1">有效</th>
+                  <th class="col-md-1">年龄</th>
                   <th class="col-md-1">性别</th>
-                  <th class="col-md-4">操作</th>
+                  <th class="col-md-3">操作</th>
                 </tr>
                 </tfoot>
               </table>

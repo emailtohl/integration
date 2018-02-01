@@ -13,4 +13,5 @@ require([
 	'common/directive/fileupload/directive',
 	'common/directive/select2/directive',
 	'common/directive/asynvalidation/directive',
+	'common/filter',
 ]);

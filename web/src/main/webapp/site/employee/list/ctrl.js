@@ -1,4 +1,4 @@
-define(['employee/module', 'employee/service'], function(employeeModule) {
+define(['employee/module', 'toastr', 'employee/service'], function(employeeModule, toastr) {
 	return employeeModule
 		.controller('EmployeeList', ['$scope', '$http', '$state', 'employeeService', function($scope, $http, $state, service) {
 			var self = this;
@@ -11,13 +11,6 @@ define(['employee/module', 'employee/service'], function(employeeModule) {
 			self.query = function() {
 				service.search(self.params).then(function(resp) {
 					self.page = resp.data;
-					/*if (self.page && self.page.content instanceof Array) {
-						for (var i = 0; i < self.page.content.length; i++) {
-							if (!self.page.content[i]) {
-								self.page.content.splice(i, 1);
-							}
-						}
-					}*/
 				});
 			};
 			self.reset = function() {
@@ -51,6 +44,12 @@ define(['employee/module', 'employee/service'], function(employeeModule) {
 			self.enabled = function(item, b) {
 				service.enabled(item.id, b).then(function() {
 					item.enabled = b;
+				});
+			}
+			
+			self.resetPassword = function(id) {
+				service.resetPassword(id).then(function() {
+					toastr.info('重置成功');
 				});
 			}
 		}]);
