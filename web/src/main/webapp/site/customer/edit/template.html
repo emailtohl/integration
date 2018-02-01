@@ -1,12 +1,12 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
-  <h1>修改平台账号
+  <h1>修改客户账号
     <small>Preview</small>
   </h1>
   <ol class="breadcrumb">
     <li ui-sref="dashboard"><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-    <li ui-sref="employee.list"><a href="#">Employee List</a></li>
-    <li class="active">employee edit</li>
+    <li ui-sref="customer.list"><a href="#">Customer List</a></li>
+    <li class="active">customer edit</li>
   </ol>
 </section>
 <!-- Main content -->
@@ -37,7 +37,7 @@
 		      </div>
 		      <div class="form-group has-feedback" ng-class="{'has-success':editUserform.email.$valid,'has-warning':editUserform.email.$error.required,'has-error':editUserform.email.$invalid || editUserform.email.$error.notexist}">
 		        <label for="">邮箱</label>
-		        <input asynvalidation local="employee/exist?cellPhoneOrEmail=" result="ctrl.emailValidation(exist)" ignore="{{ctrl.ignoreEmail}}" type="email" placeholder="email" name="email" class="form-control" ng-model="ctrl.form.email" required="required">
+		        <input asynvalidation local="customer/exist?cellPhoneOrEmail=" result="ctrl.emailValidation(exist)" ignore="{{ctrl.ignoreEmail}}" type="email" placeholder="email" name="email" class="form-control" ng-model="ctrl.form.email" required="required">
 		        <span class="glyphicon glyphicon-ok form-control-feedback" ng-class="{'glyphicon-ok':editUserform.email.$valid,'glyphicon-warning-sign':editUserform.email.$error.required,'glyphicon-remove':editUserform.email.$invalid || editUserform.email.$error.notexist}"></span>
 		      	<span ng-show="editUserform.email.$error.required">
 				This is a required field
@@ -51,7 +51,7 @@
 		      </div>
     		  <div class="form-group has-feedback" ng-class="{'has-success':editUserform.cellPhone.$valid,'has-warning':editUserform.cellPhone.$error.pattern,'has-error':editUserform.cellPhone.$error.notexist}">
 		        <label for="">手机</label>
-		        <input asynvalidation local="employee/exist?cellPhoneOrEmail=" result="ctrl.cellPhoneValidation(exist)" ignore="{{ctrl.ignoreCellPhone}}" type="text" placeholder="cellPhone" class="form-control" name="cellPhone" ng-model="ctrl.form.cellPhone" pattern="^1[0-9]{10}$"/>
+		        <input asynvalidation local="customer/exist?cellPhoneOrEmail=" result="ctrl.cellPhoneValidation(exist)" ignore="{{ctrl.ignoreCellPhone}}" type="text" placeholder="cellPhone" class="form-control" name="cellPhone" ng-model="ctrl.form.cellPhone" pattern="^1[0-9]{10}$"/>
 		      	<span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':editUserform.cellPhone.$valid,'glyphicon-warning-sign':editUserform.cellPhone.$error.pattern,'glyphicon-remove':editUserform.cellPhone.$error.notexist}"></span>
 			    <span ng-show="editUserform.cellPhone.$error.notexist">
 				This field is exist
@@ -64,9 +64,6 @@
 		        <label for="">生日</label>
 		        <input type="text" placeholder="birthday" class="form-control" datepicker ng-model="ctrl.form.birthday">
 		      </div>
-	        </div>
-	        
-	        <div class="col-md-6">
 		      <div class="form-group">
 		        <label for="">性别</label>
 		        <select class="form-control select2" style="width: 100%;" select2 ng-model="ctrl.form.gender">
@@ -75,33 +72,31 @@
 			      <option value="FEMALE">女</option>
 			    </select>
 		      </div>
+	        </div>
+	        
+	        <div class="col-md-6">
 		      <div class="form-group">
-		        <label for="">联系电话</label>
-		        <input type="tel" placeholder="telephone" class="form-control" name="telephone" ng-model="ctrl.form.telephone">
-		      </div>
-
-		      <div class="form-group has-feedback"  ng-class="{'has-success':editUserform.post.$valid,'has-warning':editUserform.post.$error.required,'has-error':editUserform.post.$error.minlength}">
-		        <label for="">岗位</label>
-		        <input type="text" placeholder="岗位" name="post" class="form-control" ng-model="ctrl.form.post" required="required">
-     		    <span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':editUserform.post.$valid,'glyphicon-warning-sign':editUserform.post.$error.required,'glyphicon-remove':editUserform.post.$error.minlength}"></span>
-			    <span ng-show="editUserform.post.$error.required">
-				This is a required field
-				</span>
-				<span ng-show="editUserform.post.$error.minlength">
-				Minimum length required is 6
-				</span>
-				<span ng-show="editUserform.post.$invalid">
-				This field is invalid
-				</span>
-		      </div>
-		      <div class="form-group">
-		        <label for="">部门</label>
-		        <select class="form-control select2" style="width: 100%;" select2 ng-model="ctrl.form.department.name">
+		        <label for="">分类</label>
+		        <select class="form-control select2" style="width: 100%;" select2 ng-model="ctrl.form.classify" >
 			      <option value="">请选择</option>
-			      <option value="生产部">生产部</option>
-			      <option value="质量部">质量部</option>
+			      <option value="COOPERATE">合作人</option>
+			      <option value="CONSUMER">消费者</option>
+			      <option value="CONSIGNOR">甲方</option>
 			    </select>
 		      </div>
+		      <div class="form-group">
+		        <label for="">城市</label>
+		        <input type="tel" placeholder="telephone" class="form-control" name="city" ng-model="ctrl.form.address.city">
+		      </div>
+		      <div class="form-group">
+		        <label for="">街道</label>
+		        <input type="tel" placeholder="telephone" class="form-control" name="street" ng-model="ctrl.form.address.street">
+		      </div>
+		      <div class="form-group">
+		        <label for="">邮编</label>
+		        <input type="tel" placeholder="telephone" class="form-control" name="zipcode" ng-model="ctrl.form.address.zipcode">
+		      </div>
+
 		      <div class="form-group">
 		        <label>描述</label>
 		        <textarea rows="3" type="text" placeholder="description" class="form-control" name="description" ng-model="ctrl.form.description" ng-maxlength="300"></textarea>

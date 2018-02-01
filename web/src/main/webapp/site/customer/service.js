@@ -1,5 +1,5 @@
-define(['employee/module', 'common/context'], function(employeeModule) {
-	return employeeModule.factory('employeeService', ['$http', 'util', function($http, util) {
+define(['customer/module', 'common/context'], function(customerModule) {
+	return customerModule.factory('customerService', ['$http', 'util', function($http, util) {
 		return {
 			create: function(cust) {
 				return $http.post('customer', cust);
@@ -18,6 +18,9 @@ define(['employee/module', 'common/context'], function(employeeModule) {
 			},
 			'delete': function(id) {
 				return $http['delete']('customer/' + id);
+			},
+			search: function(params) {
+				return $http.get('customer/search?' + util.encodeUrlParams(params));
 			},
 			grandRoles: function(id, roleNames) {
 				return $http.post('customer/grandRoles', {

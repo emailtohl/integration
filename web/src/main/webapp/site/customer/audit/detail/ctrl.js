@@ -1,6 +1,6 @@
-define(['employee/module', 'employee/service'], function(employeeModule) {
-	return employeeModule
-		.controller('EmployeeAuditDetail', ['$scope', '$http', '$state', 'employeeService',
+define(['customer/module', 'customer/service'], function(customerModule) {
+	return customerModule
+		.controller('CustomerAuditDetail', ['$scope', '$http', '$state', 'customerService',
 			function($scope, $http, $state, service) {
 				var self = this;
 				$scope.getAuthentication();

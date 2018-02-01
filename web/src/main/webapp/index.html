@@ -402,17 +402,17 @@
           	<i class="fa fa-angle-left pull-right"></i>
           </a>
           <ul class="treeview-menu">
-            <li data-ng-class="{active: $state.includes('employee.list') || $state.includes('employee.detail') || $state.includes('employee.add')}">
+            <li data-ng-class="{active: $state.includes('employee')}">
             	<a ui-sref="employee.list" style="margin-left: 35px;">
             		<i class="fa fa-circle-o"></i>{{'user-platform' | translate}}
             	</a>
            	</li>
-            <li data-ng-class="{active: $state.includes('customer.list') || $state.includes('customer.detail') || $state.includes('customer.add')}">
+            <li data-ng-class="{active: $state.includes('customer')}">
             	<a ui-sref="customer.list" style="margin-left: 35px;">
             		<i class="fa fa-circle-o"></i>{{'user-customer' | translate}}
            		</a>
          	</li>
-            <li data-ng-class="{active: $state.includes('user.audit')}" ><a style="margin-left: 35px;"><i class="fa fa-circle-o"></i>{{'user-audit' | translate}}</a></li>
+            <li data-ng-class="{active: $state.includes('employee.audit') || $state.includes('customer.audit') }" ><a style="margin-left: 35px;"><i class="fa fa-circle-o"></i>{{'user-audit' | translate}}</a></li>
           </ul>
         </li>
         <!-- data-ng-if="hasAuthority('user_role_authority_allocation')" -->

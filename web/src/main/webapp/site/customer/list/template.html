@@ -1,11 +1,11 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
-  <h1>平台用户
+  <h1>客户
     <small>Preview</small>
   </h1>
   <ol class="breadcrumb">
     <li ui-sref="dashboard"><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-    <li class="active">Employee Manage</li>
+    <li class="active">Customer Manage</li>
   </ol>
 </section>
 <!-- Main content -->
@@ -31,7 +31,7 @@
                 <tr>
                   <th class="col-md-1">姓名</th>
                   <th class="col-md-1">昵称</th>
-                  <th class="col-md-1">工号</th>
+                  <th class="col-md-1">分类</th>
                   <th class="col-md-1">邮箱</th>
                   <th class="col-md-1">电话</th>
                   <th class="col-md-1">启动</th>
@@ -45,20 +45,20 @@
                 <tr ng-repeat="x in ctrl.page.content">
                   <td ng-bind="x.name" class="col-md-1"></td>
                   <td ng-bind="x.nickname" class="col-md-1"></td>
-                  <td ng-bind="x.empNum" class="col-md-1"></td>
+                  <td ng-bind="x.classify" class="col-md-1"></td>
                   <td ng-bind="x.email" class="col-md-1"></td>
                   <td ng-bind="x.cellPhone" class="col-md-1"></td>
                   <td ng-bind="x.enabled ? '是' : '否'" class="col-md-1"></td>
                   <td ng-bind="x.accountNonExpired ? '是' : '否'" class="col-md-1"></td>
                   <td ng-bind="x.age" class="col-md-1"></td>
                   <td ng-bind="x.gender == 'MALE' ? '男' : x.gender == 'FEMALE' ? '女' : '未知'" class="col-md-1"></td>
-                  <td class="col-md-3" ng-if="hasAuthority('employee') || x.empNum == authentication.username">
+                  <td class="col-md-3" ng-if="hasAuthority('customer') || x.empNum == authentication.username">
                     <div class="btn-group">
-                      <button type="button" class="btn btn-default btn-xs margin" ui-sref="employee.detail({id : x.id})">查看</button>
-                      <button type="button" class="btn btn-default btn-xs margin" ng-if="x.enabled && !ctrl.isPresetUserId(x.id) && hasAuthority('employee_enabled')" ng-click="ctrl.enabled(x, false)">禁用</button>
-                      <button type="button" class="btn btn-default btn-xs margin" ng-if="(!x.enabled || !x.accountNonExpired) && !ctrl.isPresetUserId(x.id) && hasAuthority('employee_enabled')" ng-click="ctrl.enabled(x, true)">启用</button>
-                      <button type="button" class="btn btn-default btn-xs margin" ng-click="ctrl.resetPassword(x.id)" ng-if="hasAuthority('employee_reset_password')">重置密码</button>
-                      <button type="button" class="btn btn-danger btn-xs margin" ng-click="ctrl.delete(x.id)" ng-if="hasAuthority('employee_delete') && !ctrl.isPresetUserId(x.id)">删除</button>
+                      <button type="button" class="btn btn-default btn-xs margin" ui-sref="customer.detail({id : x.id})">查看</button>
+                      <button type="button" class="btn btn-default btn-xs margin" ng-if="x.enabled && !ctrl.isPresetUserId(x.id) && hasAuthority('customer_enabled')" ng-click="ctrl.enabled(x, false)">禁用</button>
+                      <button type="button" class="btn btn-default btn-xs margin" ng-if="(!x.enabled || !x.accountNonExpired) && !ctrl.isPresetUserId(x.id) && hasAuthority('customer_enabled')" ng-click="ctrl.enabled(x, true)">启用</button>
+                      <button type="button" class="btn btn-default btn-xs margin" ng-click="ctrl.resetPassword(x.id)" ng-if="hasAuthority('customer_reset_password')">重置密码</button>
+                      <button type="button" class="btn btn-danger btn-xs margin" ng-click="ctrl.delete(x.id)" ng-if="hasAuthority('customer_delete') && !ctrl.isPresetUserId(x.id)">删除</button>
                     </div>
                   </td>
                 </tr>
@@ -67,7 +67,7 @@
                 <tr>
                   <th class="col-md-1">姓名</th>
                   <th class="col-md-1">昵称</th>
-                  <th class="col-md-1">工号</th>
+                  <th class="col-md-1">分类</th>
                   <th class="col-md-1">邮箱</th>
                   <th class="col-md-1">电话</th>
                   <th class="col-md-1">启动</th>
@@ -79,9 +79,6 @@
                 </tfoot>
               </table>
               <page page-number="ctrl.page.pageNumber" total-pages="ctrl.page.totalPages" button-count="5" on-click="ctrl.btnClick(pageNumber)"></page>
-              <button ng-if="hasAuthority('employee')" ui-sref="employee.add" type="button" class="btn btn-primary pull-right" style="margin-top: 18px;">
-	            <i class="fa fa-plus"></i> 新增
-	          </button>
             </div>
             <!-- /.box-body -->
           </div>

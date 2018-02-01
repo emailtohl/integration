@@ -1,0 +1,49 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>历史详情
+    <small>Preview</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li ui-sref="dashboard"><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+    <li ui-sref="customer.audit.list({id:ctrl.id})"><a href="#"><i class="fa"></i> audit list</a></li>
+    <li class="active">audit detail</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+<div class="row">
+    <div class="col-md-12">
+      <div class="box box-solid">
+        <div class="box-header with-border">
+          <i class="fa fa-text-width"></i>
+
+          <h3 class="box-title">{{ctrl.detail.name}}</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+	      <table class="table table-bordered">
+	        <tbody><tr>
+	          <th style="width: 10px">#</th>
+	          <th>属性名</th>
+	          <th>属性值</th>
+	          <!-- <th style="width: 40px">Label</th> -->
+	        </tr>
+	        <tr ng-repeat="(k, v) in ctrl.detail">
+	          <td>{{$index}}</td>
+	          <td>{{k}}</td>
+	          <td>
+	            {{ctrl.getValue(k, v, $index)}}
+	          </td>
+	          <!-- <td><span class="badge bg-red">55%</span></td> -->
+	        </tr>
+	      </tbody></table>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+    </div>
+    <!-- ./col -->
+  </div>
+  <!-- /.row -->
+</section>
+<!-- /.content -->
