@@ -55,8 +55,8 @@
                   <td class="col-md-3" ng-if="hasAuthority('employee') || x.empNum == authentication.username">
                     <div class="btn-group">
                       <button type="button" class="btn btn-default btn-xs margin" ui-sref="employee.detail({id : x.id})">查看</button>
-                      <button type="button" class="btn btn-default btn-xs margin" ng-if="x.enabled && !ctrl.isPresetUserId(x.id)" ng-click="ctrl.enabled(x, false)">禁用</button>
-                      <button type="button" class="btn btn-default btn-xs margin" ng-if="(!x.enabled || !x.accountNonExpired) && !ctrl.isPresetUserId(x.id)" ng-click="ctrl.enabled(x, true)">启用</button>
+                      <button type="button" class="btn btn-default btn-xs margin" ng-if="x.enabled && !ctrl.isPresetUserId(x.id) && hasAuthority('employee_enabled')" ng-click="ctrl.enabled(x, false)">禁用</button>
+                      <button type="button" class="btn btn-default btn-xs margin" ng-if="(!x.enabled || !x.accountNonExpired) && !ctrl.isPresetUserId(x.id) && hasAuthority('employee_enabled')" ng-click="ctrl.enabled(x, true)">启用</button>
                       <button type="button" class="btn btn-default btn-xs margin" ng-click="ctrl.resetPassword(x.id)" ng-if="hasAuthority('employee_reset_password')">重置密码</button>
                       <button type="button" class="btn btn-danger btn-xs margin" ng-click="ctrl.delete(x.id)" ng-if="hasAuthority('employee_delete') && !ctrl.isPresetUserId(x.id)">删除</button>
                     </div>

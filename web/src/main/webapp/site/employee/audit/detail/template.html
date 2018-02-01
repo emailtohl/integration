@@ -5,8 +5,8 @@
   </h1>
   <ol class="breadcrumb">
     <li ui-sref="dashboard"><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-    <li ui-sref="roleAudit.list({id:ctrl.id})"><a href="#"><i class="fa"></i> role audit list</a></li>
-    <li class="active">role audit detail</li>
+    <li ui-sref="employee.audit.list({id:ctrl.id})"><a href="#"><i class="fa"></i> audit list</a></li>
+    <li class="active">audit detail</li>
   </ol>
 </section>
 <!-- Main content -->
@@ -21,13 +21,22 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-          <ul>
-            <li ng-repeat="x in ctrl.detail.authorities">{{x.name}}
-              <ul>
-                <li>{{x.description}}</li>
-              </ul>
-            </li>
-          </ul>
+	      <table class="table table-bordered">
+	        <tbody><tr>
+	          <th style="width: 10px">#</th>
+	          <th>属性名</th>
+	          <th>属性值</th>
+	          <!-- <th style="width: 40px">Label</th> -->
+	        </tr>
+	        <tr ng-repeat="(k, v) in ctrl.detail">
+	          <td>{{$index}}</td>
+	          <td>{{k}}</td>
+	          <td>
+	            {{ctrl.getValue(k, v, $index)}}
+	          </td>
+	          <!-- <td><span class="badge bg-red">55%</span></td> -->
+	        </tr>
+	      </tbody></table>
         </div>
         <!-- /.box-body -->
       </div>

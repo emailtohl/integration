@@ -27,12 +27,17 @@ define(['angular', 'ui-router', 'common/context'], function(angular) {
 					templateUrl: 'site/employee/edit/template.html',
 					controller: 'EmployeeEdit as ctrl'
 				})
-				.state('employeeAudit.list', {
+				.state('employee.audit', {
+					'abstract': 'true',
+					url: '/audit',
+					template: '<div ui-view></div>',
+				})
+				.state('employee.audit.list', {
 					url: '/list/{id}',
 					templateUrl: 'site/employee/audit/list/template.html',
 					controller: 'EmployeeAuditList as ctrl'
 				})
-				.state('employeeAudit.detail', {
+				.state('employee.audit.detail', {
 					url: '/detail/id/{id}/revision/{revision}',
 					templateUrl: 'site/employee/audit/detail/template.html',
 					controller: 'EmployeeAuditDetail as ctrl'

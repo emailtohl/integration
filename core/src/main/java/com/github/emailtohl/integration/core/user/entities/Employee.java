@@ -75,7 +75,6 @@ public class Employee extends User {
 	
 	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = IntegerBridge.class))
 //	@org.hibernate.search.annotations.NumericField
-	@org.hibernate.envers.NotAudited
 	@Column(name = "emp_num", unique = true/*, nullable = false*/, updatable = false)
 	@Min(value = NO_BOT)
 	public Integer getEmpNum() {
