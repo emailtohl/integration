@@ -42,5 +42,10 @@ define(['employee/module', 'employee/service'], function(employeeModule) {
 			// 查询
 			self.query();
 
+			self.isPresetUserId = function(id) {
+				return $scope.presetData && ($scope.presetData.user_bot_id === id
+						|| $scope.presetData.user_admin_id === id
+						|| $scope.presetData.user_anonymous_id === id);
+			};
 		}]);
 });

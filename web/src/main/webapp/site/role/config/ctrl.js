@@ -60,9 +60,6 @@ define(['role/module', 'role/service'], function(roleModule) {
 						}
 						roleService.updateRole(self.form.id, self.form).then(function(resp) {
 							getRoles();
-						}, function(err) {
-							console.log(err);
-							alert('修改失败');
 						});
 					} else { // 没有id的是新增
 						var authorityNames = getAuthorityNames();
@@ -72,18 +69,12 @@ define(['role/module', 'role/service'], function(roleModule) {
 						}
 						roleService.createRole(self.form).then(function(resp) {
 							getRoles();
-						}, function(err) {
-							console.log(err);
-							alert('新增失败');
 						});
 					}
 				},
 			};
 			self.openModal = function(id, $event) {
-				if ($event.target.type === 'button') {
-					return;
-				}
-				clearAuthMapSelected(); // 先清理self.authMap中的被属性
+				clearAuthMapSelected(); // 先清理self.authMap中的属性
 				if(id) { // 如果是编辑
 					roleService.getRole(id).then(function(resp) {
 						var data = resp.data;
@@ -115,5 +106,12 @@ define(['role/module', 'role/service'], function(roleModule) {
 			self.history = function(id) {
 				$state.go('roleAudit.list', {id:id}, { reload : true });
 			};
+			
+			self.isPresetRoleId = function(id) {
+				return $scope.presetData && ($scope.presetData.role_admin_id === id
+					|| $scope.presetData.role_manager_id === id
+					|| $scope.presetData.role_staff_id === id
+					|| $scope.presetData.role_guest_id === id);
+			}
 		}])
 });

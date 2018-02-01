@@ -1,7 +1,7 @@
 /**
  * 异步校验
  * 在local属性上输入校验的地址，然后将结果反馈到result属性上，如：
- * <input asynvalidation local="customer/exist?cellPhoneOrEmail=" result="ctrl.asynvalidation(exist)" type="text" ng-model="ctrl.form.name">
+ * <input asynvalidation local="customer/exist?cellPhoneOrEmail=" result="ctrl.asynvalidation(exist)" ignore="'ignoreName'" type="text" ng-model="ctrl.form.name">
  * @author HeLei
  */
 define([ 'common/module', 'rx', 'toastr' ], function(common, Rx, toastr) {
@@ -10,6 +10,7 @@ define([ 'common/module', 'rx', 'toastr' ], function(common, Rx, toastr) {
 			restrict : 'A',
 			scope : {
 				local : '@',
+				ignore : '@',
 				result : '&'
 			},
 			link : function($scope, $element, $attrs) {
@@ -22,9 +23,14 @@ define([ 'common/module', 'rx', 'toastr' ], function(common, Rx, toastr) {
 				var keyup = Rx.Observable.fromEvent($element, 'keyup')
 						.map(function(e) {
 							return e.target.value; // Project the text from the input
-						}).filter(function(text) {
+						})
+						.debounce(1000 /* Pause for 1m */)
+						.filter(function(text) {
+							if ($scope.ignore && text == $scope.ignore) {
+								return false;
+							}
 							return text.length > 2; // Only if the text is longer than 2 characters
-						}).debounce(750 /* Pause for 750ms */)
+						})
 						.distinctUntilChanged(); // Only if the value has changed
 				var searcher = keyup.flatMapLatest(validator);
 				searcher.subscribe(function(respose) {

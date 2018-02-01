@@ -1,5 +1,7 @@
 package com.github.emailtohl.integration.web.config;
 
+import java.io.Serializable;
+
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
@@ -12,7 +14,8 @@ import com.github.emailtohl.integration.web.service.cms.entities.Type;
  * 
  * @author HeLei
  */
-public class WebPresetData {
+public class WebPresetData implements Serializable {
+	private static final long serialVersionUID = 8938868828524481149L;
 	public final Group group_admin;
 	public final Group group_manager;
 	public final Group group_staff;

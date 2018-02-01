@@ -72,6 +72,9 @@ public class EmployeeCtrl extends RestCtrl<Employee> {
 		return ls;
 	}
 
+	/**
+	 * 修改平台账号基本内容，不包括密码、角色、状态等属性
+	 */
 	@RequestMapping(value = "{id}", method = RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void update(@PathVariable("id") Long id, @RequestBody @Valid Employee newEntity, Errors errors) {

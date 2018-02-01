@@ -12,7 +12,6 @@
 <!-- Main content -->
 <section class="content">
   <div class="row">
-  
 	  <form role="form" name="addUserform">
 	    <div class="box-body">
 	      <div class="row">
@@ -79,14 +78,18 @@
 		      </div>
 		      <div class="form-group">
 		        <label for="">生日</label>
-		        <input type="text" placeholder="birthday" class="form-control" datepicker ng-model="ctrl.form.date">
+		        <input type="text" placeholder="birthday" class="form-control" name="birthday" datepicker ng-model="ctrl.form.date">
 		      </div>
 	        </div>
 	        
 	        <div class="col-md-6">
+    		  <div class="form-group">
+		        <label for="">昵称</label>
+		        <input type="text" placeholder="nickname" class="form-control" name="nickname" ng-model="ctrl.form.nickname">
+		      </div>
 		      <div class="form-group">
 		        <label for="">联系电话</label>
-		        <input type="tel" placeholder="telephone" class="form-control" ng-model="ctrl.form.telephone">
+		        <input type="tel" placeholder="telephone" class="form-control" name="telephone" ng-model="ctrl.form.telephone">
 		      </div>
 		      <div class="form-group has-feedback" ng-class="{'has-success':addUserform.cellPhone.$valid,'has-warning':addUserform.cellPhone.$error.pattern,'has-error':addUserform.cellPhone.$error.notexist}">
 		        <label for="">手机</label>
@@ -123,18 +126,15 @@
 		      </div>
 		      <div class="form-group">
 		        <label>描述</label>
-		        <textarea rows="3" type="text" placeholder="description" class="form-control" ng-model="ctrl.form.description" ng-maxlength="300"></textarea>
+		        <textarea rows="3" type="text" placeholder="description" class="form-control" name="description" ng-model="ctrl.form.description" ng-maxlength="300"></textarea>
 		      </div>
 	        </div>
-	        
 	        <div class="col-md-12">
 			  <button type="submit" ng-disabled="addUserform.$invalid || ctrl.form.password != ctrl.form.confirmPassword" ng-click="ctrl.submit()" class="btn btn-primary pull-right" style="margin-top: 18px;">
 	            <i class="fa fa-plus"></i> 提交
 	          </button>
 	        </div>
-	        
 	      </div>
-
 	    </div>
 	    <!-- /.box-body -->
 	  </form>

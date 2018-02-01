@@ -157,12 +157,14 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 			return null;
 		}
 		isIllegal(source);
+		if (newEntity.getEmail() != null)
+			source.setEmail(newEntity.getEmail());
+		if (newEntity.getCellPhone() != null)
+			source.setCellPhone(newEntity.getCellPhone());
 		if (newEntity.getBirthday() != null)
 			source.setBirthday(newEntity.getBirthday());
 		if (newEntity.getDescription() != null)
 			source.setDescription(newEntity.getDescription());
-		if (newEntity.getEmail() != null)
-			source.setEmail(newEntity.getEmail());
 		if (newEntity.getGender() != null)
 			source.setGender(newEntity.getGender());
 		if (newEntity.getImage() != null)

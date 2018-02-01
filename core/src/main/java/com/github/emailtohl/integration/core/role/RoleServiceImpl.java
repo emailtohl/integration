@@ -112,6 +112,9 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 		if (source == null) {
 			return null;
 		}
+		if (source.equals(presetData.role_admin)) {
+			throw new NotAcceptableException("不能修改系统内置的管理员角色");
+		}
 		if (newEntity.getRoleType() != null) {
 			source.setRoleType(newEntity.getRoleType());
 		}

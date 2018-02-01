@@ -35,7 +35,7 @@
                   <th class="col-md-1">邮箱</th>
                   <th class="col-md-1">电话</th>
                   <th class="col-md-1">启动</th>
-                  <th class="col-md-1">过期</th>
+                  <th class="col-md-1">有效</th>
                   <th class="col-md-1">性别</th>
                   <th class="col-md-2">描述</th>
                   <th class="col-md-2">操作</th>
@@ -55,8 +55,9 @@
                   <td class="col-md-2" ng-if="hasAuthority('employee') || x.empNum == authentication.username">
                     <div class="btn-group">
                       <button type="button" class="btn btn-default btn-xs margin" ui-sref="employee.detail({id : x.id})">查看</button>
-                      <button type="button" class="btn btn-default btn-xs margin" >启用</button>
-                      <button type="button" class="btn btn-danger btn-xs margin" ng-click="ctrl.delete(x.id)" ng-if="hasAuthority('employee_delete')">删除</button>
+                      <button type="button" class="btn btn-default btn-xs margin" ng-if="x.enabled" ng-if="!ctrl.isPresetUserId(x.id)">禁用</button>
+                      <button type="button" class="btn btn-default btn-xs margin" ng-if="!x.enabled" ng-if="!ctrl.isPresetUserId(x.id)">启用</button>
+                      <button type="button" class="btn btn-danger btn-xs margin" ng-click="ctrl.delete(x.id)" ng-if="hasAuthority('employee_delete') && !ctrl.isPresetUserId(x.id)">删除</button>
                     </div>
                   </td>
                 </tr>
@@ -69,7 +70,7 @@
                   <th class="col-md-1">邮箱</th>
                   <th class="col-md-1">电话</th>
                   <th class="col-md-1">启动</th>
-                  <th class="col-md-1">过期</th>
+                  <th class="col-md-1">有效</th>
                   <th class="col-md-1">性别</th>
                   <th class="col-md-2">描述</th>
                   <th class="col-md-2">操作</th>

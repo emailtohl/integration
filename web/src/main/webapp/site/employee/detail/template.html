@@ -55,9 +55,9 @@
 	    </div>
 	    <!-- /.box-body -->
 	    <div class="box-footer clearfix">
-	      <button type="button" class="btn btn-primary pull-left margin" ng-click="ctrl.edit()">编辑</button>
-	      <button type="button" class="btn btn-success pull-left margin" ng-click="ctrl.enableUser()" ng-if="!ctrl.detail.enabled">激活账户</button>
-	      <button type="button" class="btn btn-warning pull-left margin" ng-click="ctrl.disableUser()" ng-if="hasAuthority('user_disable') && ctrl.detail.enabled">禁用账户</button>
+	      <button type="button" class="btn btn-primary pull-left margin" ui-sref="employee.edit({id:ctrl.detail.id})" ng-if="ctrl.editable()">编辑</button>
+	      <button type="button" class="btn btn-success pull-left margin" ng-click="ctrl.enableUser()" ng-if="ctrl.editable() && !ctrl.detail.enabled">激活账户</button>
+	      <button type="button" class="btn btn-warning pull-left margin" ng-click="ctrl.disableUser()" ng-if="ctrl.editable() && hasAuthority('user_disable') && ctrl.detail.enabled">禁用账户</button>
 	      <ul class="pagination pagination-sm no-margin pull-right">
 	        <li><a href="#">«</a></li>
 	        <li><a href="#">1</a></li>
@@ -94,13 +94,30 @@
 	      <option value="FEMALE">女</option>
 	    </select>
       </div>
-      <div class="form-group">
+      <div class="form-group has-feedback" ng-class="{'has-success':f.email.$valid,'has-warning':f.email.$error.required,'has-error':f.email.$invalid || f.email.$error.notexist}">
         <label for="">邮箱</label>
-        <input type="email" placeholder="email" class="form-control" value="{{ctrl.form.email}}" disabled="disabled">
+        <input asynvalidation local="employee/exist?cellPhoneOrEmail=" result="ctrl.emailValidation(exist)" type="email" placeholder="email" name="email" class="form-control" ng-model="ctrl.form.email" required="required">
+        <span class="glyphicon glyphicon-ok form-control-feedback" ng-class="{'glyphicon-ok':f.email.$valid,'glyphicon-warning-sign':f.email.$error.required,'glyphicon-remove':f.email.$invalid || f.email.$error.notexist}"></span>
+      	<span ng-show="f.email.$error.required">
+		This is a required field
+		</span>
+		<span ng-show="f.email.$invalid">
+		This field is invalid
+		</span>
+		<span ng-show="f.email.$error.notexist">
+		This field is exist
+		</span>
       </div>
-      <div class="form-group">
+	  <div class="form-group has-feedback" ng-class="{'has-success':f.cellPhone.$valid,'has-warning':f.cellPhone.$error.pattern,'has-error':f.cellPhone.$error.notexist}">
         <label for="">手机</label>
-        <input type="tel" placeholder="cellPhone" class="form-control" ng-model="ctrl.form.cellPhone">
+        <input asynvalidation local="employee/exist?cellPhoneOrEmail=" result="ctrl.cellPhoneValidation(exist)" type="text" placeholder="cellPhone" class="form-control" name="cellPhone" ng-model="ctrl.form.cellPhone" pattern="^1[0-9]{10}$"/>
+      	<span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':f.cellPhone.$valid,'glyphicon-warning-sign':f.cellPhone.$error.pattern,'glyphicon-remove':f.cellPhone.$error.notexist}"></span>
+	    <span ng-show="f.cellPhone.$error.notexist">
+		This field is exist
+		</span>
+      	<span ng-show="f.cellPhone.$error.pattern">
+		This field is invalid
+		</span>
       </div>
       <div class="form-group">
         <label for="">生日</label>

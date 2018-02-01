@@ -22,6 +22,11 @@ define(['angular', 'ui-router', 'common/context'], function(angular) {
 					templateUrl: 'site/employee/add/template.html',
 					controller: 'EmployeeAdd as ctrl'
 				})
+				.state('employee.edit', {
+					url: '/edit/{id}',
+					templateUrl: 'site/employee/edit/template.html',
+					controller: 'EmployeeEdit as ctrl'
+				})
 				.state('employeeAudit.list', {
 					url: '/list/{id}',
 					templateUrl: 'site/employee/audit/list/template.html',

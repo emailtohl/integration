@@ -120,5 +120,21 @@ define(['employee/module', 'employee/service'], function(employeeModule) {
 			$('input[name="icon"]').on('change', function(e) {
 				$('#submit-file').attr('disabled', null);
 			});
+			
+			self.editable = function() {
+				return $scope.presetData && !($scope.presetData.user_bot_id == $state.params.id
+						|| $scope.presetData.user_admin_id == $state.params.id
+						|| $scope.presetData.user_anonymous_id == $state.params.id);
+			};
+			// 异步校验邮箱
+			self.emailValidation = function(exist) {
+				$scope.f.email.$setValidity('notexist', !exist);
+				$scope.$apply();
+			};
+			// 异步校验手机号
+			self.cellPhoneValidation = function(exist) {
+				$scope.f.cellPhone.$setValidity('notexist', !exist);
+				$scope.$apply();
+			};
 		}]);
 });

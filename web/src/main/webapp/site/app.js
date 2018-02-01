@@ -106,6 +106,10 @@ define([
 				return iconSrc;
 			};
 			
+			$http.get('presetData').then(function(resp) {
+				$rootScope.presetData = resp.data;
+			});
+			
 			var date = new Date();
 			$rootScope._date = {
 				year: date.getFullYear(),

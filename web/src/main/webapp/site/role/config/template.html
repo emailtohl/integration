@@ -31,15 +31,17 @@
                   				<td ng-bind="x.name" class="col-md-5"></td>
                   				<td ng-bind="x.description" class="col-md-5"></td>
                   				<td class="col-md-2">
-                  					<button class="btn btn-danger btn-xs" type="button" ng-click="ctrl.delete(x.id, x.name, $event)">删除</button>
+                  					<button class="btn btn-danger btn-xs" type="button" ng-click="ctrl.delete(x.id, x.name, $event)" ng-if="!ctrl.isPresetRoleId(x.id)">删除</button>
                   					<button class="btn btn-info btn-xs" type="button" ng-click="ctrl.history(x.id)">历史</button>
                 				</td>
                   			</tr>
 		                </tbody>
 					</table>
 				</div>
-		        <div class="box-footer clearfix">
-		          <button type="button" class="btn btn-primary btn-block" ng-click="ctrl.openModal()">新增</button>
+		        <div class="col-md-12">
+				  <button type="button" ng-click="ctrl.openModal()" class="btn btn-primary pull-right" style="margin-top: 18px;">
+		            <i class="fa fa-plus"></i> 新增
+		          </button>
 		        </div>
 			</div>
 		</div>
@@ -53,7 +55,7 @@
     <div class="box-body">
       <div class="form-group">
         <label for="exampleInputEmail1">角色名</label>
-        <input type="text" placeholder="name" class="form-control" ng-model="ctrl.form.name" ng-verify>
+        <input type="text" placeholder="name" class="form-control" ng-model="ctrl.form.name" ng-disabled="ctrl.form.id" ng-verify>
       </div>
       <div class="form-group">
         <label for="exampleInputPassword1">描述</label>

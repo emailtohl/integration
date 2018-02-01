@@ -7,7 +7,8 @@ define(['employee/module', 'employee/service'], function(employeeModule) {
 
 			self.submit = function() {
 				service.create(self.form).then(function(resp) {
-					$state.go('user.list', {}, {
+					console.log(resp.data && resp.data.id);
+					$state.go('employee.list', {}, {
 						reload: true
 					});
 				});

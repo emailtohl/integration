@@ -21,6 +21,7 @@ import static com.github.emailtohl.integration.core.role.Authority.ROLE;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -42,7 +43,9 @@ import com.github.emailtohl.integration.core.user.entities.Gender;
  * 预置数据
  * @author HeLei
  */
-public class CorePresetData {
+public class CorePresetData implements Serializable {
+	private static final long serialVersionUID = -8413305539138714050L;
+
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	
 	public final Authority

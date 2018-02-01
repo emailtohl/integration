@@ -1,0 +1,115 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>修改平台账号
+    <small>Preview</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li ui-sref="dashboard"><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+    <li ui-sref="employee.list"><a href="#">Employee List</a></li>
+    <li class="active">修改平台账号</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+  <div class="row">
+	  <form role="form" name="editUserform">
+	    <div class="box-body">
+	      <div class="row">
+	        <div class="col-md-6">
+	          <div class="form-group has-feedback" ng-class="{'has-success':editUserform.name.$valid,'has-warning':editUserform.name.$error.required,'has-error':editUserform.name.$error.minlength}">
+		        <label for="">姓名</label>
+		        <input type="text" placeholder="name" name="name" class="form-control" ng-model="ctrl.form.name" required="required">
+		        <span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':editUserform.name.$valid,'glyphicon-warning-sign':editUserform.name.$error.required,'glyphicon-remove':editUserform.name.$error.minlength}"></span>
+			    <span ng-show="editUserform.name.$error.required">
+				This is a required field
+				</span>
+				<span ng-show="editUserform.name.$error.minlength">
+				Minimum length required is 6
+				</span>
+				<span ng-show="editUserform.name.$invalid">
+				This field is invalid
+				</span>
+		        <span class="glyphicon glyphicon-ok form-control-feedback"></span>
+		      </div>
+    		  <div class="form-group">
+		        <label for="">昵称</label>
+		        <input type="text" placeholder="nickname" class="form-control" name="nickname" ng-model="ctrl.form.nickname">
+		      </div>
+		      <div class="form-group has-feedback" ng-class="{'has-success':editUserform.email.$valid,'has-warning':editUserform.email.$error.required,'has-error':editUserform.email.$invalid || editUserform.email.$error.notexist}">
+		        <label for="">邮箱</label>
+		        <input asynvalidation local="employee/exist?cellPhoneOrEmail=" result="ctrl.emailValidation(exist)" ignore="{{ctrl.ignoreEmail}}" type="email" placeholder="email" name="email" class="form-control" ng-model="ctrl.form.email" required="required">
+		        <span class="glyphicon glyphicon-ok form-control-feedback" ng-class="{'glyphicon-ok':editUserform.email.$valid,'glyphicon-warning-sign':editUserform.email.$error.required,'glyphicon-remove':editUserform.email.$invalid || editUserform.email.$error.notexist}"></span>
+		      	<span ng-show="editUserform.email.$error.required">
+				This is a required field
+				</span>
+				<span ng-show="editUserform.email.$invalid">
+				This field is invalid
+				</span>
+				<span ng-show="editUserform.email.$error.notexist">
+				This field is exist
+				</span>
+		      </div>
+    		  <div class="form-group has-feedback" ng-class="{'has-success':editUserform.cellPhone.$valid,'has-warning':editUserform.cellPhone.$error.pattern,'has-error':editUserform.cellPhone.$error.notexist}">
+		        <label for="">手机</label>
+		        <input asynvalidation local="employee/exist?cellPhoneOrEmail=" result="ctrl.cellPhoneValidation(exist)" ignore="{{ctrl.ignoreCellPhone}}" type="text" placeholder="cellPhone" class="form-control" name="cellPhone" ng-model="ctrl.form.cellPhone" pattern="^1[0-9]{10}$"/>
+		      	<span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':editUserform.cellPhone.$valid,'glyphicon-warning-sign':editUserform.cellPhone.$error.pattern,'glyphicon-remove':editUserform.cellPhone.$error.notexist}"></span>
+			    <span ng-show="editUserform.cellPhone.$error.notexist">
+				This field is exist
+				</span>
+		      	<span ng-show="editUserform.cellPhone.$error.pattern">
+				This field is invalid
+				</span>
+		      </div>
+		      <div class="form-group">
+		        <label for="">生日</label>
+		        <input type="text" placeholder="birthday" class="form-control" datepicker ng-model="ctrl.form.date">
+		      </div>
+	        </div>
+	        
+	        <div class="col-md-6">
+		      <div class="form-group">
+		        <label for="">联系电话</label>
+		        <input type="tel" placeholder="telephone" class="form-control" name="telephone" ng-model="ctrl.form.telephone">
+		      </div>
+
+		      <div class="form-group has-feedback"  ng-class="{'has-success':editUserform.post.$valid,'has-warning':editUserform.post.$error.required,'has-error':editUserform.post.$error.minlength}">
+		        <label for="">岗位</label>
+		        <input type="text" placeholder="岗位" name="post" class="form-control" ng-model="ctrl.form.post" required="required">
+     		    <span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':editUserform.post.$valid,'glyphicon-warning-sign':editUserform.post.$error.required,'glyphicon-remove':editUserform.post.$error.minlength}"></span>
+			    <span ng-show="editUserform.post.$error.required">
+				This is a required field
+				</span>
+				<span ng-show="editUserform.post.$error.minlength">
+				Minimum length required is 6
+				</span>
+				<span ng-show="editUserform.post.$invalid">
+				This field is invalid
+				</span>
+		      </div>
+		      <div class="form-group">
+		        <label for="">部门</label>
+		        <select class="form-control select2" style="width: 100%;" select2 ng-model="ctrl.form.department.name">
+			      <option value="">请选择</option>
+			      <option value="生产部">生产部</option>
+			      <option value="质量部">质量部</option>
+			    </select>
+		      </div>
+		      <div class="form-group">
+		        <label>描述</label>
+		        <textarea rows="3" type="text" placeholder="description" class="form-control" name="description" ng-model="ctrl.form.description" ng-maxlength="300"></textarea>
+		      </div>
+	        </div>
+	        <div class="col-md-12">
+			  <button type="submit" ng-disabled="editUserform.$invalid || ctrl.form.password != ctrl.form.confirmPassword" ng-click="ctrl.submit()" class="btn btn-primary pull-right" style="margin-top: 18px;">
+	            <i class="fa fa-plus"></i> 提交
+	          </button>
+	        </div>
+	      </div>
+	    </div>
+	    <!-- /.box-body -->
+	  </form>
+  
+  </div>
+  <!-- /.row -->
+</section>
+<!-- /.content -->
