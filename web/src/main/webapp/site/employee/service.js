@@ -42,8 +42,8 @@ define(['employee/module', 'common/context'], function(employeeModule) {
 			},
 			enabled: function(id, enabled) {
 				return $http.post('employee/enabled', {
-					id : id,
-					enabled : enabled
+					'id' : id,
+					'enabled' : enabled
 				});
 			},
 			getRevision: function(id) {

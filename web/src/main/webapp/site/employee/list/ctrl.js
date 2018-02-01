@@ -47,5 +47,11 @@ define(['employee/module', 'employee/service'], function(employeeModule) {
 						|| $scope.presetData.user_admin_id === id
 						|| $scope.presetData.user_anonymous_id === id);
 			};
+			
+			self.enabled = function(item, b) {
+				service.enabled(item.id, b).then(function() {
+					item.enabled = b;
+				});
+			}
 		}]);
 });
