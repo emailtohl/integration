@@ -239,7 +239,6 @@ public class User extends BaseEntity {
 		this.age = age;
 	}
 	
-	@org.hibernate.envers.NotAudited
 	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = EnumBridgeCust.class))
 	// 枚举存入数据库默认为序号，这里指明将枚举名以字符串存入数据库
 	@Enumerated(EnumType.STRING)

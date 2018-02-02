@@ -40,13 +40,13 @@
               <tr ng-repeat="x in ctrl.list" style="cursor:pointer" ng-click="ctrl.detail(x.entity.id, x.defaultRevisionEntity.id)">
                 <td ng-bind="x.entity.name" class="col-md-1"></td>
                 <td ng-bind="x.entity.nickname" class="col-md-1"></td>
-                <td ng-bind="x.entity.classify" class="col-md-1"></td>
+                <td ng-bind="x.entity.classify | customerFieldMap" class="col-md-1"></td>
                 <td ng-bind="x.entity.email" class="col-md-1"></td>
                 <td ng-bind="x.entity.cellPhone" class="col-md-1"></td>
                 <td ng-bind="x.entity.enabled | boolToString" class="col-md-1"></td>
                 <td ng-bind="x.entity.accountNonExpired | boolToString" class="col-md-1"></td>
                 <td ng-bind="x.entity.post" class="col-md-1"></td>
-                <td ng-bind="x.entity.gender == MALE ? '男' : x.gender == FEMALE ? '女' : '未知'" class="col-md-1"></td>
+                <td ng-bind="x.entity.gender | customerFieldMap" class="col-md-1"></td>
                 <td ng-bind="x.defaultRevisionEntity.revisionDate | date:'yyyy-MM-dd HH:mm:ss'" class="col-md-2"></td>
                 <td class="col-md-1">
                 	<span class="label" ng-class="{'label-danger' : x.revisionType == 'DEL', 'label-warning' : x.revisionType == 'ADD', 'label-info' : x.revisionType == 'MOD'}">
@@ -75,7 +75,7 @@
           <!-- /.box-body -->
         </div>
         <!-- /.box -->
-
+		<button type="button" class="btn btn-default" ui-sref="customer.detail({id:ctrl.id})">{{'btn-back' | translate}}</button>
       </div>
       <!-- /.col -->
     </div>

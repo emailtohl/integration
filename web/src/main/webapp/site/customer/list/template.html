@@ -45,13 +45,13 @@
                 <tr ng-repeat="x in ctrl.page.content">
                   <td ng-bind="x.name" class="col-md-1"></td>
                   <td ng-bind="x.nickname" class="col-md-1"></td>
-                  <td ng-bind="x.classify" class="col-md-1"></td>
+                  <td ng-bind="x.classify | customerFieldMap" class="col-md-1"></td>
                   <td ng-bind="x.email" class="col-md-1"></td>
                   <td ng-bind="x.cellPhone" class="col-md-1"></td>
                   <td ng-bind="x.enabled ? '是' : '否'" class="col-md-1"></td>
                   <td ng-bind="x.accountNonExpired ? '是' : '否'" class="col-md-1"></td>
                   <td ng-bind="x.age" class="col-md-1"></td>
-                  <td ng-bind="x.gender == 'MALE' ? '男' : x.gender == 'FEMALE' ? '女' : '未知'" class="col-md-1"></td>
+                  <td ng-bind="x.gender | customerFieldMap" class="col-md-1"></td>
                   <td class="col-md-3" ng-if="hasAuthority('customer') || x.empNum == authentication.username">
                     <div class="btn-group">
                       <button type="button" class="btn btn-default btn-xs margin" ui-sref="customer.detail({id : x.id})">查看</button>

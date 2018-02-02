@@ -48,10 +48,10 @@
                   <td ng-bind="x.empNum" class="col-md-1"></td>
                   <td ng-bind="x.email" class="col-md-1"></td>
                   <td ng-bind="x.cellPhone" class="col-md-1"></td>
-                  <td ng-bind="x.enabled ? '是' : '否'" class="col-md-1"></td>
-                  <td ng-bind="x.accountNonExpired ? '是' : '否'" class="col-md-1"></td>
+                  <td ng-bind="x.enabled | boolToString" class="col-md-1"></td>
+                  <td ng-bind="x.accountNonExpired | boolToString" class="col-md-1"></td>
                   <td ng-bind="x.age" class="col-md-1"></td>
-                  <td ng-bind="x.gender == 'MALE' ? '男' : x.gender == 'FEMALE' ? '女' : '未知'" class="col-md-1"></td>
+                  <td ng-bind="x.gender | employeeFieldMap" class="col-md-1"></td>
                   <td class="col-md-3" ng-if="hasAuthority('employee') || x.empNum == authentication.username">
                     <div class="btn-group">
                       <button type="button" class="btn btn-default btn-xs margin" ui-sref="employee.detail({id : x.id})">查看</button>

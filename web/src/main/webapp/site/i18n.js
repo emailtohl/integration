@@ -18,6 +18,9 @@ define([], function() {
 			'role-config': '配置',
 			'role-audit': '审计',
 			'resource': '资源',
+			'btn-submit': '提交',
+			'btn-back': '返回',
+			'btn-cancel': '取消',
 		},
 		en : {
 			'date': '{{month}}/{{day}}/{{year}}',
@@ -34,6 +37,9 @@ define([], function() {
 			'role-config': 'config',
 			'role-audit': 'audit',
 			'resource': 'resource',
+			'btn-submit': 'submit',
+			'btn-back': 'back',
+			'btn-cancel': 'cancel',
 		},
 	};
 });

@@ -108,8 +108,9 @@
 		      </div>
 	        </div>
 	        <div class="col-md-12">
+	          <button type="button" class="btn btn-default" ui-sref="employee.detail({id:ctrl.form.id})">{{'btn-cancel' | translate}}</button>
 			  <button type="submit" ng-disabled="editUserform.$invalid || ctrl.form.password != ctrl.form.confirmPassword" ng-click="ctrl.submit()" class="btn btn-primary pull-right" style="margin-top: 18px;">
-	            <i class="fa fa-plus"></i> 提交
+	            <i class="fa fa-plus"></i> {{'btn-submit' | translate}}
 	          </button>
 	        </div>
 	      </div>

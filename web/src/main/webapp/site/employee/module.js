@@ -42,5 +42,22 @@ define(['angular', 'ui-router', 'common/context'], function(angular) {
 					templateUrl: 'site/employee/audit/detail/template.html',
 					controller: 'EmployeeAuditDetail as ctrl'
 				});
-		});
+		})
+		.filter('employeeFieldMap', function() {
+			var dictionary = {
+				'ADMIN' : '系统管理员',
+				'EMPLOYEE' : '职员',
+				'MANAGER' : '经理',
+				'COOPERATE': '合作人',
+				'CONSUMER': '消费者',
+				'CONSIGNOR': '甲方',
+				'MALE': '男',
+				'FEMALE': '女',
+				'UNSPECIFIED': '未知',
+			};
+			return function(text) {
+				return dictionary[text] ? dictionary[text] : text;
+			};
+		})
+		;
 });
