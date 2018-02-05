@@ -18,6 +18,11 @@ public class ZtreeNode implements Serializable {
 	protected final String key;
 	
 	/**
+	 * 自定义属性，用于标识查询结果
+	 */
+	protected boolean selected;
+	
+	/**
 	 * 节点名称。如果不使用 name 属性保存节点名称，请修改 setting.data.key.name
 	 * 默认值：无
 	 */
@@ -31,16 +36,16 @@ public class ZtreeNode implements Serializable {
 	protected boolean isParent = false;
 	
 	/**
-	 * 节点的子节点数据集合。如果不使用 children 属性保存子节点数据，请修改 setting.data.key.children
-	 * 默认值：无
-	 */
-	protected List<ZtreeNode> children = new ArrayList<ZtreeNode>();
-	
-	/**
 	 * 记录 treeNode 节点的 展开 / 折叠 状态。
 	 * 默认值：false
 	 */
 	protected boolean open = false;
+	
+	/**
+	 * 节点的子节点数据集合。如果不使用 children 属性保存子节点数据，请修改 setting.data.key.children
+	 * 默认值：无
+	 */
+	protected List<ZtreeNode> children = new ArrayList<ZtreeNode>();
 	
 	/**
 	 * 节点的 checkBox / radio 的 勾选状态。[setting.check.enable = true & treeNode.nocheck =
@@ -147,6 +152,14 @@ public class ZtreeNode implements Serializable {
 		return key;
 	}
 
+	public boolean isSelected() {
+		return selected;
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -163,20 +176,20 @@ public class ZtreeNode implements Serializable {
 		this.isParent = isParent;
 	}
 
-	public List<ZtreeNode> getChildren() {
-		return children;
-	}
-
-	public void setChildren(List<ZtreeNode> children) {
-		this.children = children;
-	}
-
 	public boolean isOpen() {
 		return open;
 	}
 
 	public void setOpen(boolean open) {
 		this.open = open;
+	}
+	
+	public List<ZtreeNode> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<ZtreeNode> children) {
+		this.children = children;
 	}
 
 	public boolean isChecked() {

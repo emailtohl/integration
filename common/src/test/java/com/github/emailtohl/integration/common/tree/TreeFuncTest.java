@@ -1,6 +1,6 @@
 package com.github.emailtohl.integration.common.tree;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,12 +60,17 @@ public class TreeFuncTest {
 		sub2_2.createNewFile();
 		
 		List<ZtreeNode> ls = TreeFunc.getZtreeNodeByFilesystem(Arrays.asList(test_root));
+		// test sort
 		TreeFunc.sort(ls, new Comparator<ZtreeNode>() {
 			@Override
 			public int compare(ZtreeNode o1, ZtreeNode o2) {
 				return o1.getName().compareTo(o2.getName());
 			}
 		});
+		// test setOpen
+		List<String> dirs = Arrays.asList("test_root", "sub2", "sub2_2");
+		TreeFunc.setOpen(ls, dirs);
+		
 		System.out.println(gson.toJson(ls));
 		
 		assertEquals(ls.size(), 1);

@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -114,5 +115,38 @@ public final class TreeFunc {
 				_nodes.addAll(node.children);
 			}
 		}
+	}
+	
+	/**
+	 * 根据queue的顺序逐级打开ZtreeNode的节点
+	 * 
+	 * @param nodes
+	 * @param openPath 沿着打开的路径
+	 */
+	public static void setOpen(List<ZtreeNode> nodes, List<String> openPath) {
+		class Func {
+			LinkedList<String> queue;
+
+			Func(List<String> queue) {
+				this.queue = new LinkedList<String>(queue);
+			}
+
+			void setOpen(List<ZtreeNode> nodes) {
+				String name = queue.poll();
+				for (ZtreeNode node : nodes) {
+					if (node.isParent) {
+						if (name != null && name.equals(node.name)) {
+							node.open = true;
+							setOpen(node.children);
+						}
+					} else {
+						if (name != null && name.equals(node.name)) {
+							node.selected = true;
+						}
+					}
+				}
+			}
+		}
+		new Func(openPath).setOpen(nodes);
 	}
 }
