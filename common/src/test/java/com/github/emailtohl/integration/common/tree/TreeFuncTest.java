@@ -1,0 +1,79 @@
+package com.github.emailtohl.integration.common.tree;
+
+import static org.junit.Assert.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.junit.Test;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+/**
+ * 树型结构测试
+ * @author HeLei
+ */
+public class TreeFuncTest {
+	Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	
+	@Test
+	public void testGetZtreeNode() {
+		Department _super = new Department("super", null);
+		Department sub1 = new Department("sub1", _super);
+		Department sub2 = new Department("sub2", _super);
+		List<Node> ls = Arrays.asList(_super, sub1, sub2);
+		List<ZtreeNode> nodes = TreeFunc.getZtreeNode(ls);
+		TreeFunc.sort(nodes, new Comparator<ZtreeNode>() {
+			@Override
+			public int compare(ZtreeNode o1, ZtreeNode o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+		System.out.println(gson.toJson(nodes));
+		assertEquals(1, nodes.size());
+		for (ZtreeNode n : nodes) {
+			assertEquals(2, n.children.size());
+		}
+	}
+
+	@Test
+	public void testGetZtreeNodeByFilesystem() throws IOException {
+		String usrHome = System.getProperty("user.home");
+		File test_root = new File(usrHome, "test_root");
+		File sub1 = new File(test_root, "sub1"),
+			 sub2 = new File(test_root, "sub2"),
+			 sub3 = new File(test_root, "sub3");
+		File sub1_1 = new File(sub1, "sub1_1"),
+			 sub1_2 = new File(sub1, "sub1_2");
+		File sub2_1 = new File(sub2, "sub2_1"),
+			 sub2_2 = new File(sub2, "sub2_2");
+		sub1.mkdirs();
+		sub2.mkdirs();
+		sub3.createNewFile();
+		sub1_1.createNewFile();
+		sub1_2.createNewFile();
+		sub2_1.createNewFile();
+		sub2_2.createNewFile();
+		
+		List<ZtreeNode> ls = TreeFunc.getZtreeNodeByFilesystem(Arrays.asList(test_root));
+		TreeFunc.sort(ls, new Comparator<ZtreeNode>() {
+			@Override
+			public int compare(ZtreeNode o1, ZtreeNode o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+		System.out.println(gson.toJson(ls));
+		
+		assertEquals(ls.size(), 1);
+		for (ZtreeNode n : ls) {
+			assertEquals(3, n.children.size());
+		}
+		
+		FileUtils.deleteDirectory(test_root);
+	}
+
+}
