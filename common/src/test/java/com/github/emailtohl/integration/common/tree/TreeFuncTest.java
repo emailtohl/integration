@@ -11,6 +11,8 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 /**
@@ -18,7 +20,20 @@ import com.google.gson.GsonBuilder;
  * @author HeLei
  */
 public class TreeFuncTest {
-	Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	Gson gson = new GsonBuilder().setPrettyPrinting().addSerializationExclusionStrategy(new ExclusionStrategy() {
+		@Override
+		public boolean shouldSkipField(FieldAttributes f) {
+			if (f.getName().equals("key")) {
+				return true;
+			}
+			return false;
+		}
+		@Override
+		public boolean shouldSkipClass(Class<?> clazz) {
+			return false;
+		}
+
+	}).create();
 	
 	@Test
 	public void testGetZtreeNode() {
@@ -72,6 +87,9 @@ public class TreeFuncTest {
 		TreeFunc.setOpen(ls, dirs);
 		
 		System.out.println(gson.toJson(ls));
+		
+		// test forEach
+		TreeFunc.forEach(ls, node -> System.out.println(node));
 		
 		assertEquals(ls.size(), 1);
 		for (ZtreeNode n : ls) {

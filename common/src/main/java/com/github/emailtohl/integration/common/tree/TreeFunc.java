@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 /**
  * 处理tree结构的工具
@@ -148,5 +149,22 @@ public final class TreeFunc {
 			}
 		}
 		new Func(openPath).setOpen(nodes);
+	}
+	
+	/**
+	 * Java8才能使用此接口，若是Java8以下，则需要注释掉
+	 * @since 1.8
+	 */
+	public static void forEach(List<ZtreeNode> nodes, Consumer<ZtreeNode> consumer) {
+		List<ZtreeNode> _nodes = new ArrayList<ZtreeNode>(nodes);
+		// 使用广度优先遍历
+		while (!_nodes.isEmpty()) {
+			List<ZtreeNode> items = _nodes;
+			_nodes = new ArrayList<ZtreeNode>();
+			for (ZtreeNode node : items) {
+				consumer.accept(node);
+				_nodes.addAll(node.children);
+			}
+		}
 	}
 }
