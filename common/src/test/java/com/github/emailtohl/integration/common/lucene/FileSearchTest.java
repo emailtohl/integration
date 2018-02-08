@@ -25,7 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 
-import com.github.emailtohl.integration.common.utils.UpDownloader;
+import com.github.emailtohl.integration.common.utils.BeanUtil;
 /**
  * 文件搜索器的测试
  * @author HeLei
@@ -41,7 +41,7 @@ public class FileSearchTest {
 
 	@Before
 	public void setUp() throws Exception {
-		File thisFile = new File(PATH + File.separator + UpDownloader.convertPackageNameToFilePath(getClass().getName()) + ".java");
+		File thisFile = new File(PATH + File.separator + BeanUtil.convertPackageNameToFilePath(getClass().getName()) + ".java");
 		tempFile = new File(System.getProperty("java.io.tmpdir"), "testFileSearch.txt");
 		FileUtils.copyFile(thisFile.getAbsoluteFile(), tempFile);
 		

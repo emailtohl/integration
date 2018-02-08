@@ -5,6 +5,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -776,5 +777,18 @@ public final class BeanUtil {
 		Class<?>[] cs = new Class<?>[ls.size()];
 		return ls.toArray(cs);
 	}
-
+	
+	/**
+	 * 将包名转成目录名
+	 * @param packageName
+	 * @return
+	 */
+	public static String convertPackageNameToFilePath(String packageName) {
+		String replacement;
+		if (File.separator.equals("\\"))
+			replacement = "\\\\";
+		else
+			replacement = "/";
+		return packageName.replaceAll("\\.", replacement);
+	}
 }

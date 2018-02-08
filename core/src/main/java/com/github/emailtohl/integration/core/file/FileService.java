@@ -69,7 +69,7 @@ public interface FileService {
 	ExecResult delete(String pathname);
 	
 	/**
-	 * 保存文件到
+	 * 保存文件到，原文件可以不存在
 	 * @param pathname 目录+文件名
 	 * @param in 文件输入流
 	 * @return
