@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.web.config.WebPresetData;
 
+/**
+ * 前端获取系统内置数据
+ * @author HeLei
+ */
 @RestController
 public class PresetDataCtrl {
 	@Inject

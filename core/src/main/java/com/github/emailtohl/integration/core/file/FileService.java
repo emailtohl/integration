@@ -1,14 +1,16 @@
 package com.github.emailtohl.integration.core.file;
 
-import static com.github.emailtohl.integration.core.role.Authority.*;
+import static com.github.emailtohl.integration.core.role.Authority.CONTENT;
+import static com.github.emailtohl.integration.core.role.Authority.RESOURCE;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import com.github.emailtohl.integration.common.ztree.FileNode;
+import com.github.emailtohl.integration.common.tree.ZtreeNode;
 import com.github.emailtohl.integration.core.ExecResult;
 
 /**
@@ -87,7 +89,7 @@ public interface FileService {
 	 * @param query
 	 * @return
 	 */
-	Set<FileNode> findFile(String query);
+	List<ZtreeNode> findFile(String query);
 	
 	/**
 	 * 重新索引

@@ -13,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -26,11 +27,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.github.emailtohl.integration.common.ztree.FileNode;
-import com.github.emailtohl.integration.common.ztree.ZtreeNode;
+import com.github.emailtohl.integration.common.tree.ZtreeNode;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * 文件服务测试
@@ -42,7 +46,7 @@ import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 public class FileServiceImplTest {
 	@Inject
 	FileService fileService;
-	
+	Gson gson = new GsonBuilder()/*.setPrettyPrinting()*/.create();
 	String path;
 	
 	@Before
@@ -68,26 +72,26 @@ public class FileServiceImplTest {
 
 	@Test
 	public void testFindFile() throws IOException {
-		Set<FileNode> nodes = fileService.findFile(null);
+		List<ZtreeNode> nodes = fileService.findFile(null);
 		assertTrue(nodes.stream().anyMatch(fileNode -> "test1".equals(fileNode.getName())));
-		System.out.println(nodes);
+		System.out.println(gson.toJson(nodes));
 		
 		fileService.reIndex();
 		nodes = fileService.findFile("Console appender");
-		System.out.println(nodes);
-		for (FileNode n : nodes) {
+		System.out.println(gson.toJson(nodes));
+		for (ZtreeNode n : nodes) {
 			if ("test1".equals(n.getName())) {
 				assertTrue(n.isOpen());
-				for (ZtreeNode<File> n1 : n.getChildren()) {
+				for (ZtreeNode n1 : n.getChildren()) {
 					if ("test2".equals(n1.getName())) {
 						assertTrue(n1.isOpen());
-						for (ZtreeNode<File> n2 : n1.getChildren()) {
+						for (ZtreeNode n2 : n1.getChildren()) {
 							if ("test3".equals(n2.getName())) {
 								assertTrue(n2.isOpen());
-								for (ZtreeNode<File> n3 : n2.getChildren()) {
+								for (ZtreeNode n3 : n2.getChildren()) {
 									if ("test4".equals(n3.getName())) {
 										assertTrue(n3.isOpen());
-										for (ZtreeNode<File> n4 : n3.getChildren()) {
+										for (ZtreeNode n4 : n3.getChildren()) {
 											if ("log4j2.xml".equals(n4.getName())) {
 												assertTrue(n4.isSelected());
 											}
@@ -177,7 +181,7 @@ public class FileServiceImplTest {
 		txt = txt + "\n  update foo";
 		r = fileService.writeText(filename, txt, null);
 		assertTrue(r.ok);
-		Set<FileNode> fns = fileService.findFile("foo");
-		System.out.println(fns);
+		List<ZtreeNode> fns = fileService.findFile("foo");
+		System.out.println(gson.toJson(fns));
 	}
 }

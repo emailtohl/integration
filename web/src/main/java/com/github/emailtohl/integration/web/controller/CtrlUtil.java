@@ -9,12 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.util.StringUtils;
-
 import com.github.emailtohl.integration.common.exception.InvalidDataException;
 
 /**
@@ -23,24 +17,6 @@ import com.github.emailtohl.integration.common.exception.InvalidDataException;
  */
 public final class CtrlUtil {
 	private CtrlUtil() {}
-	/**
-	 * 获取当前用户的登录名字，如未登录导致没有获取到，则抛出异常
-	 * @return
-	 */
-	public static String getCurrentUsername() {
-		String username = null;
-		SecurityContext ctx = SecurityContextHolder.getContext();
-		if (ctx != null) {
-			Authentication a = ctx.getAuthentication();
-			if (a != null) {
-				username = a.getName();
-			}
-		}
-		if (!StringUtils.hasText(username)) {
-			throw new UsernameNotFoundException("没有此用户:" + username);
-		}
-		return username;
-	}
 	
 	/**
 	 * 将file输出到文件中

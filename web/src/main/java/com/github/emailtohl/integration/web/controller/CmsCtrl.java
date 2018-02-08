@@ -20,6 +20,7 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
@@ -37,6 +38,7 @@ import com.github.emailtohl.integration.common.exception.InvalidDataException;
 import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
+import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.web.service.cms.CmsService;
 import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Comment;
@@ -102,7 +104,7 @@ public class CmsCtrl {
 			throw new InvalidDataException(e.toString());
 		}
 		Article a = new Article(form.title, form.keywords, form.body, form.summary);
-		cmsService.saveArticle(CtrlUtil.getCurrentUsername(), a, form.type);
+		cmsService.saveArticle(ThreadContext.get(Constant.USERNAME), a, form.type);
 	}
 	
 	/**
@@ -247,7 +249,7 @@ public class CmsCtrl {
 	@RequestMapping(value = "cms/comment", method = POST)
 	public String saveComment(@RequestParam(required = true, name = "articleId") long articleId,
 			@RequestParam(required = true, name = "content") String content) {
-		cmsService.saveComment(CtrlUtil.getCurrentUsername(), articleId, content);
+		cmsService.saveComment(ThreadContext.get(Constant.USERNAME), articleId, content);
 		return "redirect:/detail?id=" + articleId;
 	}
 	
@@ -259,7 +261,7 @@ public class CmsCtrl {
 	@RequestMapping(value = "cms/comment/{id}", method = PUT)
 	public String updateComment(@PathVariable("id") long id, 
 			@RequestParam(required = true, name = "commentContent") String commentContent) {
-		Article a = cmsService.updateComment(CtrlUtil.getCurrentUsername(), id, commentContent);
+		Article a = cmsService.updateComment(ThreadContext.get(Constant.USERNAME), id, commentContent);
 		return "redirect:/detail?id=" + a.getId();
 	}
 	

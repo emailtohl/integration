@@ -7,11 +7,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -23,8 +24,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.lucene.FileSearch;
-import com.github.emailtohl.integration.common.ztree.FileNode;
+import com.github.emailtohl.integration.common.tree.TreeFunc;
+import com.github.emailtohl.integration.common.tree.ZtreeNode;
 import com.github.emailtohl.integration.core.ExecResult;
 
 /**
@@ -206,21 +209,19 @@ public class FileServiceImpl implements FileService {
 	}
 	
 	@Override
-	public Set<FileNode> findFile(String query) {
-		FileNode root = FileNode.newInstance(resources);
+	public List<ZtreeNode> findFile(String query) {
+		List<ZtreeNode> nodes = TreeFunc.getZtreeNodeByFilesystem(Arrays.asList(resources.listFiles()));
 		if (StringUtils.hasText(query)) {
 			fileSearch.queryForFilePath(query).forEach(s -> {
-				// s是全路径，如：F:\workspace\integration\core
-				// integration是root，正则式是：integration[\\/]
+				// fileSearch查出来的s是调用File的getCanonicalPath方法获取到的全路径
 				Matcher m = root_pattern.matcher(s);
 				if (m.find()) {
-					// path是从root路径开始，如integration\core
-					String path = s.substring(m.start());
-					root.setOpen(path);
+					String path = s.substring(m.end());
+					TreeFunc.setOpen(nodes, Arrays.asList(path.split(ConstantPattern.SEPARATOR)));
 				}
 			});
 		}
-		return root.getChildren().stream().map(ztreeNode -> (FileNode) ztreeNode).collect(Collectors.toSet());
+		return nodes;
 	}
 	
 	@Override
