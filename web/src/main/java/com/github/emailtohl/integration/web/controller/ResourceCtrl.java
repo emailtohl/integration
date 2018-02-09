@@ -74,7 +74,7 @@ public class ResourceCtrl {
 	/**
 	 * 用户空间
 	 */
-	File userSpace;
+	private File userSpace;
 	
 	@PostConstruct
 	public void init() throws IOException {
@@ -218,7 +218,7 @@ public class ResourceCtrl {
 			, @RequestParam(value = "charset", required = false, defaultValue = "UTF-8") String charset) {
 		File f = fileService.getFile(getFilePath(path));
 		String result = "";
-		if (f.exists()) {
+		if (f != null && f.exists()) {
 			try {
 				result = FileUtils.readFileToString(f, charset);
 			} catch (IOException e) {
