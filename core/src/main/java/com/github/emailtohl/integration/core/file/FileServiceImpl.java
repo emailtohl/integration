@@ -26,8 +26,8 @@ import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.lucene.FileSearch;
-import com.github.emailtohl.integration.common.tree.TreeFunc;
-import com.github.emailtohl.integration.common.tree.ZtreeNode;
+import com.github.emailtohl.integration.common.utils.TreeUtil;
+import com.github.emailtohl.integration.common.utils.ZtreeNode;
 import com.github.emailtohl.integration.core.ExecResult;
 
 /**
@@ -210,14 +210,14 @@ public class FileServiceImpl implements FileService {
 	
 	@Override
 	public List<ZtreeNode> findFile(String query) {
-		List<ZtreeNode> nodes = TreeFunc.getZtreeNodeByFilesystem(Arrays.asList(resources.listFiles()));
+		List<ZtreeNode> nodes = TreeUtil.getZtreeNodeByFilesystem(Arrays.asList(resources.listFiles()));
 		if (StringUtils.hasText(query)) {
 			fileSearch.queryForFilePath(query).forEach(s -> {
 				// fileSearch查出来的s是调用File的getCanonicalPath方法获取到的全路径
 				Matcher m = root_pattern.matcher(s);
 				if (m.find()) {
 					String path = s.substring(m.end());
-					TreeFunc.setOpen(nodes, Arrays.asList(path.split(ConstantPattern.SEPARATOR)));
+					TreeUtil.setOpen(nodes, Arrays.asList(path.split(ConstantPattern.SEPARATOR)));
 				}
 			});
 		}

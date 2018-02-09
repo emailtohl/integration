@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.common.tree;
+package com.github.emailtohl.integration.common.utils;
 
 /**
  * 持有Parent的节点

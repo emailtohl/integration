@@ -11,17 +11,24 @@ import java.io.Serializable;
 import java.net.URLDecoder;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,8 +36,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.emailtohl.integration.common.ConstantPattern;
-import com.github.emailtohl.integration.common.tree.ZtreeNode;
-import com.github.emailtohl.integration.common.utils.TextUtil;
+import com.github.emailtohl.integration.common.utils.ZtreeNode;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.file.FileService;
 import com.google.gson.ExclusionStrategy;
@@ -60,7 +66,6 @@ public class ResourceCtrl {
 			return false;
 		}
 	}).create();
-	private TextUtil textUtil = new TextUtil();
 	@Inject
 	private FileService fileService;
 	@Inject
@@ -148,12 +153,58 @@ public class ResourceCtrl {
 	}
 	
 	/**
+	 * 批量上传文件，若包含请求参数：uploadPath，则保存在指定目录中，否则保存在自动保存目录中
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "resource", method = POST, produces = MediaType.TEXT_PLAIN_VALUE)
+	public ExecResult multipartOnload(HttpServletRequest request) {
+		StringBuilder msg = new StringBuilder();
+		Collection<Part> fileParts = null;
+		Map<String, String[]> map = request.getParameterMap();
+		try {
+			fileParts = request.getParts();
+		} catch (IOException | ServletException e) {
+			logger.catching(e);
+			return new ExecResult(false, e.getMessage(), "");
+		}
+		for (Iterator<Part> iterable = fileParts.iterator(); iterable.hasNext();) {
+			Part filePart = iterable.next();// 每个filePart表示一个文件，前端可能同时上传多个文件
+			try {
+				String filename = filePart.getSubmittedFileName();// 获取提交文件原始的名字
+				if (filename != null && !map.containsKey(filename)) {
+					try (InputStream in = filePart.getInputStream()) {
+						String uploadPath = request.getParameter("uploadPath");
+						if (StringUtils.hasText(uploadPath)) {
+							fileService.save(getFilePath(uploadPath), in);
+						} else {
+							fileService.autoSaveFile(in, null);
+						}
+					}
+					msg.append(',').append(filename);
+				}
+			} catch (IOException e) {
+				logger.catching(e);
+				if (filePart != null) {
+					try {
+						filePart.delete();
+					} catch (IOException e1) {
+						logger.catching(e1);
+					}
+				}
+				return new ExecResult(false, e.getMessage(), "");
+			}
+		}
+		return new ExecResult(true, "", msg.toString());
+	}
+	
+	/**
 	 * 获取系统支持的字符集
 	 * @return
 	 */
 	@RequestMapping(value = "availableCharsets", method = GET)
 	public Set<String> availableCharsets() {
-		return textUtil.availableCharsets();
+		return Charset.availableCharsets().keySet();
 	}
 	
 	/**
@@ -168,7 +219,11 @@ public class ResourceCtrl {
 		File f = fileService.getFile(getFilePath(path));
 		String result = "";
 		if (f.exists()) {
-			result = textUtil.getText(f, charset);
+			try {
+				result = FileUtils.readFileToString(f, charset);
+			} catch (IOException e) {
+				logger.catching(e);
+			}
 		}
 		return result;
 	}

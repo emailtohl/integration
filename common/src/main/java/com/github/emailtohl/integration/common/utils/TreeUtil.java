@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.common.tree;
+package com.github.emailtohl.integration.common.utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.function.Consumer;
  * 
  * @author HeLei
  */
-public final class TreeFunc {
+public final class TreeUtil {
 	/**
 	 * 从持有Parent的node集合中生成Ztree的数据结构
 	 * @param nodes

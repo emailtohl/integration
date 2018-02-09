@@ -1,4 +1,6 @@
-package com.github.emailtohl.integration.common.tree;
+package com.github.emailtohl.integration.common.utils;
+
+import com.github.emailtohl.integration.common.utils.Node;
 
 class Department implements Node {
 	String name;

@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.common.tree;
+package com.github.emailtohl.integration.common.utils;
 
 import static org.junit.Assert.assertEquals;
 
@@ -11,6 +11,9 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
+import com.github.emailtohl.integration.common.utils.Node;
+import com.github.emailtohl.integration.common.utils.TreeUtil;
+import com.github.emailtohl.integration.common.utils.ZtreeNode;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
@@ -19,7 +22,7 @@ import com.google.gson.GsonBuilder;
  * 树型结构测试
  * @author HeLei
  */
-public class TreeFuncTest {
+public class TreeUtilTest {
 	Gson gson = new GsonBuilder().setPrettyPrinting().addSerializationExclusionStrategy(new ExclusionStrategy() {
 		@Override
 		public boolean shouldSkipField(FieldAttributes f) {
@@ -41,8 +44,8 @@ public class TreeFuncTest {
 		Department sub1 = new Department("sub1", _super);
 		Department sub2 = new Department("sub2", _super);
 		List<Node> ls = Arrays.asList(_super, sub1, sub2);
-		List<ZtreeNode> nodes = TreeFunc.getZtreeNode(ls);
-		TreeFunc.sort(nodes, new Comparator<ZtreeNode>() {
+		List<ZtreeNode> nodes = TreeUtil.getZtreeNode(ls);
+		TreeUtil.sort(nodes, new Comparator<ZtreeNode>() {
 			@Override
 			public int compare(ZtreeNode o1, ZtreeNode o2) {
 				return o1.getName().compareTo(o2.getName());
@@ -74,9 +77,9 @@ public class TreeFuncTest {
 		sub2_1.createNewFile();
 		sub2_2.createNewFile();
 		
-		List<ZtreeNode> ls = TreeFunc.getZtreeNodeByFilesystem(Arrays.asList(test_root));
+		List<ZtreeNode> ls = TreeUtil.getZtreeNodeByFilesystem(Arrays.asList(test_root));
 		// test sort
-		TreeFunc.sort(ls, new Comparator<ZtreeNode>() {
+		TreeUtil.sort(ls, new Comparator<ZtreeNode>() {
 			@Override
 			public int compare(ZtreeNode o1, ZtreeNode o2) {
 				return o1.getName().compareTo(o2.getName());
@@ -84,12 +87,12 @@ public class TreeFuncTest {
 		});
 		// test setOpen
 		List<String> dirs = Arrays.asList("test_root", "sub2", "sub2_2");
-		TreeFunc.setOpen(ls, dirs);
+		TreeUtil.setOpen(ls, dirs);
 		
 		System.out.println(gson.toJson(ls));
 		
 		// test forEach
-		TreeFunc.forEach(ls, node -> System.out.println(node));
+		TreeUtil.forEach(ls, node -> System.out.println(node));
 		
 		assertEquals(ls.size(), 1);
 		for (ZtreeNode n : ls) {

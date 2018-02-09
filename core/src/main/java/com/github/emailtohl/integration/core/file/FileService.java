@@ -10,7 +10,7 @@ import java.util.Set;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import com.github.emailtohl.integration.common.tree.ZtreeNode;
+import com.github.emailtohl.integration.common.utils.ZtreeNode;
 import com.github.emailtohl.integration.core.ExecResult;
 
 /**
