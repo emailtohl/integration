@@ -1,5 +1,7 @@
 package com.github.emailtohl.integration.web.config;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,9 +28,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.github.emailtohl.integration.core.config.CoreConfiguration;
+import com.github.emailtohl.integration.core.config.CorePresetData;
+import com.github.emailtohl.integration.core.user.customer.CustomerService;
 
 /**
  * 流程配置
@@ -47,8 +53,9 @@ public class ActivitiConfiguration {
 	 */
 	@Bean
 	public SpringProcessEngineConfiguration processEngineConfiguration(DataSource dataSource,
-			@Named("annotationDrivenTransactionManager") PlatformTransactionManager platformTransactionManager, 
-			EntityManagerFactory jpaEntityManagerFactory, Environment env) {
+			@Named("annotationDrivenTransactionManager") PlatformTransactionManager platformTransactionManager,
+			EntityManagerFactory jpaEntityManagerFactory, Environment env, CustomerService customerService,
+			CorePresetData corePresetData) {
 		SpringProcessEngineConfiguration cfg = new SpringProcessEngineConfiguration();
 		cfg.setDataSource(dataSource);
 		cfg.setTransactionManager(platformTransactionManager);
@@ -61,14 +68,22 @@ public class ActivitiConfiguration {
 		// 表示Activiti引擎是否应该关闭从jpaEntityManagerFactory获取的EntityManager实例
 		// 和jpaHandleTransaction类似，由于统一交给Spring容器管理，这里就不需要Activiti引擎再处理了
 		cfg.setJpaCloseEntityManager(false);
-		
+
 		cfg.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
 		cfg.setJobExecutorActivate(true);
 		cfg.setMailServerHost(env.getProperty("mailserver.host"));
 		cfg.setMailServerPort(Integer.valueOf(env.getProperty("mailserver.port")));
 		cfg.setMailServerUsername(env.getProperty("mailserver.username"));
 		cfg.setMailServerPassword(env.getProperty("mailserver.password"));
-		
+
+		Map<Object, Object> beans = new HashMap<>();
+		beans.put("admin", corePresetData.user_admin);
+		beans.put("bot", corePresetData.user_bot);
+		beans.put("customerService", customerService);
+		cfg.setBeans(beans);
+
+		cfg.setDeploymentResources(new Resource[] { new ClassPathResource("flow/forgetPassword.bpmn") });
+
 		// Windows环境下设置字体
 		String os = System.getenv().get("OS");
 		if (os != null) {
