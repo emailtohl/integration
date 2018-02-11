@@ -85,6 +85,27 @@ define([ 'common/module'/*, 'ztree'*/ ], function(commonModule) {
 					}
 				}
 			},
+			
+			/**
+			 * 根据路径获取节点
+			 */
+			getSelectedNode: function(path, nodes) {
+				var node;
+				var dirs = path.split('/');
+				function search(nodes) {
+					var name = dirs.shift();
+					for (var i = 0; i < nodes.length; i++) {
+						if (name && name == encodeURIComponent(nodes[i].name)) {
+							node = nodes[i];
+						}
+						if (nodes[i].isParent && nodes[i].children instanceof Array) {
+							search(nodes[i].children);
+						}
+					}
+				}
+				search(nodes);
+				return node;
+			},
 
 			/**
 			 * 将树中的节点还原为：目录+文件名

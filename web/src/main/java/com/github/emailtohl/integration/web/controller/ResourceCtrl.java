@@ -103,7 +103,18 @@ public class ResourceCtrl {
 	@RequestMapping(value = "query", method = GET)
 	public String queryResources(@RequestParam(name = "param", required = false, defaultValue = "") String param) {
 		List<ZtreeNode> nodes = fileService.findFile(param);
-		return gson.toJson(nodes);
+		ZtreeNode userSpaceRoot = null;
+		for (ZtreeNode n : nodes) {
+			if (n.getName().equals(userSpace.getName())) {
+				userSpaceRoot = n;
+				break;
+			}
+		}
+		if (userSpaceRoot != null) {
+			return gson.toJson(userSpaceRoot.getChildren());
+		} else {
+			return "[]";
+		}
 	}
 	
 	/**
@@ -143,7 +154,7 @@ public class ResourceCtrl {
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "resource", method = POST)
+	@RequestMapping(value = "file", method = POST)
 	public ExecResult uploadFile(@RequestPart("path") String path, @RequestPart("file") Part file) throws IOException {
 		String filename = URLDecoder.decode(path, "UTF-8");
 		filename = getFilePath(filename) + File.separator + file.getSubmittedFileName();
@@ -157,7 +168,7 @@ public class ResourceCtrl {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "resource", method = POST, produces = MediaType.TEXT_PLAIN_VALUE)
+	@RequestMapping(value = "files", method = POST, produces = MediaType.TEXT_PLAIN_VALUE)
 	public ExecResult multipartOnload(HttpServletRequest request) {
 		StringBuilder msg = new StringBuilder();
 		Collection<Part> fileParts = null;

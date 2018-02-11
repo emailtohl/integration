@@ -99,8 +99,8 @@ public class CustomerCtrl extends RestCtrl<Customer> {
 		return p;
 	}
 	
-	@RequestMapping(value = "cellPhoneOrEmail/{cellPhoneOrEmail:.+}", method = RequestMethod.GET)
-	public ResponseEntity<Customer> getByCellPhoneOrEmail(@PathVariable("cellPhoneOrEmail") String cellPhoneOrEmail) {
+	@RequestMapping(value = "cellPhoneOrEmail", method = RequestMethod.GET)
+	public ResponseEntity<Customer> getByCellPhoneOrEmail(@RequestParam(name = "cellPhoneOrEmail") String cellPhoneOrEmail) {
 		Customer c = customerService.getByUsername(cellPhoneOrEmail);
 		if (c == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

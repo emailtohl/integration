@@ -33,7 +33,7 @@
 项目会使用文件空间中，还需在tomcat的server.xml中配置虚拟目录：
 
 ```xml
-<Context debug="0" docBase="H:\server\apache-tomcat-9.0.0.M17\wtpwebapps\integration-data\resources" path="/web/resources" reloadable="true"/>
+<Context debug="0" docBase="H:\server\apache-tomcat-9.0.2\wtpwebapps\integration-data\resources" path="/web/resources" reloadable="true"/>
 ```
 
 登录时使用内置的账号：

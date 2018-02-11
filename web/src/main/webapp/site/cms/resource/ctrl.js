@@ -1,8 +1,8 @@
-define(['jquery', 'cms/module', 'cms/resource/service'/*, 'ztree'*/], function($, cmsModule) {
+define(['jquery', 'cms/module', 'toastr', 'cms/resource/service'/*, 'ztree'*/], function($, cmsModule, toastr) {
 	return cmsModule
 	.controller('ResourceCtrl', ['$scope', '$http', '$state', 'resourceService', 'util', 'ztreeutil',
 	                                function($scope, $http, $state, service, util, ztreeutil) {
-		var self = this, hideRoot = 'resources'/*这个路径在rootName上一级，用于前端访问所用*/, rootName, style, zTreeObj, cm;
+		var self = this, style, zNodes, zTreeObj, cm;
 		var setting = {
 			edit : {
 				enable : true,
@@ -53,17 +53,45 @@ define(['jquery', 'cms/module', 'cms/resource/service'/*, 'ztree'*/], function($
 		// 全文搜索整个文件系统，找出跟查询条件匹配的文件
 		self.query = function() {
 			service.query(self.queryParam).then(function(resp) {
-				var zNodes = resp.data;
-				rootName = zNodes.name;
+				zNodes = resp.data;
 				zTreeObj = $.fn.zTree.init($("#resource-tree"), setting, zNodes);
 			});
 		};
+		self.mkdir = function() {
+			function test(name, nodes) {
+				for (var i = 0; i < nodes.length; i++) {
+					if (name == nodes[i].name) {
+						return true;
+					}
+				}
+				return false;
+			}
+			var pre = "new node"
+			var index = 1;
+			var name = pre + index;
+			var node = ztreeutil.getSelectedNode(self.path, zNodes);
+			if (node && node.isParent&& node.children instanceof Array) {
+				while (test(name, node.children)) {
+					index++;
+					name = pre + index;
+				}
+			} else {
+				while (test(name, zNodes)) {
+					index++;
+					name = pre + index;
+				}
+			}
+			var fullname = decodeURIComponent(self.path) + '/' + name;
+			service.createDir(fullname).then(function(resp) {
+				getFileRoot();
+			});
+		}
 		// 修改文件文本
 		self.updateText = function() {
 			if (!self.dirty)
 				return;
 			// 后台识别的是相对路径
-			var i = self.path.indexOf(rootName + '/');
+			var i = self.path.indexOf('/');
 			var path = self.path.substring(i);
 			service.writeText(path, self.content, self.charset).then(function(resp) {
 				getFileRoot(self.path);
@@ -71,7 +99,7 @@ define(['jquery', 'cms/module', 'cms/resource/service'/*, 'ztree'*/], function($
 		};
 		// 上传结束后的逻辑
 		self.postUpload = function(msg) {
-			console.log(msg);
+			toastr.success(msg);
 			getFileRoot(self.path);
 		};
 		// 用于提交表达的校验，若上传文件为空，则提交按钮不被开放
@@ -80,31 +108,16 @@ define(['jquery', 'cms/module', 'cms/resource/service'/*, 'ztree'*/], function($
 		};
 		// 获取下载图片、视频、pdf等文件的路径，这是因为下载路径还需要加上隐藏的根路径
 		self.getDownloadPath = function() {
-			return hideRoot + '/' + self.path;
+			return 'resources/userSpace/' + self.path;
 		};
 		
 		/**
 		 * 获取根目录
 		 */
 		function getFileRoot(openPath) {
-			/*
-			util.loadasync('lib/ztree/jquery.ztree.all.min.js').success(function() {
-				service.getFileRoot().then(function(resp) {
-					var zNodes = resp.data;
-					rootName = zNodes.name;
-					zNodes.open = true;
-					if (openPath) {
-						ztreeutil.setOpen(zNodes, openPath);
-					}
-					zTreeObj = $.fn.zTree.init($("#resource-tree"), setting, zNodes);
-				});
-			});
-			*/
 			requirejs(['ztree'], function() {
 				service.getFileRoot().then(function(resp) {
-					var zNodes = resp.data;
-					rootName = zNodes.name;
-					zNodes.open = true;
+					zNodes = resp.data;
 					if (openPath) {
 						ztreeutil.setOpen(zNodes, openPath);
 					}
@@ -120,7 +133,7 @@ define(['jquery', 'cms/module', 'cms/resource/service'/*, 'ztree'*/], function($
 		 */
 		function zTreeBeforeRemove(treeId, treeNode) {
 			var filename;
-			if (treeNode.name == rootName && treeNode.getParentNode() == null) {
+			if (treeNode.getParentNode() == null) {
 				alert('根目录不能删除!');
 				return false;
 			}
