@@ -176,7 +176,7 @@ public class PresetDataConfiguration {
 				.value(wpd.getMarket().getName())
 				.value(wpd.getFinancial().getName())
 				.value(wpd.getBusiness().getName())
-				.value(wpd.getResource().getName())
+				.value(wpd.getHumanResource().getName())
 				.value(wpd.getBack().getName());
 		q = q.select(b.greaterThan(b.count(r), 0L)).where(restriction);
 		// 如果创建过，则不再创建
@@ -184,13 +184,13 @@ public class PresetDataConfiguration {
 			wpd.setMarket(getDepartment(em, wpd.getMarket().getName()));
 			wpd.setFinancial(getDepartment(em, wpd.getFinancial().getName()));
 			wpd.setBusiness(getDepartment(em, wpd.getBusiness().getName()));
-			wpd.setResource(getDepartment(em, wpd.getResource().getName()));
+			wpd.setHumanResource(getDepartment(em, wpd.getHumanResource().getName()));
 			wpd.setBack(getDepartment(em, wpd.getBack().getName()));
 		} else {
 			em.persist(wpd.getMarket());
 			em.persist(wpd.getFinancial());
 			em.persist(wpd.getBusiness());
-			em.persist(wpd.getResource());
+			em.persist(wpd.getHumanResource());
 			em.persist(wpd.getBack());
 		}
 	}
@@ -362,7 +362,7 @@ public class PresetDataConfiguration {
 		
 		String salt = BCrypt.gensalt(10, new SecureRandom());
 		employee.setPassword(BCrypt.hashpw(employee.getPassword(), salt));
-		employee.setEmpNum(getMaxEmpNo(em));
+		employee.setEmpNum(getMaxEmpNo(em) + 1);
 		
 		// 处理一对一关联关系
 		em.persist(employee);

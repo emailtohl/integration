@@ -23,7 +23,7 @@ public class WebPresetData implements Serializable {
 	private Department market = new Department("market", "市场部", null);
 	private Department financial = new Department("financial", "财务部", null);
 	private Department business = new Department("business", "业务部", null);
-	private Department resource = new Department("resource", "人力资源部", null);
+	private Department humanResource = new Department("human resource", "人力资源部", null);
 	private Department back = new Department("back", "后勤部", null);
 	
 	private Role generalManager = new Role("generalManager", RoleType.EMPLOYEE, "总经理");
@@ -58,8 +58,8 @@ public class WebPresetData implements Serializable {
 		jenny.setNickname("Luo");
 		jenny.setEmail("jenny@localhost");
 		jenny.setPassword("123456");
-		jenny.setDepartment(resource);
-		resource.getEmployees().add(jenny);
+		jenny.setDepartment(humanResource);
+		humanResource.getEmployees().add(jenny);
 		jenny.getRoles().add(hr);
 		hr.getUsers().add(jenny);
 		
@@ -157,11 +157,11 @@ public class WebPresetData implements Serializable {
 		this.business = business;
 	}
 
-	public Department getResource() {
-		return resource;
+	public Department getHumanResource() {
+		return humanResource;
 	}
-	public void setResource(Department resource) {
-		this.resource = resource;
+	public void setHumanResource(Department resource) {
+		this.humanResource = resource;
 	}
 
 	public Department getBack() {
