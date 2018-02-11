@@ -28,13 +28,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.github.emailtohl.integration.core.config.CoreConfiguration;
-import com.github.emailtohl.integration.core.config.CorePresetData;
+import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
+import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 
 /**
  * 流程配置
@@ -54,8 +53,8 @@ public class ActivitiConfiguration {
 	@Bean
 	public SpringProcessEngineConfiguration processEngineConfiguration(DataSource dataSource,
 			@Named("annotationDrivenTransactionManager") PlatformTransactionManager platformTransactionManager,
-			EntityManagerFactory jpaEntityManagerFactory, Environment env, CustomerService customerService,
-			CorePresetData corePresetData) {
+			EntityManagerFactory jpaEntityManagerFactory, Environment env, UserService userService,
+			CustomerService customerService, EmployeeService employeeService) {
 		SpringProcessEngineConfiguration cfg = new SpringProcessEngineConfiguration();
 		cfg.setDataSource(dataSource);
 		cfg.setTransactionManager(platformTransactionManager);
@@ -77,12 +76,12 @@ public class ActivitiConfiguration {
 		cfg.setMailServerPassword(env.getProperty("mailserver.password"));
 
 		Map<Object, Object> beans = new HashMap<>();
-		beans.put("admin", corePresetData.user_admin);
-		beans.put("bot", corePresetData.user_bot);
+		beans.put("userService", userService);
 		beans.put("customerService", customerService);
+		beans.put("employeeService", employeeService);
 		cfg.setBeans(beans);
 
-		cfg.setDeploymentResources(new Resource[] { new ClassPathResource("flow/forgetPassword.bpmn") });
+//		cfg.setDeploymentResources(new Resource[] { new ClassPathResource("") });
 
 		// Windows环境下设置字体
 		String os = System.getenv().get("OS");

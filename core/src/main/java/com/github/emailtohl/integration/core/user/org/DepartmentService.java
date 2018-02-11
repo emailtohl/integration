@@ -26,11 +26,11 @@ public interface DepartmentService {
 	
 	/**
 	 * 根据部门名是否已存在
-	 * @param matcherValue
+	 * @param name
 	 * @return
 	 */
 	@PreAuthorize("isAuthenticated()")
-	boolean exist(Object matcherValue);
+	boolean exist(Object name);
 	
 	/**
 	 * 根据ID获取部门
@@ -39,7 +39,15 @@ public interface DepartmentService {
 	 */
 	@PreAuthorize("isAuthenticated()")
 	Department get(Long id);
-
+	
+	/**
+	 * 根据部门名查询部门
+	 * @param name
+	 * @return
+	 */
+	@PreAuthorize("isAuthenticated()")
+	Department findByName(String name);
+	
 	/**
 	 * 分页查询
 	 * @param params

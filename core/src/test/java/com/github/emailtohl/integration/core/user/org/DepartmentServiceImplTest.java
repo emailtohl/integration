@@ -98,6 +98,9 @@ public class DepartmentServiceImplTest {
 		assertNotNull(pd);
 		System.out.println(gson.toJson(pd));
 		
+		pd = departmentService.findByName(pd.getName());
+		assertNotNull(pd);
+		
 		pd = departmentService.get(sid1);
 		assertNotNull(pd);
 		System.out.println(gson.toJson(pd));

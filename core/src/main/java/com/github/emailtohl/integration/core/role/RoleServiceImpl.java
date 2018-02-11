@@ -59,8 +59,8 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 	}
 
 	@Override
-	public boolean exist(Object matcherValue) {
-		return roleRepository.exist((String) matcherValue);
+	public boolean exist(Object name) {
+		return roleRepository.exist((String) name);
 	}
 
 	@Cacheable(value = CACHE_NAME_ROLE, key = "#root.args[0]", condition = "#result != null")

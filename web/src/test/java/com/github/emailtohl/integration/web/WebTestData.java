@@ -19,6 +19,10 @@ import com.github.emailtohl.integration.core.user.entities.Department;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.Gender;
 
+/**
+ * 测试数据
+ * @author HeLei
+ */
 public class WebTestData {
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	private final String DEFAULT_PASSWORD = "123456";

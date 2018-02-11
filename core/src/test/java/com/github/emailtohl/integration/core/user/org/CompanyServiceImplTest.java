@@ -92,6 +92,9 @@ public class CompanyServiceImplTest {
 		assertNotNull(pc);
 		System.out.println(gson.toJson(pc));
 		
+		pc = companyService.findByName(pc.getName());
+		assertNotNull(pc);
+		
 		pc = companyService.get(sid1);
 		assertNotNull(pc);
 		System.out.println(gson.toJson(pc));

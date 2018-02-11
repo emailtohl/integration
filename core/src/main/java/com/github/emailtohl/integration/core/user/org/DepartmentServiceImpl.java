@@ -69,9 +69,9 @@ public class DepartmentServiceImpl extends StandardService<Department> implement
 	private ExampleMatcher existMatcher = ExampleMatcher.matching().withMatcher("name", GenericPropertyMatchers.caseSensitive());
 
 	@Override
-	public boolean exist(Object matcherValue) {
+	public boolean exist(Object name) {
 		Department probe = new Department();
-		probe.setName((String) matcherValue);
+		probe.setName((String) name);
 		Example<Department> example = Example.of(probe, existMatcher);
 		return departmentRepository.exists(example);
 	}
@@ -80,6 +80,11 @@ public class DepartmentServiceImpl extends StandardService<Department> implement
 	@Override
 	public Department get(Long id) {
 		return transientDetail(departmentRepository.findOne(id));
+	}
+	
+	@Override
+	public Department findByName(String name) {
+		return transientDetail(departmentRepository.findByName(name));
 	}
 
 	private ExampleMatcher queryMatcher = ExampleMatcher.matching()
@@ -204,4 +209,5 @@ public class DepartmentServiceImpl extends StandardService<Department> implement
 		tar.setParent(transientDetail(src.getParent()));
 		return tar;
 	}
+
 }

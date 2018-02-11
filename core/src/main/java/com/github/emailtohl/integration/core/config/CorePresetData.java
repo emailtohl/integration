@@ -78,8 +78,8 @@ public class CorePresetData implements Serializable {
 	public final Employee user_bot = new Employee();
 	public final Customer user_emailtohl = new Customer(), user_anonymous = new Customer();
 	
-	public final Company company = new Company("XXX注册公司", "公司上面还有集团公司", null);
-	public final Department product = new Department("生产部", "研发生产部门", null), qa = new Department("质量部", "质量与测试部门", null);
+	public final Company company = new Company("XXX Co.,Ltd.", "公司上面还有集团公司", null);
+	public final Department product = new Department("product", "研发生产部门", null), qa = new Department("quality", "质量与测试部门", null);
 
 	{
 		auth_role.getRoles().addAll(Arrays.asList(role_admin));

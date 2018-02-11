@@ -28,10 +28,10 @@ public interface RoleService {
 	
 	/**
 	 * 根据角色名查找是否已存在
-	 * @param matcherValue
+	 * @param name
 	 * @return
 	 */
-	boolean exist(Object matcherValue);
+	boolean exist(Object name);
 	
 	/**
 	 * 根据ID获取角色

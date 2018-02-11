@@ -70,6 +70,11 @@ public class CompanyServiceImpl extends StandardService<Company> implements Comp
 		return transientDetail(companyRepository.findOne(id));
 	}
 
+	@Override
+	public Company findByName(String name) {
+		return transientDetail(companyRepository.findByName(name));
+	}
+	
 	private ExampleMatcher queryMatcher = ExampleMatcher.matching()
 			.withIgnorePaths("parent", "departments")
 			.withMatcher("name", GenericPropertyMatchers.caseSensitive())

@@ -2,73 +2,285 @@ package com.github.emailtohl.integration.web.config;
 
 import java.io.Serializable;
 
-import org.activiti.engine.IdentityService;
-import org.activiti.engine.identity.Group;
-import org.activiti.engine.identity.User;
-
 import com.github.emailtohl.integration.core.config.CorePresetData;
+import com.github.emailtohl.integration.core.role.Role;
+import com.github.emailtohl.integration.core.role.RoleType;
+import com.github.emailtohl.integration.core.user.entities.Department;
+import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
 
 /**
  * 本web模块的预置数据
+ * 对于public final域的，是系统中不会变的数据，而private域中的，则只在系统初始化时执行一遍，以后可以被用户改变
  * 
  * @author HeLei
  */
 public class WebPresetData implements Serializable {
 	private static final long serialVersionUID = 8938868828524481149L;
-	public final Group group_admin;
-	public final Group group_manager;
-	public final Group group_staff;
-	public final Group group_guest;
-	public final User user_admin;
-	public final User user_bot;
-	public final User user_anonymous;
-	public final User user_emailtohl;
-
+	
 	public final Type unclassified = new Type("unclassified", "未分类", null);
+	
+	private Department market = new Department("market", "市场部", null);
+	private Department financial = new Department("financial", "财务部", null);
+	private Department business = new Department("business", "业务部", null);
+	private Department resource = new Department("resource", "人力资源部", null);
+	private Department back = new Department("back", "后勤部", null);
+	
+	private Role generalManager = new Role("generalManager", RoleType.EMPLOYEE, "总经理");
+	private Role deptLeader = new Role("deptLeader", RoleType.EMPLOYEE, "部门经理");
+	private Role hr = new Role("hr", RoleType.EMPLOYEE, "人事经理");
+	private Role treasurer = new Role("treasurer", RoleType.EMPLOYEE, "财务人员");
+	private Role cashier = new Role("cashier", RoleType.EMPLOYEE, "出纳员");
+	private Role supportCrew = new Role("supportCrew", RoleType.EMPLOYEE, "后勤人员");
+	
+	private Employee bill = new Employee();
+	private Employee jenny = new Employee();
+	private Employee eric = new Employee();
+	private Employee tom = new Employee();
+	private Employee kermit = new Employee();
+	private Employee amy = new Employee();
+	private Employee andy = new Employee();
+	private Employee tony = new Employee();
+	private Employee lily = new Employee();
+	private Employee thomas = new Employee();
+	
+	public WebPresetData() {
+		CorePresetData cpd = new CorePresetData();
+		
+		bill.setName("Bill");
+		bill.setNickname("Zheng");
+		bill.setEmail("bill@localhost");
+		bill.setPassword("123456");
+		bill.getRoles().add(generalManager);
+		generalManager.getUsers().add(bill);
+		
+		jenny.setName("Jenny");
+		jenny.setNickname("Luo");
+		jenny.setEmail("jenny@localhost");
+		jenny.setPassword("123456");
+		jenny.setDepartment(resource);
+		resource.getEmployees().add(jenny);
+		jenny.getRoles().add(hr);
+		hr.getUsers().add(jenny);
+		
+		eric.setName("Eric");
+		eric.setNickname("Li");
+		eric.setEmail("eric@localhost");
+		eric.setPassword("123456");
+		eric.setDepartment(market);
+		market.getEmployees().add(eric);
+		eric.getRoles().add(cpd.role_staff);
+		cpd.role_staff.getUsers().add(eric);
+		
+		tom.setName("Tom");
+		tom.setNickname("Wang");
+		tom.setEmail("tom@localhost");
+		tom.setPassword("123456");
+		tom.setDepartment(market);
+		market.getEmployees().add(tom);
+		tom.getRoles().add(cpd.role_staff);
+		cpd.role_staff.getUsers().add(tom);
+		
+		kermit.setName("Kermit");
+		kermit.setNickname("Miao");
+		kermit.setEmail("kermit@localhost");
+		kermit.setPassword("123456");
+		kermit.setDepartment(market);
+		market.getEmployees().add(kermit);
+		kermit.getRoles().add(deptLeader);
+		deptLeader.getUsers().add(kermit);
+		
+		amy.setName("Amy");
+		amy.setNickname("Zhang");
+		amy.setEmail("amy@localhost");
+		amy.setPassword("123456");
+		amy.setDepartment(business);
+		business.getEmployees().add(amy);
+		amy.getRoles().add(cpd.role_staff);
+		cpd.role_staff.getUsers().add(amy);
+		
+		andy.setName("Andy");
+		andy.setNickname("Zhao");
+		andy.setEmail("andy@localhost");
+		andy.setPassword("123456");
+		andy.setDepartment(business);
+		business.getEmployees().add(andy);
+		andy.getRoles().add(deptLeader);
+		deptLeader.getUsers().add(andy);
+		
+		tony.setName("Tony");
+		tony.setNickname("Zhang");
+		tony.setEmail("tony@localhost");
+		tony.setPassword("123456");
+		tony.setDepartment(financial);
+		financial.getEmployees().add(tony);
+		tony.getRoles().add(treasurer);
+		treasurer.getUsers().add(tony);
+		
+		lily.setName("Lily");
+		lily.setNickname("Song");
+		lily.setEmail("lily@localhost");
+		lily.setPassword("123456");
+		lily.setDepartment(financial);
+		financial.getEmployees().add(lily);
+		lily.getRoles().add(cashier);
+		cashier.getUsers().add(lily);
+		
+		thomas.setName("Thomas");
+		thomas.setNickname("Wang");
+		thomas.setEmail("thomas@localhost");
+		thomas.setPassword("123456");
+		thomas.setDepartment(back);
+		back.getEmployees().add(thomas);
+		thomas.getRoles().add(supportCrew);
+		supportCrew.getUsers().add(thomas);
+	}
 
-	public WebPresetData(CorePresetData cpd, IdentityService identityService) {
-		// 用户组（角色）
-		group_admin = identityService.newGroup(cpd.role_admin.getName());
-		group_admin.setName(cpd.role_admin.getDescription());
-		group_admin.setType(cpd.role_admin.getRoleType() == null ? null : cpd.role_admin.getRoleType().name());
+	public Department getMarket() {
+		return market;
+	}
+	public void setMarket(Department market) {
+		this.market = market;
+	}
 
-		group_manager = identityService.newGroup(cpd.role_manager.getName());
-		group_manager.setName(cpd.role_manager.getDescription());
-		group_manager.setType(cpd.role_manager.getRoleType() == null ? null : cpd.role_manager.getRoleType().name());
+	public Department getFinancial() {
+		return financial;
+	}
+	public void setFinancial(Department financial) {
+		this.financial = financial;
+	}
 
-		group_staff = identityService.newGroup(cpd.role_staff.getName());
-		group_staff.setName(cpd.role_staff.getDescription());
-		group_staff.setType(cpd.role_staff.getRoleType() == null ? null : cpd.role_staff.getRoleType().name());
+	public Department getBusiness() {
+		return business;
+	}
+	public void setBusiness(Department business) {
+		this.business = business;
+	}
 
-		group_guest = identityService.newGroup(cpd.role_guest.getName());
-		group_guest.setName(cpd.role_guest.getDescription());
-		group_guest.setType(cpd.role_guest.getRoleType() == null ? null : cpd.role_guest.getRoleType().name());
+	public Department getResource() {
+		return resource;
+	}
+	public void setResource(Department resource) {
+		this.resource = resource;
+	}
 
-		// 用户
-		user_admin = identityService.newUser(cpd.user_admin.getId().toString());
-		user_admin.setEmail(cpd.user_admin.getEmail());
-		user_admin.setFirstName(cpd.user_admin.getName());
-		user_admin.setLastName(cpd.user_admin.getNickname());
-		user_admin.setPassword(cpd.user_admin.getPassword());
+	public Department getBack() {
+		return back;
+	}
+	public void setBack(Department back) {
+		this.back = back;
+	}
 
-		user_bot = identityService.newUser(cpd.user_bot.getId().toString());
-		user_bot.setEmail(cpd.user_bot.getEmail());
-		user_bot.setFirstName(cpd.user_bot.getName());
-		user_bot.setLastName(cpd.user_bot.getNickname());
-		user_bot.setPassword(cpd.user_bot.getPassword());
+	public Role getGeneralManager() {
+		return generalManager;
+	}
+	public void setGeneralManager(Role generalManager) {
+		this.generalManager = generalManager;
+	}
 
-		user_anonymous = identityService.newUser(cpd.user_anonymous.getId().toString());
-		user_anonymous.setEmail(cpd.user_anonymous.getEmail());
-		user_anonymous.setFirstName(cpd.user_anonymous.getName());
-		user_anonymous.setLastName(cpd.user_anonymous.getNickname());
-		user_anonymous.setPassword(cpd.user_anonymous.getPassword());
+	public Role getDeptLeader() {
+		return deptLeader;
+	}
+	public void setDeptLeader(Role deptLeader) {
+		this.deptLeader = deptLeader;
+	}
 
-		user_emailtohl = identityService.newUser(cpd.user_emailtohl.getId().toString());
-		user_emailtohl.setEmail(cpd.user_emailtohl.getEmail());
-		user_emailtohl.setFirstName(cpd.user_emailtohl.getName());
-		user_emailtohl.setLastName(cpd.user_emailtohl.getNickname());
-		user_emailtohl.setPassword(cpd.user_emailtohl.getPassword());
+	public Role getHr() {
+		return hr;
+	}
+	public void setHr(Role hr) {
+		this.hr = hr;
+	}
+
+	public Role getTreasurer() {
+		return treasurer;
+	}
+	public void setTreasurer(Role treasurer) {
+		this.treasurer = treasurer;
+	}
+
+	public Role getCashier() {
+		return cashier;
+	}
+	public void setCashier(Role cashier) {
+		this.cashier = cashier;
+	}
+
+	public Role getSupportCrew() {
+		return supportCrew;
+	}
+	public void setSupportCrew(Role supportCrew) {
+		this.supportCrew = supportCrew;
+	}
+
+	public Employee getBill() {
+		return bill;
+	}
+	public void setBill(Employee bill) {
+		this.bill = bill;
+	}
+
+	public Employee getJenny() {
+		return jenny;
+	}
+	public void setJenny(Employee jenny) {
+		this.jenny = jenny;
+	}
+
+	public Employee getEric() {
+		return eric;
+	}
+	public void setEric(Employee eric) {
+		this.eric = eric;
+	}
+
+	public Employee getTom() {
+		return tom;
+	}
+	public void setTom(Employee tom) {
+		this.tom = tom;
+	}
+
+	public Employee getKermit() {
+		return kermit;
+	}
+	public void setKermit(Employee kermit) {
+		this.kermit = kermit;
+	}
+
+	public Employee getAmy() {
+		return amy;
+	}
+	public void setAmy(Employee amy) {
+		this.amy = amy;
+	}
+
+	public Employee getAndy() {
+		return andy;
+	}
+	public void setAndy(Employee andy) {
+		this.andy = andy;
+	}
+
+	public Employee getTony() {
+		return tony;
+	}
+	public void setTony(Employee tony) {
+		this.tony = tony;
+	}
+
+	public Employee getLily() {
+		return lily;
+	}
+	public void setLily(Employee lily) {
+		this.lily = lily;
+	}
+
+	public Employee getThomas() {
+		return thomas;
+	}
+	public void setThomas(Employee thomas) {
+		this.thomas = thomas;
 	}
 
 }

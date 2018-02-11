@@ -40,7 +40,14 @@ public interface CompanyService {
 	 */
 	@PreAuthorize("isAuthenticated()")
 	Company get(Long id);
-
+	
+	/**
+	 * 根据公司名查询公司
+	 * @param name
+	 * @return
+	 */
+	Company findByName(String name);
+	
 	/**
 	 * 分页查询
 	 * @param params
