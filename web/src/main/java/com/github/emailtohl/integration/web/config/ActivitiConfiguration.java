@@ -1,5 +1,6 @@
 package com.github.emailtohl.integration.web.config;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -18,6 +19,8 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.form.AbstractFormType;
+import org.activiti.engine.impl.form.StringFormType;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.apache.logging.log4j.LogManager;
@@ -80,6 +83,8 @@ public class ActivitiConfiguration {
 		beans.put("customerService", customerService);
 		beans.put("employeeService", employeeService);
 		cfg.setBeans(beans);
+		
+		cfg.setCustomFormTypes(Arrays.asList(new BigtextFormType(), new DoubleFormType()));
 
 //		cfg.setDeploymentResources(new Resource[] { new ClassPathResource("") });
 
@@ -182,4 +187,30 @@ public class ActivitiConfiguration {
 			engine.close();
 		};
 	}
+}
+
+class BigtextFormType extends StringFormType {
+	private static final long serialVersionUID = -7591690640370103699L;
+
+	@Override
+    public String getName() {
+        return "bigtext";
+    }
+}
+
+class DoubleFormType extends AbstractFormType {
+	private static final long serialVersionUID = 3233712710206227594L;
+	@Override
+    public String getName() {
+        return "double";
+    }
+    @Override
+    public Object convertFormValueToModelValue(String propertyValue) {
+        return new Double(propertyValue);
+    }
+    @Override
+    public String convertModelValueToFormValue(Object modelValue) {
+        return String.valueOf(modelValue);
+    }
+
 }
