@@ -57,11 +57,29 @@ public class PurchaseSubProcessTest /*extends SpringActivitiTestCase */{
 	@Inject
 	FormService formService;
 	
+	String applyUserId;
+	String kermit;
+	String deptLeader;
+	String supportCrew;
+	String treasurer;
+	String generalManager;
+	String cashier;
+	String hr;
+	
 	String processDefinitionKey = "purchase-subprocess";
 	String deploymentId;
 	
 	@Before
 	public void setUp() throws Exception {
+		applyUserId = webPresetData.getEric().getId().toString();
+		kermit = webPresetData.getKermit().getId().toString();
+		deptLeader = webPresetData.getDeptLeader().getName();
+		supportCrew = webPresetData.getSupportCrew().getName();
+		treasurer = webPresetData.getTreasurer().getName();
+		generalManager = webPresetData.getGeneralManager().getName();
+		cashier = webPresetData.getCashier().getName();
+		hr = webPresetData.getHr().getName();
+		
 		DeploymentBuilder deploymentBuilder = repositoryService.createDeployment();
 		deploymentBuilder.addClasspathResource("flowexample/purchase-subprocess.bpmn");
 		deploymentId = deploymentBuilder.deploy().getId();
@@ -78,11 +96,6 @@ public class PurchaseSubProcessTest /*extends SpringActivitiTestCase */{
     @Test
 //    @Deployment(resources = {"flowexample/purchase-subprocess.bpmn"})
     public void testAllApproved() throws Exception {
-    	String applyUserId = webPresetData.getEric().getId().toString();
-    	String kermit = webPresetData.getKermit().getId().toString();
-    	String deptLeader = webPresetData.getDeptLeader().getName();
-    	String supportCrew = webPresetData.getSupportCrew().getName();
-    	String treasurer = webPresetData.getTreasurer().getName();
     	LocalDate today = LocalDate.now();
     	
         Map<String, String> properties = new HashMap<String, String>();
@@ -127,14 +140,14 @@ public class PurchaseSubProcessTest /*extends SpringActivitiTestCase */{
         formService.submitTaskFormData(task.getId(), properties);
 
         // 子流程--总经理审批
-        task = taskService.createTaskQuery().taskCandidateGroup("generalManager").singleResult();
+        task = taskService.createTaskQuery().taskCandidateGroup(generalManager).singleResult();
         taskService.claim(task.getId(), kermit);
         properties = new HashMap<String, String>();
         properties.put("generalManagerApproved", "true");
         formService.submitTaskFormData(task.getId(), properties);
 
         // 子流程--出纳付款
-        task = taskService.createTaskQuery().taskCandidateGroup("cashier").singleResult();
+        task = taskService.createTaskQuery().taskCandidateGroup(cashier).singleResult();
         taskService.claim(task.getId(), kermit);
         properties = new HashMap<String, String>();
         properties.put("generalManagerApproved", "true");
@@ -155,11 +168,6 @@ public class PurchaseSubProcessTest /*extends SpringActivitiTestCase */{
     @Test
 //    @Deployment(resources = {"flowexample/purchase-subprocess.bpmn"})
     public void testRejectOnTreasurer() throws Exception {
-    	String applyUserId = webPresetData.getEric().getId().toString();
-    	String kermit = webPresetData.getKermit().getId().toString();
-    	String deptLeader = webPresetData.getDeptLeader().getName();
-    	String supportCrew = webPresetData.getSupportCrew().getName();
-    	String treasurer = webPresetData.getTreasurer().getName();
     	LocalDate today = LocalDate.now();
     	
         Map<String, String> properties = new HashMap<String, String>();

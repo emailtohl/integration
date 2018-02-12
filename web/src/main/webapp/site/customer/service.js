@@ -8,7 +8,7 @@ define(['customer/module', 'common/context'], function(customerModule) {
 				return $http.get('customer/' + id);
 			},
 			getByCellPhoneOrEmail: function(cellPhoneOrEmail) {
-				return $http.get('customer/cellPhoneOrEmail/' + cellPhoneOrEmail);
+				return $http.get('customer/cellPhoneOrEmail?cellPhoneOrEmail=' + cellPhoneOrEmail);
 			},
 			page: function(params) {
 				return $http.get('customer/page?' + util.encodeUrlParams(params));

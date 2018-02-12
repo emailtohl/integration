@@ -84,7 +84,7 @@ public class ActivitiConfiguration {
 		beans.put("employeeService", employeeService);
 		cfg.setBeans(beans);
 		
-		cfg.setCustomFormTypes(Arrays.asList(new BigtextFormType(), new DoubleFormType()));
+		cfg.setCustomFormTypes(Arrays.asList(new BigtextFormType(), new DoubleFormType(), new JavascriptFormType()));
 
 //		cfg.setDeploymentResources(new Resource[] { new ClassPathResource("") });
 
@@ -213,4 +213,23 @@ class DoubleFormType extends AbstractFormType {
         return String.valueOf(modelValue);
     }
 
+}
+
+class JavascriptFormType extends AbstractFormType {
+	private static final long serialVersionUID = 7576462007106547698L;
+
+	@Override
+    public String getName() {
+        return "javascript";
+    }
+
+    @Override
+    public Object convertFormValueToModelValue(String propertyValue) {
+        return propertyValue;
+    }
+
+    @Override
+    public String convertModelValueToFormValue(Object modelValue) {
+        return (String) modelValue;
+    }
 }
