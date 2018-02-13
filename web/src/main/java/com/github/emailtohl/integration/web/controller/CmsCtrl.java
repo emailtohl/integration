@@ -45,7 +45,6 @@ import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Comment;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
 import com.github.emailtohl.integration.web.service.cms.entities.WebPage;
-import com.google.gson.Gson;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -60,8 +59,6 @@ public class CmsCtrl {
 	private static final Logger logger = LogManager.getLogger();
 	@Inject
 	Configuration cfg;
-	@Inject
-	Gson gson;
 	@Inject
 	TypeService typeService;
 	@Inject
@@ -177,7 +174,7 @@ public class CmsCtrl {
 	 */
 	@RequestMapping(value = "cms/comments", method = GET)
 	public Paging<Comment> queryComments(@RequestParam(required = false, name = "query", defaultValue = "") String query, 
-			@PageableDefault(page = 0, size = 10, sort = {BaseEntity.CREATE_DATE_PROPERTY_NAME, "article.title"}, direction = Direction.DESC) Pageable pageable) {
+			@PageableDefault(page = 0, size = 10, sort = {BaseEntity.MODIFY_DATE_PROPERTY_NAME, "article.title"}, direction = Direction.DESC) Pageable pageable) {
 		return commentService.search(query, pageable);
 	}
 	
@@ -271,8 +268,9 @@ public class CmsCtrl {
 	 * @return
 	 */
 	@RequestMapping(value = "cms/typePage", method = GET)
-	public Paging<Type> getTypePage(@RequestParam(name="name", required = false, defaultValue = "") String name, 
-			@PageableDefault(page = 0, size = 10, sort = {BaseEntity.CREATE_DATE_PROPERTY_NAME}, direction = Direction.DESC) Pageable pageable) {
+	public Paging<Type> getTypePage(@RequestParam(name = "name", required = false) String name,
+			@PageableDefault(page = 0, size = 10, sort = {
+					BaseEntity.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
 		Type t = new Type(name, null, null);
 		return typeService.query(t, pageable);
 	}

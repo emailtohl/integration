@@ -9,7 +9,7 @@ define(['cms/module', 'cms/category/service'], function(cmsModule) {
 		self.form = {};
 		self.queryParam = {
 			page : 0,
-			name : '',
+			name : null,
 		};
 		
 		self.query = function() {

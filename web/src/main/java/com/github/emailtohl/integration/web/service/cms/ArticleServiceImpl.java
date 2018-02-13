@@ -14,11 +14,14 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
+import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.user.UserService;
@@ -135,7 +138,12 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 
 	@Override
 	public Paging<Article> search(String query, Pageable pageable) {
-		Page<Article> page = articleRepository.search(query, pageable);
+		Page<Article> page;
+		if (hasText(query)) {
+			page = articleRepository.search(query, pageable);
+		} else {
+			page = articleRepository.findAll(pageable);
+		}
 		List<Article> ls = page.getContent().stream().map(this::toTransient).collect(Collectors.toList());
 		return new Paging<>(ls, pageable, page.getTotalElements());
 	}
@@ -245,9 +253,11 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 				.collect(Collectors.groupingBy(article -> article.getType()));
 	}
 
+	private Pageable zeroToHundred  = new PageRequest(0, 100, Sort.Direction.DESC, BaseEntity.MODIFY_DATE_PROPERTY_NAME);
 	@Override
 	public List<Article> recentArticles() {
-		return articleRepository.findAll().stream().limit(100)
+		return articleRepository.findAll(zeroToHundred).getContent()
+				.stream()/* .limit(100) */
 				.filter(a -> a.getCanApproved() == null || a.getCanApproved()).map(this::toTransient)
 				.peek(this::filterCommentOfArticle).collect(Collectors.toList());
 	}
