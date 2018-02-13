@@ -28,7 +28,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.MediaType;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -186,9 +185,9 @@ public class ResourceCtrl {
 				if (filename != null && !map.containsKey(filename)) {
 					try (InputStream in = filePart.getInputStream()) {
 						String uploadPath = request.getParameter("uploadPath");
-						if (StringUtils.hasText(uploadPath)) {
+						if (uploadPath != null) { // 若有uploadPath参数（不管是否空字符串）则存储在用户空间中
 							fileService.save(getFilePath(uploadPath), in);
-						} else {
+						} else { // 否则存储在自动空间中
 							fileService.autoSaveFile(in, null);
 						}
 					}

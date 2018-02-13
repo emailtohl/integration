@@ -103,7 +103,7 @@ define(['jquery', 'cms/module', 'toastr', 'cms/resource/service'/*, 'ztree'*/], 
 			getFileRoot(self.path);
 		};
 		// 用于提交表达的校验，若上传文件为空，则提交按钮不被开放
-		self.invalidFile = function() {
+		self.fileNotExist = function() {
 			return $('input[name="file"]').val() ? false : true;
 		};
 		// 获取下载图片、视频、pdf等文件的路径，这是因为下载路径还需要加上隐藏的根路径
@@ -133,10 +133,12 @@ define(['jquery', 'cms/module', 'toastr', 'cms/resource/service'/*, 'ztree'*/], 
 		 */
 		function zTreeBeforeRemove(treeId, treeNode) {
 			var filename;
+			/*
 			if (treeNode.getParentNode() == null) {
 				alert('根目录不能删除!');
 				return false;
 			}
+			*/
 			if (confirm('确认删除吗？')) {
 				filename = ztreeutil.getFilePath(treeNode);
 				service['delete'](filename).then(function(resp) {

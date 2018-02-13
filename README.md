@@ -30,10 +30,10 @@
 	rootContext.getEnvironment().setActiveProfiles(Profiles.DB_JNDI, Profiles.ENV_SERVLET);// 激活spring配置中的profile
 ```
 
-项目会使用文件空间中，还需在tomcat的server.xml中配置虚拟目录：
+项目会使用文件空间中，还需在tomcat的server.xml中的Host标签下配置虚拟目录：
 
 ```xml
-<Context debug="0" docBase="H:\server\apache-tomcat-9.0.2\wtpwebapps\integration-data\resources" path="/web/resources" reloadable="true"/>
+<Context docBase="/home/helei/programs/apache-tomcat-8.5.24/wtpwebapps/integration-data/resources" path="/web/resources" reloadable="true"/>
 ```
 
 登录时使用内置的账号：
