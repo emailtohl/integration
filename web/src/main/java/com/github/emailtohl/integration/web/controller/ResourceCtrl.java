@@ -167,7 +167,7 @@ public class ResourceCtrl {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "files", method = POST, produces = MediaType.TEXT_PLAIN_VALUE)
+	@RequestMapping(value = "files", method = POST)
 	public ExecResult multipartOnload(HttpServletRequest request) {
 		StringBuilder msg = new StringBuilder();
 		Collection<Part> fileParts = null;
@@ -181,17 +181,22 @@ public class ResourceCtrl {
 		for (Iterator<Part> iterable = fileParts.iterator(); iterable.hasNext();) {
 			Part filePart = iterable.next();// 每个filePart表示一个文件，前端可能同时上传多个文件
 			try {
-				String filename = filePart.getSubmittedFileName();// 获取提交文件原始的名字
-				if (filename != null && !map.containsKey(filename)) {
+				String submittedFileName = filePart.getSubmittedFileName();// 获取提交文件原始的名字
+				if (submittedFileName != null && !map.containsKey(submittedFileName)) {
 					try (InputStream in = filePart.getInputStream()) {
 						String uploadPath = request.getParameter("uploadPath");
+						ExecResult execResult;
 						if (uploadPath != null) { // 若有uploadPath参数（不管是否空字符串）则存储在用户空间中
-							fileService.save(getFilePath(uploadPath), in);
+							execResult = fileService.save(getFilePath(uploadPath) + File.separator + submittedFileName, in);
 						} else { // 否则存储在自动空间中
-							fileService.autoSaveFile(in, null);
+							execResult = fileService.autoSaveFile(in, null);
+						}
+						if (!execResult.ok) {
+							msg.append(',').append(submittedFileName).append(": fail");
+						} else {
+							msg.append(',').append(submittedFileName).append(": success");
 						}
 					}
-					msg.append(',').append(filename);
 				}
 			} catch (IOException e) {
 				logger.catching(e);
@@ -255,6 +260,7 @@ public class ResourceCtrl {
 	
 	/**
 	 * 统一将“\”，“/”两种路径表达方式替换为本地操作系统识别的路径符
+	 * 字符串结尾没有文件分隔符
 	 * @param pathname
 	 * @return
 	 */

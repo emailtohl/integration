@@ -3,6 +3,8 @@ package com.github.emailtohl.integration.web.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.ConstraintViolationException;
+
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -33,6 +35,26 @@ public class ErrorHandler {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "text/plain;charset=UTF-8");
 		return new ResponseEntity<>(msg, headers, httpStatus);
+	}
+	
+	/**
+	 * 约束异常
+	 * @param ex
+	 * @return
+	 */
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<String> handle(ConstraintViolationException ex) {
+		StringBuilder msg = new StringBuilder();
+		ex.getConstraintViolations().forEach(c -> {
+			msg.append(',').append("InvalidValue: ").append(c.getInvalidValue()).append(" message:").append(c.getMessage());
+		});
+		if (msg.charAt(0) == ',') {
+			msg.deleteCharAt(0);
+		}
+		HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Type", "text/plain;charset=UTF-8");
+		return new ResponseEntity<>(msg.toString(), headers, httpStatus);
 	}
 
 	/**

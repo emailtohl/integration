@@ -1,5 +1,6 @@
 package com.github.emailtohl.integration.core.file;
 
+import static com.github.emailtohl.integration.common.ConstantPattern.LEGAL_FILENAME;
 import static com.github.emailtohl.integration.core.role.Authority.CONTENT;
 import static com.github.emailtohl.integration.core.role.Authority.RESOURCE;
 
@@ -8,7 +9,10 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 
+import javax.validation.constraints.Pattern;
+
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 
 import com.github.emailtohl.integration.common.utils.ZtreeNode;
 import com.github.emailtohl.integration.core.ExecResult;
@@ -18,6 +22,7 @@ import com.github.emailtohl.integration.core.ExecResult;
  * 本服务已经统一定向到系统中资源文件的存储目录下，所有输入的路径名（文件名）均是相对于该根目录的相对路径
  * @author HeLei
  */
+@Validated
 public interface FileService {
 	/**
 	 * 测试该文件或目录是否存在
@@ -49,7 +54,7 @@ public interface FileService {
 	 * @return
 	 */
 	@PreAuthorize("hasAuthority('" + RESOURCE + "')")
-	ExecResult createDir(String dirname);
+	ExecResult createDir(@Pattern(regexp = LEGAL_FILENAME) String dirname);
 	
 	/**
 	 * 更改文件或文件夹名
@@ -58,7 +63,7 @@ public interface FileService {
 	 * @return
 	 */
 	@PreAuthorize("hasAuthority('" + RESOURCE + "')")
-	ExecResult reName(String srcName, String destName);
+	ExecResult reName(String srcName, @Pattern(regexp = LEGAL_FILENAME) String destName);
 	
 	/**
 	 * 删除文件或文件夹
@@ -74,7 +79,7 @@ public interface FileService {
 	 * @param in 文件输入流
 	 * @return
 	 */
-	ExecResult save(String pathname, InputStream in);
+	ExecResult save(@Pattern(regexp = LEGAL_FILENAME) String pathname, InputStream in);
 	
 	/**
 	 * 根据内部存储情况自动存储文件，适用于图片等资料
@@ -118,6 +123,6 @@ public interface FileService {
 	 * @return
 	 */
 	@PreAuthorize("hasAuthority('" + CONTENT + "')")
-	ExecResult writeText(String pathname, String textContext, String charset);
+	ExecResult writeText(@Pattern(regexp = LEGAL_FILENAME) String pathname, String textContext, String charset);
 
 }

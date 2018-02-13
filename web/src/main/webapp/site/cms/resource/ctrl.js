@@ -99,6 +99,10 @@ define(['jquery', 'cms/module', 'toastr', 'cms/resource/service'/*, 'ztree'*/], 
 		};
 		// 上传结束后的逻辑
 		self.postUpload = function(msg) {
+			if (typeof msg === 'string' && msg.search('<meta name="login">') > -1) {
+				window.location.href = 'login';
+				return;
+			}
 			toastr.success(msg);
 			getFileRoot(self.path);
 		};

@@ -71,7 +71,7 @@ define([ 'common/module', 'common/service/util', 'toastr' ], function(commonModu
 			if (!(typeof response.data == 'string'))
 				return false;
 			// 如果是下载的页面
-			if (response.config.url == 'fileUploadServer/loadText')
+			if (response.config.url == 'resource/loadText')
 				return false;
 			// 当spring security拦截后，会将默认页面返回，这个页面带有<meta name="login">，所以根据这个标记进行识别
 			if (response.data.search('<meta name="login">') > -1)

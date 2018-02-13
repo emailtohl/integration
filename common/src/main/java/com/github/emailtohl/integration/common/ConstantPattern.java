@@ -72,5 +72,10 @@ public interface ConstantPattern {
 	 * 命名空间分隔符：包含命名空间分隔符在文件路径名中会造成行为异常，甚至安全漏洞。
 	 * 命令行特殊意义符号：如“%”，“>”,”@”,”*”等等。
 	 */
-	String ILLEGAL_FILENAME = "[^A-Za-z0-9%&+,.:=_]";
+	String LEGAL_FILENAME = "^\\s*[^ -][^\\r\\n\\e]*$";
+	
+	public static void main(String[] args) {
+		String t = "abc\nnde";
+		System.out.println(t.matches(ConstantPattern.LEGAL_FILENAME));
+	}
 }
