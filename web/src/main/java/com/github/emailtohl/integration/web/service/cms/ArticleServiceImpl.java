@@ -244,6 +244,13 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 				.map(this::toTransient).peek(this::filterCommentOfArticle)
 				.collect(Collectors.groupingBy(article -> article.getType()));
 	}
+
+	@Override
+	public List<Article> recentArticles() {
+		return articleRepository.findAll().stream().limit(100)
+				.filter(a -> a.getCanApproved() == null || a.getCanApproved()).map(this::toTransient)
+				.peek(this::filterCommentOfArticle).collect(Collectors.toList());
+	}
 	
 	@Cacheable(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override

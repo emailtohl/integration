@@ -80,6 +80,11 @@ public class TypeServiceImpl extends StandardService<Type> implements TypeServic
 		return transientDetail(typeRepository.findOne(id));
 	}
 
+	@Override
+	public Type getByName(String name) {
+		return transientDetail(typeRepository.getByName(name));
+	}
+	
 	private final ExampleMatcher typeMatcher = ExampleMatcher.matching()
 			.withIgnoreNullValues()
 			.withIgnorePaths("articles", "parent")
@@ -118,6 +123,7 @@ public class TypeServiceImpl extends StandardService<Type> implements TypeServic
 		if (source == null) {
 			return null;
 		}
+		isIllegal(source);
 		if (newEntity.getDescription() != null) {
 			source.setDescription(newEntity.getDescription());
 		}
@@ -147,6 +153,7 @@ public class TypeServiceImpl extends StandardService<Type> implements TypeServic
 		if (source == null) {
 			return;
 		}
+		isIllegal(source);
 		source.getArticles().forEach(a -> {
 			a.setType(webPresetData.unclassified);
 		});
@@ -178,5 +185,13 @@ public class TypeServiceImpl extends StandardService<Type> implements TypeServic
 		tar.setModifyDate(entity.getModifyDate());
 		return tar;
 	}
-	
+	/**
+	 * 若是系统内置数据，则触发异常
+	 * @param t
+	 */
+	private void isIllegal(Type t) {
+		if (webPresetData.unclassified.equals(t)) {
+			throw new NotAcceptableException("不能修改系统内置类型");
+		}
+	}
 }

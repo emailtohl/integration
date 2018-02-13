@@ -228,7 +228,7 @@ public class ResourceCtrl {
 	 * @param charset
 	 * @return
 	 */
-	@RequestMapping(value = "loadText", method = POST, produces = MediaType.TEXT_PLAIN_VALUE)
+	@RequestMapping(value = "loadText", method = POST, produces = MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8")
 	public String loadText(@RequestParam(value = "path", required = true) String path
 			, @RequestParam(value = "charset", required = false, defaultValue = "UTF-8") String charset) {
 		File f = fileService.getFile(getFilePath(path));

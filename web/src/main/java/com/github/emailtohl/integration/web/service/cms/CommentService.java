@@ -15,23 +15,55 @@ import com.github.emailtohl.integration.web.service.cms.entities.Comment;
 public interface CommentService {
 	
 	/**
-	 * 创建一个评论
+	 * 创建一个评论，评论应该基于文章或另一篇评论来创建
 	 * @param entity
 	 * @return
 	 * @throws NotAcceptableException 若被评论的对象关闭了评论，则抛出不能接受的异常
 	 */
 	Comment create(Comment entity) throws NotAcceptableException;
 
+	/**
+	 * 获取评论
+	 * @param id
+	 * @return
+	 */
 	Comment get(Long id);
 	
+	/**
+	 * 全文搜索评论
+	 * @param query
+	 * @param pageable
+	 * @return
+	 */
 	Paging<Comment> search(String query, Pageable pageable);
 	
+	/**
+	 * 查询评论
+	 * @param params
+	 * @param pageable
+	 * @return
+	 */
 	Paging<Comment> query(Comment params, Pageable pageable);
 
+	/**
+	 * 查询评论
+	 * @param params
+	 * @return
+	 */
 	List<Comment> query(Comment params);
 
+	/**
+	 * 更新评论
+	 * @param id
+	 * @param newEntity
+	 * @return
+	 */
 	Comment update(Long id, Comment newEntity);
 
+	/**
+	 * 删除评论
+	 * @param id
+	 */
 	void delete(Long id);
 	
 	/**

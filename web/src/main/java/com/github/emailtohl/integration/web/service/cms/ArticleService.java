@@ -101,6 +101,12 @@ public interface ArticleService {
 	Map<Type, List<Article>> articleClassify();
 	
 	/**
+	 * 最近的文章
+	 * @return
+	 */
+	List<Article> recentArticles();
+	
+	/**
 	 * 前端打开文章
 	 * @param id
 	 * @return

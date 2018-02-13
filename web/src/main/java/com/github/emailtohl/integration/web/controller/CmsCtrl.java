@@ -20,26 +20,27 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.github.emailtohl.integration.common.exception.InvalidDataException;
 import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
-import com.github.emailtohl.integration.core.config.Constant;
-import com.github.emailtohl.integration.web.service.cms.CmsService;
+import com.github.emailtohl.integration.web.service.cms.ArticleService;
+import com.github.emailtohl.integration.web.service.cms.CommentService;
+import com.github.emailtohl.integration.web.service.cms.TypeService;
 import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Comment;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
@@ -53,13 +54,21 @@ import freemarker.template.TemplateException;
  * 内容管理的控制器
  * @author HeLei
  */
-@Controller
+@RestController
+@RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class CmsCtrl {
 	private static final Logger logger = LogManager.getLogger();
-	@Inject Configuration cfg;
-	@Inject CmsService cmsService;
-	Gson gson = new Gson();
-
+	@Inject
+	Configuration cfg;
+	@Inject
+	Gson gson;
+	@Inject
+	TypeService typeService;
+	@Inject
+	CommentService commentService;
+	@Inject
+	ArticleService articleService;
+	
 	/**
 	 * 获取某文章
 	 * @param id
@@ -67,11 +76,8 @@ public class CmsCtrl {
 	 * @throws NotFoundException 
 	 */
 	@RequestMapping(value = "cms/article/{id}", method = GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@ResponseBody
-	public String findArticle(@PathVariable long id) throws NotFoundException {
-		Article article = cmsService.getArticle(id);
-		String json = gson.toJson(article);// 因Article有时间类型，用配置了时间格式的Gson解析
-		return json;
+	public Article findArticle(@PathVariable long id) throws NotFoundException {
+		return articleService.get(id);
 	}
 	
 	/**
@@ -80,13 +86,10 @@ public class CmsCtrl {
 	 * @param pageable
 	 * @return 只返回查找到的实体类E
 	 */
-	@RequestMapping(value = "cms/article/search", method = GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@ResponseBody
-	public String search(@RequestParam(name="query", required = false, defaultValue = "") String query, 
+	@RequestMapping(value = "cms/article/search", method = GET)
+	public Paging<Article> search(@RequestParam(name="query", required = false, defaultValue = "") String query, 
 			@PageableDefault(page = 0, size = 10, sort = {"title", "keywords"}, direction = Direction.DESC) Pageable pageable) {
-		Paging<Article> page = cmsService.searchArticles(query, pageable);
-		String json = gson.toJson(page);// 因Article有时间类型，用配置了时间格式的Gson解析
-		return json;
+		return articleService.search(query, pageable);
 	}
 	
 	/**
@@ -95,56 +98,11 @@ public class CmsCtrl {
 	 * @param e 若校验失败后，存储的失败信息
 	 */
 	@RequestMapping(value = "cms/article", method = POST)
-	@ResponseBody
-	public void saveArticle(@RequestBody @Valid ArticleForm form, Errors e) {
-		if (e.hasErrors()) {
-			for (ObjectError oe : e.getAllErrors()) {
-				logger.info(oe);
-			}
-			throw new InvalidDataException(e.toString());
-		}
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public Article saveArticle(@RequestBody @Valid ArticleForm form, Errors e) {
+		checkErrors(e);
 		Article a = new Article(form.title, form.keywords, form.body, form.summary);
-		cmsService.saveArticle(ThreadContext.get(Constant.USERNAME), a, form.type);
-	}
-	
-	/**
-	 * 文章的表单信息
-	 */
-	class ArticleForm implements Serializable {
-		private static final long serialVersionUID = 2897739809930401319L;
-		@NotNull String title;
-		String keywords;
-		@NotNull String body;
-		String summary;
-		String type;
-		public String getTitle() {
-			return title;
-		}
-		public void setTitle(String title) {
-			this.title = title;
-		}
-		public String getKeywords() {
-			return keywords;
-		}
-		public void setKeywords(String keywords) {
-			this.keywords = keywords;
-		}
-		public String getBody() {
-			return body;
-		}
-		public void setBody(String body) {
-			this.body = body;
-		}
-		public String getType() {
-			return type;
-		}
-		public void setType(String type) {
-			this.type = type;
-		}
-		@Override
-		public String toString() {
-			return "ArticleForm [title=" + title + ", keywords=" + keywords + ", body=" + body + ", type=" + type + "]";
-		}
+		return articleService.create(a);
 	}
 	
 	/**
@@ -154,35 +112,31 @@ public class CmsCtrl {
 	 * @param article 存储校验失败的信息
 	 */
 	@RequestMapping(value = "cms/article/{id}", method = PUT)
-	@ResponseBody
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void updateArticle(@PathVariable long id, @RequestBody @Valid ArticleForm form, Errors e) {
-		if (e.hasErrors()) {
-			for (ObjectError oe : e.getAllErrors()) {
-				logger.info(oe);
-			}
-			throw new InvalidDataException(e.toString());
-		}
-		cmsService.updateArticle(id, form.title, form.keywords, form.body, form.summary, form.type);
+		checkErrors(e);
+		Article a = new Article(form.title, form.keywords, form.body, form.summary);
+		articleService.update(id, a);
 	}
-	
+
 	/**
 	 * 特殊情况下用于管理员删除文章
 	 * @param id
 	 */
 	@RequestMapping(value = "cms/article/{id}", method = DELETE)
-	@ResponseBody
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteArticle(@PathVariable long id) {
-		cmsService.deleteArticle(id);
+		articleService.delete(id);
 	}
-
+	
 	/**
 	 * 让文章发表
 	 * @param articleId
 	 */
 	@RequestMapping(value = "cms/approveArticle", method = POST)
-	@ResponseBody
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void approveArticle(@RequestParam long articleId) {
-		cmsService.approveArticle(articleId);
+		articleService.approve(articleId, true);
 	}
 	
 	/**
@@ -190,9 +144,9 @@ public class CmsCtrl {
 	 * @param articleId
 	 */
 	@RequestMapping(value = "cms/rejectArticle", method = POST)
-	@ResponseBody
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void rejectArticle(@RequestParam long articleId) {
-		cmsService.rejectArticle(articleId);
+		articleService.approve(articleId, false);
 	}
 	
 	/**
@@ -200,9 +154,9 @@ public class CmsCtrl {
 	 * @param articleId
 	 */
 	@RequestMapping(value = "cms/openComment", method = POST)
-	@ResponseBody
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void openComment(@RequestParam long articleId) {
-		cmsService.openComment(articleId);
+		commentService.canComment(articleId, true);
 	}
 	
 	/**
@@ -210,9 +164,9 @@ public class CmsCtrl {
 	 * @param articleId
 	 */
 	@RequestMapping(value = "cms/closeComment", method = POST)
-	@ResponseBody
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void closeComment(@RequestParam long articleId) {
-		cmsService.closeComment(articleId);
+		commentService.canComment(articleId, false);
 	}
 	
 	/**
@@ -221,13 +175,10 @@ public class CmsCtrl {
 	 * @param pageable
 	 * @return
 	 */
-	@RequestMapping(value = "cms/comments", method = GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@ResponseBody
-	public String queryComments(@RequestParam(required = false, name = "query", defaultValue = "") String query, 
+	@RequestMapping(value = "cms/comments", method = GET)
+	public Paging<Comment> queryComments(@RequestParam(required = false, name = "query", defaultValue = "") String query, 
 			@PageableDefault(page = 0, size = 10, sort = {BaseEntity.CREATE_DATE_PROPERTY_NAME, "article.title"}, direction = Direction.DESC) Pageable pageable) {
-		Paging<Comment> page = cmsService.queryComments(query, pageable);
-		String json = gson.toJson(page);// 因Article有时间类型，用配置了时间格式的Gson解析
-		return json;
+		return commentService.search(query, pageable);
 	}
 	
 	/**
@@ -236,9 +187,8 @@ public class CmsCtrl {
 	 * @return
 	 */
 	@RequestMapping(value = "cms/comment/{id}", method = GET)
-	@ResponseBody
 	public Comment findComment(@PathVariable long id) {
-		return cmsService.findComment(id);
+		return commentService.get(id);
 	}
 	
 	/**
@@ -247,10 +197,21 @@ public class CmsCtrl {
 	 * @param content 评论的内容
 	 */
 	@RequestMapping(value = "cms/comment", method = POST)
-	public String saveComment(@RequestParam(required = true, name = "articleId") long articleId,
-			@RequestParam(required = true, name = "content") String content) {
-		cmsService.saveComment(ThreadContext.get(Constant.USERNAME), articleId, content);
-		return "redirect:/detail?id=" + articleId;
+	@ResponseStatus(HttpStatus.CREATED)
+	public Comment saveComment(@RequestBody @Valid CommentForm form, Errors e) {
+		checkErrors(e);
+		Comment c = new Comment();
+		c.setContent(form.getContent());
+		if (form.getArticleId() != null) {
+			Article a = new Article();
+			a.setId(form.getArticleId());
+			c.setArticle(a);
+		}
+		if (form.getCommentId() != null) {
+			Comment _c = new Comment();
+			_c.setId(form.getCommentId());
+		}
+		return commentService.create(c);
 	}
 	
 	/**
@@ -259,10 +220,20 @@ public class CmsCtrl {
 	 * @param commentContent 评论的内容
 	 */
 	@RequestMapping(value = "cms/comment/{id}", method = PUT)
-	public String updateComment(@PathVariable("id") long id, 
-			@RequestParam(required = true, name = "commentContent") String commentContent) {
-		Article a = cmsService.updateComment(ThreadContext.get(Constant.USERNAME), id, commentContent);
-		return "redirect:/detail?id=" + a.getId();
+	public Comment updateComment(@PathVariable("id") long id, @RequestBody @Valid CommentForm form, Errors e) {
+		checkErrors(e);
+		Comment c = new Comment();
+		c.setContent(form.getContent());
+		if (form.getArticleId() != null) {
+			Article a = new Article();
+			a.setId(form.getArticleId());
+			c.setArticle(a);
+		}
+		if (form.getCommentId() != null) {
+			Comment _c = new Comment();
+			_c.setId(form.getCommentId());
+		}
+		return commentService.update(id, c);
 	}
 	
 	/**
@@ -270,9 +241,9 @@ public class CmsCtrl {
 	 * @param id 评论id
 	 */
 	@RequestMapping(value = "cms/comment/{id}", method = DELETE)
-	@ResponseBody
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteComment(@PathVariable long id) {
-		cmsService.deleteComment(id);
+		commentService.delete(id);
 	}
 	
 	/**
@@ -280,9 +251,9 @@ public class CmsCtrl {
 	 * @param commentId
 	 */
 	@RequestMapping(value = "cms/approvedComment", method = POST)
-	@ResponseBody
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void approvedComment(@RequestParam long commentId) {
-		cmsService.approvedComment(commentId);
+		commentService.approve(commentId, true);
 	}
 	
 	/**
@@ -290,9 +261,9 @@ public class CmsCtrl {
 	 * @param commentId
 	 */
 	@RequestMapping(value = "cms/rejectComment", method = POST)
-	@ResponseBody
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void rejectComment(@RequestParam long commentId) {
-		cmsService.rejectComment(commentId);
+		commentService.approve(commentId, false);
 	}
 	
 	/**
@@ -300,10 +271,10 @@ public class CmsCtrl {
 	 * @return
 	 */
 	@RequestMapping(value = "cms/typePage", method = GET)
-	@ResponseBody
 	public Paging<Type> getTypePage(@RequestParam(name="name", required = false, defaultValue = "") String name, 
 			@PageableDefault(page = 0, size = 10, sort = {BaseEntity.CREATE_DATE_PROPERTY_NAME}, direction = Direction.DESC) Pageable pageable) {
-		return cmsService.getTypePage(name, pageable);
+		Type t = new Type(name, null, null);
+		return typeService.query(t, pageable);
 	}
 	
 	/**
@@ -311,9 +282,8 @@ public class CmsCtrl {
 	 * @return
 	 */
 	@RequestMapping(value = "cms/types", method = GET)
-	@ResponseBody
 	public List<Type> getTypes() {
-		return cmsService.getTypes();
+		return typeService.query(null);
 	}
 	
 	/**
@@ -322,9 +292,8 @@ public class CmsCtrl {
 	 * @return
 	 */
 	@RequestMapping(value = "cms/type/{id}", method = GET)
-	@ResponseBody
 	public Type findTypeById(@PathVariable long id) {
-		return cmsService.findTypeById(id);
+		return typeService.get(id);
 	}
 	
 	/**
@@ -333,9 +302,8 @@ public class CmsCtrl {
 	 * @return
 	 */
 	@RequestMapping(value = "cms/type", method = GET)
-	@ResponseBody
 	public Type findTypeByName(@RequestParam("name") String name) {
-		return cmsService.findTypeByName(name);
+		return typeService.getByName(name);
 	}
 
 	/**
@@ -346,9 +314,16 @@ public class CmsCtrl {
 	 * @return
 	 */
 	@RequestMapping(value = "cms/type", method = POST)
-	@ResponseBody
-	public long saveType(@RequestBody TypeForm form) {
-		return cmsService.saveType(form.name, form.description, form.parent);
+	@ResponseStatus(HttpStatus.CREATED)
+	public Type saveType(@RequestBody @Valid TypeForm form, Errors e) {
+		checkErrors(e);
+		Type t = new Type(form.name, form.description, null);
+		if (form.getParentId() != null) {
+			Type p = new Type();
+			p.setId(form.getParentId());
+			t.setParent(p);
+		}
+		return typeService.create(t);
 	}
 	
 	/**
@@ -358,26 +333,27 @@ public class CmsCtrl {
 	 * @param parent 类型的父类型，如果为null则为顶级类型
 	 */
 	@RequestMapping(value = "cms/type/{id}", method = PUT)
-	@ResponseBody
-	public void updateType(@PathVariable("id") long id, @RequestBody TypeForm form) {
-		cmsService.updateType(id, form.name, form.description, form.parent);
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void updateType(@PathVariable("id") long id, @RequestBody @Valid TypeForm form, Errors e) {
+		checkErrors(e);
+		Type t = new Type(form.name, form.description, null);
+		if (form.getParentId() != null) {
+			Type p = new Type();
+			p.setId(form.getParentId());
+			t.setParent(p);
+		}
+		typeService.update(id, t);
 	}
-	
-	class TypeForm {
-		long id;
-		String name;
-		String description;
-		String parent;
-	}
+
 	
 	/**
 	 * 删除一个文章类型
 	 * @param id
 	 */
 	@RequestMapping(value = "cms/type/{id}", method = DELETE)
-	@ResponseBody
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteType(@PathVariable("id") long id) {
-		cmsService.deleteType(id);
+		typeService.delete(id);
 	}
 	
 	/**
@@ -386,7 +362,7 @@ public class CmsCtrl {
 	 */
 	@RequestMapping(value = "public/recentArticles", method = GET)
 	public List<Article> recentArticles() {
-		return cmsService.recentArticles();
+		return articleService.recentArticles();
 	}
 	
 	/**
@@ -395,7 +371,7 @@ public class CmsCtrl {
 	 */
 	@RequestMapping(value = "public/recentComments", method = GET)
 	public List<Comment> recentComments() {
-		return cmsService.recentComments();
+		return commentService.recentComments();
 	}
 	
 	/**
@@ -404,7 +380,7 @@ public class CmsCtrl {
 	 */
 	@RequestMapping(value = "public/classify", method = GET)
 	public Map<Type, List<Article>> classify() {
-		return cmsService.classify();
+		return articleService.articleClassify();
 	}
 	
 	/**
@@ -438,10 +414,10 @@ public class CmsCtrl {
 	 */
 	@RequestMapping(value = "detail", method = GET)
 	public void getDetail(@RequestParam long id, HttpServletRequest request, HttpServletResponse response) throws TemplateException, IOException, NotFoundException {
-		Article a = cmsService.getArticle(id);
+		Article a = articleService.get(id);
 		Map<String, Object> model = new HashMap<>();
 		model.put("article", a);
-		List<Article> ls = cmsService.recentArticles();
+		List<Article> ls = articleService.recentArticles();
 		model.put("recentArticles", ls);
 		response.setContentType("text/html");
 		response.setCharacterEncoding("UTF-8");
@@ -449,5 +425,150 @@ public class CmsCtrl {
 		Template t = cfg.getTemplate("detail.html");
 		t.process(model, out);
 		out.close();
+	}
+	
+	
+	/**
+	 * 校验
+	 * @param errors
+	 */
+	protected void checkErrors(Errors errors) {
+		if (errors.hasErrors()) {
+			StringBuilder msg = new StringBuilder();
+			for (ObjectError oe : errors.getAllErrors()) {
+				logger.info(oe);
+				String cause = oe.toString().split(";")[0];
+				msg.append(cause).append("\t").append(oe.getDefaultMessage()).append("\n");
+			}
+			throw new InvalidDataException(msg.toString());
+		}
+	}
+	
+	/**
+	 * 文章的表单信息
+	 */
+	static class ArticleForm implements Serializable {
+		private static final long serialVersionUID = 3889315211250556531L;
+		@NotNull String title;
+		String keywords;
+		@NotNull String body;
+		String summary;
+		String type;
+		Boolean approve;
+		public String getTitle() {
+			return title;
+		}
+		public void setTitle(String title) {
+			this.title = title;
+		}
+		public String getKeywords() {
+			return keywords;
+		}
+		public void setKeywords(String keywords) {
+			this.keywords = keywords;
+		}
+		public String getBody() {
+			return body;
+		}
+		public void setBody(String body) {
+			this.body = body;
+		}
+		public String getType() {
+			return type;
+		}
+		public void setType(String type) {
+			this.type = type;
+		}
+		
+		public String getSummary() {
+			return summary;
+		}
+		public void setSummary(String summary) {
+			this.summary = summary;
+		}
+		public Boolean getApprove() {
+			return approve;
+		}
+		public void setApprove(Boolean approve) {
+			this.approve = approve;
+		}
+	}
+	
+	static class TypeForm implements Serializable {
+		private static final long serialVersionUID = -5081395410863857040L;
+		Long id;
+		@NotNull String name;
+		String description;
+		Long parentId;
+		public Long getId() {
+			return id;
+		}
+		public void setId(Long id) {
+			this.id = id;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getDescription() {
+			return description;
+		}
+		public void setDescription(String description) {
+			this.description = description;
+		}
+		public Long getParentId() {
+			return parentId;
+		}
+		public void setParentId(Long parentId) {
+			this.parentId = parentId;
+		}
+	}
+	
+	static class CommentForm implements Serializable {
+		private static final long serialVersionUID = -4025111492861614468L;
+		@NotNull String content;
+		/**
+		 * 针对于文章
+		 */
+		Long articleId;
+		/**
+		 * 针对于评论
+		 */
+		Long commentId;
+		Boolean approved;
+		Boolean canComment;
+		public String getContent() {
+			return content;
+		}
+		public void setContent(String content) {
+			this.content = content;
+		}
+		public Long getArticleId() {
+			return articleId;
+		}
+		public void setArticleId(Long articleId) {
+			this.articleId = articleId;
+		}
+		public Long getCommentId() {
+			return commentId;
+		}
+		public void setCommentId(Long commentId) {
+			this.commentId = commentId;
+		}
+		public Boolean getApproved() {
+			return approved;
+		}
+		public void setApproved(Boolean approved) {
+			this.approved = approved;
+		}
+		public Boolean getCanComment() {
+			return canComment;
+		}
+		public void setCanComment(Boolean canComment) {
+			this.canComment = canComment;
+		}
+		
 	}
 }

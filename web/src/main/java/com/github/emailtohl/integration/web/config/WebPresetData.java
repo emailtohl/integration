@@ -282,5 +282,4 @@ public class WebPresetData implements Serializable {
 	public void setThomas(Employee thomas) {
 		this.thomas = thomas;
 	}
-
 }

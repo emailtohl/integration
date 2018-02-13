@@ -38,6 +38,13 @@ public interface TypeService {
 	 * @return
 	 */
 	Type get(Long id);
+	
+	/**
+	 * 根据文章类型名字获取类型
+	 * @param name
+	 * @return
+	 */
+	Type getByName(String name);
 
 	/**
 	 * 分页查询文章类型
