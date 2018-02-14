@@ -48,7 +48,7 @@
                 <tr ng-repeat="x in ctrl.page.content" style="cursor: pointer;" ng-click="ctrl.edit(x.id)">
                   <td ng-bind="$index + 1" class="col-md-1"></td>
                   <td ng-bind="x.title" class="col-md-2"></td>
-                  <td ng-bind="x.author.email" class="col-md-1"></td>
+                  <td ng-bind="x.author.name" class="col-md-1"></td>
                   <td ng-bind="x.type.name" class="col-md-1"></td>
                   <td ng-bind="x.isApproved ? '是' : '否'" class="col-md-1"></td>
                   <td ng-bind="x.isComment ? '是' : '否'" class="col-md-1"></td>
@@ -90,7 +90,7 @@
 	  <form role="form" name="f">
 		<div class="box-header">
           <h3 class="box-title">详情</h3>
-          <button type="button" class="btn btn-warning pull-right" ng-click="ctrl.delete()" ng-if="hasAuthority('content_manager')">删除</button>
+          <button type="button" class="btn btn-warning pull-right" ng-click="ctrl.delete()" ng-if="hasAuthority('content')">删除</button>
         </div>
 	    <div class="box-body">
 	      <div class="form-group has-feedback" ng-class="{'has-success':f.title.$valid,'has-warning':f.title.$error.required,'has-error':f.title.$error.minlength}">
@@ -104,13 +104,12 @@
 	      </div>
 	      <div class="form-group">
 	        <label for="">作者</label>
-	        <input type="text" placeholder="author" name="author" class="form-control" value="{{ctrl.article.author.email}}" disabled="disabled">
+	        <input type="text" placeholder="author" name="author" class="form-control" value="{{ctrl.article.author.name}}" disabled="disabled">
 	      </div>
 	      <div class="form-group">
 	        <label for="">类型</label>
-	        <select class="form-control select2" style="width: 100%;" select2 ng-model="ctrl.article.type">
-		      <option value="">无</option>
-		      <option value="{{x}}" ng-repeat="x in ctrl.types">{{x.name}}</option>
+	        <select class="form-control select2" style="width: 100%;" select2 ng-model="ctrl.article.typeId">
+		      <option value="{{x.id}}" ng-repeat="x in ctrl.types">{{x.name}}</option>
 		    </select>
 	      </div>
 	      <div class="form-group">
@@ -124,10 +123,10 @@
 	    </div>
 	    <div class="box-footer clearfix">
 	      <button class="btn btn-default pull-left" ng-click="ctrl.back()">返回</button>
-	      <button type="button" style="margin-left: 60px;" class="btn btn-success" ng-click="ctrl.approveArticle()" ng-if="hasAuthority('content_manager') && !ctrl.article.isApproved && ctrl.article.id">允许发布</button>
-	      <button type="button" style="margin-left: 60px;" class="btn btn-warning" ng-click="ctrl.rejectArticle()" ng-if="hasAuthority('content_manager') && ctrl.article.isApproved && ctrl.article.id">禁止发布</button>
-	      <button type="button" style="margin-left: 60px;" class="btn btn-success" ng-click="ctrl.openComment()" ng-if="hasAuthority('content_manager') && !ctrl.article.isComment && ctrl.article.id">允许评论</button>
-	      <button type="button" style="margin-left: 60px;" class="btn btn-warning" ng-click="ctrl.closeComment()" ng-if="hasAuthority('content_manager') && ctrl.article.isComment && ctrl.article.id">禁止评论</button>
+	      <button type="button" style="margin-left: 60px;" class="btn btn-success" ng-click="ctrl.approveArticle()" ng-if="hasAuthority('content') && !ctrl.article.canApproved && ctrl.article.id">允许发布</button>
+	      <button type="button" style="margin-left: 60px;" class="btn btn-warning" ng-click="ctrl.rejectArticle()" ng-if="hasAuthority('content') && ctrl.article.canApproved && ctrl.article.id">禁止发布</button>
+	      <button type="button" style="margin-left: 60px;" class="btn btn-success" ng-click="ctrl.openComment()" ng-if="hasAuthority('content') && !ctrl.article.canComment && ctrl.article.id">允许评论</button>
+	      <button type="button" style="margin-left: 60px;" class="btn btn-warning" ng-click="ctrl.closeComment()" ng-if="hasAuthority('content') && ctrl.article.canComment && ctrl.article.id">禁止评论</button>
 	      <button class="btn btn-primary pull-right" ng-click="ctrl.submit()" ng-disabled="f.$invalid">提交</button>
 	    </div>
 	    <!-- /.box-body -->

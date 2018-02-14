@@ -33,6 +33,7 @@ define(['cms/module', 'cms/category/service'], function(cmsModule) {
 		
 		self.add = function() {
 			self.form = {};
+			self.ignoreName = null;
 			self.isDetail = true;
 		};
 		
@@ -41,7 +42,7 @@ define(['cms/module', 'cms/category/service'], function(cmsModule) {
 				self.form = resp.data;
 				self.ignoreName = resp.data.name;
 				if (self.form.parent) {
-					self.form.parent = self.form.parent.name;
+					self.form.parentId = self.form.parent.id;
 				}
 				self.isDetail = true;
 			});

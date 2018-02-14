@@ -85,7 +85,7 @@ define([ 'common/module', 'common/service/util', 'toastr' ], function(commonModu
 				if (rejection.status === 401 || rejection.status === 403) {
 					location.replace('login');
 				} else {
-					toastr.error(rejection.data);
+					toastr.error(rejection.status);
 				}
 				return $q.reject(rejection);
 			}

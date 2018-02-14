@@ -82,6 +82,9 @@ public class FileServiceImpl implements FileService {
 		return new File(resources, filterPath(pathname));
 	}
 	
+	/**
+	 * 将基于resources的File，转成相对于resources的路径
+	 */
 	@Override
 	public String getPath(File f) {
 		if (f == null) {
@@ -177,7 +180,13 @@ public class FileServiceImpl implements FileService {
 		}
 		return new ExecResult(true, null, null);
 	}
-
+	
+	/**
+	 * 根据内部存储情况自动存储文件，适用于图片等资料
+	 * @param in 文件输入流
+	 * @param suffix 文件后缀，若为null，则不保存文件后缀
+	 * @return ExecResult.attribute中存储返回存储后的文件的路径+文件名，文件名由自动计算
+	 */
 	@Override
 	public ExecResult autoSaveFile(InputStream in, String suffix) {
 		LocalDate d = LocalDate.now();

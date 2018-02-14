@@ -7,10 +7,12 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.URLDecoder;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -22,22 +24,35 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.utils.ZtreeNode;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.file.FileService;
+import com.github.emailtohl.integration.core.file.Image;
+import com.github.emailtohl.integration.core.user.UserService;
+import com.github.emailtohl.integration.core.user.customer.CustomerService;
+import com.github.emailtohl.integration.core.user.employee.EmployeeService;
+import com.github.emailtohl.integration.core.user.entities.Customer;
+import com.github.emailtohl.integration.core.user.entities.Employee;
+import com.github.emailtohl.integration.core.user.entities.User;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
@@ -52,6 +67,7 @@ import com.google.gson.GsonBuilder;
 public class ResourceCtrl {
 	private static final Logger logger = LogManager.getLogger();
 	private static final String USER_SPACE_NAME = "userSpace";
+	public static final String ICON_SPACE = "iconSpace";
 	private Gson gson = new GsonBuilder().setPrettyPrinting().addSerializationExclusionStrategy(new ExclusionStrategy() {
 		@Override
 		public boolean shouldSkipField(FieldAttributes f) {
@@ -70,16 +86,31 @@ public class ResourceCtrl {
 	@Inject
 	@Named("resources")
 	private File resources;
+	@Inject
+	private UserService userService;
+	@Inject
+	private EmployeeService employeeService;
+	@Inject
+	private CustomerService customerService;
+	
 	/**
 	 * 用户空间
 	 */
 	private File userSpace;
+	/**
+	 * 头像空间
+	 */
+	private File iconSpace;
 	
 	@PostConstruct
 	public void init() throws IOException {
 		userSpace = new File(resources, USER_SPACE_NAME);
 		if (!userSpace.exists()) {
 			userSpace.mkdir();
+		}
+		iconSpace = new File(resources, ICON_SPACE);
+		if (!iconSpace.exists()) {
+			iconSpace.mkdir();
 		}
 	}
 	
@@ -256,6 +287,81 @@ public class ResourceCtrl {
 		byte[] bytes = buffer.array();
 		ByteArrayInputStream in = new ByteArrayInputStream(bytes);
 		return fileService.save(getFilePath(form.getPath()), in);
+	}
+	
+	/**
+	 * 上传图片,针对前端CKEditor接口编写的控制器方法
+	 * @param image
+	 * @return 返回一个CKEditor识别的回调函数
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "image", method = RequestMethod.POST)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void uploadImage(@RequestParam("CKEditorFuncNum") String CKEditorFuncNum/* 回调显示图片的位置 */, 
+			@RequestPart("upload") Part image
+			, HttpServletResponse response) throws IOException {
+		ExecResult execResult = null;
+		try (InputStream in = image.getInputStream()) {
+			String submittedFileName = image.getSubmittedFileName();
+			String suffix = FilenameUtils.getExtension(submittedFileName);
+			execResult = fileService.autoSaveFile(in, suffix);
+		} catch (Exception e) {
+			logger.warn("上传失败，可能是文件名后缀不对，或是IO异常", e);
+		}
+		String html;
+		if (execResult.ok) {
+			String url = (String) execResult.attribute;
+			if (StringUtils.hasText(url)) {
+				url = String.join("/", url.split(ConstantPattern.SEPARATOR));
+			}
+			url = "resources/" + url;
+			html = "<script type=\"text/javascript\">window.parent.CKEDITOR.tools.callFunction(" + CKEditorFuncNum + ",'" + url + "','');</script>";
+		} else {
+			// 第三个参数为空表示没有错误，不为空则会弹出一个对话框显示　error　message　的内容
+			html = "<script type=\"text/javascript\">window.parent.CKEDITOR.tools.callFunction(" + CKEditorFuncNum + ",'','上传失败');</script>";
+		}
+		response.addHeader("X-Frame-OPTIONS", "SAMEORIGIN");
+		response.setContentType("text/html; charset=utf-8");  
+        PrintWriter out = response.getWriter();
+        out.println(html);
+        out.close();
+	}
+	
+	/**
+	 * 用户上传头像
+	 * @param icon
+	 * @throws IOException 
+	 */
+	@RequestMapping(value = "icon", method = RequestMethod.POST)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void uploadIcon(@RequestParam("id") long id, @RequestPart("icon") Part icon) throws IOException {
+		User u = userService.get(id);
+		if (u == null) {
+			return;
+		}
+		// 删除原有的图片，且同步数据库中的信息
+		String iconSrc = u.getImage() == null ? null : u.getImage().getSrc();
+		if (StringUtils.hasText(iconSrc)) {
+			fileService.delete(iconSrc);
+		}
+		
+		LocalDate date = LocalDate.now();
+		String name = icon.getSubmittedFileName();
+		String path = ICON_SPACE + File.separator + date.getYear() + File.separator + date.getDayOfYear();
+		path = path + File.separator + id + '_' + name;
+		try (InputStream in = icon.getInputStream()) {
+			ExecResult execResult = fileService.save(path, in);
+			if (execResult.ok) {
+				String src = "resources/" + String.join("/", path.split(ConstantPattern.SEPARATOR));
+				Image img = new Image(name, src);
+				if (u instanceof Employee) {
+					u.setImage(img);
+					employeeService.update(id, (Employee) u);
+				} else if (u instanceof Customer) {
+					customerService.update(id, (Customer) u);
+				}
+			}
+		}
 	}
 	
 	/**

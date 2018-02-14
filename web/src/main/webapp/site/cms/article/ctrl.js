@@ -20,7 +20,6 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 		self.query = function() {
 			service.search(self.queryParam.query, self.queryParam.page).then(function(resp) {
 				self.page = resp.data;
-				console.log(resp.data);
 				self.isDetail = false;
 			});
 		};
@@ -40,8 +39,10 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 		
 		self.edit = function(id) {
 			service.findArticle(id).then(function(resp) {
-				console.log(resp.data);
 				self.article = resp.data;
+				if (resp.data.type) {
+					self.article.typeId = resp.data.type.id;
+				}
 				self.isDetail = true;
 				refresh();
 			});
@@ -84,7 +85,7 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 			if (!self.article.id)
 				return;
 			service.approveArticle(self.article.id).then(function(resp) {
-				self.article.isApproved = true;
+				self.article.canApproved = true;
 			});
 		};
 		
@@ -92,7 +93,7 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 			if (!self.article.id)
 				return;
 			service.rejectArticle(self.article.id).then(function(resp) {
-				self.article.isApproved = false;
+				self.article.canApproved = false;
 			});
 		};
 		
@@ -100,7 +101,7 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 			if (!self.article.id)
 				return;
 			service.openComment(self.article.id).then(function(resp) {
-				self.article.isComment = true;
+				self.article.canComment = true;
 			});
 		};
 		
@@ -108,7 +109,7 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 			if (!self.article.id)
 				return;
 			service.closeComment(self.article.id).then(function(resp) {
-				self.article.isComment = false;
+				self.article.canComment = false;
 			});
 		};
 		
@@ -136,7 +137,7 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 			var url = null;
 			// 只有登录了，才有CSRF TOKEN，不然上传文件会报错，如果没登录则屏蔽上传文件功能
 			if ($scope.isAuthenticated()) {
-				url = 'forum/image?type=image';
+				url = 'resource/image?type=image';
 				var token = util.getCookie('XSRF-TOKEN');
 				if (token) {
 					url += '&_csrf=' + token;

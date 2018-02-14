@@ -116,11 +116,13 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 				type = typeRepository.getByName(entity.getType().getName());
 			}
 		}
-		if (type != null) {
-			type = webPresetData.unclassified;
+		if (type == null) {
+			type = typeRepository.findOne(webPresetData.unclassified.getId());
 		}
-		entity.setType(type);
-		type.getArticles().add(entity);
+		if (type != null) {
+			entity.setType(type);
+			type.getArticles().add(entity);
+		}
 		return transientDetail(articleRepository.save(entity));
 	}
 

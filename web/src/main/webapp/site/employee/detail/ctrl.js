@@ -12,6 +12,9 @@ define(['employee/module', 'employee/service'], function(employeeModule) {
 				});
 			};
 			self.getDetail($state.params.id);
+			self.whenDone = function() {
+				self.getDetail($state.params.id);
+			}
 			self.dictionary = {
 				'ADMIN' : '系统管理员',
 				'EMPLOYEE' : '职员',

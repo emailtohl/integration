@@ -100,6 +100,11 @@ public class CmsCtrl {
 	public Article saveArticle(@RequestBody @Valid ArticleForm form, Errors e) {
 		checkErrors(e);
 		Article a = new Article(form.title, form.keywords, form.body, form.summary);
+		if (form.getTypeId() != null) {
+			Type t = new Type();
+			t.setId(form.getTypeId());
+			a.setType(t);
+		}
 		return articleService.create(a);
 	}
 	
@@ -114,6 +119,11 @@ public class CmsCtrl {
 	public void updateArticle(@PathVariable long id, @RequestBody @Valid ArticleForm form, Errors e) {
 		checkErrors(e);
 		Article a = new Article(form.title, form.keywords, form.body, form.summary);
+		if (form.getTypeId() != null) {
+			Type t = new Type();
+			t.setId(form.getTypeId());
+			a.setType(t);
+		}
 		articleService.update(id, a);
 	}
 
@@ -461,7 +471,7 @@ public class CmsCtrl {
 		String keywords;
 		@NotNull String body;
 		String summary;
-		String type;
+		Long typeId;
 		Boolean approve;
 		public String getTitle() {
 			return title;
@@ -481,13 +491,12 @@ public class CmsCtrl {
 		public void setBody(String body) {
 			this.body = body;
 		}
-		public String getType() {
-			return type;
+		public Long getTypeId() {
+			return typeId;
 		}
-		public void setType(String type) {
-			this.type = type;
+		public void setTypeId(Long typeId) {
+			this.typeId = typeId;
 		}
-		
 		public String getSummary() {
 			return summary;
 		}

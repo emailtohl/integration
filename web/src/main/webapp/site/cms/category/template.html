@@ -33,17 +33,17 @@
                 <thead>
                 <tr>
                   <th class="col-md-1">序号</th>
-                  <th class="col-md-2">类型名</th>
-                  <th class="col-md-2">父类型</th>
-                  <th class="col-md-2">文章数</th>
+                  <th class="col-md-3">类型名</th>
+                  <!-- <th class="col-md-2">父类型</th> -->
+                  <th class="col-md-3">文章数</th>
                   <th class="col-md-5">描述</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr ng-repeat="x in ctrl.page.content" style="cursor: pointer;" ng-click="ctrl.edit(x.id)">
                   <td ng-bind="$index + 1" class="col-md-1"></td>
-                  <td ng-bind="x.name" class="col-md-2"></td>
-                  <td ng-bind="x.parent.name" class="col-md-2"></td>
+                  <td ng-bind="x.name" class="col-md-3"></td>
+                  <!-- <td ng-bind="x.parent.name" class="col-md-3"></td> -->
                   <td ng-bind="x.articles.length" class="col-md-2"></td>
                   <td ng-bind="x.description" class="col-md-5"></td>
                 </tr>
@@ -51,9 +51,9 @@
                 <tfoot>
                 <tr>
                   <th class="col-md-1">序号</th>
-                  <th class="col-md-2">类型名</th>
-                  <th class="col-md-2">父类型</th>
-                  <th class="col-md-2">文章数</th>
+                  <th class="col-md-3">类型名</th>
+                  <!-- <th class="col-md-2">父类型</th> -->
+                  <th class="col-md-3">文章数</th>
                   <th class="col-md-5">描述</th>
                 </tr>
                 </tfoot>
@@ -88,9 +88,9 @@
 	      </div>
 	      <div class="form-group">
 	        <label for="">父类型</label>
-	        <select class="form-control select2" style="width: 100%;" select2 ng-model="ctrl.form.parent" ng-disabled="presetData.unclassified_id == ctrl.form.id">
+	        <select class="form-control select2" style="width: 100%;" select2 ng-model="ctrl.form.parentId" ng-disabled="presetData.unclassified_id == ctrl.form.id">
 		      <option value="">无</option>
-		      <option value="{{x.name}}" ng-repeat="x in ctrl.types | excludeSelf:ctrl.form.id">{{x.name}}</option>
+		      <option value="{{x.id}}" ng-repeat="x in ctrl.types | excludeSelf:ctrl.form.id">{{x.name}}</option>
 		    </select>
 	      </div>
 	      <div class="form-group">

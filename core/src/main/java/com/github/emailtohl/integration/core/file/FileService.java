@@ -41,7 +41,7 @@ public interface FileService {
 	File getFile(String pathname);
 	
 	/**
-	 * 将基于resources的File转成相对于resources的路径
+	 * 将基于resources的File，转成相对于resources的路径
 	 * @param f
 	 * @return
 	 */
@@ -51,7 +51,7 @@ public interface FileService {
 	/**
 	 * 创建文件夹
 	 * @param dirname
-	 * @return
+	 * @return 仅仅是创建成功或失败的标记
 	 */
 	@PreAuthorize("hasAuthority('" + RESOURCE + "')")
 	ExecResult createDir(@Pattern(regexp = LEGAL_FILENAME) String dirname);
@@ -60,7 +60,7 @@ public interface FileService {
 	 * 更改文件或文件夹名
 	 * @param srcName 目录+文件名
 	 * @param destName 目录+文件名
-	 * @return
+	 * @return 仅仅是修改成功或失败的标记
 	 */
 	@PreAuthorize("hasAuthority('" + RESOURCE + "')")
 	ExecResult reName(String srcName, @Pattern(regexp = LEGAL_FILENAME) String destName);
@@ -68,7 +68,7 @@ public interface FileService {
 	/**
 	 * 删除文件或文件夹
 	 * @param pathname 目录+文件名
-	 * @return
+	 * @return 仅仅是删除成功或失败的标记
 	 */
 	@PreAuthorize("hasAuthority('" + RESOURCE + "')")
 	ExecResult delete(String pathname);
@@ -77,7 +77,7 @@ public interface FileService {
 	 * 保存文件到，原文件可以不存在
 	 * @param pathname 目录+文件名
 	 * @param in 文件输入流
-	 * @return
+	 * @return 仅仅是保存成功或失败的标记
 	 */
 	ExecResult save(@Pattern(regexp = LEGAL_FILENAME) String pathname, InputStream in);
 	
@@ -120,7 +120,7 @@ public interface FileService {
 	 * @param pathname 目录+文件名
 	 * @param textContext
 	 * @param charset the charset to use, null means platform default
-	 * @return
+	 * @return 仅仅是写入成功或失败的标记
 	 */
 	@PreAuthorize("hasAuthority('" + CONTENT + "')")
 	ExecResult writeText(@Pattern(regexp = LEGAL_FILENAME) String pathname, String textContext, String charset);

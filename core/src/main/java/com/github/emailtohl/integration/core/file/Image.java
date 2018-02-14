@@ -21,13 +21,13 @@ public class Image {
 	public Image() {
 	}
 	
-	public Image(String filename, String path) {
-		this(path, filename, null);
+	public Image(String filename, String src) {
+		this(filename, src, null);
 	}
 	
-	public Image(String filename, String path, byte[] bin) {
+	public Image(String filename, String src, byte[] bin) {
 		super();
-		this.src = path;
+		this.src = src;
 		this.filename = filename;
 		this.bin = bin;
 	}
