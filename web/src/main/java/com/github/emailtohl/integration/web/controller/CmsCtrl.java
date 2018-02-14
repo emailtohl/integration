@@ -30,6 +30,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -264,14 +265,23 @@ public class CmsCtrl {
 	}
 	
 	/**
+	 * 文章类型是否存在
+	 * @param category
+	 * @return
+	 */
+	@RequestMapping(value = "cms/category/exist", method = RequestMethod.GET)
+	public String exist(@RequestParam(name = "category") String category) {
+		return String.format("{\"exist\":%b}", typeService.exist(category));
+	}
+	
+	/**
 	 * 获取所有的分类
 	 * @return
 	 */
 	@RequestMapping(value = "cms/typePage", method = GET)
-	public Paging<Type> getTypePage(@RequestParam(name = "name", required = false) String name,
-			@PageableDefault(page = 0, size = 10, sort = {
-					BaseEntity.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
-		Type t = new Type(name, null, null);
+	public Paging<Type> getTypePage(TypeForm form, @PageableDefault(page = 0, size = 10, sort = {
+			BaseEntity.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
+		Type t = new Type(form.getName(), form.getDescription(), null);
 		return typeService.query(t, pageable);
 	}
 	

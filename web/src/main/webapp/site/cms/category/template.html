@@ -75,29 +75,32 @@
 	  <form role="form" name="f">
 		<div class="box-header">
           <h3 class="box-title">详情</h3>
-          <button type="button" class="btn btn-warning pull-right" ng-click="ctrl.delete()" ng-if="hasAuthority('content_manager')">删除</button>
+          <button type="button" class="btn btn-warning pull-right" ng-click="ctrl.delete()" ng-if="hasAuthority('content')" ng-disabled="presetData.unclassified_id == ctrl.form.id">删除</button>
         </div>
 	    <div class="box-body">
-	      <div class="form-group has-feedback" ng-class="{'has-success':f.name.$valid,'has-warning':f.name.$error.required,'has-error':f.name.$error.minlength}">
+	      <div class="form-group has-feedback" ng-class="{'has-success':f.name.$valid,'has-warning':f.name.$error.required,'has-error':f.name.$error.minlength || f.name.$error.notexist}">
 	        <label for="">分类名</label>
-	        <input type="text" placeholder="name" name="name" class="form-control" ng-model="ctrl.form.name" required="required">
+	        <input asynvalidation local="cms/category/exist?category=" result="ctrl.validation(exist)" ignore="{{ctrl.ignoreName}}" type="text" placeholder="name" name="name" class="form-control" ng-model="ctrl.form.name" required="required" ng-disabled="presetData.unclassified_id == ctrl.form.id">
 	        <span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':f.name.$valid,'glyphicon-warning-sign':f.name.$error.required,'glyphicon-remove':f.name.$error.minlength}"></span>
+	      	<span ng-show="f.name.$error.notexist">
+				This field is exist
+			</span>
 	      </div>
 	      <div class="form-group">
 	        <label for="">父类型</label>
-	        <select class="form-control select2" style="width: 100%;" select2 ng-model="ctrl.form.parent">
+	        <select class="form-control select2" style="width: 100%;" select2 ng-model="ctrl.form.parent" ng-disabled="presetData.unclassified_id == ctrl.form.id">
 		      <option value="">无</option>
 		      <option value="{{x.name}}" ng-repeat="x in ctrl.types | excludeSelf:ctrl.form.id">{{x.name}}</option>
 		    </select>
 	      </div>
 	      <div class="form-group">
 	        <label for="">描述</label>
-	        <textarea rows="3" placeholder="description" class="form-control" ng-model="ctrl.form.description"></textarea>
+	        <textarea rows="3" placeholder="description" class="form-control" ng-model="ctrl.form.description" ng-disabled="presetData.unclassified_id == ctrl.form.id"></textarea>
 	      </div>
 	    </div>
 	    <div class="box-footer clearfix">
 	      <button class="btn btn-default pull-left" ng-click="ctrl.back()">返回</button>
-	      <button class="btn btn-primary pull-right" ng-click="ctrl.submit()" ng-disabled="f.$invalid">提交</button>
+	      <button class="btn btn-primary pull-right" ng-click="ctrl.submit()" ng-disabled="f.$invalid || presetData.unclassified_id == ctrl.form.id">提交</button>
 	    </div>
 	    <!-- /.box-body -->
 	  </form>

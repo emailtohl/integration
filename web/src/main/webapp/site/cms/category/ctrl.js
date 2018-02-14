@@ -26,6 +26,11 @@ define(['cms/module', 'cms/category/service'], function(cmsModule) {
 			self.query();
 		};
 		
+		self.validation = function(exist) {
+			$scope.f.name.$setValidity('notexist', !exist);
+			$scope.$apply();
+		};
+		
 		self.add = function() {
 			self.form = {};
 			self.isDetail = true;
@@ -34,6 +39,7 @@ define(['cms/module', 'cms/category/service'], function(cmsModule) {
 		self.edit = function(id) {
 			service.findTypeById(id).then(function(resp) {
 				self.form = resp.data;
+				self.ignoreName = resp.data.name;
 				if (self.form.parent) {
 					self.form.parent = self.form.parent.name;
 				}

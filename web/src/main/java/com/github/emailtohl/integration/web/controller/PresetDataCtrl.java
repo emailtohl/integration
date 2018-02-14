@@ -59,6 +59,9 @@ public class PresetDataCtrl {
 		
 		presetData.put("role_guest_id", corePresetData.role_guest.getId());
 		presetData.put("role_guest_name", corePresetData.role_guest.getName());
+		
+		presetData.put("unclassified_id", webPresetData.unclassified.getId());
+		presetData.put("unclassified_name", webPresetData.unclassified.getName());
 	}
 	
 	@RequestMapping(value = "presetData", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

@@ -110,6 +110,7 @@ define([
 			
 			$http.get('presetData').then(function(resp) {
 				$rootScope.presetData = resp.data;
+				console.log(resp.data);
 			});
 			
 			var date = new Date();
