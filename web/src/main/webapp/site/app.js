@@ -93,7 +93,8 @@ define([
 			// 进入全文搜索
 			$('form[name="fulltextsearch"]').on('submit', function(e) {
 				e.preventDefault();
-				$state.go('forum.search', {}, {
+				var query = $(this).find('input[name="search"]').val();
+				$state.go('cms.resource', {query:query}, {
 					reload: true
 				});
 			});

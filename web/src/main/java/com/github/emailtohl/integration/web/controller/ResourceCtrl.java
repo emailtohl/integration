@@ -241,6 +241,9 @@ public class ResourceCtrl {
 				return new ExecResult(false, e.getMessage(), "");
 			}
 		}
+		if (msg.charAt(0) == ',') {
+			msg.deleteCharAt(0);
+		}
 		return new ExecResult(true, "", msg.toString());
 	}
 	

@@ -26,7 +26,7 @@ define([ 'common/module'/*, 'ztree'*/ ], function(commonModule) {
 			var i, node, name = names.shift();
 			if (!name)
 				return;
-			name = decodeURIComponent(name);
+//			name = decodeURIComponent(name);
 			for (i = 0; i < nodes.length; i++) {
 				node = nodes[i];
 				if (node.isParent && node.name == name) {
@@ -125,9 +125,9 @@ define([ 'common/module'/*, 'ztree'*/ ], function(commonModule) {
 			/**
 			 * 根据目录设置打开状态
 			 */
-			setOpen : function(treeNode, path) {
+			setOpen : function(nodes, path) {
 				var names = path.split('/');
-				setNodesOpen([treeNode], names);
+				setNodesOpen(nodes, names);
 			},
 			/**
 			 * 将中文目录转码

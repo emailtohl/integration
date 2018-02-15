@@ -2,16 +2,10 @@ define(['cms/module', 'common/context' ], function(cmsModule) {
 	return cmsModule.factory('resourceService', [ '$http', 'util', function($http, util) {
 		return {
 			/**
-			 * 获取资源管理的根目录的数据结构
-			 */
-			getFileRoot : function() {
-				return $http.get('resource/query');
-			},
-			/**
 			 * 根据文本内容查询目录
 			 */
 			query : function(param) {
-				return $http.get('resource/query?param=' + (param ? param : ''));
+				return $http.get('resource/query' + (param ? '?param=' + param : ''));
 			},
 			/**
 			 * 创建一个目录

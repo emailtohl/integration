@@ -6,7 +6,6 @@ define([], function() {
 		zh : {
 			'date': '{{year}}年{{month}}月{{day}}日',
 			'home': '首页',
-			'forum': '论坛',
 			'flow': '流程',
 			'content': '内容管理',
 			'resource': '资源',
@@ -28,7 +27,6 @@ define([], function() {
 		en : {
 			'date': '{{month}}/{{day}}/{{year}}',
 			'home': 'home',
-			'forum': 'forum',
 			'flow': 'flow',
 			'content': 'content',
 			'resource': 'resource',

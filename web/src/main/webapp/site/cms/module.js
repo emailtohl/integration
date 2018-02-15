@@ -8,7 +8,7 @@ define(['angular', 'ui-router', 'common/context'], function(angular) {
 					template: '<div ui-view></div>'
 				})
 				.state('cms.resource', {
-					url: '/resource',
+					url: '/resource?query={id}',
 					templateUrl: 'site/cms/resource/template.html',
 					controller: 'ResourceCtrl as ctrl'
 				})

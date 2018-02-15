@@ -331,11 +331,11 @@
       <!-- search form -->
       <form action="#" method="get" class="sidebar-form" name="fulltextsearch">
         <div class="input-group">
-          <input type="text" name="search" class="form-control" placeholder="Search...">
-              <span class="input-group-btn">
-                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
-                </button>
-              </span>
+          <input type="text" name="search" class="form-control" placeholder="Search..." />
+          <span class="input-group-btn">
+            <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+            </button>
+          </span>
         </div>
       </form>
       <!-- /.search form -->
@@ -347,17 +347,6 @@
         		<i class="fa fa-dashboard"></i>
         		<span translate="home"></span>
         	</a>
-        </li>
-        <li class="treeview" data-ng-class="{active: $state.includes('forum')}">
-          <a href="#">
-            <i class="fa fa-forumbee"></i>
-            <span translate="forum"></span>
-            <i class="fa fa-angle-left pull-right"></i>
-          </a>
-          <ul class="treeview-menu">
-            <li data-ng-class="{active: $state.includes('forum.search')}" ><a ui-sref="forum.search" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>全文查找</a></li>
-            <li data-ng-class="{active: $state.includes('forum.add')}"><a ui-sref="forum.add" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>发帖</a></li>
-          </ul>
         </li>
         <li class="treeview" data-ng-class="{active: $state.includes('applicationForm')}">
           <a href="#">

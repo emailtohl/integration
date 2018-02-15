@@ -32,7 +32,6 @@ define(['jquery', 'cms/module', 'toastr', 'cms/resource/service'/*, 'ztree'*/], 
 			},
 			*/
 		};
-		
 		self.currentNodeIsFile = false;// 若点击是文件夹，则展示文件上传的表单，若点击的是文件，则展示文件的内容
 		self.charset = 'UTF-8';// 文本文件默认字符集
 		self.contentType = ''; // 文件的类型、txt/image/pdf等等
@@ -43,21 +42,43 @@ define(['jquery', 'cms/module', 'toastr', 'cms/resource/service'/*, 'ztree'*/], 
 		util.loadasync('lib/ztree/zTreeStyle.css');
 		util.loadasync('lib/ztree/diy.css');
 		$scope.getAuthentication();
-		
-		// 加载根目录
-		getFileRoot();
+		/**
+		 * 当修改目录结构时，需要刷新，调用此方法
+		 */
+		function loadTreeAndOpenPath(openPath) {
+			requirejs(['ztree'], function() {
+				service.query().then(function(resp) {
+					zNodes = resp.data;
+					if (openPath) {
+						ztreeutil.setOpen(zNodes, openPath);
+					}
+					zTreeObj = $.fn.zTree.init($("#resource-tree"), setting, zNodes);
+				});
+			});
+		}
+		// 全文搜索整个文件系统，找出跟查询条件匹配的文件
+		self.query = function() {
+			requirejs(['ztree'], function() {
+				service.query(self.queryParam).then(function(resp) {
+					zNodes = resp.data;
+					zTreeObj = $.fn.zTree.init($("#resource-tree"), setting, zNodes);
+				});
+			});
+		};
+		if ($state.params.query) {
+			self.queryParam = $state.params.query;
+		}
+		self.query();
+		self.reloadText = function(charset) {
+			console.log(charset);
+		}
 		// 获取所有的字符集
 		service.getAvailableCharsets().then(function(resp) {
 			self.availableCharsets = resp.data;
 		});
-		// 全文搜索整个文件系统，找出跟查询条件匹配的文件
-		self.query = function() {
-			service.query(self.queryParam).then(function(resp) {
-				zNodes = resp.data;
-				zTreeObj = $.fn.zTree.init($("#resource-tree"), setting, zNodes);
-			});
-		};
+		
 		self.mkdir = function() {
+			// 测试节点集合是不是已存在此名字（同目录下文件名不能相同）
 			function test(name, nodes) {
 				for (var i = 0; i < nodes.length; i++) {
 					if (name == nodes[i].name) {
@@ -81,9 +102,10 @@ define(['jquery', 'cms/module', 'toastr', 'cms/resource/service'/*, 'ztree'*/], 
 					name = pre + index;
 				}
 			}
-			var fullname = decodeURIComponent(self.path) + '/' + name;
+//			var fullname = decodeURIComponent(self.path) + '/' + name;
+			var fullname = self.path + '/' + name;
 			service.createDir(fullname).then(function(resp) {
-				getFileRoot();
+				loadTreeAndOpenPath(fullname);
 			});
 		}
 		// 修改文件文本
@@ -94,7 +116,9 @@ define(['jquery', 'cms/module', 'toastr', 'cms/resource/service'/*, 'ztree'*/], 
 			var i = self.path.indexOf('/');
 			var path = self.path.substring(i);
 			service.writeText(path, self.content, self.charset).then(function(resp) {
-				getFileRoot(self.path);
+				self.query();
+				ztreeutil.setNodes();
+				loadTreeAndOpenPath(self.path);
 			});
 		};
 		// 上传结束后的逻辑
@@ -104,7 +128,7 @@ define(['jquery', 'cms/module', 'toastr', 'cms/resource/service'/*, 'ztree'*/], 
 				return;
 			}
 			toastr.success(msg);
-			getFileRoot(self.path);
+			loadTreeAndOpenPath(self.path);
 		};
 		// 用于提交表达的校验，若上传文件为空，则提交按钮不被开放
 		self.fileNotExist = function() {
@@ -114,22 +138,6 @@ define(['jquery', 'cms/module', 'toastr', 'cms/resource/service'/*, 'ztree'*/], 
 		self.getDownloadPath = function() {
 			return 'resources/userSpace/' + self.path;
 		};
-		
-		/**
-		 * 获取根目录
-		 */
-		function getFileRoot(openPath) {
-			requirejs(['ztree'], function() {
-				service.getFileRoot().then(function(resp) {
-					zNodes = resp.data;
-					if (openPath) {
-						ztreeutil.setOpen(zNodes, openPath);
-					}
-					zTreeObj = $.fn.zTree.init($("#resource-tree"), setting, zNodes);
-				});
-			});
-
-		}
 		
 		/**
 		 * 删除节点前的逻辑：
@@ -146,7 +154,7 @@ define(['jquery', 'cms/module', 'toastr', 'cms/resource/service'/*, 'ztree'*/], 
 			if (confirm('确认删除吗？')) {
 				filename = ztreeutil.getFilePath(treeNode);
 				service['delete'](filename).then(function(resp) {
-					getFileRoot(filename);
+					loadTreeAndOpenPath(filename);
 				});
 			}
 			return false;// 在前端不体现删除的效果，而是由后台刷新实现
@@ -167,7 +175,7 @@ define(['jquery', 'cms/module', 'toastr', 'cms/resource/service'/*, 'ztree'*/], 
 					destName = newName;
 				}
 				service.reName(srcName, destName).then(function(resp) {
-					getFileRoot(destName);
+					loadTreeAndOpenPath(destName);
 				});
 			}
 			return false;
@@ -205,7 +213,7 @@ define(['jquery', 'cms/module', 'toastr', 'cms/resource/service'/*, 'ztree'*/], 
 					var dirName = ztreeutil.getFilePath(treeNode);
 					dirName += '/new node' + (newCount++);
 					service.createDir(dirName).then(function(resp) {
-						getFileRoot(dirName);
+						loadTreeAndOpenPath(dirName);
 					});
 					return false;
 				});
@@ -219,7 +227,6 @@ define(['jquery', 'cms/module', 'toastr', 'cms/resource/service'/*, 'ztree'*/], 
 				self.currentNodeIsFile = false;
 				$scope.$apply(function() {
 					self.path = ztreeutil.getFilePath(treeNode);
-					self.path = ztreeutil.encodePath(self.path);
 				});
 			} else {
 				self.currentNodeIsFile = true;
