@@ -10,5 +10,5 @@ import com.github.emailtohl.integration.web.service.cms.entities.Article;
  */
 class ArticleRepositoryImpl extends AbstractSearchableRepository<Article>
 		implements ArticleRepositoryCustomization {
-
+	
 }

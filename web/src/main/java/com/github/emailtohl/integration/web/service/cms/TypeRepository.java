@@ -12,7 +12,7 @@ import com.github.emailtohl.integration.web.service.cms.entities.Type;
  * 文章类型的数据访问接口
  * @author HeLei
  */
-interface TypeRepository extends JpaRepository<Type, Long> {
+interface TypeRepository extends JpaRepository<Type, Long>, TypeRepositoryCustomization {
 	/**
 	 * 根据类型名查询类型实体
 	 * @param name

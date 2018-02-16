@@ -8,5 +8,4 @@ import com.github.emailtohl.integration.web.service.cms.entities.Article;
  * @author HeLei
  */
 interface ArticleRepositoryCustomization extends SearchableRepository<Article> {
-
 }

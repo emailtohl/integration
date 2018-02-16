@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -34,15 +35,6 @@ public class Type extends BaseEntity implements SelfRef {
 	 * 分类的描述
 	 */
 	private String description;
-	
-	public Type() {}
-	
-	public Type(String name, String description, Type parent) {
-		super();
-		this.name = name;
-		this.description = description;
-		this.parent = parent;
-	}
 
 	/**
 	 * 上一级分类
@@ -53,6 +45,17 @@ public class Type extends BaseEntity implements SelfRef {
 	 * 分类下的文章
 	 */
 	private Set<Article> articles = new LinkedHashSet<Article>();
+	
+	private Integer articlesNum;
+	
+	public Type() {}
+	
+	public Type(String name, String description, Type parent) {
+		super();
+		this.name = name;
+		this.description = description;
+		this.parent = parent;
+	}
 
 	@Column(unique = true, nullable = false)
 	public String getName() {
@@ -102,6 +105,14 @@ public class Type extends BaseEntity implements SelfRef {
 
 	public void setArticles(Set<Article> articles) {
 		this.articles = articles;
+	}
+
+	@Transient
+	public Integer getArticlesNum() {
+		return articlesNum;
+	}
+	public void setArticlesNum(Integer articlesNum) {
+		this.articlesNum = articlesNum;
 	}
 
 	@Override

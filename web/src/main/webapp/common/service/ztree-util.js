@@ -95,7 +95,7 @@ define([ 'common/module'/*, 'ztree'*/ ], function(commonModule) {
 				function search(nodes) {
 					var name = dirs.shift();
 					for (var i = 0; i < nodes.length; i++) {
-						if (name && name == encodeURIComponent(nodes[i].name)) {
+						if (name && name == nodes[i].name) {
 							node = nodes[i];
 						}
 						if (nodes[i].isParent && nodes[i].children instanceof Array) {
