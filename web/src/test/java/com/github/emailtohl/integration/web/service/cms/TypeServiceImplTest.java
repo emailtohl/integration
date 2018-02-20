@@ -2,11 +2,18 @@ package com.github.emailtohl.integration.web.service.cms;
 
 import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import org.junit.After;
 import org.junit.Before;
@@ -19,7 +26,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
+import com.github.emailtohl.integration.core.config.CorePresetData;
+import com.github.emailtohl.integration.core.user.entities.CustomerRef;
 import com.github.emailtohl.integration.web.WebTestConfig;
+import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
 import com.google.gson.Gson;
 
@@ -32,9 +42,14 @@ import com.google.gson.Gson;
 @ActiveProfiles({ DB_RAM_H2, ENV_NO_SERVLET })
 public class TypeServiceImplTest {
 	@Inject
+	EntityManagerFactory factory;
+	@Inject
 	TypeService typeService;
 	@Inject
 	Gson gson;
+	
+	@Inject
+	CorePresetData cpd;
 	
 	Long id, superId, subId;
 
@@ -107,4 +122,57 @@ public class TypeServiceImplTest {
 		}
 	}
 
+	@Test
+	public void testGetTypesWithArticleNum() {
+		Article a1 = new Article("title1", "keywords1", "body1", "summary1");
+		Article a2 = new Article("title2", "keywords2", "body2", "summary2");
+		Article a3 = new Article("title3", "keywords3", "body3", "summary3");
+		
+		EntityManager em = factory.createEntityManager();
+		em.getTransaction().begin();
+		
+		Type type = em.find(Type.class, id);
+		Type sub = em.find(Type.class, subId);
+		
+		a1.setType(type);
+		a2.setType(sub);
+		a3.setType(type);
+		
+		CustomerRef anon = em.find(CustomerRef.class, cpd.user_anonymous.getId());
+		a1.setAuthor(anon);
+		a2.setAuthor(anon);
+		a3.setAuthor(anon);
+		
+		em.persist(a1);
+		em.persist(a2);
+		em.persist(a3);
+		
+		em.getTransaction().commit();
+		
+		List<Type> ls = typeService.getTypesWithArticleNum(null);
+		assertFalse(ls.isEmpty());
+		
+		Map<Long, Type> map = new HashMap<>();
+		for (Type t : ls) {
+			map.put(t.getId(), t);
+		}
+		
+		assertEquals(2, map.get(id).getArticlesNum().intValue());
+		assertEquals(1, map.get(subId).getArticlesNum().intValue());
+		assertEquals(0, map.get(superId).getArticlesNum().intValue());
+		
+		ls = typeService.getTypesWithArticleNum(type);
+		assertFalse(ls.isEmpty());
+		
+		em.getTransaction().begin();
+		em.merge(a1);
+		em.merge(a2);
+		em.merge(a3);
+		
+		em.remove(a1);
+		em.remove(a2);
+		em.remove(a3);
+		em.getTransaction().commit();
+		em.close();
+	}
 }

@@ -116,6 +116,11 @@ public class TypeServiceImpl extends StandardService<Type> implements TypeServic
 		return ls.stream().map(this::toTransient).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<Type> getTypesWithArticleNum(Type params) {
+		return typeRepository.getTypesWithArticleNum(params).stream().map(this::toTransient).collect(Collectors.toList());
+	}
+
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Type update(Long id, Type newEntity) {
@@ -169,8 +174,14 @@ public class TypeServiceImpl extends StandardService<Type> implements TypeServic
 		}
 		Type tar = new Type(entity.getName(), entity.getDescription(), null);
 		tar.setId(entity.getId());
+		tar.setArticlesNum(entity.getArticlesNum());
 		tar.setCreateDate(entity.getCreateDate());
 		tar.setModifyDate(entity.getModifyDate());
+		if (entity.getParent() != null) {
+			Type parent = new Type(entity.getParent().getName(), entity.getParent().getDescription(), null);
+			parent.setId(entity.getParent().getId());
+			tar.setParent(parent);
+		}
 		return tar;
 	}
 
@@ -181,8 +192,14 @@ public class TypeServiceImpl extends StandardService<Type> implements TypeServic
 		}
 		Type tar = new Type(entity.getName(), entity.getDescription(), transientDetail(entity.getParent()));
 		tar.setId(entity.getId());
+		tar.setArticlesNum(tar.getArticles().size());
 		tar.setCreateDate(entity.getCreateDate());
 		tar.setModifyDate(entity.getModifyDate());
+		if (entity.getParent() != null) {
+			Type parent = new Type(entity.getParent().getName(), entity.getParent().getDescription(), null);
+			parent.setId(entity.getParent().getId());
+			tar.setParent(parent);
+		}
 		return tar;
 	}
 	/**
@@ -194,4 +211,5 @@ public class TypeServiceImpl extends StandardService<Type> implements TypeServic
 			throw new NotAcceptableException("不能修改系统内置类型");
 		}
 	}
+
 }

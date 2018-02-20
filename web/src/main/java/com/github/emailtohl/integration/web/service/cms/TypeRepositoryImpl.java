@@ -1,5 +1,6 @@
 package com.github.emailtohl.integration.web.service.cms;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,7 +9,11 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
@@ -31,16 +36,32 @@ public class TypeRepositoryImpl implements TypeRepositoryCustomization {
 		A .article_type_id
 	*/
 	@Override
-	public List<Type> getTypesWithArticleNum(Type type) {
+	public List<Type> getTypesWithArticleNum(Type params) {
 		CriteriaBuilder b = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Object[]> q = b.createQuery(Object[].class);
 		Root<Type> r = q.from(Type.class);
-		Join<Type, Article> join = r.join("articles");
+		Join<Type, Article> join = r.join("articles", JoinType.LEFT);
 		q = q.multiselect(r, b.count(join.get("type").get("id")));
+		List<Predicate> ls = new ArrayList<Predicate>();
+		if (params != null) {
+			if (params.getId() != null) {
+				ls.add(b.equal(r.get("id"), params.getId()));
+			}
+			if (StringUtils.hasText(params.getName())) {
+				ls.add(b.like(b.lower(r.get("name")), params.getName().trim().toLowerCase()));
+			}
+			if (StringUtils.hasText(params.getDescription())) {
+				ls.add(b.like(b.lower(r.get("description")), params.getDescription().trim().toLowerCase()));
+			}
+			if (!ls.isEmpty()) {
+				Predicate[] predicates = new Predicate[ls.size()];
+				q = q.where(ls.toArray(predicates));
+			}
+		}
 		q = q.groupBy(r.get("id"), join.get("type").get("id"));
-		return entityManager.createQuery(q).getResultList().stream().map(tuple -> {
+		return entityManager.createQuery(q).getResultList().stream().map((Object[] tuple) -> {
 			Type t = (Type) tuple[0];
-			t.setArticlesNum((Integer) tuple[1]);
+			t.setArticlesNum(((Long) tuple[1]).intValue());
 			return t;
 		}).collect(Collectors.toList());
 	}

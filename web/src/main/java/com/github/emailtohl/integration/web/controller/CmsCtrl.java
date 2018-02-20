@@ -300,8 +300,9 @@ public class CmsCtrl {
 	 * @return
 	 */
 	@RequestMapping(value = "cms/types", method = GET)
-	public List<Type> getTypes() {
-		return typeService.query(null);
+	public List<Type> getTypes(TypeForm form) {
+		Type t = new Type(form.name, form.description, null);
+		return typeService.getTypesWithArticleNum(t);
 	}
 	
 	/**

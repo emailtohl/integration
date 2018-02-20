@@ -60,6 +60,13 @@ public interface TypeService {
 	 * @return
 	 */
 	List<Type> query(Type params);
+	
+	/**
+	 * 从数据层开始就获取到每个Type下有多少文章数
+	 * @param params
+	 * @return
+	 */
+	List<Type> getTypesWithArticleNum(Type params);
 
 	/**
 	 * 更新文章类型
