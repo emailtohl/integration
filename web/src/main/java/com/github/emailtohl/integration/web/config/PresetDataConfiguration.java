@@ -1,10 +1,13 @@
 package com.github.emailtohl.integration.web.config;
 
+import java.io.File;
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
@@ -16,10 +19,16 @@ import javax.persistence.criteria.Root;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
+import org.apache.commons.io.FileUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.role.Role;
@@ -31,6 +40,8 @@ import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.org.DepartmentService;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
 
+import freemarker.template.TemplateExceptionHandler;
+
 /**
  * 预置数据的配置
  * 
@@ -38,8 +49,44 @@ import com.github.emailtohl.integration.web.service.cms.entities.Type;
  */
 @Configuration
 @Import(ActivitiConfiguration.class)
+@PropertySource({ "classpath:web.properties" })
 public class PresetDataConfiguration {
 
+	@Bean(name = "templatesPath")
+	public File templatesPath(Environment env, @Named("resources") File resourcesPath) throws IOException {
+		String path = env.getProperty("templatesPath");
+		File templatesPath;
+		if (StringUtils.hasText(path)) {
+			templatesPath = new File(path);
+		} else {
+			templatesPath = new File(resourcesPath, "templates");
+		}
+		if (!templatesPath.exists()) {
+			templatesPath.mkdir();
+			Resource r = new ClassPathResource("templates");
+			FileUtils.copyDirectory(r.getFile(), templatesPath);
+		}
+		return templatesPath;
+	}
+	
+	/**
+	 * freemarker的配置
+	 * @return
+	 * @throws IOException
+	 */
+	@Bean
+	public freemarker.template.Configuration freeMarkerConfiguration(@Named("templatesPath") File templatesPath) throws IOException {
+		freemarker.template.Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_23);
+		cfg.setDirectoryForTemplateLoading(templatesPath);
+		cfg.setDefaultEncoding("UTF-8");
+		// Sets how errors will appear.
+		// During web page *development* TemplateExceptionHandler.HTML_DEBUG_HANDLER is better.
+		cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+		// Don't log exceptions inside FreeMarker that it will thrown at you anyway:
+		cfg.setLogTemplateExceptions(false);
+		return cfg;
+	}
+	
 	@Bean
 	public WebPresetData webPresetData(EntityManagerFactory jpaEntityManagerFactory, CorePresetData cpd,
 			IdentityService identityService, EmployeeService employeeService, RoleService roleService,

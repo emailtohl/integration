@@ -58,14 +58,21 @@ import freemarker.template.TemplateException;
 @RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class CmsCtrl {
 	private static final Logger logger = LogManager.getLogger();
-	@Inject
+	
 	Configuration cfg;
-	@Inject
 	TypeService typeService;
-	@Inject
-	CommentService commentService;
-	@Inject
 	ArticleService articleService;
+	CommentService commentService;
+	
+	@Inject
+	public CmsCtrl(Configuration cfg, TypeService typeService, ArticleService articleService,
+			CommentService commentService) {
+		super();
+		this.cfg = cfg;
+		this.typeService = typeService;
+		this.articleService = articleService;
+		this.commentService = commentService;
+	}
 	
 	/**
 	 * 获取某文章
@@ -77,7 +84,7 @@ public class CmsCtrl {
 	public Article findArticle(@PathVariable long id) throws NotFoundException {
 		return articleService.get(id);
 	}
-	
+
 	/**
 	 * 全文搜索
 	 * @param query

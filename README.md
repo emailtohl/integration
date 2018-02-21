@@ -26,17 +26,19 @@
 		url="jdbc:postgresql://localhost:5432/integration"></Resource>
 ```
 
-当然也可以使用src/main/resources/database.properties中的数据库配置，将web模块的ContainerBootstrap类中setActiveProfiles为Profiles.DB_CONFIG，这样core模块中的DataSourceConfiguration就会用配置来创建数据源。：
+当然也可以使用integration-core中src/main/resources/database.properties中的数据库配置，将web模块的ContainerBootstrap类中setActiveProfiles为Profiles.DB_CONFIG，这样core模块中的DataSourceConfiguration就会用配置来创建数据源。：
 
 ```java
 	rootContext.getEnvironment().setActiveProfiles(Profiles.DB_JNDI, Profiles.ENV_SERVLET);// 激活spring配置中的profile
 ```
 
-项目会使用文件空间中，还需在tomcat的server.xml中的Host标签下配置虚拟目录：
+项目会使用文件系统，配置在integration-core的src/main/resources/config.properties中，若不配置，则默认使用与项目同级目录下的integration-data，该目录包括索引目录(integration-data/index)、资源目录(integration-data/resources)等，所以还需在tomcat的server.xml中的Host标签下配置虚拟目录：
 
 ```xml
 <Context docBase="/home/helei/programs/apache-tomcat-8.5.24/wtpwebapps/integration-data/resources" path="/web/resources" reloadable="true"/>
 ```
+
+> 注意：第一次启动项目时，若没有integration-data/resources目录，则tomcat会报无法找到资源的异常：The main resource set specified [integration-data/resources] is not valid。不过启动一次后，该目录就会被创建，第二次就能正确启动。
 
 登录时使用内置的账号：
 

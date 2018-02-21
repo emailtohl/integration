@@ -7,7 +7,6 @@ import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
 import static com.github.emailtohl.integration.core.Profiles.ENV_SERVLET;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 
 import javax.inject.Inject;
@@ -15,7 +14,6 @@ import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
@@ -153,11 +151,9 @@ public class DataSourceConfiguration {
 	}
 	
 	/**
-	 * web资源目录，在tomcat上配置虚拟目录的地址：
-	 * <Context debug="0" docBase="D:\program\apache-tomcat-9.0.0.M15\wtpwebapps\integration-data\resources" path="/web/resources" reloadable="true"/>
-	 * 此目录为公开外部访问的根目录，数据库存储的目录地址以此目录作为根
-	 * 
-	 * @param dataPath 存放数据的目录，其下，有公开的resources目录，也有未公开的索引（index）等目录
+	 * web资源目录，在dataPath 存放数据的目录下，此目录为公开外部访问的根目录，在tomcat上需配置虚拟目录的地址与此目录相对应，如：
+	 * <Context docBase="/home/helei/programs/apache-tomcat-8.5.24/wtpwebapps/integration-data/resources" path="/web/resources" reloadable="true"/>
+	 * @param
 	 * @return
 	 */
 	@Bean(name = "resources")
@@ -180,25 +176,6 @@ public class DataSourceConfiguration {
 			index.mkdir();
 		}
 		return index;
-	}
-
-	@Bean(name = "templatesPath")
-	public File templatesPath(@Named("data") File dataPath, @Named("root") File root) throws IOException {
-		String path = env.getProperty("templatesPath");
-		File templatesPath;
-		if (StringUtils.hasText(path)) {
-			templatesPath = new File(path);
-		} else {
-			templatesPath = new File(dataPath, "templates");
-		}
-		if (!templatesPath.exists()) {
-			templatesPath.mkdir();
-			if (contains(ENV_SERVLET)) {
-				File src = new File(root, "templates");
-				FileUtils.copyDirectory(src, templatesPath, true);
-			}
-		}
-		return templatesPath;
 	}
 
 	/**
