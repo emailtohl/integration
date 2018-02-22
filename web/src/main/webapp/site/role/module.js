@@ -1,4 +1,4 @@
-define(['angular', 'ui-router', 'common/context'], function(angular) {
+define(['angular', 'ui-router', 'common/context', 'ng-verify'], function(angular) {
 	return angular.module('roleModule', ['ui.router', 'commonModule', 'ngVerify'])
 		.config(function($stateProvider) {
 			$stateProvider

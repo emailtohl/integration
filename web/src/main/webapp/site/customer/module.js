@@ -1,5 +1,5 @@
-define(['angular', 'ui-router', 'common/context'], function(angular) {
-	return angular.module('customerModule', ['ui.router', 'commonModule'])
+define(['angular', 'ui-router', 'common/context', 'ng-verify'], function(angular) {
+	return angular.module('customerModule', ['ui.router', 'commonModule', 'ngVerify'])
 		.config(function($stateProvider) {
 			$stateProvider
 				.state('customer', {

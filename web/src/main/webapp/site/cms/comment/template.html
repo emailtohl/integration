@@ -46,9 +46,9 @@
                   <td ng-bind="$index + 1" class="col-md-1"></td>
                   <td ng-bind="x.article.title" class="col-md-2"></td>
                   <td ng-bind="x.article.type.name" class="col-md-1"></td>
-                  <td ng-bind="x.critics" class="col-md-1"></td>
+                  <td ng-bind="x.reviewer.name" class="col-md-1"></td>
                   <td ng-bind="x.content | omit" class="col-md-4"></td>
-                  <td ng-bind="x.isApproved ? '是' : '否'" class="col-md-1"></td>
+                  <td ng-bind="x.canComment == null || x.canComment ? '是' : '否'" class="col-md-1"></td>
                   <td ng-bind="x.createDate" class="col-md-2"></td>
                 </tr>
                 </tbody>
@@ -79,13 +79,13 @@
 	<div class="row" ng-show="ctrl.isDetail">
 		<div class="box-header">
           <h3 class="box-title">详情</h3>
-          <button type="button" class="btn btn-warning pull-right" ng-click="ctrl.delete()" ng-if="hasAuthority('content_manager')">删除</button>
+          <button type="button" class="btn btn-warning pull-right" ng-click="ctrl.delete()" ng-if="hasAuthority('content')">删除</button>
         </div>
 	    <div class="box-body">
 	      <div class="col-md-6">
 		      <div class="form-group">
 		        <label for="">评论者</label>
-		        <input type="text" placeholder="critics" class="form-control" value="{{ctrl.comment.critics}}" readonly="readonly">
+		        <input type="text" placeholder="reviewer" class="form-control" value="{{ctrl.comment.reviewer.name}}" readonly="readonly">
 		      </div>
 		      <div class="form-group">
 		        <label for="">创建日期</label>
@@ -125,8 +125,8 @@
 	    </div>
 	    <div class="box-footer clearfix">
 	      <button class="btn btn-default pull-left" ng-click="ctrl.back()">返回</button>
-	      <button type="button" style="margin-left: 60px;" class="btn btn-success pull-right" ng-click="ctrl.approvedComment()" ng-if="hasAuthority('content_manager') && !ctrl.comment.isApproved && ctrl.comment.id">允许发布</button>
-	      <button type="button" style="margin-left: 60px;" class="btn btn-warning pull-right" ng-click="ctrl.rejectComment()" ng-if="hasAuthority('content_manager') && ctrl.comment.isApproved && ctrl.comment.id">禁止发布</button>
+	      <button type="button" style="margin-left: 60px;" class="btn btn-success pull-right" ng-click="ctrl.approvedComment()" ng-if="hasAuthority('content') && !ctrl.canComment() && ctrl.comment.id">允许发布</button>
+	      <button type="button" style="margin-left: 60px;" class="btn btn-warning pull-right" ng-click="ctrl.rejectComment()" ng-if="hasAuthority('content') && ctrl.canComment() && ctrl.comment.id">禁止发布</button>
 	    </div>
 	    <!-- /.box-body -->
 	</div>

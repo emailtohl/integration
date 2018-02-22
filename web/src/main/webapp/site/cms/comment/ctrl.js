@@ -39,14 +39,17 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 				self.comment = data;
 				self.isDetail = true;
 				
-				$('#' + editorID).val(self.comment.article.body);
-				var editor = CKEDITOR.instances[editorID]; // 编辑器的"name"属性的值
-				if (editor) {
-					editor.destroy(true);// 销毁编辑器
-				}
-				editor = CKEDITOR.replace(editorID); // 替换编辑器，editorID为ckeditor的"id"属性的值
-				CKEDITOR.on('instanceReady', function(ev) {
-					editor.setReadOnly(true);
+				// 'ckeditor', 'ckeditorConfig'在define的顶部加载会有问题
+				require(['ckeditor', 'ckeditorConfig'], function() {
+					$('#' + editorID).val(self.comment.article.body);
+					var editor = CKEDITOR.instances[editorID]; // 编辑器的"name"属性的值
+					if (editor) {
+						editor.destroy(true);// 销毁编辑器
+					}
+					editor = CKEDITOR.replace(editorID); // 替换编辑器，editorID为ckeditor的"id"属性的值
+					CKEDITOR.on('instanceReady', function(ev) {
+						editor.setReadOnly(true);
+					});
 				});
 			});
 		};
@@ -60,7 +63,7 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 			if (!self.comment.id)
 				return;
 			service.approvedComment(self.comment.id).then(function(resp) {
-				self.comment.isApproved = true;
+				self.comment.canComment = true;
 			});
 		};
 		
@@ -68,7 +71,7 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 			if (!self.comment.id)
 				return;
 			service.rejectComment(self.comment.id).then(function(resp) {
-				self.comment.isApproved = false;
+				self.comment.canComment = false;
 			});
 		};
 		
@@ -91,6 +94,12 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 			}
 		};
 		
+		self.canComment = function() {
+			if (self.comment && self.comment.canComment != null && self.comment.canComment === false) {
+				return false;
+			}
+			return true;
+		};
 	}])
 	;
 });

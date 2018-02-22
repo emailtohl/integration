@@ -65,7 +65,7 @@ public interface UserService {
 	 * @param id
 	 * @return
 	 */
-	@PreAuthorize("isAuthenticated()")
+//	@PreAuthorize("isAuthenticated()")
 	UserRef getRef(Long id);
 	
 	/**

@@ -28,6 +28,7 @@ import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.UserRef;
 import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Comment;
+import com.github.emailtohl.integration.web.service.cms.entities.Type;
 
 /**
  * 文章评论服务实现
@@ -245,12 +246,27 @@ public class CommentServiceImpl extends StandardService<Comment> implements Comm
 		target.setApproved(entity.getApproved());
 		target.setApprover(transientEmployeeRef(entity.getApprover()));
 		target.setReviewer(transientUserRef(entity.getReviewer()));
+		target.setArticle(keepArticleTitle(entity.getArticle()));
+		target.setComment(keepCommentContent(entity.getComment()));
 		return target;
 	}
 
 	@Override
 	protected Comment transientDetail(Comment entity) {
-		return toTransient(entity);
+		if (entity == null) {
+			return null;
+		}
+		Comment target = new Comment();
+		target.setId(entity.getId());
+		target.setCreateDate(entity.getCreateDate());
+		target.setModifyDate(entity.getModifyDate());
+		target.setContent(entity.getContent());
+		target.setApproved(entity.getApproved());
+		target.setApprover(transientEmployeeRef(entity.getApprover()));
+		target.setReviewer(transientUserRef(entity.getReviewer()));
+		target.setArticle(transientArticle(entity.getArticle()));
+		target.setComment(keepCommentContent(entity.getComment()));
+		return target;
 	}
 	
 	protected UserRef transientUserRef(UserRef source) {
@@ -282,4 +298,60 @@ public class CommentServiceImpl extends StandardService<Comment> implements Comm
 		return target;
 	}
 
+	protected Article transientArticle(Article source) {
+		if (source == null) {
+			return null;
+		}
+		Article target = new Article(source.getTitle(), source.getKeywords(), source.getBody(), source.getSummary());
+		target.setId(source.getId());
+		target.setCreateDate(source.getCreateDate());
+		target.setModifyDate(source.getModifyDate());
+		target.setAuthor(transientUserRef(source.getAuthor()));
+		target.setApprover(transientEmployeeRef(source.getApprover()));
+		if (source.getType() != null) {
+			Type st = source.getType();
+			Type t = new Type();
+			t.setId(st.getId());
+			t.setCreateDate(st.getCreateDate());
+			t.setModifyDate(st.getModifyDate());
+			t.setName(st.getName());
+			t.setDescription(st.getDescription());
+			target.setType(t);
+		}
+		return target;
+	}
+	
+	/**
+	 * 只保留文章的标题，用于列表
+	 * @param source
+	 * @return
+	 */
+	protected Article keepArticleTitle(Article source) {
+		if (source == null) {
+			return null;
+		}
+		Article target = new Article(source.getTitle(), source.getKeywords(), null, null);
+		target.setId(source.getId());
+		target.setCreateDate(source.getCreateDate());
+		target.setModifyDate(source.getModifyDate());
+		return target;
+	}
+	
+	/**
+	 * 只保留评论的内容
+	 * @param source
+	 * @return
+	 */
+	protected Comment keepCommentContent(Comment source) {
+		if (source == null) {
+			return null;
+		}
+		Comment target = new Comment();
+		target.setId(source.getId());
+		target.setCreateDate(source.getCreateDate());
+		target.setModifyDate(source.getModifyDate());
+		target.setContent(source.getContent());
+		target.setReviewer(transientUserRef(source.getReviewer()));
+		return target;
+	}
 }

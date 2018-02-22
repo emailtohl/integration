@@ -309,32 +309,40 @@
 <script src="resources/templates/js/tether.min.js"></script> <!-- Tether for Bootstrap, http://stackoverflow.com/questions/34567939/how-to-fix-the-error-error-bootstrap-tooltips-require-tether-http-github-h --> 
 <script src="resources/templates/js/bootstrap.min.js"></script>                 <!-- Bootstrap (http://v4-alpha.getbootstrap.com/) -->
 <script>
-	$(function() {
-		$.get('authentication', function(data){
-			console.log(data);
-			var username = data.username || '';
-			if (username == 'anonymousUser')
-				username = '匿名';
-			var iconSrc = data.iconSrc || 'lib/AdminLTE/img/user2-160x160.jpg';
-			$('span#accountName').text(username);
-			$('img#accountIcon').attr('src', iconSrc);
+$(function() {
+	$.get('authentication', function(data){
+		console.log(data);
+		var username = data.username || '';
+		if (username == 'anonymousUser')
+			username = '匿名';
+		var iconSrc = data.iconSrc || 'lib/AdminLTE/img/user2-160x160.jpg';
+		$('span#accountName').text(username);
+		$('img#accountIcon').attr('src', iconSrc);
+	});
+	
+	$('form#comment').on('submit', function(e) {
+		e.preventDefault();
+		//$(this).serialize()
+		var form = new FormData(this);
+		var articleId = form.get('articleId');
+		articleId = parseInt(articleId);
+		var content = form.get('content');
+		//content = encodeURIComponent(content);
+		var json = JSON.stringify({
+			articleId : articleId,
+			content : content,
 		});
-		
-		$('form#comment').on('submit', function(e) {
-			e.preventDefault();
-			//$(this).serialize()
-			var articleId = $(this).find('input[name="articleId"]').val();
-			var content = $(this).find('textarea[name="content"]').val();
-			var json = JSON.stringify({
-				articleId : articleId,
-				content : content,
-			});
-			$.post('cms/comment', json, function() {
+		$.ajax({
+			type: 'POST',
+			url: 'cms/comment',
+			data: json,
+			contentType: 'application/json;charset=UTF-8',
+			success: function() {
 				window.location.reload();
-			}, 'json');
-			return false;
+			},
 		});
 	});
+});
 </script>
 
 </body>
