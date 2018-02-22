@@ -1,23 +1,12 @@
 package com.github.emailtohl.integration.web.controller;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.anyVararg;
-import static org.mockito.Mockito.doAnswer;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.Part;
-
-import static org.junit.Assert.*;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -26,7 +15,6 @@ import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.github.emailtohl.integration.common.utils.BeanUtil;
-import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.file.FileService;
 /**
  * 资源控制器测试

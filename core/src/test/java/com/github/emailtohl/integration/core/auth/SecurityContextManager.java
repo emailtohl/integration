@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.github.emailtohl.integration.core.config.Constant;
+import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 
 /**
@@ -24,9 +25,10 @@ class SecurityContextManager {
 	final String customerDefaultPassword;
 	final String employeeDefaultPassword;
 	
+	final CorePresetData cpd;
 	final CoreTestData td;
 	
-	public SecurityContextManager(AuthenticationManager authenticationManager, CoreTestData td) {
+	public SecurityContextManager(AuthenticationManager authenticationManager, CorePresetData cpd, CoreTestData td) {
 		this.authenticationManager = authenticationManager;
 		Properties prop = new Properties();
 		try (InputStream in = SecurityContextManager.class.getResourceAsStream("/config.properties")) {
@@ -36,6 +38,7 @@ class SecurityContextManager {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		};
+		this.cpd = cpd;
 		this.td = td;
 	}
 
@@ -45,7 +48,7 @@ class SecurityContextManager {
 	
 	public void setEmailtohl() {
 		SecurityContextHolder.clearContext();
-		String name = td.user_emailtohl.getEmail();
+		String name = cpd.user_emailtohl.getEmail();
 		Authentication token = new UsernamePasswordAuthenticationToken(name, customerDefaultPassword);
 		Authentication authentication = authenticationManager.authenticate(token);
 		SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
 import com.github.emailtohl.integration.common.exception.InvalidDataException;
+import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 /**
@@ -31,7 +32,10 @@ import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 public class AuthenticationManagerImplTest {
 	@Inject
 	AuthenticationManager authenticationManager;// AuthenticationProviderImpl的实例
-	CoreTestData td = new CoreTestData();
+	@Inject
+	CorePresetData cpd;
+	@Inject
+	CoreTestData td;
 	String password = "123456";
 	Encipher encipher = new Encipher();
 	String publicKey, privateKey;
@@ -63,13 +67,13 @@ public class AuthenticationManagerImplTest {
 	
 	@Test(expected = UsernameNotFoundException.class)
 	public void testUsernameNotFoundExceptionBot() {
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(td.user_bot.getEmpNum(), password);
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(cpd.user_bot.getEmpNum(), password);
 		authenticationManager.authenticate(token);
 	}
 	
 	@Test(expected = UsernameNotFoundException.class)
 	public void testUsernameNotFoundExceptionAnonymous() {
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(td.user_anonymous.getEmail(), password);
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(cpd.user_anonymous.getEmail(), password);
 		authenticationManager.authenticate(token);
 	}
 	

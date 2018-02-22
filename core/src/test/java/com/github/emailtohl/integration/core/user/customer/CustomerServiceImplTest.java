@@ -37,6 +37,7 @@ import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.config.Constant;
+import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.file.Image;
@@ -65,6 +66,10 @@ public class CustomerServiceImplTest {
 	String customerDefaultPassword;
 	@Inject
 	Gson gson;
+	@Inject
+	CorePresetData cpd;
+	@Inject
+	CoreTestData td;
 	Long id;
 	String password = "112233";
 
@@ -101,7 +106,6 @@ public class CustomerServiceImplTest {
 
 	@Test
 	public void testExist() {
-		CoreTestData td = new CoreTestData();
 		assertTrue(customerService.exist(td.baz.getEmail()));
 		assertTrue(customerService.exist(td.baz.getCellPhone()));
 		assertFalse(customerService.exist(td.foo.getEmail()));
@@ -116,7 +120,6 @@ public class CustomerServiceImplTest {
 
 	@Test
 	public void testQueryCustomerPageable() {
-		CoreTestData td = new CoreTestData();
 		Paging<Customer> p = customerService.query(null, pageable);
 		assertFalse(p.getContent().isEmpty());
 		
@@ -137,7 +140,6 @@ public class CustomerServiceImplTest {
 
 	@Test
 	public void testQueryCustomer() {
-		CoreTestData td = new CoreTestData();
 		Customer params = new Customer();
 		List<Customer> p = customerService.query(params);
 		assertFalse(p.isEmpty());
@@ -185,7 +187,6 @@ public class CustomerServiceImplTest {
 
 	@Test
 	public void testGetByUsername() {
-		CoreTestData td = new CoreTestData();
 		Customer c = customerService.getByUsername(td.baz.getCellPhone());
 		assertNotNull(c);
 		c = customerService.getByUsername(td.baz.getEmail());
@@ -196,7 +197,6 @@ public class CustomerServiceImplTest {
 	
 	@Test
 	public void testGetUsernames() {
-		CoreTestData td = new CoreTestData();
 		Customer c = customerService.getByUsername(td.baz.getCellPhone());
 		List<String> ls = customerService.getUsernames(c.getId());
 		assertEquals(2, ls.size());// email and cellPhone
@@ -204,8 +204,7 @@ public class CustomerServiceImplTest {
 
 	@Test
 	public void testGrandRoles() {
-		CoreTestData td = new CoreTestData();
-		Customer c = customerService.grandRoles(id, td.role_guest.getName());
+		Customer c = customerService.grandRoles(id, cpd.role_guest.getName());
 		c = customerService.get(id);
 		assertFalse(c.getRoles().isEmpty());
 	}
@@ -329,10 +328,9 @@ public class CustomerServiceImplTest {
 		assertFalse(p.getContent().isEmpty());
 		p.getContent().forEach(c -> System.out.println(c));
 		
-		CoreTestData td = new CoreTestData();
-		Customer cust = customerService.grandRoles(id, td.role_guest.getName());
+		Customer cust = customerService.grandRoles(id, cpd.role_guest.getName());
 		System.out.println(cust.getRoles());
-		p = customerService.search(td.role_guest.getName(), pageable);
+		p = customerService.search(cpd.role_guest.getName(), pageable);
 		assertFalse(p.getContent().isEmpty());
 		p.getContent().forEach(c -> System.out.println(c));
 		
@@ -348,7 +346,6 @@ public class CustomerServiceImplTest {
 	public void testLogin() {
 		ExecResult r = customerService.login("lalala", "123");
 		assertFalse(r.ok);
-		CoreTestData td = new CoreTestData();
 		r = customerService.login(td.baz.getCellPhone(), "123");
 		assertFalse(r.ok);
 		r = customerService.login(td.baz.getCellPhone(), "123456");
@@ -364,7 +361,6 @@ public class CustomerServiceImplTest {
 	
 	@Test
 	public void testFindRefByUsername() {
-		CoreTestData td = new CoreTestData();
 		CustomerRef ref = customerService.findRefByUsername(td.baz.getCellPhone());
 		assertNotNull(ref);
 		ref = customerService.findRefByUsername(td.baz.getEmail());
@@ -374,7 +370,6 @@ public class CustomerServiceImplTest {
 	
 	@Test
 	public void testQueryRefPageable() {
-		CoreTestData td = new CoreTestData();
 		Paging<CustomerRef> p = customerService.queryRef(null, pageable);
 		assertFalse(p.getContent().isEmpty());
 		
@@ -395,7 +390,6 @@ public class CustomerServiceImplTest {
 	
 	@Test
 	public void testQueryRef() {
-		CoreTestData td = new CoreTestData();
 		List<CustomerRef> ls = customerService.queryRef(null);
 		assertFalse(ls.isEmpty());
 		

@@ -22,8 +22,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
+import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
-import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.google.gson.Gson;
 
 /**
@@ -38,14 +38,15 @@ public class RoleServiceImplTest {
 	RoleService roleService;
 	@Inject
 	Gson gson;
+	@Inject
+	CorePresetData cpd;
 
 	@Test
 	public void testCRUD() {
-		CoreTestData td = new CoreTestData();
 		Role r = new Role("test_role", RoleType.EMPLOYEE, "for test");
 		r.getAuthorities().addAll(Arrays.asList(
 			new Authority("not exist", "不存在的权限", null),
-			td.auth_customer_lock, td.auth_customer_reset_password
+			cpd.auth_customer_lock, cpd.auth_customer_reset_password
 		));
 		
 		r = roleService.create(r);
@@ -56,9 +57,9 @@ public class RoleServiceImplTest {
 		r = roleService.get("test_role");
 		assertNotNull(r);
 		
-		r.getAuthorities().remove(td.auth_customer_lock);
-		r.getAuthorities().add(td.auth_customer_level);
-		r.getAuthorities().add(td.auth_employee_role);
+		r.getAuthorities().remove(cpd.auth_customer_lock);
+		r.getAuthorities().add(cpd.auth_customer_level);
+		r.getAuthorities().add(cpd.auth_employee_role);
 		r.setDescription("for update");
 		roleService.update(id, r);
 		r = roleService.get(id);
@@ -71,8 +72,7 @@ public class RoleServiceImplTest {
 
 	@Test
 	public void testExist() {
-		CoreTestData td = new CoreTestData();
-		boolean b = roleService.exist(td.role_guest.getName());
+		boolean b = roleService.exist(cpd.role_guest.getName());
 		assertTrue(b);
 		b = roleService.exist("foo");
 		assertFalse(b);
@@ -83,8 +83,7 @@ public class RoleServiceImplTest {
 		Pageable pageable = new PageRequest(0, 20);
 		Paging<Role> p = roleService.query(null, pageable);
 		assertFalse(p.getContent().isEmpty());
-		CoreTestData td = new CoreTestData();
-		p = roleService.query(td.role_manager, pageable);
+		p = roleService.query(cpd.role_manager, pageable);
 		assertFalse(p.getContent().isEmpty());
 		System.out.println(gson.toJson(p));
 	}
@@ -93,8 +92,7 @@ public class RoleServiceImplTest {
 	public void testQueryRole() {
 		List<Role> ls = roleService.query(null);
 		assertFalse(ls.isEmpty());
-		CoreTestData td = new CoreTestData();
-		ls = roleService.query(td.role_staff);
+		ls = roleService.query(cpd.role_staff);
 		assertFalse(ls.isEmpty());
 		System.out.println(gson.toJson(ls));
 	}

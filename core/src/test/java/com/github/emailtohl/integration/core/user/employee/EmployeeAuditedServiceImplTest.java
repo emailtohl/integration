@@ -25,8 +25,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.jpa.envers.Tuple;
+import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
-import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.file.Image;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.Gender;
@@ -49,6 +49,7 @@ public class EmployeeAuditedServiceImplTest {
 	@Inject
 	Gson gson;
 	Long id;
+	CorePresetData cpd = new CorePresetData();
 	
 	@Before
 	public void setUp() throws Exception {
@@ -70,13 +71,13 @@ public class EmployeeAuditedServiceImplTest {
 		}
 		e.setPost("系统分析师");
 		e.setSalary(10000.00);
-		e.setDepartment(new CoreTestData().product);
+		e.setDepartment(cpd.product);
 		e = employeeService.create(e);
 		id = e.getId();
 		
 		Employee tar = new Employee();
 		tar.setDescription("update");
-		tar.setDepartment(new CoreTestData().qa);
+		tar.setDepartment(cpd.qa);
 		Employee u = employeeService.update(id, tar);
 		assertEquals(tar.getDescription(), u.getDescription());
 		assertEquals(tar.getDepartment(), u.getDepartment());

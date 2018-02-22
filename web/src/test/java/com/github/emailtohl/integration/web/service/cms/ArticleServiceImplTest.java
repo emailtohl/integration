@@ -10,7 +10,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.IdentityService;
@@ -54,7 +53,6 @@ public class ArticleServiceImplTest {
 	@Inject
 	Gson gson;
 	@Inject
-	@Named("presetData")
 	CorePresetData pd;
 	@Inject
 	WebPresetData webPresetData;

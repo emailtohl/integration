@@ -14,9 +14,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -31,8 +31,6 @@ import com.github.emailtohl.integration.common.utils.ZtreeNode;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -106,12 +104,11 @@ public class FileServiceImplTest {
 		}
 	}
 
-	@Test
-	public void testCreateDir() {
-		ExecResult r = fileService.createDir("");
-		assertFalse(r.ok);
+	@Test(expected = ConstraintViolationException.class)
+	public void testCreateDirConstraintViolationException() {
+		fileService.createDir("-abc");
 	}
-
+	
 	@Test
 	public void testReName() {
 		ExecResult r = fileService.reName("", null);

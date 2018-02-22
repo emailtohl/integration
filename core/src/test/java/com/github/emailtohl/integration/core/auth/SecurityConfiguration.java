@@ -39,6 +39,7 @@ import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.common.jpa.envers.Tuple;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.config.Constant;
+import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleAuditedService;
@@ -95,40 +96,47 @@ class SecurityConfiguration {
 	 * @return
 	 */
 	@Bean
+	public CorePresetData corePresetData() {
+		CorePresetData cpd = new CorePresetData();
+		
+		cpd.role_admin.setId(id.getAndIncrement());
+		roleDB.put(cpd.role_admin.getId(), cpd.role_admin);
+		roleNameDB.put(cpd.role_admin.getName(), cpd.role_admin);
+		
+		cpd.role_manager.setId(id.getAndIncrement());
+		roleDB.put(cpd.role_manager.getId(), cpd.role_manager);
+		roleNameDB.put(cpd.role_manager.getName(), cpd.role_manager);
+		
+		cpd.role_staff.setId(id.getAndIncrement());
+		roleDB.put(cpd.role_staff.getId(), cpd.role_staff);
+		roleNameDB.put(cpd.role_staff.getName(), cpd.role_staff);
+		
+		cpd.role_guest.setId(id.getAndIncrement());
+		roleDB.put(cpd.role_guest.getId(), cpd.role_guest);
+		roleNameDB.put(cpd.role_guest.getName(), cpd.role_guest);
+		
+		cpd.user_admin.setId(id.getAndIncrement());
+		cpd.user_admin.setPassword(hashpw(employeeDefaultPassword));
+		userDB.put(cpd.user_admin.getId(), cpd.user_admin);
+		
+		cpd.user_bot.setId(id.getAndIncrement());
+		cpd.user_bot.setPassword(hashpw(employeeDefaultPassword));
+		userDB.put(cpd.user_bot.getId(), cpd.user_bot);
+		
+		cpd.user_anonymous.setId(id.getAndIncrement());
+		cpd.user_anonymous.setPassword(hashpw(customerDefaultPassword));
+		userDB.put(cpd.user_anonymous.getId(), cpd.user_anonymous);
+		
+		cpd.user_emailtohl.setId(id.getAndIncrement());
+		cpd.user_emailtohl.setPassword(hashpw(customerDefaultPassword));
+		userDB.put(cpd.user_emailtohl.getId(), cpd.user_emailtohl);
+		
+		return cpd;
+	}
+	
+	@Bean
 	public CoreTestData coreTestData() {
 		CoreTestData td = new CoreTestData();
-		
-		td.role_admin.setId(id.getAndIncrement());
-		roleDB.put(td.role_admin.getId(), td.role_admin);
-		roleNameDB.put(td.role_admin.getName(), td.role_admin);
-		
-		td.role_manager.setId(id.getAndIncrement());
-		roleDB.put(td.role_manager.getId(), td.role_manager);
-		roleNameDB.put(td.role_manager.getName(), td.role_manager);
-		
-		td.role_staff.setId(id.getAndIncrement());
-		roleDB.put(td.role_staff.getId(), td.role_staff);
-		roleNameDB.put(td.role_staff.getName(), td.role_staff);
-		
-		td.role_guest.setId(id.getAndIncrement());
-		roleDB.put(td.role_guest.getId(), td.role_guest);
-		roleNameDB.put(td.role_guest.getName(), td.role_guest);
-		
-		td.user_admin.setId(id.getAndIncrement());
-		td.user_admin.setPassword(hashpw(employeeDefaultPassword));
-		userDB.put(td.user_admin.getId(), td.user_admin);
-		
-		td.user_bot.setId(id.getAndIncrement());
-		td.user_bot.setPassword(hashpw(employeeDefaultPassword));
-		userDB.put(td.user_bot.getId(), td.user_bot);
-		
-		td.user_anonymous.setId(id.getAndIncrement());
-		td.user_anonymous.setPassword(hashpw(customerDefaultPassword));
-		userDB.put(td.user_anonymous.getId(), td.user_anonymous);
-		
-		td.user_emailtohl.setId(id.getAndIncrement());
-		td.user_emailtohl.setPassword(hashpw(customerDefaultPassword));
-		userDB.put(td.user_emailtohl.getId(), td.user_emailtohl);
 		
 		td.foo.setId(id.getAndIncrement());
 		td.foo.setPassword(hashpw(employeeDefaultPassword));
@@ -160,7 +168,7 @@ class SecurityConfiguration {
 	}
 	
 	@Bean
-	public CustomerRepository customerRepository(CoreTestData td) {
+	public CustomerRepository customerRepository(CorePresetData cpd, CoreTestData td) {
 		CustomerRepository dao = mock(CustomerRepository.class);
 		when(dao.save(any(Customer.class))).then(invocation -> {
 			Customer c = (Customer) invocation.getArguments()[0];
@@ -199,8 +207,8 @@ class SecurityConfiguration {
 			return result;
 		});
 		// 手机号码和邮箱都能查找到
-		when(dao.findByCellPhone(td.user_emailtohl.getCellPhone())).thenReturn(td.user_emailtohl);
-		when(dao.findByEmail(td.user_emailtohl.getEmail())).thenReturn(td.user_emailtohl);
+		when(dao.findByCellPhone(cpd.user_emailtohl.getCellPhone())).thenReturn(cpd.user_emailtohl);
+		when(dao.findByEmail(cpd.user_emailtohl.getEmail())).thenReturn(cpd.user_emailtohl);
 		when(dao.findByCellPhone(td.baz.getCellPhone())).thenReturn(td.baz);
 		when(dao.findByEmail(td.baz.getEmail())).thenReturn(td.baz);
 		return dao;
@@ -283,8 +291,8 @@ class SecurityConfiguration {
 	
 	// AuthenticationManager来源于com.github.emailtohl.integration.user.auth
 	@Bean
-	public SecurityContextManager securityContextManager(AuthenticationManager authenticationManager, CoreTestData td) {
-		return new SecurityContextManager(authenticationManager, td);
+	public SecurityContextManager securityContextManager(AuthenticationManager authenticationManager, CorePresetData cpd, CoreTestData td) {
+		return new SecurityContextManager(authenticationManager, cpd, td);
 	}
 	
 	@Bean
@@ -335,15 +343,15 @@ class SecurityConfiguration {
 	}
 	
 	@Bean
-	public RoleAuditedService roleAuditedServiceMock(CoreTestData td) {
+	public RoleAuditedService roleAuditedServiceMock(CorePresetData cpd, CoreTestData td) {
 		RoleAuditedService service = mock(RoleAuditedService.class);
-		when(service.getRoleAtRevision(anyLong(), any())).thenReturn(td.role_guest);
+		when(service.getRoleAtRevision(anyLong(), any())).thenReturn(cpd.role_guest);
 		when(service.getRoleRevision(anyLong())).thenReturn(Arrays.asList(new Tuple<Role>()));
 		return service;
 	}
 	
 	@Bean
-	public CustomerService customerServiceMock(CustomerRepository re, CoreTestData td) {
+	public CustomerService customerServiceMock(CustomerRepository re, CorePresetData cpd, CoreTestData td) {
 		CustomerService service = mock(CustomerService.class);
 		when(service.create(any())).thenAnswer(invocation -> {
 			Customer c = (Customer) invocation.getArguments()[0];
@@ -378,8 +386,8 @@ class SecurityConfiguration {
 			re.delete(userId);
 			return invocation.getMock();
 		}).when(service).delete(any(Long.class));
-		when(service.getByUsername(td.user_emailtohl.getCellPhone())).thenReturn(td.user_emailtohl);
-		when(service.getByUsername(td.user_emailtohl.getEmail())).thenReturn(td.user_emailtohl);
+		when(service.getByUsername(cpd.user_emailtohl.getCellPhone())).thenReturn(cpd.user_emailtohl);
+		when(service.getByUsername(cpd.user_emailtohl.getEmail())).thenReturn(cpd.user_emailtohl);
 		when(service.getByUsername(td.baz.getCellPhone())).thenReturn(td.baz);
 		when(service.getByUsername(td.baz.getEmail())).thenReturn(td.baz);
 		when(service.grandRoles(anyLong(), anyVararg())).thenAnswer(invocation -> {

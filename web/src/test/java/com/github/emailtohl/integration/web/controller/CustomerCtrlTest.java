@@ -118,7 +118,7 @@ public class CustomerCtrlTest {
 	
 	@Test
 	public void testExist() throws Exception {
-		String json = mockMvc.perform(get("/customer/exist/" + td.baz.getEmail()))
+		String json = mockMvc.perform(get("/customer/exist?cellPhoneOrEmail=" + td.baz.getEmail()))
 		.andExpect(status().is2xxSuccessful())
 		.andReturn().getResponse().getContentAsString();
 		System.out.println(json);
@@ -175,7 +175,7 @@ public class CustomerCtrlTest {
 
 	@Test
 	public void testGetByCellPhoneOrEmail() throws Exception {
-		mockMvc.perform(get("/customer/cellPhoneOrEmail/" + cellPhoneOrEmail))
+		mockMvc.perform(get("/customer/cellPhoneOrEmail?cellPhoneOrEmail=" + cellPhoneOrEmail))
 		.andExpect(status().is2xxSuccessful());
 		
 		mockMvc.perform(get("/customer/cellPhoneOrEmail/" + "abc@test.com"))

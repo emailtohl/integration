@@ -2,7 +2,9 @@ package com.github.emailtohl.integration.core.role;
 
 import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,8 +20,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.jpa.envers.Tuple;
+import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
-import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.google.gson.Gson;
 
 /**
@@ -36,25 +38,26 @@ public class RoleAuditedServiceImplTest {
 	RoleService roleService;
 	@Inject
 	Gson gson;
+	@Inject
+	CorePresetData cpd;
 	
 	Long id;
 
 	@Before
 	public void setUp() throws Exception {
-		CoreTestData td = new CoreTestData();
 		Role r = new Role("test_role", RoleType.EMPLOYEE, "for test");
 		r.getAuthorities().addAll(Arrays.asList(
 			new Authority("not exist", "不存在的权限", null),
-			td.auth_customer_lock, td.auth_customer_reset_password
+			cpd.auth_customer_lock, cpd.auth_customer_reset_password
 		));
 		
 		r = roleService.create(r);
 		id = r.getId();
 		r = roleService.get(id);
 		assertEquals(2, r.getAuthorities().size());
-		r.getAuthorities().remove(td.auth_customer_lock);
-		r.getAuthorities().add(td.auth_customer_level);
-		r.getAuthorities().add(td.auth_employee_role);
+		r.getAuthorities().remove(cpd.auth_customer_lock);
+		r.getAuthorities().add(cpd.auth_customer_level);
+		r.getAuthorities().add(cpd.auth_employee_role);
 		r.setDescription("for update");
 		roleService.update(id, r);
 	}

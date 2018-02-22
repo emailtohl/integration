@@ -32,6 +32,7 @@ import com.github.emailtohl.integration.common.encryption.myrsa.KeyPairs;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.config.Constant;
+import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.file.Image;
@@ -55,6 +56,10 @@ public class EmployeeServiceImplTest {
 	EmployeeService employeeService;
 	@Inject
 	Gson gson;
+	@Inject
+	CorePresetData cpd;
+	@Inject
+	CoreTestData td;
 	@Value("${" + Constant.PROP_EMPLOYEE_DEFAULT_PASSWORD +"}")
 	String employeeDefaultPassword;
 	Long id;
@@ -80,7 +85,7 @@ public class EmployeeServiceImplTest {
 		}
 		e.setPost("系统分析师");
 		e.setSalary(10000.00);
-		e.setDepartment(new CoreTestData().product);
+		e.setDepartment(cpd.product);
 		e = employeeService.create(e);
 		id = e.getId();
 	}
@@ -142,7 +147,7 @@ public class EmployeeServiceImplTest {
 		}
 		newEntity.setPost("系统分析师");
 		newEntity.setSalary(10000.00);
-		newEntity.setDepartment(new CoreTestData().qa);
+		newEntity.setDepartment(cpd.qa);
 		Employee e = employeeService.update(id, newEntity);
 		assertEquals(newEntity.getDescription(), e.getDescription());
 		assertEquals(newEntity.getDepartment(), e.getDepartment());
@@ -150,8 +155,7 @@ public class EmployeeServiceImplTest {
 
 	@Test
 	public void testGrandRoles() {
-		CoreTestData td = new CoreTestData();
-		Employee e = employeeService.grandRoles(id, td.role_staff.getName(), td.role_guest.getName());
+		Employee e = employeeService.grandRoles(id, cpd.role_staff.getName(), cpd.role_guest.getName());
 		assertFalse(e.getRoles().isEmpty());
 	}
 	
@@ -215,15 +219,14 @@ public class EmployeeServiceImplTest {
 		assertFalse(p.getContent().isEmpty());
 		p.getContent().forEach(e -> System.out.println(e));
 		
-		p = employeeService.search("17812345678", pageable);
+		p = employeeService.search("17767853456", pageable);
 		assertFalse(p.getContent().isEmpty());
 		p.getContent().forEach(e -> System.out.println(e));
 		
 		// test role name
-		CoreTestData td = new CoreTestData();
-		Employee emp = employeeService.grandRoles(id, td.role_staff.getName());
+		Employee emp = employeeService.grandRoles(id, cpd.role_staff.getName());
 		System.out.println(emp.getRoles());
-		p = employeeService.search(td.role_staff.getName(), pageable);
+		p = employeeService.search(cpd.role_staff.getName(), pageable);
 		assertFalse(p.getContent().isEmpty());
 		p.getContent().forEach(e -> System.out.println(e));
 		
@@ -247,7 +250,6 @@ public class EmployeeServiceImplTest {
 	public void testLogin() {
 		ExecResult r = employeeService.login(0, "123");
 		assertFalse(r.ok);
-		CoreTestData td = new CoreTestData();
 		r = employeeService.login(td.bar.getEmpNum(), "123");
 		assertFalse(r.ok);
 		r = employeeService.login(td.bar.getEmpNum(), "123456");
@@ -263,7 +265,6 @@ public class EmployeeServiceImplTest {
 	
 	@Test
 	public void testFindRefByEmpNum() {
-		CoreTestData td = new CoreTestData();
 		EmployeeRef ref = employeeService.findRefByEmpNum(td.bar.getEmpNum());
 		assertNotNull(ref);
 		ref = employeeService.findRefByEmpNum(td.bar.getEmpNum());
@@ -273,7 +274,6 @@ public class EmployeeServiceImplTest {
 	
 	@Test
 	public void testQueryRefPageable() {
-		CoreTestData td = new CoreTestData();
 		Paging<EmployeeRef> p = employeeService.queryRef(null, pageable);
 		assertFalse(p.getContent().isEmpty());
 		
@@ -294,7 +294,6 @@ public class EmployeeServiceImplTest {
 	
 	@Test
 	public void testQueryRef() {
-		CoreTestData td = new CoreTestData();
 		List<EmployeeRef> ls = employeeService.queryRef(null);
 		assertFalse(ls.isEmpty());
 		

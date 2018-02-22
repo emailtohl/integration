@@ -99,7 +99,7 @@ public class EmployeeCtrlTest {
 	
 	@Test
 	public void testExist() throws Exception {
-		String json = mockMvc.perform(get("/employee/exist/" + td.bar.getEmpNum()))
+		String json = mockMvc.perform(get("/employee/exist?cellPhoneOrEmail=" + td.bar.getEmail()))
 		.andExpect(status().is2xxSuccessful())
 		.andReturn().getResponse().getContentAsString();
 		System.out.println(json);

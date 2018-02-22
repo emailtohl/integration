@@ -22,6 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
+import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.user.entities.Customer;
@@ -43,7 +44,10 @@ public class UserServiceImplTest {
 	UserService userService;
 	@Inject
 	Gson gson;
-	CoreTestData td = new CoreTestData();
+	@Inject
+	CorePresetData cpd;
+	@Inject
+	CoreTestData td;
 	Pageable pageable = new PageRequest(0, 20);
 
 	@Test
@@ -64,7 +68,7 @@ public class UserServiceImplTest {
 			}
 		});
 		
-		p = userService.search(td.role_manager.getName(), pageable);
+		p = userService.search(cpd.role_manager.getName(), pageable);
 		assertFalse(p.getContent().isEmpty());
 		System.out.println(gson.toJson(p));
 	}
@@ -209,11 +213,11 @@ public class UserServiceImplTest {
 	
 	@Test
 	public void testFindRefByRoleName() {
-		List<UserRef> ls = userService.findRefByRoleName(td.role_admin.getName());
+		List<UserRef> ls = userService.findRefByRoleName(cpd.role_admin.getName());
 		assertFalse(ls.isEmpty());
-		ls = userService.findRefByRoleName(td.role_manager.getName());
+		ls = userService.findRefByRoleName(cpd.role_manager.getName());
 		assertFalse(ls.isEmpty());
-		ls = userService.findRefByRoleName(td.role_guest.getName());
+		ls = userService.findRefByRoleName(cpd.role_guest.getName());
 		assertFalse(ls.isEmpty());
 	}
 }

@@ -2,12 +2,13 @@ package com.github.emailtohl.integration.web.service.cms;
 
 import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.IdentityService;
@@ -52,7 +53,6 @@ public class CommentServiceImplTest {
 	@Inject
 	Gson gson;
 	@Inject
-	@Named("presetData")
 	CorePresetData pd;
 	@Inject
 	WebPresetData webPresetData;
