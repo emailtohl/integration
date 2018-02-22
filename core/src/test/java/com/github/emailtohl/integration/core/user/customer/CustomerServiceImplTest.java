@@ -31,6 +31,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.emailtohl.integration.common.encryption.myrsa.KeyGenerator;
+import com.github.emailtohl.integration.common.encryption.myrsa.KeyPairs;
 import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
@@ -154,29 +156,29 @@ public class CustomerServiceImplTest {
 
 	@Test
 	public void testUpdate() {
-		Customer e = new Customer();
-		e.setName("bzzz");
-		e.setNickname("bbzzz");
-		e.setPassword("212233");
-		e.setEmail("_haha@test.com");
-		e.setTelephone("212342513514");
-		e.setDescription("_测试人员");
-		e.setGender(Gender.FEMALE);
+		Customer newEntity = new Customer();
+		newEntity.setName("bzzz");
+		newEntity.setNickname("bbzzz");
+		newEntity.setPassword("212233");
+		newEntity.setEmail("_haha@test.com");
+		newEntity.setTelephone("212342513514");
+		newEntity.setDescription("_测试人员");
+		newEntity.setGender(Gender.FEMALE);
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-baz.jpg")) {
-			e.setBirthday(sdf.parse("1990-12-22"));
+			newEntity.setBirthday(sdf.parse("1990-12-22"));
 			byte[] icon = new byte[is.available()];
 			is.read(icon);
-			e.setImage(new Image("icon-head-baz.jpg", "download/img/icon-head-baz.jpg", icon));
+			newEntity.setImage(new Image("icon-head-baz.jpg", "download/img/icon-head-baz.jpg", icon));
 		} catch (ParseException | IOException exception) {
 			exception.printStackTrace();
 		}
-		e.setCellPhone("13345678906");
-		e.setIdentification("510104199901017718");
-		e.setAddress(new Address("重庆", "400000", "回龙路"));
-		Customer c = customerService.update(id, e);
+		newEntity.setCellPhone("13345678906");
+		newEntity.setIdentification("510104199901017718");
+		newEntity.setAddress(new Address("重庆", "400000", "回龙路"));
+		Customer c = customerService.update(id, newEntity);
 		c = customerService.get(id);
-		assertEquals(e.getDescription(), c.getDescription());
-		assertFalse(e.getCellPhone().equals(c.getCellPhone()));
+		assertEquals(newEntity.getDescription(), c.getDescription());
+		assertEquals(c.getCellPhone(), newEntity.getCellPhone());
 		
 		System.out.println(gson.toJson(c));
 	}
@@ -276,6 +278,15 @@ public class CustomerServiceImplTest {
 		assertTrue(c.getEnabled());
 	}
 
+	@Test
+	public void testSetPublicKey() {
+		KeyGenerator kg = new KeyGenerator();
+		KeyPairs k = kg.generateKeys(128);
+		customerService.setPublicKey(id, k.getPublicKey().toString());
+		Customer e = customerService.get(id);
+		assertEquals(k.getPublicKey().toString(), e.getPublicKey());
+	}
+	
 	@Test
 	public void testUpdateCards() {
 		Set<Card> cards = new HashSet<Card>(Arrays.asList(new Card(Card.Type.BankAccount, "123"), new Card(Card.Type.BankAccount, "456")));

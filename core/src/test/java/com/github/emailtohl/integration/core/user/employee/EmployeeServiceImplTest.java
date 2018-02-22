@@ -27,6 +27,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.emailtohl.integration.common.encryption.myrsa.KeyGenerator;
+import com.github.emailtohl.integration.common.encryption.myrsa.KeyPairs;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.config.Constant;
@@ -122,28 +124,28 @@ public class EmployeeServiceImplTest {
 
 	@Test
 	public void testUpdate() {
-		Employee e = new Employee();
-		e.setName("lala");
-		e.setNickname("bar");
-		e.setPassword("556677");
-		e.setEmail("barbar@test.com");
-		e.setTelephone("998877");
-		e.setDescription("质量人员");
-		e.setGender(Gender.MALE);
+		Employee newEntity = new Employee();
+		newEntity.setName("lala");
+		newEntity.setNickname("bar");
+		newEntity.setPassword("556677");
+		newEntity.setEmail("barbar@test.com");
+		newEntity.setTelephone("998877");
+		newEntity.setDescription("质量人员");
+		newEntity.setGender(Gender.MALE);
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-bar.jpg")) {
-			e.setBirthday(sdf.parse("1990-12-22"));
+			newEntity.setBirthday(sdf.parse("1990-12-22"));
 			byte[] icon = new byte[is.available()];
 			is.read(icon);
-			e.setImage(new Image("icon-head-bar.jpg", "download/img/icon-head-bar.jpg", icon));
+			newEntity.setImage(new Image("icon-head-bar.jpg", "download/img/icon-head-bar.jpg", icon));
 		} catch (ParseException | IOException exception) {
 			exception.printStackTrace();
 		}
-		e.setPost("系统分析师");
-		e.setSalary(10000.00);
-		e.setDepartment(new CoreTestData().qa);
-		Employee u = employeeService.update(id, e);
-		assertEquals(e.getDescription(), u.getDescription());
-		assertEquals(e.getDepartment(), u.getDepartment());
+		newEntity.setPost("系统分析师");
+		newEntity.setSalary(10000.00);
+		newEntity.setDepartment(new CoreTestData().qa);
+		Employee e = employeeService.update(id, newEntity);
+		assertEquals(newEntity.getDescription(), e.getDescription());
+		assertEquals(newEntity.getDepartment(), e.getDepartment());
 	}
 
 	@Test
@@ -183,6 +185,15 @@ public class EmployeeServiceImplTest {
 		employeeService.enabled(id, false);
 		Employee e = employeeService.get(id);
 		assertFalse(e.getEnabled());
+	}
+	
+	@Test
+	public void testSetPublicKey() {
+		KeyGenerator kg = new KeyGenerator();
+		KeyPairs k = kg.generateKeys(128);
+		employeeService.setPublicKey(id, k.getPublicKey().toString());
+		Employee e = employeeService.get(id);
+		assertEquals(k.getPublicKey().toString(), e.getPublicKey());
 	}
 	
 	/**

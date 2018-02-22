@@ -1,5 +1,5 @@
-define(['angular', 'angular-cookies', 'ui-router'], function(angular) {
-	return angular.module('dashboardModule', ['ui.router', 'ngCookies'])
+define(['angular', 'ui-router', 'angular-cookies', 'common/context'], function(angular) {
+	return angular.module('dashboardModule', ['ui.router', 'ngCookies', 'commonModule'])
 		.config(function($stateProvider) {
 			$stateProvider
 				.state('dashboard', {

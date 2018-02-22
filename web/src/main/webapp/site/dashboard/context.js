@@ -1,3 +1,4 @@
-require(['dashboard/module',
-	'dashboard/dashboardCtrl'
+require([
+	'dashboard/module',
+	'dashboard/dashboardCtrl',
 ], function() {});

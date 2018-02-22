@@ -196,6 +196,14 @@ public interface CustomerService {
 	Customer enabled(Long id, boolean enabled);
 	
 	/**
+	 * 为客户账号设置公钥
+	 * @param id
+	 * @param publicKey
+	 * @return
+	 */
+	Customer setPublicKey(Long id, String publicKey);
+	
+	/**
 	 * 添加卡
 	 * @param id
 	 * @param card

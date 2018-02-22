@@ -93,6 +93,7 @@ public class PostSecurityLoggingFilter implements Filter {
 		}
 		StandardService.CURRENT_USER_ID.set(userId);
 		StandardService.CURRENT_USERNAME.set(username);
+		ThreadContext.put(Constant.USER_ID, userId.toString());
 		ThreadContext.put(Constant.USERNAME, username);
 		if (userId != null) {
 			identityService.setAuthenticatedUserId(userId.toString());
@@ -102,6 +103,7 @@ public class PostSecurityLoggingFilter implements Filter {
 		
 		StandardService.CURRENT_USER_ID.remove();
 		StandardService.CURRENT_USERNAME.remove();
+		ThreadContext.remove(Constant.USER_ID);
 		ThreadContext.remove(Constant.USERNAME);
 	}
 

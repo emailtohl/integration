@@ -96,4 +96,5 @@ public interface UserService {
 	 * @return
 	 */
 	List<UserRef> findRefByRoleName(String roleName);
+
 }

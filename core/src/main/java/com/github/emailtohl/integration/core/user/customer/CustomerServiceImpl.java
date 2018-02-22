@@ -351,6 +351,18 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		}
 		return transientDetail(source);
 	}
+	
+	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
+	@Override
+	public Customer setPublicKey(Long id, String publicKey) {
+		Customer source = customerRepository.get(id);
+		if (source == null) {
+			return null;
+		}
+		isIllegal(source);
+		source.setPublicKey(publicKey);
+		return transientDetail(source);
+	}
 
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
@@ -495,4 +507,5 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 			throw new NotAcceptableException("不能删除系统内置账号");
 		}
 	}
+
 }

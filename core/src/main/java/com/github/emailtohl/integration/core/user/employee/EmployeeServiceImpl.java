@@ -321,6 +321,18 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		return transientDetail(source);
 	}
 	
+	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
+	@Override
+	public Employee setPublicKey(Long id, String publicKey) {
+		Employee source = employeeRepository.get(id);
+		if (source == null) {
+			return null;
+		}
+		isIllegal(source);
+		source.setPublicKey(publicKey);
+		return transientDetail(source);
+	}
+	
 	@Value("${account.expire.month}")
 	Integer accountExpireMonth;
 	@Value("${credentials.expire.month}")

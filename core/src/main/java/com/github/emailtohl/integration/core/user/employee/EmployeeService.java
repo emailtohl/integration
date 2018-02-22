@@ -156,6 +156,14 @@ public interface EmployeeService {
 	 */
 	@PreAuthorize("hasAuthority('" + EMPLOYEE_ENABLED + "')")
 	Employee enabled(Long id, boolean enabled);
+	
+	/**
+	 * 为平台账号设置公钥
+	 * @param id
+	 * @param publicKey
+	 * @return
+	 */
+	Employee setPublicKey(Long id, String publicKey);
 
 	/**
 	 * 获取平台账号引用

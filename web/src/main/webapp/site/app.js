@@ -6,8 +6,8 @@ define([
 	'employee/context',
 	'customer/context',
 	'cms/context',
-	/*'crm/context',
 	'encryption/context',
+	/*'crm/context',
 	'forum/context',
 	'applicationForm/context',*/
 	'dashboard/context',
@@ -19,8 +19,8 @@ define([
 			'employeeModule',
 			'customerModule',
 			'cmsModule',
-			/*'crmModule',
 			'encryptionModule',
+			/*'crmModule',
 			'applicationFormModule',
 			'forumModule',*/
 			'dashboardModule',
