@@ -43,23 +43,27 @@ public class CoreTestConfiguration {
 	 */
 	@Bean
 	public CoreTestData coreTestData(LocalContainerEntityManagerFactoryBean entityManagerFactory, Environment env) {
-		EntityManagerFactory factory = entityManagerFactory.getObject();
-		String customerDefaultPassword = env.getProperty(Constant.PROP_CUSTOMER_DEFAULT_PASSWORD);
-		String employeeDefaultPassword = env.getProperty(Constant.PROP_EMPLOYEE_DEFAULT_PASSWORD);
-
-		CoreTestData td = new CoreTestData();
-		EntityManager em = factory.createEntityManager();
-		em.getTransaction().begin();
-
-		foo(em, td, employeeDefaultPassword);
-		bar(em, td, employeeDefaultPassword);
-		baz(em, td, customerDefaultPassword);
-		qux(em, td, customerDefaultPassword);
-
-		em.getTransaction().commit();
-		em.close();
-
-		return td;
+		synchronized (getClass()) {
+			EntityManagerFactory factory = entityManagerFactory.getObject();
+			String customerDefaultPassword = env.getProperty(Constant.PROP_CUSTOMER_DEFAULT_PASSWORD);
+			String employeeDefaultPassword = env.getProperty(Constant.PROP_EMPLOYEE_DEFAULT_PASSWORD);
+			customerDefaultPassword = hashpw(customerDefaultPassword);
+			employeeDefaultPassword = hashpw(employeeDefaultPassword);
+			
+			CoreTestData td = new CoreTestData();
+			EntityManager em = factory.createEntityManager();
+			em.getTransaction().begin();
+			
+			foo(em, td, employeeDefaultPassword);
+			bar(em, td, employeeDefaultPassword);
+			baz(em, td, customerDefaultPassword);
+			qux(em, td, customerDefaultPassword);
+			
+			em.getTransaction().commit();
+			em.close();
+			
+			return td;
+		}
 	}
 
 	private void foo(EntityManager em, CoreTestData td, String employeeDefaultPassword) {
@@ -72,21 +76,23 @@ public class CoreTestConfiguration {
 			e = em.createQuery(q).getSingleResult();
 		} catch (NoResultException ex) {
 		}
-		if (e != null) {
-			e.setPassword(hashpw(employeeDefaultPassword));
-			return;
+		if (e == null) {
+			td.foo.setPassword(employeeDefaultPassword);
+			Set<Role> roles = td.foo.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
+			Department d = getDepartment(em, td.foo.getDepartment());
+			td.foo.getRoles().clear();
+			td.foo.getRoles().addAll(roles);
+			td.foo.setDepartment(d);
+			em.persist(td.foo);
+			EmployeeRef ref = new EmployeeRef(td.foo);
+			td.foo.setEmployeeRef(ref);
+			em.persist(ref);
+		} else {
+			td.foo.setId(e.getId());
+			EmployeeRef ref = new EmployeeRef(td.foo);
+			td.foo.setEmployeeRef(ref);
+			td.foo.setPassword(e.getPassword());
 		}
-		Set<Role> roles = td.foo.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
-		Department d = getDepartment(em, td.foo.getDepartment());
-		td.foo.getRoles().clear();
-		td.foo.getRoles().addAll(roles);
-		roles.forEach(r -> r.getUsers().add(td.foo));
-		td.foo.setDepartment(d);
-		td.foo.setPassword(hashpw(employeeDefaultPassword));
-		em.persist(td.foo);
-		EmployeeRef fooRef = new EmployeeRef(td.foo);
-		td.foo.setEmployeeRef(fooRef);
-		em.persist(fooRef);
 	}
 
 	private void bar(EntityManager em, CoreTestData td, String employeeDefaultPassword) {
@@ -99,21 +105,23 @@ public class CoreTestConfiguration {
 			e = em.createQuery(q).getSingleResult();
 		} catch (NoResultException ex) {
 		}
-		if (e != null) {
-			e.setPassword(hashpw(employeeDefaultPassword));
-			return;
+		if (e == null) {
+			td.bar.setPassword(employeeDefaultPassword);
+			Set<Role> roles = td.bar.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
+			Department d = getDepartment(em, td.bar.getDepartment());
+			td.bar.getRoles().clear();
+			td.bar.getRoles().addAll(roles);
+			td.bar.setDepartment(d);
+			em.persist(td.bar);
+			EmployeeRef ref = new EmployeeRef(td.bar);
+			td.bar.setEmployeeRef(ref);
+			em.persist(ref);
+		} else {
+			td.bar.setId(e.getId());
+			EmployeeRef ref = new EmployeeRef(td.bar);
+			td.bar.setEmployeeRef(ref);
+			td.bar.setPassword(e.getPassword());
 		}
-		Set<Role> roles = td.bar.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
-		Department d = getDepartment(em, td.bar.getDepartment());
-		td.bar.getRoles().clear();
-		td.bar.getRoles().addAll(roles);
-		roles.forEach(r -> r.getUsers().add(td.bar));
-		td.bar.setDepartment(d);
-		td.bar.setPassword(hashpw(employeeDefaultPassword));
-		em.persist(td.bar);
-		EmployeeRef barRef = new EmployeeRef(td.bar);
-		td.bar.setEmployeeRef(barRef);
-		em.persist(barRef);
 	}
 
 	private void baz(EntityManager em, CoreTestData td, String customerDefaultPassword) {
@@ -126,19 +134,21 @@ public class CoreTestConfiguration {
 			c = em.createQuery(q).getSingleResult();
 		} catch (NoResultException ex) {
 		}
-		if (c != null) {
-			c.setPassword(hashpw(customerDefaultPassword));
-			return;
+		if (c == null) {
+			td.baz.setPassword(customerDefaultPassword);
+			Set<Role> roles = td.baz.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
+			td.baz.getRoles().clear();
+			td.baz.getRoles().addAll(roles);
+			em.persist(td.baz);
+			CustomerRef ref = new CustomerRef(td.baz);
+			td.baz.setCustomerRef(ref);
+			em.persist(ref);
+		} else {
+			td.baz.setId(c.getId());
+			CustomerRef ref = new CustomerRef(td.baz);
+			td.baz.setCustomerRef(ref);
+			td.baz.setPassword(c.getPassword());
 		}
-		Set<Role> roles = td.baz.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
-		td.baz.getRoles().clear();
-		td.baz.getRoles().addAll(roles);
-		roles.forEach(r -> r.getUsers().add(td.baz));
-		td.baz.setPassword(hashpw(customerDefaultPassword));
-		em.persist(td.baz);
-		CustomerRef bazRef = new CustomerRef(td.baz);
-		td.baz.setCustomerRef(bazRef);
-		em.persist(bazRef);
 	}
 
 	private void qux(EntityManager em, CoreTestData td, String customerDefaultPassword) {
@@ -151,19 +161,21 @@ public class CoreTestConfiguration {
 			c = em.createQuery(q).getSingleResult();
 		} catch (NoResultException ex) {
 		}
-		if (c != null) {
-			c.setPassword(hashpw(customerDefaultPassword));
-			return;
+		if (c == null) {
+			td.qux.setPassword(customerDefaultPassword);
+			Set<Role> roles = td.qux.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
+			td.qux.getRoles().clear();
+			td.qux.getRoles().addAll(roles);
+			em.persist(td.qux);
+			CustomerRef ref = new CustomerRef(td.qux);
+			td.qux.setCustomerRef(ref);
+			em.persist(ref);
+		} else {
+			td.qux.setId(c.getId());
+			CustomerRef ref = new CustomerRef(td.qux);
+			td.qux.setCustomerRef(ref);
+			td.qux.setPassword(c.getPassword());
 		}
-		Set<Role> roles = td.qux.getRoles().stream().map(r -> getRole(em, r)).collect(Collectors.toSet());
-		td.qux.getRoles().clear();
-		td.qux.getRoles().addAll(roles);
-		roles.forEach(r -> r.getUsers().add(td.qux));
-		td.qux.setPassword(hashpw(customerDefaultPassword));
-		em.persist(td.qux);
-		CustomerRef quxRef = new CustomerRef(td.qux);
-		td.qux.setCustomerRef(quxRef);
-		em.persist(quxRef);
 	}
 
 	private Role getRole(EntityManager em, Role trans) {
@@ -191,7 +203,7 @@ public class CoreTestConfiguration {
 		}
 		return pers;
 	}
-
+	
 	private String hashpw(String password) {
 		String salt = BCrypt.gensalt(10, new SecureRandom());
 		return BCrypt.hashpw(password, salt);

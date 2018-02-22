@@ -43,18 +43,20 @@ class PresetDataConfiguration {
 	 */
 	@Bean
 	public CorePresetData corePresetData(LocalContainerEntityManagerFactoryBean entityManagerFactory, Environment env) {
-		EntityManagerFactory factory = entityManagerFactory.getObject();
-		CorePresetData pd = new CorePresetData();
-		EntityManager em = factory.createEntityManager();
-		em.getTransaction().begin();
-		authority(em, pd);
-		role(em, pd);
-		company(em, pd);
-		department(em, pd);
-		user(em, env, pd);
-		em.getTransaction().commit();
-		em.close();
-		return pd;
+		synchronized (getClass()) {
+			EntityManagerFactory factory = entityManagerFactory.getObject();
+			CorePresetData pd = new CorePresetData();
+			EntityManager em = factory.createEntityManager();
+			em.getTransaction().begin();
+			authority(em, pd);
+			role(em, pd);
+			company(em, pd);
+			department(em, pd);
+			user(em, env, pd);
+			em.getTransaction().commit();
+			em.close();
+			return pd;
+		}
 	}
 
 	private void authority(EntityManager em, CorePresetData pd) {
