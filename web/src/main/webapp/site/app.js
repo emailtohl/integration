@@ -101,12 +101,16 @@ define([
 
 			// 获取图片信息
 			$rootScope.getIconSrc = function() {
-				var iconSrc = $rootScope.authentication && $rootScope.authentication.iconSrc;
-				if(!iconSrc)
-					iconSrc = $rootScope.authentication && $rootScope.authentication.principal && $rootScope.authentication.principal.iconSrc;
+				var iconSrc = $rootScope.authentication && $rootScope.authentication.principal && $rootScope.authentication.principal.iconSrc;
 				if(!iconSrc)
 					iconSrc = 'lib/adminLTE/img/user2-160x160.jpg';
 				return iconSrc;
+			};
+			$rootScope.getUserName = function() {
+				var name = $rootScope.authentication && $rootScope.authentication.principal && $rootScope.authentication.principal.realName;
+				if(!name)
+					name = 'Alexander Pierce';
+				return name;
 			};
 			
 			$http.get('presetData').then(function(resp) {

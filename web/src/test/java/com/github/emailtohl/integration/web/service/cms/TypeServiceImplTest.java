@@ -28,7 +28,7 @@ import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.user.entities.CustomerRef;
-import com.github.emailtohl.integration.web.WebTestConfig;
+import com.github.emailtohl.integration.web.config.WebTestConfig;
 import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
 import com.google.gson.Gson;

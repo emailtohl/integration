@@ -268,7 +268,7 @@
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <img data-ng-src="{{getIconSrc()}}" class="user-image" alt="User Image">
-              <span class="hidden-xs">Alexander Pierce</span>
+              <span class="hidden-xs">{{getUserName()}}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
@@ -276,8 +276,8 @@
                 <img data-ng-src="{{getIconSrc()}}" class="img-circle" alt="User Image">
 
                 <p>
-                  Alexander Pierce - Web Developer
-                  <small>Member since Nov. 2012</small>
+                  {{getUserName()}}
+                  <small>{{authentication.principal.createDate | date}}</small>
                 </p>
               </li>
               <!-- Menu Body -->
@@ -324,7 +324,7 @@
           <img data-ng-src="{{getIconSrc()}}" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p>Alexander Pierce</p>
+          <p>{{getUserName()}}</p>
           <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
         </div>
       </div>

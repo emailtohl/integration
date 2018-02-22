@@ -45,7 +45,7 @@ import com.github.emailtohl.integration.core.user.employee.EmployeeService;
  */
 @Configuration
 @Import(CoreConfiguration.class)
-public class ActivitiConfiguration {
+class ActivitiConfiguration {
 	private static final Logger LOG = LogManager.getLogger();
 	
 	/**

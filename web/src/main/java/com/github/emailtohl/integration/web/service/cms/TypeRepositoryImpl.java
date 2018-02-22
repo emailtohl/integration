@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
@@ -38,10 +39,10 @@ public class TypeRepositoryImpl implements TypeRepositoryCustomization {
 	@Override
 	public List<Type> getTypesWithArticleNum(Type params) {
 		CriteriaBuilder b = entityManager.getCriteriaBuilder();
-		CriteriaQuery<Object[]> q = b.createQuery(Object[].class);
+		CriteriaQuery<Tuple> q = b.createTupleQuery();
 		Root<Type> r = q.from(Type.class);
 		Join<Type, Article> join = r.join("articles", JoinType.LEFT);
-		q = q.multiselect(r, b.count(join.get("type").get("id")));
+		q = q.multiselect(r.alias("type"), b.count(join.get("type").get("id")).alias("count"));
 		List<Predicate> ls = new ArrayList<Predicate>();
 		if (params != null) {
 			if (params.getId() != null) {
@@ -59,9 +60,9 @@ public class TypeRepositoryImpl implements TypeRepositoryCustomization {
 			}
 		}
 		q = q.groupBy(r.get("id"), join.get("type").get("id"));
-		return entityManager.createQuery(q).getResultList().stream().map((Object[] tuple) -> {
-			Type t = (Type) tuple[0];
-			t.setArticlesNum(((Long) tuple[1]).intValue());
+		return entityManager.createQuery(q).getResultList().stream().map(tuple -> {
+			Type t = tuple.get("type", Type.class);
+			t.setArticlesNum(tuple.get("count", Long.class).intValue());
 			return t;
 		}).collect(Collectors.toList());
 	}

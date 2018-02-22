@@ -50,7 +50,7 @@ import freemarker.template.TemplateExceptionHandler;
 @Configuration
 @Import(ActivitiConfiguration.class)
 @PropertySource({ "classpath:web.properties" })
-public class PresetDataConfiguration {
+class PresetDataConfiguration {
 
 	@Bean(name = "templatesPath")
 	public File templatesPath(Environment env, @Named("resources") File resourcesPath) throws IOException {

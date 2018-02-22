@@ -17,12 +17,13 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.CorePresetData;
-import com.github.emailtohl.integration.web.WebTestConfig;
 import com.github.emailtohl.integration.web.config.WebPresetData;
+import com.github.emailtohl.integration.web.config.WebTestConfig;
 import com.github.emailtohl.integration.web.service.cms.ArticleService;
 import com.github.emailtohl.integration.web.service.cms.CommentService;
 import com.github.emailtohl.integration.web.service.cms.TypeService;
@@ -77,7 +78,7 @@ public class CmsCtrlTest {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		ctrl.getWebPage(request, response);
-		System.out.println(response.getContentAsString());
+		assertTrue(StringUtils.hasText(response.getContentAsString()));
 	}
 
 	@Test
@@ -85,7 +86,7 @@ public class CmsCtrlTest {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		ctrl.getDetail(articleId, request, response);
-		System.out.println(response.getContentAsString());
+		assertTrue(StringUtils.hasText(response.getContentAsString()));
 	}
 
 }

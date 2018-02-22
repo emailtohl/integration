@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.web;
+package com.github.emailtohl.integration.web.config;
 
 import java.io.IOException;
 import java.io.InputStream;

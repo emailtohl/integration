@@ -27,8 +27,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Employee;
-import com.github.emailtohl.integration.web.MockConfig;
-import com.github.emailtohl.integration.web.WebTestData;
+import com.github.emailtohl.integration.web.config.MockConfig;
+import com.github.emailtohl.integration.web.config.WebTestData;
 import com.google.gson.Gson;
 
 /**

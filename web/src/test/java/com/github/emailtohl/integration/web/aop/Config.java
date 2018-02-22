@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.github.emailtohl.integration.core.config.CorePresetData;
-import com.github.emailtohl.integration.web.MockConfig;
+import com.github.emailtohl.integration.web.config.MockConfig;
 
 /**
  * 尽量在真实环境中，包括事务层、缓存层、但没有包括安全层

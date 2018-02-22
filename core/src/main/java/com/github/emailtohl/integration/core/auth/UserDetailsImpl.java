@@ -1,13 +1,16 @@
 package com.github.emailtohl.integration.core.auth;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.core.user.UserType;
 import com.github.emailtohl.integration.core.user.entities.Classify;
@@ -32,6 +35,8 @@ public class UserDetailsImpl implements UserDetails {
 	private String username = "anonymous";
 	private Long id;
 	private String realName;
+	protected Date createDate;
+	protected Date modifyDate;
 	private UserType userType;
 	private String nickname;
 	private String cellPhone;
@@ -52,6 +57,8 @@ public class UserDetailsImpl implements UserDetails {
 		}
 		this.id = u.getId();
 		this.realName = u.getName();
+		this.createDate = u.getCreateDate();
+		this.modifyDate = u.getModifyDate();
 		this.nickname = u.getNickname();
 		this.cellPhone = u.getCellPhone();
 		this.email = u.getEmail();
@@ -154,7 +161,17 @@ public class UserDetailsImpl implements UserDetails {
 	public String getRealName() {
 		return this.realName;
 	}
-	
+
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	public Date getModifyDate() {
+		return modifyDate;
+	}
+
 	public String getEmail() {
 		return this.email;
 	}

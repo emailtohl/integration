@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.web;
+package com.github.emailtohl.integration.web.config;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;

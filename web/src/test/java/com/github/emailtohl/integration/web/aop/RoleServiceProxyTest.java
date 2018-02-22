@@ -24,8 +24,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleService;
 import com.github.emailtohl.integration.core.role.RoleType;
-import com.github.emailtohl.integration.web.WebTestConfig;
-import com.github.emailtohl.integration.web.WebTestData;
+import com.github.emailtohl.integration.web.config.WebTestConfig;
+import com.github.emailtohl.integration.web.config.WebTestData;
 
 /**
  * 对切面的测试

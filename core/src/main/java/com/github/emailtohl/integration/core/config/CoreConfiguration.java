@@ -33,7 +33,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -63,20 +62,11 @@ import com.google.gson.GsonBuilder;
 @ComponentScan(basePackages = "com.github.emailtohl.integration.core", excludeFilters = @ComponentScan.Filter({
 		Controller.class, Configuration.class }))
 @EnableCaching
-@Import(JpaConfiguration.class)
+@Import(PresetDataConfiguration.class)
 public class CoreConfiguration implements TransactionManagementConfigurer, AsyncConfigurer, SchedulingConfigurer {
 	private static final Logger LOG = LogManager.getLogger();
 	@Inject
 	Environment env;
-	
-	/**
-	 * 初始化数据库中的数据
-	 */
-	@Bean
-	public CorePresetData presetData(LocalContainerEntityManagerFactoryBean entityManagerFactory) {
-		InitData d = new InitData(entityManagerFactory.getObject(), env);
-		return d.init();
-	}
 	
 	/**
 	 * 简单的缓存管理器的实现

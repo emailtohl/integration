@@ -26,8 +26,8 @@ import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;
-import com.github.emailtohl.integration.web.WebTestConfig;
-import com.github.emailtohl.integration.web.WebTestData;
+import com.github.emailtohl.integration.web.config.WebTestConfig;
+import com.github.emailtohl.integration.web.config.WebTestData;
 
 /**
  * 对切面的测试
