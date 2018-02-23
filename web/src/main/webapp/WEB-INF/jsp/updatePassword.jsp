@@ -53,8 +53,11 @@
     </c:if>
     <form action="updatePassword" method="post">
       <div class="form-group has-feedback">
-        <input readonly="readonly" type="email" class="form-control" name="email" value="${email}">
-        <input type="hidden" class="form-control" name="token" value="${token}">
+        <input readonly="readonly" type="text" class="form-control" name="cellPhoneOrEmail" value="${cellPhoneOrEmail}">
+        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+      </div>
+      <div class="form-group has-feedback">
+        <input type="text" class="form-control" name="token" placeholder="token">
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
@@ -66,7 +69,8 @@
         <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
       </div>
       <!-- 启用CSRF功能时，spring security将会把token写入此表单中 -->
-      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+      <%-- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/> --%>
+      <input type="hidden" name="_csrf" value="${_csrf}"/>
       <div class="row">
         <div class="col-xs-8">
           <div class="checkbox icheck">
@@ -141,13 +145,18 @@
   }
   
   $('form').on('submit', function(e) {
-	  var email, password, retypePassword;
-	  email = $('input[name="email"]').val();
+	  var cellPhoneOrEmail, password, retypePassword, token;
+	  cellPhoneOrEmail = $('input[name="cellPhoneOrEmail"]').val();
 	  password = $('input[name="password"]').val();
 	  retypePassword = $('input[name="retype-password"]').val();
+	  token = $('input[name="token"]').val();
 	  //e.preventDefault();
-	  if (!(email && password && retypePassword)) {
+	  if (!(cellPhoneOrEmail && password && retypePassword)) {
 		  tip('输入框不能为空');
+		  return false;
+	  }
+	  if (!token) {
+		  tip('token不能为空');
 		  return false;
 	  }
 	  if (password != retypePassword) {

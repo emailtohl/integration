@@ -127,6 +127,16 @@ public abstract class RestCtrl<T> {
 	}
 	
 	/**
+	 * 获取上下文地址
+	 * @param request
+	 * @return
+	 */
+	public String getContextPath(HttpServletRequest request) {
+		return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+				+ request.getContextPath();
+	}
+	
+	/**
 	 * 成功则在header上返回新资源的地址；失败则返回失败的信息。
 	 * @param entity
 	 * @param e

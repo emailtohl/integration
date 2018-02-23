@@ -42,10 +42,10 @@ public interface CustomerService {
 	
 	/**
 	 * 根据手机号或邮箱查找是否已存在
-	 * @param matcherValue
+	 * @param cellPhoneOrEmail
 	 * @return
 	 */
-	boolean exist(Object matcherValue);
+	boolean exist(Object cellPhoneOrEmail);
 	
 	/**
 	 * 根据ID获取用户
@@ -156,7 +156,6 @@ public interface CustomerService {
 	 * @param token 通过邮箱或短信或其他方式获取的令牌，该令牌证明确实是该账号拥有者在修改密码
 	 * @return ExecResult
 	 */
-	@PreAuthorize(SPEL_MATCH_CELL_PHONE_OR_EMAIL)
 	@NotNull ExecResult updatePassword(@P("username") String username, String newPassword, String token);
 	
 	/**

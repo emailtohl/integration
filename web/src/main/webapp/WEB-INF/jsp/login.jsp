@@ -63,7 +63,7 @@
      <p id="publicKey" style="display:none">${publicKey}</p>
     <form action="${pageContext.request.contextPath}/login" method="post">
       <div class="form-group has-feedback">
-        <input type="text" class="form-control" name="email" placeholder="your email">
+        <input type="text" class="form-control" name="cellPhoneOrEmail" placeholder="your cell phone or email">
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
@@ -148,17 +148,19 @@
 	}
 	
 	$('a#forgot').on('click', function() {
-	 var email, _csrf, p;
-	 p = /^[a-z0-9`!#$%^&*'{}?/+=|_~-]+(\.[a-z0-9`!#$%^&*'{}?/+=|_~-]+)*@([a-z0-9]([a-z0-9-]*[a-z0-9])?)+(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/
-	 email = $('input[name="email"]').val();
+	 var cellPhoneOrEmail, _csrf, p;
+	 cellPhoneOrEmail = $('input[name="cellPhoneOrEmail"]').val();
 	 _csrf = $('input[name="_csrf"]').val();
-	 if (!email || email.match(p) == null) {
-	  tip('Please fill in your email address correctly');
+	 if (!cellPhoneOrEmail) {
+	  tip('Please fill in your cell phone or email correctly');
 	  return false;
 	 }
 	 $.post('forgetPassword', {
-	  email : email,
+	  cellPhoneOrEmail : cellPhoneOrEmail,
 	  _csrf : _csrf
+	 }, function(resp) {
+		 console.log(resp);
+		 window.location.href = 'updatePassword?cellPhoneOrEmail=' + cellPhoneOrEmail + '&_csrf=' + _csrf;
 	 });
 	 tip('Please check the E-mail and reset the password');
 	});

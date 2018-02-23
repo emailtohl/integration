@@ -1,61 +1,67 @@
 package com.github.emailtohl.integration.web.controller;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.mail.MailException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.github.emailtohl.integration.common.exception.NotFoundException;
+import com.github.emailtohl.integration.core.ExecResult;
+import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.employee.EmployeeService;
+import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.web.service.mail.EmailService;
 import com.google.gson.Gson;
 
 /**
  * 认证控制器，管理用户注册，更改密码，授权等功能
+ * 
  * @author HeLei
  */
-@CrossOrigin(maxAge = 3600)// 支持跨站（CORS）访问登录页面
+@CrossOrigin(maxAge = 3600) // 支持跨站（CORS）访问登录页面
 @Controller
 public class LoginCtrl {
 	private static final Logger logger = LogManager.getLogger();
-	@Inject private CustomerService customerService;
-	@Inject private EmployeeService employeeService;
-	@Inject private EmailService emailService;
-	@Inject private ThreadPoolTaskScheduler taskScheduler;
-	@Inject private SessionRegistry sessionRegistry;
-	Gson gson = new Gson();
-	
+	@Inject
+	CustomerService customerService;
+	@Inject
+	EmployeeService employeeService;
+	@Inject
+	EmailService emailService;
+	@Inject
+	SessionRegistry sessionRegistry;
+	@Inject
+	Gson gson;
+
 	/**
-	 * 忘记密码时，当发送邮件时，会记录一个token，该token有时效，过期会被清除
-	 */
-	private Map<String, String> tokenMap = new ConcurrentHashMap<String, String>();
-	/**
-	 * spring security自带的AuthenticationProvider返回的UserDetails实现并不含用户的图片等附加信息
-	 * 通过一个容器存储用户的图片信息
-	 */
-	private Map<String, String> iconSrcMap = new ConcurrentHashMap<String, String>();
-	
-	/**
-	 * GET方法获取登录页面
-	 * POST方法配置在Spring security中对用户进行认证
+	 * GET方法获取登录页面 POST方法配置在Spring security中对用户进行认证
+	 * 
 	 * @param model
 	 * @return
 	 */
@@ -63,9 +69,10 @@ public class LoginCtrl {
 	public String login() {
 		return "login";
 	}
-	
+
 	/**
 	 * GET方法获取注册页面
+	 * 
 	 * @param model
 	 * @return
 	 */
@@ -73,15 +80,16 @@ public class LoginCtrl {
 	public String register() {
 		return "register";
 	}
-	
+
 	/**
 	 * POST方法注册一个账号，如果成功，则返回到登录页面
+	 * 
 	 * @param model
 	 * @return
-	 * @throws UnsupportedEncodingException 
+	 * @throws UnsupportedEncodingException
 	 */
-	/*@RequestMapping(value = "register", method = RequestMethod.POST, produces = {"text/html;charset=UTF-8"})
-	public String register(HttpServletRequest requet, @Valid User form, org.springframework.validation.Errors e) {
+	@RequestMapping(value = "register", method = RequestMethod.POST, produces = { "text/html;charset=UTF-8" })
+	public String register(HttpServletRequest requet, @Valid CustomerRegisterForm form, Errors e) {
 		// 第一步，判断提交表单是否有效
 		if (e.hasErrors()) {
 			StringBuilder s = new StringBuilder();
@@ -89,25 +97,44 @@ public class LoginCtrl {
 				logger.info(oe);
 				s.append(oe.getDefaultMessage());
 			}
-//			throw new VerifyFailure(e.toString());
+			// throw new VerifyFailure(e.toString());
 			return "redirect:register?error=" + encode(s.toString());
 		}
 		try {
 			// 第二步，添加该用户，若报运行时异常，则抛出，告诉用户该账号不能注册
-			Customer c = form.convertCustomer();
-			long id = userService.addCustomer(c).getId();
+			Customer c = new Customer();
+			String cellPhoneOrEmail = form.getCellPhoneOrEmail();
+			Matcher m = Constant.PATTERN_EMAIL.matcher(cellPhoneOrEmail);
+			if (m.matches()) {
+				c.setEmail(cellPhoneOrEmail);
+			} else {
+				m = Constant.PATTERN_CELL_PHONE.matcher(cellPhoneOrEmail);
+				if (m.matches()) {
+					c.setCellPhone(cellPhoneOrEmail);
+				} else {
+					return "redirect:register?error=" + encode("既不是正确的手机号也不是正确的邮箱");
+				}
+			}
+			c.setPassword(form.getPassword());
+			c.setName(form.getName());
+			c = customerService.create(c);
+
+			// 第三步，通知用户，让其激活该账号
 			
-			// 第三步，邮件通知用户，让其激活该账号
-			String url = requet.getScheme() + "://" + requet.getServerName() + ":" + requet.getServerPort() + requet.getContextPath() + "/enable?id=" + id;
-			emailService.enableUser(url, form.getEmail());
+//			Long id = c.getId();
+//			String url = requet.getScheme() + "://" + requet.getServerName() + ":" + requet.getServerPort()
+//					+ requet.getContextPath() + "/enable?id=" + id;
+//			emailService.enableUser(url, c.getEmail());
+
 			return "login";
 		} catch (RuntimeException e1) {
-			return "redirect:register?error=" + encode("邮箱重复");
+			return "redirect:register?error=" + encode("手机号或邮箱重复");
 		}
-	}*/
-	
+	}
+
 	/**
 	 * 另立一个私有方法处理URLEncoder.encode的检查型异常
+	 * 
 	 * @param s
 	 * @return
 	 */
@@ -120,80 +147,83 @@ public class LoginCtrl {
 		}
 		return res;
 	}
-	
+
 	/**
-	 * 通过电子邮箱发送忘记密码的页面
+	 * 通过手机短信或电子邮箱发送token，然后跳转到忘记密码的页面
+	 * 
 	 * @return
-	 * @throws NotFoundException 
+	 * @throws NotFoundException
 	 */
-	/*@RequestMapping(value = "forgetPassword", method = RequestMethod.POST)
-	public void forgetPassword(HttpServletRequest requet, String email, String _csrf) throws NotFoundException {
-		if (!userService.isExist(email)) {
-			throw new NotFoundException();
+	@RequestMapping(value = "forgetPassword", method = RequestMethod.POST)
+	public String forgetPassword(HttpServletRequest requet,
+			@RequestParam(value = "cellPhoneOrEmail", required = false, defaultValue = "") String cellPhoneOrEmail,
+			String _csrf, Map<String, Object> model) {
+		if (!customerService.exist(cellPhoneOrEmail)) {
+			throw new NotFoundException("没有此用户：" + cellPhoneOrEmail);
 		}
-		String token = UUID.randomUUID().toString();
-		tokenMap.put(token, email);
-		scheduleCleanToken(token);
-		String url = requet.getScheme() + "://" + requet.getServerName() + ":" + requet.getServerPort() + requet.getContextPath() + "/getUpdatePasswordPage";
-		emailService.updatePassword(url, email, token, _csrf);
-	}*/
-	
-	/**
-	 * 定时清理token
-	 * @param token
-	 */
-	private void scheduleCleanToken(String token) {
-		long l = System.currentTimeMillis() + 10 * 60 * 1000;
-		Date startTime = new Date(l);
-		taskScheduler.schedule(() -> {tokenMap.remove(token);}, startTime);
+		String token = customerService.getToken(cellPhoneOrEmail);
+		Matcher m = Constant.PATTERN_EMAIL.matcher(cellPhoneOrEmail);
+		if (m.matches()) {
+			try {
+				emailService.sendMail(cellPhoneOrEmail, "token", token);
+			} catch (MailException e) {
+				logger.warn("邮件发送失败", e);
+			}
+		} else {
+			m = Constant.PATTERN_CELL_PHONE.matcher(cellPhoneOrEmail);
+			if (m.matches()) {
+				// TODO 发送token到短信中
+			} else {
+				return "redirect:register?error=" + encode("既不是正确的手机号也不是正确的邮箱");
+			}
+		}
+		model.put("cellPhoneOrEmail", cellPhoneOrEmail);
+		model.put("_csrf", _csrf);
+		return "redirect:updatePassword";
 	}
-	
+
 	/**
-	 * 忘记密码后，在邮箱中的链接中打开修改密码页面
-	 * @param email
-	 * @param token
+	 * 通过手机短信或电子邮箱发送token，然后跳转到忘记密码的页面
+	 * 
 	 * @return
+	 * @throws NotFoundException
 	 */
-	@RequestMapping(value = "getUpdatePasswordPage", method = RequestMethod.GET)
-	public String getUpdatePasswordPage(String email, String token, Map<String, Object> model) {
-		if (!email.equals(tokenMap.get(token))) {
-			return "redirect:login?error=expire";
-		}
-		model.put("email", email);
-		model.put("token", token);
+	@RequestMapping(value = "updatePassword", method = RequestMethod.GET)
+	public String getUpdatePasswordPage(
+			@RequestParam(value = "cellPhoneOrEmail", required = false, defaultValue = "") String cellPhoneOrEmail,
+			@RequestParam(value = "_csrf", required = false, defaultValue = "") String _csrf, Map<String, Object> model) {
+		model.put("cellPhoneOrEmail", cellPhoneOrEmail);
+		model.put("_csrf", _csrf);
 		return "updatePassword";
 	}
 	
 	/**
-	 * 重置密码，用于忘记密码处
-	 * @param email
-	 * @param password 修改的密码
+	 * 修改密码
+	 * @param cellPhoneOrEmail
+	 * @param password
+	 * @param token
+	 * @param _csrf
+	 * @param model
 	 * @return
 	 */
-	/*@RequestMapping(value = "updatePassword", method = RequestMethod.POST)
-	public String updatePassword(String email, String password, String token) {
-		if (!email.equals(tokenMap.get(token))) {
-			return "redirect:login?error=expire";
+	@RequestMapping(value = "updatePassword", method = RequestMethod.POST)
+	public String updatePassword(@RequestParam(value = "cellPhoneOrEmail") String cellPhoneOrEmail,
+			@RequestParam(value = "password") String password, @RequestParam(value = "token") String token,
+			@RequestParam(value = "_csrf", required = false, defaultValue = "") String _csrf,
+			Map<String, Object> model) {
+		ExecResult e = customerService.updatePassword(cellPhoneOrEmail, password, token);
+		model.put("cellPhoneOrEmail", cellPhoneOrEmail);
+		model.put("_csrf", _csrf);
+		if (e.ok) {
+			return "redirect:login";
+		} else {
+			return "redirect:login?error=" + encode("修改密码失败");
 		}
-		userService.changePasswordByEmail(email, password);
-		return "login";
-	}*/
-	
-	/**
-	 * 激活账号
-	 * 这里的激活与UserCtrl中的激活有些不一样，它会返回一个登录页面，而UserCtrl中激活了用户后不做其他操作
-	 * @param id
-	 */
-	/*@RequestMapping(value = "enable", method = RequestMethod.GET)
-	public String enable(long id) {
-		userService.enableUser(id);
-		// 注意，若未给用户授权，则spring security自带的认证器会认为认证失败，所以初始化时必须给予一定权限
-		userService.grantUserRole(id);
-		return "login";
-	}*/
+	}
 
 	/**
 	 * 获取用户的认证信息
+	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "authentication", method = RequestMethod.GET)
@@ -211,21 +241,13 @@ public class LoginCtrl {
 		map.put("username", authentication.getName());
 		map.put("details", authentication.getDetails());
 		map.put("principal", authentication.getPrincipal());
-		
+
 		return map;
 	}
-	
-	/**
-	 * 当用户更新头像后，需要刷新缓存，故提供此接口
-	 * @param email 用户邮箱
-	 * @param iconSrc 新的头像图片地址
-	 */
-	public void updateIconSrcMap(String email, String iconSrc) {
-		iconSrcMap.put(email, iconSrc);
-	}
-	
+
 	/**
 	 * 测试接口
+	 * 
 	 * @return
 	 */
 	@RequestMapping({ "secure" })
@@ -247,24 +269,64 @@ public class LoginCtrl {
 		return "secure";
 	}
 
-	public void setUserService(CustomerService customerService) {
-		this.customerService = customerService;
-	}
+	/**
+	 * 注册表单
+	 * 
+	 * @author HeLei
+	 */
+	static class CustomerRegisterForm implements Serializable {
+		private static final long serialVersionUID = 5123644992104952829L;
+		// 表单会以此名字提交
+		public static final String CSRF_NAME = CsrfToken.class.getName();
+		@NotNull
+		String cellPhoneOrEmail;
+		String name;
+		@NotNull
+		String password;
+		// @NotNull
+		// 这里的Field名字应该是CSRF_NAME
+		String _csrf;
 
-	public void setEmailService(EmailService emailService) {
-		this.emailService = emailService;
-	}
+		public String getCellPhoneOrEmail() {
+			return cellPhoneOrEmail;
+		}
 
-	public void setTaskScheduler(ThreadPoolTaskScheduler taskScheduler) {
-		this.taskScheduler = taskScheduler;
-	}
+		public void setCellPhoneOrEmail(String cellPhoneOrEmail) {
+			this.cellPhoneOrEmail = cellPhoneOrEmail;
+		}
 
-	public void setSessionRegistry(SessionRegistry sessionRegistry) {
-		this.sessionRegistry = sessionRegistry;
-	}
+		public String getName() {
+			return name;
+		}
 
-	public void setGson(Gson gson) {
-		this.gson = gson;
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getPassword() {
+			return password;
+		}
+
+		public void setPassword(String password) {
+			this.password = password;
+		}
+
+		public String get_csrf() {
+			return _csrf;
+		}
+
+		public void set_csrf(String _csrf) {
+			this._csrf = _csrf;
+		}
+
+		public static String getCsrfName() {
+			return CSRF_NAME;
+		}
+
+		@Override
+		public String toString() {
+			return "CustomerRegisterForm [cellPhoneOrEmail=" + cellPhoneOrEmail + ", name=" + name + ", password="
+					+ password + ", _csrf=" + _csrf + "]";
+		}
 	}
-	
 }

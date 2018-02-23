@@ -189,7 +189,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 					publisher.publishEvent(new LoginEvent(authentication));
 					response.sendRedirect(request.getContextPath());
 				})
-				.usernameParameter("email").passwordParameter("password").permitAll()
+				.usernameParameter("cellPhoneOrEmail").passwordParameter("password").permitAll()
 			// 登出配置，注意：Spring security在启动CSRF时，默认只使用HTTP POST，这是为了确保注销需要CSRF令牌和恶意用户不能强行注销你的用户
 			// 如果要使用<a>标签链接，get等方式退出，则必须更新下面的Java配置：logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 			.and().logout()

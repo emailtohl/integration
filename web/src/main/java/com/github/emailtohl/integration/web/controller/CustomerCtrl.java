@@ -32,6 +32,10 @@ import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.web.service.mail.EmailService;
 
+/**
+ * 客户信息控制层
+ * @author HeLei
+ */
 @RestController
 @RequestMapping(value = "customer", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class CustomerCtrl extends RestCtrl<Customer> {

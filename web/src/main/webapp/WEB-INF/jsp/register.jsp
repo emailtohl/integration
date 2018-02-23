@@ -57,12 +57,8 @@
         <span class="glyphicon glyphicon-user form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
-        <input type="email" class="form-control" placeholder="Email" name="email">
+        <input type="text" class="form-control" placeholder="cell phone or email" name="cellPhoneOrEmail">
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-      </div>
-      <div class="form-group has-feedback hide">
-        <input type="hidden" class="form-control" placeholder="username" name="username">
-        <span class="glyphicon glyphicon-envelope form-control-feedback hide"></span>
       </div>
       <div class="form-group has-feedback">
         <input type="password" class="form-control" placeholder="Password" name="password">
@@ -148,13 +144,13 @@
   }
   
   $('form').on('submit', function(e) {
-	  var name, email, password, retypePassword;
+	  var name, cellPhoneOrEmail, password, retypePassword;
 	  name = $('input[name="name"]').val();
-	  email = $('input[name="email"]').val();
+	  cellPhoneOrEmail = $('input[name="cellPhoneOrEmail"]').val();
 	  password = $('input[name="password"]').val();
 	  retypePassword = $('input[name="retype-password"]').val();
 	  //e.preventDefault();
-	  if (!(name && email && password && retypePassword)) {
+	  if (!(name && cellPhoneOrEmail && password && retypePassword)) {
 		  tip('输入框不能为空');
 		  return false;
 	  }
@@ -162,8 +158,6 @@
 		  tip('密码不一致');
 		  return false;
 	  }
-	  // 默认用户名即邮箱
-	  $('input[name="username"]').val(email);
   });
   
   

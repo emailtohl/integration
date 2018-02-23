@@ -1,10 +1,10 @@
 package com.github.emailtohl.integration.core.user.customer;
 
+import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -95,8 +95,8 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	}
 
 	@Override
-	public boolean exist(Object matcherValue) {
-		String _matcherValue = (String) matcherValue;
+	public boolean exist(Object cellPhoneOrEmail) {
+		String _matcherValue = (String) cellPhoneOrEmail;
 		return customerRepository.usernameIsExist(_matcherValue);
 	}
 
@@ -273,7 +273,13 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 
 	@Override
 	public String getToken(String username) {
-		final String key = UUID.randomUUID().toString();
+		// 5位随机数
+		int r;
+		SecureRandom sr = new SecureRandom();
+		do {
+			r = sr.nextInt(100000) + 10000;
+		} while (r >= 100000);
+		final String key = String.valueOf(r);
 		TOKEN_MAP.put(key, username);
 		taskScheduler.schedule(() -> TOKEN_MAP.remove(key), new Date(System.currentTimeMillis() + tokenExpire));
 		return key;
