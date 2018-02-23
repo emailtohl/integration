@@ -50,9 +50,6 @@ define(['customer/module', 'customer/service'], function(customerModule) {
 					case 'department':
 						result = v && v.name;
 						break;
-					case 'address':
-						result = v.city + ' ' + v.street + ' ' + v.zipcode;
-						break;
 					case 'gender':
 						result = self.dictionary[v];
 						break;

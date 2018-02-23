@@ -83,6 +83,15 @@ define([
 					$rootScope.authentication.principal.username;
 			};
 
+			// 个人资料
+			$rootScope.profile = function() {
+				if (!$rootScope.authentication
+						|| !$rootScope.authentication.principal
+						|| !$rootScope.authentication.principal.id) {
+					return;
+				}
+				$state.go('customer.detail', {id : $rootScope.authentication.principal.id});
+			};
 			// 注销
 			$rootScope.logout = function() {
 				$http.post('logout').then(function(resp) {

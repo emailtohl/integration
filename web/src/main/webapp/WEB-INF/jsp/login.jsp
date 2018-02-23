@@ -42,7 +42,8 @@
      <c:if test="${param.containsKey('error')}">
 	     <div class="callout callout-danger">
 	       <h4>Warning!</h4>
-	       <p>Login failed. Please try again.</p>
+	       <c:if test="${empty param.error}"><p>lLogin failed. Please try again.</p></c:if>
+	       <c:if test="${not empty param.error}"><p>${param.error}</p></c:if>
 	     </div>
          <!-- <b style="color: red;">Login failed. Please try again.</b><br /><br /> -->
      </c:if>
@@ -160,9 +161,9 @@
 	  _csrf : _csrf
 	 }, function(resp) {
 		 console.log(resp);
+		 alert('Please find token enclosed，and reset Password');
 		 window.location.href = 'updatePassword?cellPhoneOrEmail=' + cellPhoneOrEmail + '&_csrf=' + _csrf;
 	 });
-	 tip('Please check the E-mail and reset the password');
 	});
     /* 
 	$('form').on('submit', function(e) {
