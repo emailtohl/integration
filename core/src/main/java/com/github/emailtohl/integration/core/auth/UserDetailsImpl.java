@@ -4,14 +4,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.core.user.UserType;
 import com.github.emailtohl.integration.core.user.entities.Classify;
 import com.github.emailtohl.integration.core.user.entities.Customer;
@@ -25,7 +23,6 @@ import com.github.emailtohl.integration.core.user.entities.User;
  * 
  * @author HeLei
  */
-@SuppressWarnings("unused")
 public class UserDetailsImpl implements UserDetails {
 	private static final long serialVersionUID = 1635134127318665555L;
 
@@ -102,16 +99,6 @@ public class UserDetailsImpl implements UserDetails {
 		}
 		this.username = username;
 	}
-	
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return AuthorityUtils.createAuthorityList(this.authorities.toArray(new String[this.authorities.size()]));
-	}
-
-	@Override
-	public String getPassword() {
-		return this.password;
-	}
 
 	/**
 	 * Returns the username used to authenticate the user. Cannot return <code>null</code>
@@ -120,85 +107,141 @@ public class UserDetailsImpl implements UserDetails {
 	 */
 	@Override
 	public String getUsername() {
-		return this.username;
+		return username;
 	}
-	
 	public void setUsername(String username) {
-		if (!StringUtils.hasText(username)) {
-			throw new IllegalArgumentException("the username never null");
-		}
 		this.username = username;
 	}
-	
+
 	public Long getId() {
-		return this.id;
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public String getCellPhone() {
-		return cellPhone;
-	}
-
-	public void setCellPhone(String cellPhone) {
-		this.cellPhone = cellPhone;
-	}
-
-	public Integer getEmpNum() {
-		return empNum;
-	}
-
-	public void setEmpNum(Integer empNum) {
-		this.empNum = empNum;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getIconSrc() {
-		return this.iconSrc;
-	}
-	
 	public String getRealName() {
-		return this.realName;
+		return realName;
+	}
+	public void setRealName(String realName) {
+		this.realName = realName;
 	}
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	public Date getCreateDate() {
 		return createDate;
 	}
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	public Date getModifyDate() {
 		return modifyDate;
 	}
+	public void setModifyDate(Date modifyDate) {
+		this.modifyDate = modifyDate;
+	}
+
+	public UserType getUserType() {
+		return userType;
+	}
+	public void setUserType(UserType userType) {
+		this.userType = userType;
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public String getCellPhone() {
+		return cellPhone;
+	}
+	public void setCellPhone(String cellPhone) {
+		this.cellPhone = cellPhone;
+	}
 
 	public String getEmail() {
-		return this.email;
+		return email;
 	}
-	
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Integer getEmpNum() {
+		return empNum;
+	}
+	public void setEmpNum(Integer empNum) {
+		this.empNum = empNum;
+	}
+
+	public Customer.Level getLevel() {
+		return level;
+	}
+	public void setLevel(Customer.Level level) {
+		this.level = level;
+	}
+
+	public Classify getClassify() {
+		return classify;
+	}
+	public void setClassify(Classify classify) {
+		this.classify = classify;
+	}
+
 	@Override
-	public boolean isAccountNonExpired() {
-		return accountNonExpired == null ? false : accountNonExpired;
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return AuthorityUtils.createAuthorityList(this.authorities.toArray(new String[this.authorities.size()]));
+	}
+	public void setAuthorities(Set<String> authorities) {
+		this.authorities = authorities;
+	}
+
+	@Override
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getIconSrc() {
+		return iconSrc;
+	}
+	public void setIconSrc(String iconSrc) {
+		this.iconSrc = iconSrc;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
 		return accountNonLocked == null ? false : accountNonLocked;
 	}
+	public void setAccountNonLocked(Boolean accountNonLocked) {
+		this.accountNonLocked = accountNonLocked;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return accountNonExpired == null ? false : accountNonExpired;
+	}
+	public void setAccountNonExpired(Boolean accountNonExpired) {
+		this.accountNonExpired = accountNonExpired;
+	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
 		return credentialsNonExpired == null ? false : credentialsNonExpired;
 	}
-
+	public void setCredentialsNonExpired(Boolean credentialsNonExpired) {
+		this.credentialsNonExpired = credentialsNonExpired;
+	}
+	
 	@Override
 	public boolean isEnabled() {
 		return accountNonLocked == null ? false : accountNonLocked;
-	}
-
-	// 认证的时候存储密码，用过之后会擦除
-	public void eraseCredentials() {
-		this.password = null;
 	}
 
 	@Override
@@ -206,6 +249,11 @@ public class UserDetailsImpl implements UserDetails {
 		return "UserDetailsImpl [username=" + username + ", authorities=" + authorities + "]";
 	}
 
+	// 认证的时候存储密码，用过之后会擦除
+	public void eraseCredentials() {
+		this.password = null;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

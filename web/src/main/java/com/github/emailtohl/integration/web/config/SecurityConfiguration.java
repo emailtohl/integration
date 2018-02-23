@@ -139,7 +139,6 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		.antMatchers("/site/**")
 		.antMatchers("/resources/**")
 		.antMatchers("/download/**")
-		.antMatchers("/templates/**")
 		.antMatchers("/article/**")
 		.antMatchers("/detail/**");
 	}
@@ -154,12 +153,9 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			"/ping"/* 内部服务器之间的连接 */,
 			"/cluster/**"/* 内部服务器之间的连接 */,
 			"/register"/* 获取注册页面GET以及注册新用户POST */,
-			"/user/customer"/* 注册新用户 */,
-			"/user/enable"/* 激活账号 */,
 			"/forgetPassword"/* 在邮箱中获取忘记密码页面 */,
 			"/getUpdatePasswordPage"/* 在邮箱中获取忘记密码页面 */,
 			"/updatePassword"/* 修改密码，自己修改自己的密码，是否允许是根据token，而非权限 */,
-			"/enable"/* 获取激活页 */,
 			"/authentication"/* 获取认证信息 */,
 			"/index.html",
 			"/home.html",

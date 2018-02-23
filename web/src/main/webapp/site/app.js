@@ -85,12 +85,14 @@ define([
 
 			// 个人资料
 			$rootScope.profile = function() {
-				if (!$rootScope.authentication
-						|| !$rootScope.authentication.principal
-						|| !$rootScope.authentication.principal.id) {
+				if (!$rootScope.authentication || !$rootScope.authentication.principal) {
 					return;
 				}
-				$state.go('customer.detail', {id : $rootScope.authentication.principal.id});
+				if ($rootScope.authentication.principal.userType === 'Employee') {
+					$state.go('employee.detail', {id : $rootScope.authentication.principal.id});
+				} else if ($rootScope.authentication.principal.userType === 'Customer') {
+					$state.go('customer.detail', {id : $rootScope.authentication.principal.id});
+				}
 			};
 			// 注销
 			$rootScope.logout = function() {
