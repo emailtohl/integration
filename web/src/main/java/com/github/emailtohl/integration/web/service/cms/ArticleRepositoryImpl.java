@@ -1,7 +1,6 @@
 package com.github.emailtohl.integration.web.service.cms;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -35,25 +34,18 @@ class ArticleRepositoryImpl extends AbstractSearchableRepository<Article>
 		C.article_id
 	 */
 	@Override
-	public Map<Long, Integer> getCommentNumbers(Collection<Long> articleIds) {
+	public Map<Long, Long> getCommentNumbers(Collection<Long> articleIds) {
 		CriteriaBuilder b = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Tuple> q = b.createTupleQuery();
 		Root<Article> r = q.from(Article.class);
 		Join<Article, Comment> join = r.join("comments", JoinType.LEFT);
-		q = q.multiselect(r.get("id"), b.count(join.get("article").get("id")).alias("count"));
+		q = q.multiselect(r.get("id").alias("id"), b.count(join.get("article").get("id")).alias("count"));
 		if (articleIds instanceof Collection) {
-			q = q.where(b.in(r.get("id")));
+			q = q.where(r.get("id").in(articleIds));
 		}
 		q = q.groupBy(r.get("id"), join.get("article").get("id"));
-		List<Tuple> ls = entityManager.createQuery(q).getResultList();
-		System.out.println(ls.size());
-		for (Tuple t : ls) {
-			System.out.println(t);
-			System.out.println(t.get("id", Long.class));
-			System.out.println(t.get("count", Integer.class));
-		}
 		return entityManager.createQuery(q).getResultList().stream().collect(
-				Collectors.toMap(tuple -> tuple.get("id", Long.class), tuple -> tuple.get("count", Integer.class)));
+				Collectors.toMap(tuple -> tuple.get("id", Long.class), tuple -> tuple.get("count", Long.class)));
 	}
 	
 }

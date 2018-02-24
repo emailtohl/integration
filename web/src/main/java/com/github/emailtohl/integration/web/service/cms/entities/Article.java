@@ -6,11 +6,11 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -44,7 +44,6 @@ public class Article extends BaseEntity implements Comparable<Article> {
 	private EmployeeRef approver;
 	private Boolean canComment;
 	private List<Comment> comments = new ArrayList<>();
-	private Integer commentNumbers;
 	
 	public Article() {}
 	
@@ -71,18 +70,20 @@ public class Article extends BaseEntity implements Comparable<Article> {
 	public void setKeywords(String keywords) {
 		this.keywords = keywords;
 	}
-	
+	// 解决hibernate在postgresql环境下，@Lob转字符串的异常
+	@org.hibernate.annotations.Type(type = "org.hibernate.type.TextType")
 	@org.hibernate.search.annotations.Field(store = org.hibernate.search.annotations.Store.NO)
-	@Lob
+//	@Lob
 	public String getBody() {
 		return body;
 	}
 	public void setBody(String body) {
 		this.body = body;
 	}
-	
+	// 解决hibernate在postgresql环境下，@Lob转字符串的异常
+	@org.hibernate.annotations.Type(type = "org.hibernate.type.TextType")
 	@org.hibernate.search.annotations.Field(store = org.hibernate.search.annotations.Store.YES, boost = @org.hibernate.search.annotations.Boost(1.2f))
-	@Lob
+//	@Lob
 	public String getSummary() {
 		return summary;
 	}
@@ -158,13 +159,9 @@ public class Article extends BaseEntity implements Comparable<Article> {
 		this.comments = comments;
 	}
 	
-	@Column(name = "comment_numbers")
+	@Transient
 	public Integer getCommentNumbers() {
-		commentNumbers = getComments().size();
-		return commentNumbers;
-	}
-	public void setCommentNumbers(Integer commentNumbers) {
-		this.commentNumbers = commentNumbers;
+		return this.comments.size();
 	}
 	
 	@Override

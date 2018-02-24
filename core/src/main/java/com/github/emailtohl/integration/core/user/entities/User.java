@@ -266,6 +266,8 @@ public class User extends BaseEntity {
 		this.description = description;
 	}
 	
+	// 解决hibernate在postgresql环境下，@Lob转字符串的异常
+	@org.hibernate.annotations.Type(type = "org.hibernate.type.TextType")
 	@org.hibernate.envers.NotAudited
 	@Lob
 	public String getPublicKey() {

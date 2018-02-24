@@ -116,9 +116,9 @@ public class ArticleServiceImplTest {
 		p = articleService.search("概述", pageable);
 		assertFalse(p.getContent().isEmpty());
 		
-/*		Set<Long> ids = p.getContent().stream().map(a -> a.getId()).collect(Collectors.toSet());
-		Map<Long, Integer> commentNumbers = articleService.getCommentNumbers(ids);
-		assertFalse(commentNumbers.isEmpty());*/
+		Set<Long> ids = p.getContent().stream().map(a -> a.getId()).collect(Collectors.toSet());
+		Map<Long, Long> commentNumbers = articleService.getCommentNumbers(ids);
+		assertFalse(commentNumbers.isEmpty());
 	}
 	
 	@Test

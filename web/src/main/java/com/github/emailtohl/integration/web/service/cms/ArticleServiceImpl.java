@@ -164,7 +164,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 	}
 
 	@Override
-	public Map<Long, Integer> getCommentNumbers(Collection<Long> articleIds) {
+	public Map<Long, Long> getCommentNumbers(Collection<Long> articleIds) {
 		return articleRepository.getCommentNumbers(articleIds);
 	}
 	

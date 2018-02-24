@@ -16,5 +16,5 @@ interface ArticleRepositoryCustomization extends SearchableRepository<Article> {
 	 * @param ids
 	 * @return
 	 */
-	Map<Long, Integer> getCommentNumbers(Collection<Long> articleIds);
+	Map<Long, Long> getCommentNumbers(Collection<Long> articleIds);
 }

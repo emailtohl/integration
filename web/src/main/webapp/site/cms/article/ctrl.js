@@ -21,6 +21,19 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 			service.search(self.queryParam.query, self.queryParam.page).then(function(resp) {
 				self.page = resp.data;
 				self.isDetail = false;
+				if (self.page.content instanceof Array) {
+					var arr = [];
+					for (var i = 0; i < self.page.content.length; i++) {
+						arr.push(self.page.content[i].id);
+					}
+					service.getCommentNumbers(arr.join(',')).then(function(r) {
+						var map = r.data;
+						for (var i = 0; i < self.page.content.length; i++) {
+							var num = map[self.page.content[i].id];
+							self.page.content[i].commentNumbers = num;
+						}
+					});
+				}
 			});
 		};
 		

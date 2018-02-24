@@ -8,6 +8,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,6 +98,15 @@ public class CmsCtrl {
 		return articleService.search(query, pageable);
 	}
 	
+	/**
+	 * 查询文章关联的评论数量
+	 * @param articleIds
+	 * @return
+	 */
+	@RequestMapping(value = "cms/article/commentNumbers")
+	public Map<Long, Long> getCommentNumbers(Long[] articleIds) {
+		return articleService.getCommentNumbers(Arrays.asList(articleIds));
+	}
 	/**
 	 * 保存文章，从安全上下文中查找用户名
 	 * @param form 前端提交的表单数据

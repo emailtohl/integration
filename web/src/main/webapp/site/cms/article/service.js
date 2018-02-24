@@ -9,6 +9,9 @@ define(['cms/module', 'common/context' ], function(cmsModule) {
 				param = util.encodeUrlParams(param);
 				return $http.get('cms/article/search' + (param ? '?' + param : ''));
 			},
+			getCommentNumbers : function(articleIds) {
+				return $http.get('cms/article/commentNumbers?articleIds=' + articleIds);
+			},
 			findArticle : function(id) {
 				return $http.get('cms/article/' + id);
 			},
