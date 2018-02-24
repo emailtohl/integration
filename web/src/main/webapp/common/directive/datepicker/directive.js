@@ -2,8 +2,8 @@
  * jqueryui的插件
  * @author HeLei
  */
-define([ 'common/module', 'common/service/util', 'jquery', 'jquery-ui' ], function(commonModule, util, $) {
-	commonModule.directive('datepicker', [ 'util', function(util) {
+define([ 'common/module', 'jquery', 'jquery-ui', 'common/service/util' ], function(commonModule, $) {
+	return commonModule.directive('datepicker', [ 'util', function(util) {
 		util.loadasync('lib/jquery/jquery-ui.min.css');
 		$.datepicker.regional['zh-CN'] = {
 			clearText : '清除',

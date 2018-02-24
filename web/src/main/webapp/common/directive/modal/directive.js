@@ -3,7 +3,7 @@
  * @author HeLei
  */
 define([ 'common/module', 'bootstrap' ], function(common) {
-	common.directive('modal', [ '$document', function($document) {
+	return common.directive('modal', [ '$document', function($document) {
 		return {
 			restrict : 'A',// 只在div中使用
 			templateUrl : 'common/directive/modal/template.html',

@@ -52,7 +52,7 @@
                   <td ng-bind="x.type.name" class="col-md-1"></td>
                   <td ng-bind="x.isApproved ? '是' : '否'" class="col-md-1"></td>
                   <td ng-bind="x.isComment ? '是' : '否'" class="col-md-1"></td>
-                  <td ng-bind="x.comments.length" class="col-md-1"></td>
+                  <td ng-bind="x.commentNumbers" class="col-md-1"></td>
                   <td ng-bind="x.createDate" class="col-md-1"></td>
                   <td ng-bind="x.modifyDate" class="col-md-1"></td>
                   <td ng-bind="x.keywords" class="col-md-2"></td>
@@ -123,10 +123,10 @@
 	    </div>
 	    <div class="box-footer clearfix">
 	      <button class="btn btn-default pull-left" ng-click="ctrl.back()">返回</button>
-	      <button type="button" style="margin-left: 60px;" class="btn btn-success" ng-click="ctrl.approveArticle()" ng-if="hasAuthority('content') && !ctrl.article.canApproved && ctrl.article.id">允许发布</button>
-	      <button type="button" style="margin-left: 60px;" class="btn btn-warning" ng-click="ctrl.rejectArticle()" ng-if="hasAuthority('content') && ctrl.article.canApproved && ctrl.article.id">禁止发布</button>
-	      <button type="button" style="margin-left: 60px;" class="btn btn-success" ng-click="ctrl.openComment()" ng-if="hasAuthority('content') && !ctrl.article.canComment && ctrl.article.id">允许评论</button>
-	      <button type="button" style="margin-left: 60px;" class="btn btn-warning" ng-click="ctrl.closeComment()" ng-if="hasAuthority('content') && ctrl.article.canComment && ctrl.article.id">禁止评论</button>
+	      <button type="button" style="margin-left: 60px;" class="btn btn-success" ng-click="ctrl.approveArticle()" ng-if="hasAuthority('content') && ctrl.article.id && ctrl.article.canApproved != null && ctrl.article.canApproved == false">允许发布</button>
+	      <button type="button" style="margin-left: 60px;" class="btn btn-warning" ng-click="ctrl.rejectArticle()" ng-if="hasAuthority('content') && ctrl.article.id && ctrl.article.canApproved == null || ctrl.article.canApproved == true">禁止发布</button>
+	      <button type="button" style="margin-left: 60px;" class="btn btn-success" ng-click="ctrl.openComment()" ng-if="hasAuthority('content') && ctrl.article.id && ctrl.article.canComment != null && ctrl.article.canComment == false">允许评论</button>
+	      <button type="button" style="margin-left: 60px;" class="btn btn-warning" ng-click="ctrl.closeComment()" ng-if="hasAuthority('content') && ctrl.article.id && ctrl.article.canComment == null || ctrl.article.canComment == true">禁止评论</button>
 	      <button class="btn btn-primary pull-right" ng-click="ctrl.submit()" ng-disabled="f.$invalid">提交</button>
 	    </div>
 	    <!-- /.box-body -->

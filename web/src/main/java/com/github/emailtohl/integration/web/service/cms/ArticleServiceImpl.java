@@ -1,5 +1,6 @@
 package com.github.emailtohl.integration.web.service.cms;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -162,6 +163,11 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 		return articleRepository.queryForList(params).stream().map(this::toTransient).collect(Collectors.toList());
 	}
 
+	@Override
+	public Map<Long, Integer> getCommentNumbers(Collection<Long> articleIds) {
+		return articleRepository.getCommentNumbers(articleIds);
+	}
+	
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Article update(Long id, Article newEntity) {
@@ -175,14 +181,34 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 		if (hasText(newEntity.getSummary())) {
 			a.setSummary(newEntity.getSummary());
 		}
-		if (hasText(newEntity.getBody())) {
-			a.setBody(newEntity.getBody());
+		String body = newEntity.getBody();
+		if (hasText(body)) {
+			a.setBody(body);
 		}
 		if (hasText(newEntity.getKeywords())) {
 			a.setKeywords(newEntity.getKeywords());
 		}
 		if (hasText(newEntity.getCover())) {
 			a.setCover(newEntity.getCover());
+		}
+		// 若没有设置封面，则将第一幅图作为封面
+		body = a.getBody();
+		if (!hasText(a.getCover()) && hasText(body)) {
+			Matcher m = IMG_PATTERN.matcher(body);
+			if (m.find()) {
+				a.setCover(m.group(1));
+			}
+		}
+		// 若没有摘要，则选取前50字
+		String summary = a.getSummary();
+		if (!hasText(summary) && hasText(body)) {
+			int size = body.length();
+			if (size > 50) {
+				summary = body.substring(0, 50) + "……";
+			} else {
+				summary = body;
+			}
+			a.setSummary(summary.replaceAll(IMG_PATTERN.pattern(), ""));
 		}
 		Type type = null;
 		if (newEntity.getType() != null) {
@@ -284,7 +310,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 			return null;
 		}
 		Article target = new Article();
-		BeanUtils.copyProperties(source, target, "author", "approver", "type", "comments");
+		BeanUtils.copyProperties(source, target, "author", "approver", "type", "comments", "commentNumbers");
 		// BeanUtils不处理is开头的访问器
 		target.setCanApproved(source.getCanApproved());
 		// 只获取作者必要信息
@@ -313,7 +339,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 			return null;
 		}
 		Article target = new Article();
-		BeanUtils.copyProperties(source, target, "author", "approver", "type", "comments");
+		BeanUtils.copyProperties(source, target, "author", "approver", "type", "comments", "commentNumbers");
 		target.setAuthor(transientUserRef(source.getAuthor()));
 		target.setApprover(transientEmployeeRef(source.getApprover()));
 		target.setType(getType(source.getType()));

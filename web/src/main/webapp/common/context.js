@@ -1,9 +1,7 @@
 require([
 	'common/module',
-	'common/service/interceptors',
-	'common/service/myaes',
-	'common/service/myrsa',
 	'common/service/util',
+	'common/service/interceptors',
 	'common/service/ztree-util',
 	'common/directive/modal/directive',
 	'common/directive/page0/directive',
@@ -14,4 +12,6 @@ require([
 	'common/directive/select2/directive',
 	'common/directive/asynvalidation/directive',
 	'common/filter',
+	'common/service/myaes',
+	'common/service/myrsa',
 ]);

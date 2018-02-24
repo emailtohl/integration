@@ -5,7 +5,7 @@
  * @author HeLei
  */
 define([ 'common/module', 'rx', 'toastr' ], function(common, Rx, toastr) {
-	common.directive('asynvalidation', [ '$http', function($http) {
+	return common.directive('asynvalidation', [ '$http', function($http) {
 		return {
 			restrict : 'A',
 			scope : {

@@ -2,6 +2,7 @@ package com.github.emailtohl.integration.web.service.cms;
 
 import static com.github.emailtohl.integration.core.role.Authority.CONTENT;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +63,14 @@ public interface ArticleService {
 	 * @return
 	 */
 	List<Article> query(Article params);
-
+	
+	/**
+	 * 根据给定的文章id，查询对应的评论数量
+	 * @param articleIds
+	 * @return
+	 */
+	Map<Long, Integer> getCommentNumbers(Collection<Long> articleIds);
+	
 	/**
 	 * 更新文章
 	 * @param id

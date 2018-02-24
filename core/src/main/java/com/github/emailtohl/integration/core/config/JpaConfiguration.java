@@ -107,6 +107,7 @@ class JpaConfiguration {
 		emfb.setPackagesToScan(ENTITIES_PACKAGE);
 		Map<String, Object> properties = new HashMap<String, Object>();
 		properties.put("hibernate.hbm2ddl.auto", hibernate_hbm2ddl_auto);
+		properties.put("hibernate.show_sql", "true");
 		properties.put("hibernate.format_sql", "true");
 		// hibernate.search.default.directory_provider默认是filesystem
 		// 设置hibernate.search.default.indexBase可指定索引目录

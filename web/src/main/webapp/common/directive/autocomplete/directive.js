@@ -3,7 +3,7 @@
  * @author HeLei
  */
 define([ 'common/module', 'jquery-ui' ], function(common) {
-	common.directive('autocomplete', [ function() {
+	return common.directive('autocomplete', [ function() {
 		return {
 			restrict : 'A',
 			scope : {

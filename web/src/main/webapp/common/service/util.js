@@ -1,5 +1,5 @@
 /**
- * 工具类，提供基础功能
+ * 工具类，提供基础功能，做成了Angular的Service而非RequireJS的依赖对象
  * @author HeLei
  */
 define([ 'common/module' ], function(commonModule) {

@@ -422,7 +422,7 @@ public class FileSearch implements AutoCloseable {
 		private static final long MAX_BYTES = 10_485_760L;// 10兆
 		private final FileTypeMap fileTypeMap = FileTypeMap.getDefaultFileTypeMap();
 		private final Set<String> TEXT_SUFFIX = new HashSet<String>(
-				Arrays.asList("txt", "html", "xml", "js", "java", "css", "properties"));
+				Arrays.asList("txt", "md", "html", "xml", "js", "css", "java", "c", "cpp", "go", "csv", "properties"));
 
 		@Override
 		public boolean accept(File f) {
@@ -433,7 +433,7 @@ public class FileSearch implements AutoCloseable {
 			int i = name.lastIndexOf(".");
 			if (i > -1 && name.length() > i) {
 				String suffix = name.substring(i + 1, name.length());
-				flag = TEXT_SUFFIX.contains(suffix);
+				flag = TEXT_SUFFIX.contains(suffix.toLowerCase());
 			}
 			String fileType;
 			if (!flag) {

@@ -165,23 +165,23 @@ public class CmsCtrl {
 	}
 	
 	/**
-	 * 开放评论
+	 * 开放文章的评论
 	 * @param articleId
 	 */
 	@RequestMapping(value = "cms/openComment", method = POST)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void openComment(@RequestParam long articleId) {
-		commentService.canComment(articleId, true);
+		articleService.canComment(articleId, true);
 	}
 	
 	/**
-	 * 关闭评论
+	 * 关闭文章评论
 	 * @param articleId
 	 */
 	@RequestMapping(value = "cms/closeComment", method = POST)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void closeComment(@RequestParam long articleId) {
-		commentService.canComment(articleId, false);
+		articleService.canComment(articleId, false);
 	}
 	
 	/**

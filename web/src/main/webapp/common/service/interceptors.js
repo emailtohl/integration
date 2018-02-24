@@ -8,7 +8,7 @@
  * 
  * @author HeLei
  */
-define([ 'common/module', 'common/service/util', 'toastr' ], function(commonModule, util, toastr) {
+define([ 'common/module', 'toastr', 'common/service/util' ], function(commonModule, toastr) {
 	return commonModule
 	.factory('LoggingInterceptor', [ '$q', function($q) {
 		return {

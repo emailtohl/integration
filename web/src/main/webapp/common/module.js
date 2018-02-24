@@ -1,3 +1,3 @@
-define(['angular', 'ui-router'], function(angular, uiRouter) {
+define(['angular'], function(angular) {
 	return angular.module('commonModule', []);
 });

@@ -4,7 +4,7 @@
  * @author HeLei
  */
 define([ 'common/module', 'common/service/util', 'select2' ], function(common) {
-	common.directive('select2', [ 'util', function(util) {
+	return common.directive('select2', [ 'util', function(util) {
 		util.loadasync('lib/select2/select2.min.css');
 		return {
 			restrict : 'A',

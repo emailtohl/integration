@@ -3,7 +3,7 @@
  * @author HeLei
  */
 define([ 'common/module' ], function(common) {
-	common.directive('repeatFinish', [ function() {
+	return common.directive('repeatFinish', [ function() {
 		return {
 			link : function($scope, $element, $attrs) {
 				if ($scope.$last) {

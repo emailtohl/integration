@@ -4,7 +4,7 @@
  * @author HeLei
  */
 define([ 'common/module', 'common/service/util' ], function(commonModule) {
-	commonModule.directive('upload', [ 'util', function(util) {
+	return commonModule.directive('upload', [ 'util', function(util) {
 		/**
 		 * 在请求中添加csrf令牌
 		 * 有的是在请求表单数据中添加，有的是在cookie或其他请求头中添加，或者令牌名都有所不同

@@ -1,5 +1,6 @@
 /**
  * 为使用zTree的辅助工具，可将字符串的文件名转换为ztree识别的对象
+ * 做成了Angular的Service而非RequireJS的依赖对象
  * @author HeLei
  */
 define([ 'common/module'/*, 'ztree'*/ ], function(commonModule) {

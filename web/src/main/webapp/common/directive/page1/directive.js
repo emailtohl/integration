@@ -8,7 +8,7 @@
  * @author HeLei
  */
 define([ 'common/module' ], function(common) {
-	common
+	return common
 	.directive('page', function() {
 		function init($scope) {
 			// 查询页码，默认查询第一页

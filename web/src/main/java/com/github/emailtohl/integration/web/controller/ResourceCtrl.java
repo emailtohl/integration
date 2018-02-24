@@ -317,7 +317,7 @@ public class ResourceCtrl {
 			if (StringUtils.hasText(url)) {
 				url = String.join("/", url.split(ConstantPattern.SEPARATOR));
 			}
-			url = "resources/" + url;
+			url = resources.getName() + "/" + url;
 			html = "<script type=\"text/javascript\">window.parent.CKEDITOR.tools.callFunction(" + CKEditorFuncNum + ",'" + url + "','');</script>";
 		} else {
 			// 第三个参数为空表示没有错误，不为空则会弹出一个对话框显示　error　message　的内容
@@ -355,7 +355,7 @@ public class ResourceCtrl {
 		try (InputStream in = icon.getInputStream()) {
 			ExecResult execResult = fileService.save(path, in);
 			if (execResult.ok) {
-				String src = "resources/" + String.join("/", path.split(ConstantPattern.SEPARATOR));
+				String src = resources.getName() + "/" + String.join("/", path.split(ConstantPattern.SEPARATOR));
 				Image img = new Image(name, src);
 				if (u instanceof Employee) {
 					u.setImage(img);
