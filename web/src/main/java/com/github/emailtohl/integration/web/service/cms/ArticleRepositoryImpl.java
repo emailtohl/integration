@@ -40,7 +40,7 @@ class ArticleRepositoryImpl extends AbstractSearchableRepository<Article>
 		Root<Article> r = q.from(Article.class);
 		Join<Article, Comment> join = r.join("comments", JoinType.LEFT);
 		q = q.multiselect(r.get("id").alias("id"), b.count(join.get("article").get("id")).alias("count"));
-		if (articleIds instanceof Collection) {
+		if (articleIds instanceof Collection && !articleIds.isEmpty()) {
 			q = q.where(r.get("id").in(articleIds));
 		}
 		q = q.groupBy(r.get("id"), join.get("article").get("id"));

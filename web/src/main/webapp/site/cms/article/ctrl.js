@@ -45,7 +45,11 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 		};
 		
 		self.add = function() {
-			self.article = {};
+			self.article = {
+				author : {
+					name : $scope.authentication && $scope.authentication.principal.realName,
+				},
+			};
 			self.isDetail = true;
 			refresh();
 		};

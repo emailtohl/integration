@@ -31,6 +31,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.github.emailtohl.integration.core.config.CoreConfiguration;
@@ -86,7 +88,7 @@ class ActivitiConfiguration {
 		
 		cfg.setCustomFormTypes(Arrays.asList(new BigtextFormType(), new DoubleFormType(), new JavascriptFormType()));
 
-//		cfg.setDeploymentResources(new Resource[] { new ClassPathResource("") });
+		cfg.setDeploymentResources(new Resource[] { new ClassPathResource("flow/apply.bpmn") });
 
 		// Windows环境下设置字体
 		String os = System.getenv().get("OS");
