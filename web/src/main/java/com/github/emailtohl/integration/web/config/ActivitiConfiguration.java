@@ -39,6 +39,7 @@ import com.github.emailtohl.integration.core.config.CoreConfiguration;
 import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.employee.EmployeeService;
+import com.github.emailtohl.integration.web.service.flow.Notify;
 
 /**
  * 流程配置
@@ -49,6 +50,12 @@ import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 @Import(CoreConfiguration.class)
 class ActivitiConfiguration {
 	private static final Logger LOG = LogManager.getLogger();
+	
+	@Bean
+	public Notify notify(UserService userService,
+			CustomerService customerService, EmployeeService employeeService) {
+		return new Notify(userService, customerService, employeeService);
+	}
 	
 	/**
 	 * 可以集成到Spring管理的事务中
@@ -84,6 +91,7 @@ class ActivitiConfiguration {
 		beans.put("userService", userService);
 		beans.put("customerService", customerService);
 		beans.put("employeeService", employeeService);
+		beans.put("notify", notify(userService, customerService, employeeService));
 		cfg.setBeans(beans);
 		
 		cfg.setCustomFormTypes(Arrays.asList(new BigtextFormType(), new DoubleFormType(), new JavascriptFormType()));

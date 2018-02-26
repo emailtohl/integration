@@ -2,8 +2,8 @@ package com.github.emailtohl.integration.web.flowexample;
 
 import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -103,7 +103,7 @@ public class LeaveDynamicFormTest {
 
         // 验证是否部署成功
         long count = repositoryService.createProcessDefinitionQuery().count();
-        assertEquals(1, count);
+        assertTrue(count > 0);
 
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey(processDefinitionKey).singleResult();
         StartFormData startFormData = formService.getStartFormData(processDefinition.getId());
@@ -122,7 +122,7 @@ public class LeaveDynamicFormTest {
 
         // 验证是否部署成功
         long count = repositoryService.createProcessDefinitionQuery().count();
-        assertEquals(1, count);
+        assertTrue(count > 0);
 
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey(processDefinitionKey).singleResult();
 

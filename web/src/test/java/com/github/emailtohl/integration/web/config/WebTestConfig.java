@@ -58,7 +58,7 @@ public class WebTestConfig {
 				td.qux.setId(c.getId());
 			}
 
-			Employee e = employeeService.getByEmpNum(td.foo.getEmpNum());
+			Employee e = employeeService.getByEmail(td.foo.getEmail());
 			if (e == null) {
 				e = employeeService.create(td.foo);
 				td.foo.setId(e.getId());
@@ -70,7 +70,7 @@ public class WebTestConfig {
 				td.foo.setId(e.getId());
 			}
 
-			e = employeeService.getByEmpNum(td.bar.getEmpNum());
+			e = employeeService.getByEmail(td.bar.getEmail());
 			if (e == null) {
 				e = employeeService.create(td.bar);
 				td.bar.setId(e.getId());

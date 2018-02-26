@@ -251,6 +251,12 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 	}
 
 	@Override
+	public Employee getByEmail(String email) {
+		Employee source = employeeRepository.findByEmail(email);
+		return transientDetail(source);
+	}
+	
+	@Override
 	public List<Employee> findByName(String name) {
 		return employeeRepository.findByNameLike(name).stream().map(this::toTransient).collect(Collectors.toList());
 	}
@@ -494,4 +500,5 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 			throw new NotAcceptableException("不能修改系统内置账号");
 		}
 	}
+
 }

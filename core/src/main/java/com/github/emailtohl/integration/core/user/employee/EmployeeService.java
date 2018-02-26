@@ -49,6 +49,14 @@ public interface EmployeeService {
 	 */
 	@PreAuthorize("hasAuthority('" + EMPLOYEE + "') or" + SPEL_MATCH_ID)
 	Employee get(@P("id") Long id);
+	
+	/**
+	 * 根据邮箱进行查询
+	 * @param email
+	 * @return
+	 */
+	@PreAuthorize("isAuthenticated()")
+	Employee getByEmail(String email);
 
 	/**
 	 * 分页查询

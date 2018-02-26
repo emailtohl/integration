@@ -79,7 +79,7 @@ public class WebTestData {
 		} catch (ParseException | IOException e) {
 			e.printStackTrace();
 		}
-		foo.setEmpNum(Employee.NO1 + 1);
+//		foo.setEmpNum(Employee.NO1 + 1);
 		foo.setPost("系统分析师");
 		foo.setSalary(10000.00);
 		foo.setDepartment(pd.product);
@@ -102,7 +102,7 @@ public class WebTestData {
 		} catch (ParseException | IOException e) {
 			e.printStackTrace();
 		}
-		bar.setEmpNum(Employee.NO1 + 2);
+//		bar.setEmpNum(Employee.NO1 + 2);
 		bar.setPost("QA人员");
 		bar.setSalary(6000.00);
 		bar.setDepartment(pd.qa);
