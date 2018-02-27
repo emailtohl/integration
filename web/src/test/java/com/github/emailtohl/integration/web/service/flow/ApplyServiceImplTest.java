@@ -2,7 +2,7 @@ package com.github.emailtohl.integration.web.service.flow;
 
 import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.web.config.WebPresetData;
 import com.github.emailtohl.integration.web.config.WebTestConfig;
 import com.github.emailtohl.integration.web.config.WebTestData;
@@ -60,10 +61,16 @@ public class ApplyServiceImplTest {
 		apply.setReason("提交一个申请，内容是：*****");
 		apply = applyService.create(apply);
 		processInstanceId = apply.getProcessInstanceId();
-		
 		changeUser(webTestData.bar.getId().toString());
 		List<Apply> applys = applyService.findTodoTasks();
 		assertFalse(applys.isEmpty());
+		for (Apply a : applys) {
+			System.out.println(a);
+			ExecResult e = applyService.claim(a.getTaskId());
+			assertTrue(e.ok);
+			e = applyService.approve(a.getTaskId(), true);
+			assertTrue(e.ok);
+		}
 	}
 
 	void changeUser(String userId) {

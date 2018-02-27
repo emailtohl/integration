@@ -9,13 +9,13 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.data.domain.Example;
@@ -27,6 +27,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
+import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.user.UserService;
@@ -82,6 +83,7 @@ public class ApplyServiceImpl extends StandardService<Apply> {
 		args.put("reason", source.getReason());
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("apply", businessKey);
 		source.setProcessInstanceId(processInstance.getId());
+		source.setActivityId(processInstance.getActivityId());
 		return transientDetail(source);
 	}
 
@@ -133,15 +135,11 @@ public class ApplyServiceImpl extends StandardService<Apply> {
 			return null;
 		}
 		String processInstanceId = source.getProcessInstanceId();
-		HistoricActivityInstance historicActivityInstance = historyService.createHistoricActivityInstanceQuery()
-				.processInstanceId(processInstanceId).unfinished().singleResult();
-		if (historicActivityInstance == null) {
+		if (!"praeiudicium".equals(getActivityId(processInstanceId))) {
 			return transientDetail(source);
 		}
-		if ("praeiudicium".equals(historicActivityInstance.getActivityName())) {
-			if (hasText(newEntity.getReason())) {
-				source.setReason(newEntity.getReason());
-			}
+		if (hasText(newEntity.getReason())) {
+			source.setReason(newEntity.getReason());
 		}
 		return transientDetail(source);
 	}
@@ -153,15 +151,11 @@ public class ApplyServiceImpl extends StandardService<Apply> {
 			return;
 		}
 		String processInstanceId = source.getProcessInstanceId();
-		HistoricActivityInstance historicActivityInstance = historyService.createHistoricActivityInstanceQuery()
-				.processInstanceId(processInstanceId).unfinished().singleResult();
-		if (historicActivityInstance == null) {
+		if (!"praeiudicium".equals(getActivityId(processInstanceId))) {
 			return;
 		}
-		if ("praeiudicium".equals(historicActivityInstance.getActivityName())) {
-			applyRepository.delete(source);
-			runtimeService.deleteProcessInstance(processInstanceId, "删除原因");
-		}
+		applyRepository.delete(source);
+		runtimeService.deleteProcessInstance(processInstanceId, "删除原因");
 	}
 	
 	@Override
@@ -224,6 +218,7 @@ public class ApplyServiceImpl extends StandardService<Apply> {
 			String businessKey = processInstance.getBusinessKey();
 			Apply apply = applyRepository.findOne(Long.valueOf(businessKey));
 			apply.setTaskId(task.getId());
+			apply.setActivityId(processInstance.getActivityId());
 			results.add(apply);
 		}
 		return results;
@@ -233,24 +228,44 @@ public class ApplyServiceImpl extends StandardService<Apply> {
 	 * 签收任务
 	 * @param taskId
 	 */
-	public void claim(String taskId) {
+	public ExecResult claim(String taskId) {
 		if (CURRENT_USER_ID.get().equals(corePresetData.user_anonymous.getId())) {
 			throw new UsernameNotFoundException("没有此账号");
 		}
-        String userId = CURRENT_USER_ID.get().toString();
-        taskService.claim(taskId, userId);
-    }
-	
-	public boolean isProcessEnd(String processInstanceId) {
-		ProcessInstance pi = runtimeService // 表示正在执行的流程实例和执行对象
-				.createProcessInstanceQuery() // 创建流程实例查询
-				.processInstanceId(processInstanceId) // 使用流程实例ID查询
-				.singleResult();
-		if (pi == null) {
-			return true;
-		} else {
-			return false;
+		String userId = CURRENT_USER_ID.get().toString();
+		try {
+			taskService.claim(taskId, userId);
+			return new ExecResult(true, "", null);
+		} catch (ActivitiTaskAlreadyClaimedException e) {
+			return new ExecResult(false, "Activiti task already claimed exception", null);
 		}
 	}
 	
+	public ExecResult approve(String taskId, boolean approved) {
+		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+		if (task == null) {
+			return new ExecResult(false, "not found task", null);
+		}
+		Map<String, Object> args = new HashMap<>();
+		if ("praeiudicium".equals(task.getTaskDefinitionKey())) {
+			args.put("praeiudiciumApproved", approved);
+		} else if ("recheck".equals(task.getTaskDefinitionKey())) {
+			args.put("recheckApproved", approved);
+		} else {
+			return new ExecResult(false, "state is wrong", null);
+		}
+		taskService.complete(taskId, args);
+		return new ExecResult(true, "", null);
+	}
+	
+	public String getActivityId(String processInstanceId) {
+		ProcessInstance processInstance = runtimeService // 表示正在执行的流程实例和执行对象
+		.createProcessInstanceQuery() // 创建流程实例查询
+		.processInstanceId(processInstanceId) // 使用流程实例ID查询
+		.singleResult();
+		if (processInstance == null) {
+			return null;
+		}
+		return processInstance.getActivityId();
+	}
 }

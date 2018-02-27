@@ -25,6 +25,7 @@ public class Apply extends BaseEntity {
 	private UserRef applicant;
 	private String result;
 	private String taskId;
+	private String activityId;
 	
 	public String getReason() {
 		return reason;
@@ -64,10 +65,17 @@ public class Apply extends BaseEntity {
 		this.taskId = taskId;
 	}
 	
+	public String getActivityId() {
+		return activityId;
+	}
+	public void setActivityId(String activityId) {
+		this.activityId = activityId;
+	}
+	
 	@Override
 	public String toString() {
 		return "Apply [reason=" + reason + ", processInstanceId=" + processInstanceId + ", applicant=" + applicant
-				+ ", result=" + result + ", taskId=" + taskId + "]";
+				+ ", result=" + result + ", taskId=" + taskId + ", activityId=" + activityId + "]";
 	}
 	
 }
