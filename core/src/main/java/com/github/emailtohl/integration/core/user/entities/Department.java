@@ -60,6 +60,7 @@ public class Department extends BaseEntity implements SelfRef {
 		this.description = description;
 	}
 
+	@Column(name = "responsible_person")
 	public String getResponsiblePerson() {
 		return responsiblePerson;
 	}

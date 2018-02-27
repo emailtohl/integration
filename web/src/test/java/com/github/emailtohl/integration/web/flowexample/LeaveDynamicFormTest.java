@@ -2,6 +2,7 @@ package com.github.emailtohl.integration.web.flowexample;
 
 import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -161,8 +162,8 @@ public class LeaveDynamicFormTest {
         formService.submitTaskFormData(reportBackTask.getId(), variables);
 
         // 验证流程是否已经结束
-        HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().finished().singleResult();
-        assertNotNull(historicProcessInstance);
+        List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().finished().list();
+        assertFalse(historicProcessInstances.isEmpty());
 
         // 读取历史变量
         Map<String, Object> historyVariables = packageVariables(processInstance);

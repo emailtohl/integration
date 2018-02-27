@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.github.emailtohl.integration.web.service.mybatistest.DepartmentMapper">
+	<resultMap id="DepartmentResult" type="com.github.emailtohl.integration.core.user.entities.Department">
+		<id property="id" column="id" />
+		<result property="createDate" column="create_date" />
+		<result property="modifyDate" column="modify_date" />
+		<result property="name" column="name" />
+		<result property="description" column="a_DESCRIPTION" />
+		<result property="responsiblePerson" column="responsible_person" />
+		<association property="parent"
+			javaType="com.github.emailtohl.integration.core.user.entities.Department">
+			<id property="id" column="id" />
+			<result property="name" column="name" />
+		</association>
+		<association property="company"
+			javaType="com.github.emailtohl.integration.core.user.entities.Company">
+			<id property="id" column="id" />
+			<result property="name" column="name" />
+		</association>
+	</resultMap>
+
+	<select id="findByName" parameterType="String" resultMap="DepartmentResult">
+		select * from department where name = #{name}
+	</select>
+	<insert id="insert" parameterType="com.github.emailtohl.integration.core.user.entities.Department">
+		<selectKey keyProperty="id" resultType="long" order="BEFORE">
+			SELECT nextval('hibernate_sequence')
+		</selectKey>
+		insert into
+	        department
+	        (create_date, modify_date, version, company_id, description, name, parent_id, responsible_person, id) 
+	    values
+	        (#{createDate}, #{modifyDate}, 0, null, #{description}, #{name}, null, #{responsiblePerson}, #{id})
+	</insert>
+</mapper>

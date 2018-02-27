@@ -14,7 +14,7 @@ import org.springframework.stereotype.Controller;
 @Configuration
 //启动Aspect动态代理
 @EnableAspectJAutoProxy
-@Import({ PresetDataConfiguration.class, SecurityConfiguration.class })
+@Import({ PresetDataConfiguration.class, SecurityConfiguration.class, MybatisConfiguration.class })
 @ComponentScan(basePackages = "com.github.emailtohl.integration.web", excludeFilters = @ComponentScan.Filter({
 	Controller.class, Configuration.class }))
 public class ServiceConfiguration {
