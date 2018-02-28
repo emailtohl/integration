@@ -50,6 +50,13 @@ import com.github.emailtohl.integration.web.service.flow.Notify;
 class ActivitiConfiguration {
 	private static final Logger LOG = LogManager.getLogger();
 	
+	/**
+	 * Activiti的监听器
+	 * @param userService
+	 * @param customerService
+	 * @param employeeService
+	 * @return
+	 */
 	@Bean
 	public Notify notify(UserService userService,
 			CustomerService customerService, EmployeeService employeeService) {

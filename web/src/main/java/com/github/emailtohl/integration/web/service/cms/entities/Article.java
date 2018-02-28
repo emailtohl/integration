@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -71,9 +72,9 @@ public class Article extends BaseEntity implements Comparable<Article> {
 		this.keywords = keywords;
 	}
 	// 解决hibernate在postgresql环境下，@Lob转字符串的异常
-	@org.hibernate.annotations.Type(type = "org.hibernate.type.TextType")
+	@org.hibernate.annotations.Type(type = "org.hibernate.type.MaterializedClobType")
 	@org.hibernate.search.annotations.Field(store = org.hibernate.search.annotations.Store.NO)
-//	@Lob
+	@Lob
 	public String getBody() {
 		return body;
 	}
@@ -81,9 +82,9 @@ public class Article extends BaseEntity implements Comparable<Article> {
 		this.body = body;
 	}
 	// 解决hibernate在postgresql环境下，@Lob转字符串的异常
-	@org.hibernate.annotations.Type(type = "org.hibernate.type.TextType")
+	@org.hibernate.annotations.Type(type = "org.hibernate.type.MaterializedClobType")
 	@org.hibernate.search.annotations.Field(store = org.hibernate.search.annotations.Store.YES, boost = @org.hibernate.search.annotations.Boost(1.2f))
-//	@Lob
+	@Lob
 	public String getSummary() {
 		return summary;
 	}

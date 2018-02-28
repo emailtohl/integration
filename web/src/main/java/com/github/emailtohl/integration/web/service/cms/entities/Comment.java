@@ -40,7 +40,7 @@ public class Comment extends BaseEntity implements Comparable<Comment> {
 	private Boolean canComment;
 	
 	// 解决hibernate在postgresql环境下，@Lob转字符串的异常
-	@org.hibernate.annotations.Type(type = "org.hibernate.type.TextType")
+	@org.hibernate.annotations.Type(type = "org.hibernate.type.MaterializedClobType")
 	@org.hibernate.search.annotations.Field
 	@Lob
 	public String getContent() {
