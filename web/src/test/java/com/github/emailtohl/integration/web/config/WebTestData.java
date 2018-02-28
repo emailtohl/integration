@@ -15,7 +15,6 @@ import com.github.emailtohl.integration.core.file.Image;
 import com.github.emailtohl.integration.core.user.entities.Address;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Customer.Level;
-import com.github.emailtohl.integration.core.user.entities.Department;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.Gender;
 
@@ -31,36 +30,20 @@ public class WebTestData {
 	public final Employee bar = new Employee();
 	public final Customer baz = new Customer();
 	public final Customer qux = new Customer();
-	
+
 	public WebTestData(CorePresetData pd) {
 		this.pd = pd;
 		set();
 	}
 
-	private void set() 
-	{
+	private void set() {
 		pd.role_manager.getUsers().add(foo);
 		pd.role_staff.getUsers().add(bar);
 		pd.role_guest.getUsers().addAll(Arrays.asList(baz, qux));
-		
+
 		ClassLoader cl = WebTestData.class.getClassLoader();
 		byte[] icon;
 
-		/*
-		 * 下面是创建一对多对一数据模型
-		 */
-		pd.company.setName("XXX注册公司");
-		pd.company.setDescription("公司上面还有集团公司");
-
-		pd.product.setName("生产部");
-		pd.product.setDescription("研发生产部门");
-		pd.product.setCompany(pd.company);
-		pd.qa.setName("质量部");
-		pd.qa.setDescription("质量与测试部门");
-		pd.qa.setCompany(pd.company);
-
-		pd.company.setDepartments(new HashSet<Department>(Arrays.asList(pd.product, pd.qa)));
-		
 		foo.setName("foo");
 		foo.setNickname("foo");
 		foo.setEmail("foo@test.com");
@@ -79,11 +62,11 @@ public class WebTestData {
 		} catch (ParseException | IOException e) {
 			e.printStackTrace();
 		}
-//		foo.setEmpNum(Employee.NO1 + 1);
+		// foo.setEmpNum(Employee.NO1 + 1);
 		foo.setPost("系统分析师");
 		foo.setSalary(10000.00);
 		foo.setDepartment(pd.product);
-		
+
 		bar.setName("bar");
 		bar.setNickname("bar");
 		bar.setEmail("bar@test.com");
@@ -102,11 +85,11 @@ public class WebTestData {
 		} catch (ParseException | IOException e) {
 			e.printStackTrace();
 		}
-//		bar.setEmpNum(Employee.NO1 + 2);
+		// bar.setEmpNum(Employee.NO1 + 2);
 		bar.setPost("QA人员");
 		bar.setSalary(6000.00);
 		bar.setDepartment(pd.qa);
-		
+
 		baz.setName("baz");
 		baz.setCellPhone("19012345678");
 		baz.setNickname("baz");
@@ -129,7 +112,7 @@ public class WebTestData {
 		} catch (ParseException | IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		qux.setName("qux");
 		qux.setCellPhone("17809876543");
 		qux.setNickname("qux");
@@ -153,9 +136,9 @@ public class WebTestData {
 		}
 		pd.product.setEmployees(new HashSet<Employee>(Arrays.asList(foo)));
 		pd.qa.setEmployees(new HashSet<Employee>(Arrays.asList(bar)));
-		
+
 	}
-	
+
 	private String hashpw(String password) {
 		String salt = BCrypt.gensalt(10, new SecureRandom());
 		return BCrypt.hashpw(password, salt);

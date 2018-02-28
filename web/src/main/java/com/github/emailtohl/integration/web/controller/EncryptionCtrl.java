@@ -96,7 +96,10 @@ public class EncryptionCtrl {
 		User u = userService.get(Long.valueOf(sid));
 		if (u == null || u.getPublicKey() == null)
 			return null;
-		String ciphertext = encipher.encrypt(plaintext, u.getPublicKey());
+		String ciphertext = "";
+		try {
+			ciphertext = encipher.encrypt(plaintext, u.getPublicKey());
+		} catch (IllegalArgumentException e) {}
 		logger.debug(ciphertext);
 		// 构造成json格式
 		return "{\"ciphertext\":\"" + ciphertext + "\"}";

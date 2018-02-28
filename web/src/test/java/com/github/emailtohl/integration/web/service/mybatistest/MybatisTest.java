@@ -20,13 +20,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.user.entities.Department;
+import com.github.emailtohl.integration.web.config.WebTestConfig;
 
 /**
  * MyBatis测试
  * @author HeLei
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = Config.class)
+@ContextConfiguration(classes = WebTestConfig.class)
 @ActiveProfiles({ DB_RAM_H2, ENV_NO_SERVLET })
 public class MybatisTest {
 	@Inject

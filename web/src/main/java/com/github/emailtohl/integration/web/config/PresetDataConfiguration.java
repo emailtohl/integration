@@ -44,7 +44,6 @@ import freemarker.template.TemplateExceptionHandler;
 
 /**
  * 预置数据的配置
- * 
  * @author HeLei
  */
 @Configuration

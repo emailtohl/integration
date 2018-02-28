@@ -6,10 +6,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 import com.github.emailtohl.integration.core.user.org.DepartmentService;
-import com.github.emailtohl.integration.web.config.MybatisConfiguration;
+import com.github.emailtohl.integration.web.config.WebTestConfig;
 
 @Configurable
-@Import(MybatisConfiguration.class)
+@Import(WebTestConfig.class)
 class Config {
 
 	@Bean

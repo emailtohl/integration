@@ -35,7 +35,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.github.emailtohl.integration.core.config.CoreConfiguration;
 import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.employee.EmployeeService;
@@ -47,7 +46,7 @@ import com.github.emailtohl.integration.web.service.flow.Notify;
  * @author HeLei
  */
 @Configuration
-@Import(CoreConfiguration.class)
+@Import(MybatisConfiguration.class)
 class ActivitiConfiguration {
 	private static final Logger LOG = LogManager.getLogger();
 	

@@ -1,11 +1,13 @@
 package com.github.emailtohl.integration.web.service.mybatistest;
 
 import com.github.emailtohl.integration.core.user.entities.Department;
+import com.github.emailtohl.integration.web.config.MybatisMapperInterface;
 
 /**
  * Mybatis数据层接口
  * @author HeLei
  */
+@MybatisMapperInterface
 public interface DepartmentMapper {
     /**
      * 根据id查询部门
