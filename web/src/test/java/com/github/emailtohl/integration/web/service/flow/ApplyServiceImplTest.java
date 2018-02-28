@@ -2,7 +2,8 @@ package com.github.emailtohl.integration.web.service.flow;
 
 import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -54,18 +55,30 @@ public class ApplyServiceImplTest {
 		runtimeService.deleteProcessInstance(processInstanceId, "清理测试数据");
 	}
 
-	@Test
+//	@Test
 	public void testFlow() {
 		changeUser(applyUserId);
 		Apply apply = new Apply();
 		apply.setReason("提交一个申请，内容是：*****");
 		apply = applyService.create(apply);
+		apply.setReason("调整申请内容为：……");
+		apply = applyService.update(apply.getId(), apply);
 		processInstanceId = apply.getProcessInstanceId();
 		changeUser(webTestData.bar.getId().toString());
 		List<Apply> applys = applyService.findTodoTasks();
 		assertFalse(applys.isEmpty());
 		for (Apply a : applys) {
-			System.out.println(a);
+			ExecResult e = applyService.claim(a.getTaskId());
+			assertTrue(e.ok);
+			e = applyService.approve(a.getTaskId(), true);
+			assertTrue(e.ok);
+		}
+		applys = applyService.findTodoTasks();
+		assertTrue(applys.isEmpty());
+		changeUser(webTestData.foo.getId().toString());
+		applys = applyService.findTodoTasks();
+		assertFalse(applys.isEmpty());
+		for (Apply a : applys) {
 			ExecResult e = applyService.claim(a.getTaskId());
 			assertTrue(e.ok);
 			e = applyService.approve(a.getTaskId(), true);

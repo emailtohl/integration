@@ -42,7 +42,7 @@ public class Apply extends BaseEntity {
 	}
 	
 	@ManyToOne
-	@JoinColumn(name = "applicant_id")
+	@JoinColumn(name = "applicant_id", nullable = false, updatable = false)
 	public UserRef getApplicant() {
 		return applicant;
 	}

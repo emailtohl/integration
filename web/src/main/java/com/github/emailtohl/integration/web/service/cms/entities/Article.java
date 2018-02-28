@@ -71,19 +71,20 @@ public class Article extends BaseEntity implements Comparable<Article> {
 	public void setKeywords(String keywords) {
 		this.keywords = keywords;
 	}
-	// 解决hibernate在postgresql环境下，@Lob转字符串的异常
-	@org.hibernate.annotations.Type(type = "org.hibernate.type.MaterializedClobType")
+	
 	@org.hibernate.search.annotations.Field(store = org.hibernate.search.annotations.Store.NO)
+	@org.hibernate.annotations.Type(type = "org.hibernate.type.MaterializedClobType")
 	@Lob
+	@Column(columnDefinition="text")
 	public String getBody() {
 		return body;
 	}
 	public void setBody(String body) {
 		this.body = body;
 	}
-	// 解决hibernate在postgresql环境下，@Lob转字符串的异常
-	@org.hibernate.annotations.Type(type = "org.hibernate.type.MaterializedClobType")
+	
 	@org.hibernate.search.annotations.Field(store = org.hibernate.search.annotations.Store.YES, boost = @org.hibernate.search.annotations.Boost(1.2f))
+	@org.hibernate.annotations.Type(type = "org.hibernate.type.MaterializedClobType")
 	@Lob
 	public String getSummary() {
 		return summary;

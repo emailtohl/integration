@@ -2,8 +2,8 @@ package com.github.emailtohl.integration.web.service.flow;
 
 import java.io.Serializable;
 
-import org.activiti.engine.delegate.DelegateTask;
-import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 
 import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
@@ -13,7 +13,7 @@ import com.github.emailtohl.integration.core.user.employee.EmployeeService;
  * 用户通知服务
  * @author HeLei
  */
-public class Notify implements TaskListener, Serializable {
+public class Notify implements ExecutionListener, Serializable {
 	private static final long serialVersionUID = -6779971905269762380L;
 	final UserService userService;
 	final CustomerService customerService;
@@ -27,9 +27,9 @@ public class Notify implements TaskListener, Serializable {
 	}
 
 	@Override
-	public void notify(DelegateTask task) {
-		task.setVariable("setInEndListener", true);
-        System.out.println(this.getClass().getSimpleName() + ", " + task.getEventName());
+	public void notify(DelegateExecution execution) throws Exception {
+		System.out.println(execution.getClass().getSimpleName() + ", " + execution.getEventName());
+		System.out.println("VariableNames: " + execution.getVariableNames());
 	}
 
 }

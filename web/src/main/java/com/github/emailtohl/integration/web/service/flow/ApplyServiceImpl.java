@@ -23,6 +23,7 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -67,11 +68,7 @@ public class ApplyServiceImpl extends StandardService<Apply> {
 	@Override
 	public Apply create(Apply entity) {
 		validate(entity);
-		UserRef applicant = userService.getRef(CURRENT_USER_ID.get());
-		if (applicant == null || applicant.getId() == null
-				|| applicant.getId().equals(corePresetData.user_anonymous.getId())) {
-			throw new UsernameNotFoundException("没有此账号");
-		}
+		UserRef applicant = getCurrentUserRef();
 		entity.setApplicant(applicant);
 		entity.setResult(null);
 		Apply source = applyRepository.save(entity);
@@ -134,6 +131,9 @@ public class ApplyServiceImpl extends StandardService<Apply> {
 		if (source == null) {
 			return null;
 		}
+		if (!source.getApplicant().getId().equals(CURRENT_USER_ID.get())) {
+			throw new AuthorizationServiceException("当前用户不是流程申请人");
+		}
 		String processInstanceId = source.getProcessInstanceId();
 		if (!"praeiudicium".equals(getActivityId(processInstanceId))) {
 			return transientDetail(source);
@@ -149,6 +149,9 @@ public class ApplyServiceImpl extends StandardService<Apply> {
 		Apply source = applyRepository.findOne(id);
 		if (source == null) {
 			return;
+		}
+		if (!source.getApplicant().getId().equals(CURRENT_USER_ID.get())) {
+			throw new AuthorizationServiceException("当前用户不是流程申请人");
 		}
 		String processInstanceId = source.getProcessInstanceId();
 		if (!"praeiudicium".equals(getActivityId(processInstanceId))) {
@@ -259,13 +262,29 @@ public class ApplyServiceImpl extends StandardService<Apply> {
 	}
 	
 	public String getActivityId(String processInstanceId) {
-		ProcessInstance processInstance = runtimeService // 表示正在执行的流程实例和执行对象
-		.createProcessInstanceQuery() // 创建流程实例查询
-		.processInstanceId(processInstanceId) // 使用流程实例ID查询
-		.singleResult();
+		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
+				.processInstanceId(processInstanceId).singleResult();
 		if (processInstance == null) {
 			return null;
 		}
 		return processInstance.getActivityId();
 	}
+	
+	/**
+	 * 若未查找到登录用户则抛异常
+	 * @return
+	 * @throws UsernameNotFoundException
+	 */
+	public UserRef getCurrentUserRef() throws UsernameNotFoundException {
+		Long currentId = CURRENT_USER_ID.get();
+		if (currentId == null || currentId.equals(corePresetData.user_anonymous.getId())) {
+			throw new UsernameNotFoundException("没有登录");
+		}
+		UserRef userRef = userService.getRef(currentId);
+		if (userRef == null) {
+			throw new UsernameNotFoundException("没有此账号");
+		}
+		return userRef;
+	}
+	
 }
