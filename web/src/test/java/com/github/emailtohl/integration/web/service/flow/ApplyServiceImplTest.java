@@ -55,7 +55,7 @@ public class ApplyServiceImplTest {
 		runtimeService.deleteProcessInstance(processInstanceId, "清理测试数据");
 	}
 
-//	@Test
+	@Test
 	public void testFlow() {
 		changeUser(applyUserId);
 		Apply apply = new Apply();

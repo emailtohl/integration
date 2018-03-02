@@ -1,6 +1,10 @@
 package com.github.emailtohl.integration.web.service.flow;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -19,7 +23,7 @@ import com.github.emailtohl.integration.core.user.entities.UserRef;
 public class Apply extends BaseEntity {
 	private static final long serialVersionUID = 6263882826119555593L;
 
-	@NotNull
+	private FlowType flowType;
 	private String reason;
 	private String processInstanceId;
 	private UserRef applicant;
@@ -27,6 +31,16 @@ public class Apply extends BaseEntity {
 	private String taskId;
 	private String activityId;
 	
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	public FlowType getFlowType() {
+		return flowType;
+	}
+	public void setFlowType(FlowType flowType) {
+		this.flowType = flowType;
+	}
+	
+	@Basic(optional = false)
 	public String getReason() {
 		return reason;
 	}

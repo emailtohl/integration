@@ -33,6 +33,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.web.config.WebPresetData;
 import com.github.emailtohl.integration.web.config.WebTestConfig;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * 购买办公用品流程测试
@@ -42,7 +44,7 @@ import com.github.emailtohl.integration.web.config.WebTestConfig;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = WebTestConfig.class)
 @ActiveProfiles({ DB_RAM_H2, ENV_NO_SERVLET })
-public class PurchaseSubProcessTest /*extends SpringActivitiTestCase */{
+public class PurchaseSubProcessTest /* extends SpringActivitiTestCase */ {
 	@Inject
 	WebPresetData webPresetData;
 	@Inject
@@ -57,7 +59,7 @@ public class PurchaseSubProcessTest /*extends SpringActivitiTestCase */{
 	IdentityService identityService;
 	@Inject
 	FormService formService;
-	
+
 	String applyUserId;
 	String kermit;
 	String deptLeader;
@@ -66,10 +68,11 @@ public class PurchaseSubProcessTest /*extends SpringActivitiTestCase */{
 	String generalManager;
 	String cashier;
 	String hr;
-	
+
 	String processDefinitionKey = "purchase-subprocess";
 	String deploymentId;
-	
+	Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
 	@Before
 	public void setUp() throws Exception {
 		applyUserId = webPresetData.getEric().getId().toString();
@@ -80,141 +83,149 @@ public class PurchaseSubProcessTest /*extends SpringActivitiTestCase */{
 		generalManager = webPresetData.getGeneralManager().getName();
 		cashier = webPresetData.getCashier().getName();
 		hr = webPresetData.getHr().getName();
-		
+
 		DeploymentBuilder deploymentBuilder = repositoryService.createDeployment();
 		deploymentBuilder.addClasspathResource("flowexample/purchase-subprocess.bpmn");
 		deploymentId = deploymentBuilder.deploy().getId();
 	}
-	
+
 	@After
 	public void tearDown() throws Exception {
 		repositoryService.deleteDeployment(deploymentId, true);
 	}
-	
-    /**
-     * 全部通过
-     */
-    @Test
-//    @Deployment(resources = {"flowexample/purchase-subprocess.bpmn"})
-    public void testAllApproved() throws Exception {
-    	LocalDate today = LocalDate.now();
-    	
-        Map<String, String> properties = new HashMap<String, String>();
-        properties.put("dueDate", today.toString());
-        String listing = "1. MacBook Pro一台\n";
-        listing += "2. 27寸显示器一台";
-        properties.put("listing", listing);
-        properties.put("amountMoney", "22000");
 
-        identityService.setAuthenticatedUserId(applyUserId);
-        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey(processDefinitionKey).singleResult();
-        ProcessInstance processInstance = formService.submitStartFormData(processDefinition.getId(), properties);
-        assertNotNull(processInstance);
+	/**
+	 * 全部通过
+	 */
+	@Test
+	// @Deployment(resources = {"flowexample/purchase-subprocess.bpmn"})
+	public void testAllApproved() throws Exception {
+		LocalDate today = LocalDate.now();
 
-        // 部门领导
-        Task task = taskService.createTaskQuery().taskCandidateGroup(deptLeader).singleResult();
-        taskService.claim(task.getId(), kermit);
-        properties = new HashMap<String, String>();
-        properties.put("deptLeaderApproved", "true");
-        formService.submitTaskFormData(task.getId(), properties);
+		Map<String, String> properties = new HashMap<String, String>();
+		properties.put("dueDate", today.toString());
+		String listing = "1. MacBook Pro一台\n";
+		listing += "2. 27寸显示器一台";
+		properties.put("listing", listing);
+		properties.put("amountMoney", "22000");
 
-        // 联系供货方
-        task = taskService.createTaskQuery().taskCandidateGroup(supportCrew).singleResult();
-        taskService.claim(task.getId(), kermit);
-        properties = new HashMap<String, String>();
-        properties.put("supplier", "苹果公司");
-        properties.put("bankName", "中国工商银行");
-        properties.put("bankAccount", "203840240274247293");
-        properties.put("planDate", today.plusDays(10).toString());
-        formService.submitTaskFormData(task.getId(), properties);
+		identityService.setAuthenticatedUserId(applyUserId);
+		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+				.processDefinitionKey(processDefinitionKey).singleResult();
+		ProcessInstance processInstance = formService.submitStartFormData(processDefinition.getId(), properties);
+		assertNotNull(processInstance);
 
-        // 验证是否启动子流程
-        Execution subExecution = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).activityId("treasurerAudit").singleResult();
-        assertNotNull(subExecution);
-        assertEquals(listing, runtimeService.getVariable(processInstance.getId(), "usage"));
+		// 部门领导
+		Task task = taskService.createTaskQuery().taskCandidateGroup(deptLeader).singleResult();
+		taskService.claim(task.getId(), kermit);
+		properties = new HashMap<String, String>();
+		properties.put("deptLeaderApproved", "true");
+		formService.submitTaskFormData(task.getId(), properties);
 
-        // 子流程--财务审批
-        task = taskService.createTaskQuery().taskCandidateGroup(treasurer).singleResult();
-        taskService.claim(task.getId(), kermit);
-        properties = new HashMap<String, String>();
-        properties.put("treasurerApproved", "true");
-        formService.submitTaskFormData(task.getId(), properties);
+		// 联系供货方
+		task = taskService.createTaskQuery().taskCandidateGroup(supportCrew).singleResult();
+		taskService.claim(task.getId(), kermit);
+		properties = new HashMap<String, String>();
+		properties.put("supplier", "苹果公司");
+		properties.put("bankName", "中国工商银行");
+		properties.put("bankAccount", "203840240274247293");
+		properties.put("planDate", today.plusDays(10).toString());
+		formService.submitTaskFormData(task.getId(), properties);
 
-        // 子流程--总经理审批
-        task = taskService.createTaskQuery().taskCandidateGroup(generalManager).singleResult();
-        taskService.claim(task.getId(), kermit);
-        properties = new HashMap<String, String>();
-        properties.put("generalManagerApproved", "true");
-        formService.submitTaskFormData(task.getId(), properties);
+		// 验证是否启动子流程
+		Execution subExecution = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId())
+				.activityId("treasurerAudit").singleResult();
+		assertNotNull(subExecution);
+		assertEquals(listing, runtimeService.getVariable(processInstance.getId(), "usage"));
 
-        // 子流程--出纳付款
-        task = taskService.createTaskQuery().taskCandidateGroup(cashier).singleResult();
-        taskService.claim(task.getId(), kermit);
-        properties = new HashMap<String, String>();
-        properties.put("generalManagerApproved", "true");
-        formService.submitTaskFormData(task.getId(), properties);
+		// 子流程--财务审批
+		task = taskService.createTaskQuery().taskCandidateGroup(treasurer).singleResult();
+		taskService.claim(task.getId(), kermit);
+		properties = new HashMap<String, String>();
+		properties.put("treasurerApproved", "true");
+		formService.submitTaskFormData(task.getId(), properties);
 
-        // 收货确认
-        task = taskService.createTaskQuery().taskAssignee(applyUserId).singleResult();
-        assertEquals("收货确认", task.getName());
-        taskService.complete(task.getId());
+		// 子流程--总经理审批
+		task = taskService.createTaskQuery().taskCandidateGroup(generalManager).singleResult();
+		taskService.claim(task.getId(), kermit);
+		System.out.println(runtimeService.getVariable(task.getExecutionId(), "listing", String.class));
+		System.out.println(runtimeService.getVariable(task.getExecutionId(), "amountMoney", Double.class));
+		properties = new HashMap<String, String>();
+		properties.put("generalManagerApproved", "true");
+		formService.submitTaskFormData(task.getId(), properties);
 
-        long count = historyService.createHistoricProcessInstanceQuery().finished().count();
-        assertTrue(count > 0);
-    }
+		// 子流程--出纳付款
+		task = taskService.createTaskQuery().taskCandidateGroup(cashier).singleResult();
+		taskService.claim(task.getId(), kermit);
+		properties = new HashMap<String, String>();
+		properties.put("generalManagerApproved", "true");
+		formService.submitTaskFormData(task.getId(), properties);
 
-    /**
-     * 财务拒绝
-     */
-    @Test
-//    @Deployment(resources = {"flowexample/purchase-subprocess.bpmn"})
-    public void testRejectOnTreasurer() throws Exception {
-    	LocalDate today = LocalDate.now();
-    	
-        Map<String, String> properties = new HashMap<String, String>();
-        properties.put("dueDate", today.toString());
-        String listing = "1. MacBook Pro一台\n";
-        listing += "2. 27寸显示器一台";
-        properties.put("listing", listing);
-        properties.put("amountMoney", "22000");
+		// 收货确认
+		task = taskService.createTaskQuery().taskAssignee(applyUserId).singleResult();
+		System.out.println(gson.toJson(runtimeService.getVariables(task.getExecutionId())));
+		System.out.println(gson.toJson(runtimeService.getVariableInstances(task.getExecutionId())));
+		assertEquals("收货确认", task.getName());
+		taskService.complete(task.getId());
 
-        identityService.setAuthenticatedUserId(applyUserId);
-        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey(processDefinitionKey).singleResult();
-        ProcessInstance processInstance = formService.submitStartFormData(processDefinition.getId(), properties);
-        assertNotNull(processInstance);
+		long count = historyService.createHistoricProcessInstanceQuery().finished().count();
+		assertTrue(count > 0);
+	}
 
-        // 部门领导
-        Task task = taskService.createTaskQuery().taskCandidateGroup(deptLeader).singleResult();
-        taskService.claim(task.getId(), kermit);
-        properties = new HashMap<String, String>();
-        properties.put("deptLeaderApproved", "true");
-        formService.submitTaskFormData(task.getId(), properties);
+	/**
+	 * 财务拒绝
+	 */
+	@Test
+	// @Deployment(resources = {"flowexample/purchase-subprocess.bpmn"})
+	public void testRejectOnTreasurer() throws Exception {
+		LocalDate today = LocalDate.now();
 
-        // 联系供货方
-        task = taskService.createTaskQuery().taskCandidateGroup(supportCrew).singleResult();
-        taskService.claim(task.getId(), kermit);
-        properties = new HashMap<String, String>();
-        properties.put("supplier", "苹果公司");
-        properties.put("bankName", "中国工商银行");
-        properties.put("bankAccount", "203840240274247293");
-        properties.put("planDate", today.plusDays(10).toString());
-        formService.submitTaskFormData(task.getId(), properties);
+		Map<String, String> properties = new HashMap<String, String>();
+		properties.put("dueDate", today.toString());
+		String listing = "1. MacBook Pro一台\n";
+		listing += "2. 27寸显示器一台";
+		properties.put("listing", listing);
+		properties.put("amountMoney", "22000");
 
-        // 验证是否启动子流程
-        Execution subExecution = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).activityId("treasurerAudit").singleResult();
-        assertNotNull(subExecution);
-        assertEquals(listing, runtimeService.getVariable(processInstance.getId(), "usage"));
+		identityService.setAuthenticatedUserId(applyUserId);
+		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+				.processDefinitionKey(processDefinitionKey).singleResult();
+		ProcessInstance processInstance = formService.submitStartFormData(processDefinition.getId(), properties);
+		assertNotNull(processInstance);
 
-        // 子流程--财务审批
-        task = taskService.createTaskQuery().taskCandidateGroup(treasurer).singleResult();
-        taskService.claim(task.getId(), kermit);
-        properties = new HashMap<String, String>();
-        properties.put("treasurerApproved", "false");
-        formService.submitTaskFormData(task.getId(), properties);
+		// 部门领导
+		Task task = taskService.createTaskQuery().taskCandidateGroup(deptLeader).singleResult();
+		taskService.claim(task.getId(), kermit);
+		properties = new HashMap<String, String>();
+		properties.put("deptLeaderApproved", "true");
+		formService.submitTaskFormData(task.getId(), properties);
 
-        // 任务流转至调整申请
-        task = taskService.createTaskQuery().taskAssignee(applyUserId).singleResult();
-        assertNotNull(task);
-    }
+		// 联系供货方
+		task = taskService.createTaskQuery().taskCandidateGroup(supportCrew).singleResult();
+		taskService.claim(task.getId(), kermit);
+		properties = new HashMap<String, String>();
+		properties.put("supplier", "苹果公司");
+		properties.put("bankName", "中国工商银行");
+		properties.put("bankAccount", "203840240274247293");
+		properties.put("planDate", today.plusDays(10).toString());
+		formService.submitTaskFormData(task.getId(), properties);
+
+		// 验证是否启动子流程
+		Execution subExecution = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId())
+				.activityId("treasurerAudit").singleResult();
+		assertNotNull(subExecution);
+		assertEquals(listing, runtimeService.getVariable(processInstance.getId(), "usage"));
+
+		// 子流程--财务审批
+		task = taskService.createTaskQuery().taskCandidateGroup(treasurer).singleResult();
+		taskService.claim(task.getId(), kermit);
+		properties = new HashMap<String, String>();
+		properties.put("treasurerApproved", "false");
+		formService.submitTaskFormData(task.getId(), properties);
+
+		// 任务流转至调整申请
+		task = taskService.createTaskQuery().taskAssignee(applyUserId).singleResult();
+		assertNotNull(task);
+	}
 
 }

@@ -77,8 +77,7 @@ public class ApplyServiceImpl extends StandardService<Apply> {
 		identityService.setAuthenticatedUserId(applicant.getId().toString());
 		String businessKey = source.getId().toString();
 		Map<String, Object> args = new HashMap<>();
-		args.put("reason", source.getReason());
-		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("apply", businessKey);
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("apply", businessKey, args);
 		source.setProcessInstanceId(processInstance.getId());
 		source.setActivityId(processInstance.getActivityId());
 		return transientDetail(source);

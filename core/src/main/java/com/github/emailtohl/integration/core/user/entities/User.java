@@ -266,6 +266,7 @@ public class User extends BaseEntity {
 		this.description = description;
 	}
 	
+	// 不要作为搜索的条件
 	@org.hibernate.annotations.Type(type = "org.hibernate.type.MaterializedClobType")
 	@org.hibernate.envers.NotAudited
 	@Lob

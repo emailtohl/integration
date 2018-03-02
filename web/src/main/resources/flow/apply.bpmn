@@ -3,7 +3,7 @@
   <process id="apply" name="流程" isExecutable="true">
     <documentation>普通流程</documentation>
     <startEvent id="startevent1" name="Start" activiti:initiator="applyUserId"></startEvent>
-    <userTask id="praeiudicium" name="初审" activiti:candidateGroups="staff">
+    <userTask id="check" name="初审" activiti:candidateGroups="staff">
       <extensionElements>
         <activiti:taskListener event="assignment" delegateExpression="${notify}"></activiti:taskListener>
       </extensionElements>
@@ -22,23 +22,23 @@
     <exclusiveGateway id="exclusivegateway6" name="Exclusive Gateway"></exclusiveGateway>
     <endEvent id="endevent1" name="End">
       <extensionElements>
-        <activiti:executionListener event="start" delegateExpression="${notify}"></activiti:executionListener>
+        <activiti:executionListener event="end" delegateExpression="${notify}"></activiti:executionListener>
       </extensionElements>
     </endEvent>
     <exclusiveGateway id="exclusivegateway7" name="Exclusive Gateway"></exclusiveGateway>
-    <sequenceFlow id="flow2" sourceRef="startevent1" targetRef="praeiudicium"></sequenceFlow>
-    <sequenceFlow id="flow3" sourceRef="praeiudicium" targetRef="exclusivegateway5"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="startevent1" targetRef="check"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="check" targetRef="exclusivegateway5"></sequenceFlow>
     <sequenceFlow id="flow4" name="不同意" sourceRef="exclusivegateway5" targetRef="modifyApply">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!praeiudiciumApproved}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!checkApproved}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow5" name="同意" sourceRef="exclusivegateway5" targetRef="recheck">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${praeiudiciumApproved}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${checkApproved}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow6" sourceRef="recheck" targetRef="exclusivegateway6"></sequenceFlow>
     <sequenceFlow id="flow9" name="不同意" sourceRef="exclusivegateway6" targetRef="modifyApply">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!recheckApproved}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="flow10" name="重新申请" sourceRef="exclusivegateway7" targetRef="praeiudicium">
+    <sequenceFlow id="flow10" name="重新申请" sourceRef="exclusivegateway7" targetRef="check">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${reApply}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow11" sourceRef="modifyApply" targetRef="exclusivegateway7"></sequenceFlow>
@@ -54,7 +54,7 @@
       <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
         <omgdc:Bounds height="35.0" width="35.0" x="0.0" y="46.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="praeiudicium" id="BPMNShape_praeiudicium">
+      <bpmndi:BPMNShape bpmnElement="check" id="BPMNShape_check">
         <omgdc:Bounds height="55.0" width="105.0" x="80.0" y="36.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="exclusivegateway5" id="BPMNShape_exclusivegateway5">
@@ -87,14 +87,14 @@
         <omgdi:waypoint x="260.0" y="83.0"></omgdi:waypoint>
         <omgdi:waypoint x="260.0" y="114.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="36.0" x="510.0" y="100.0"></omgdc:Bounds>
+          <omgdc:Bounds height="17.0" width="100.0" x="510.0" y="100.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
         <omgdi:waypoint x="280.0" y="63.0"></omgdi:waypoint>
         <omgdi:waypoint x="332.0" y="63.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="24.0" x="539.0" y="36.0"></omgdc:Bounds>
+          <omgdc:Bounds height="17.0" width="100.0" x="539.0" y="36.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
@@ -106,7 +106,7 @@
         <omgdi:waypoint x="504.0" y="141.0"></omgdi:waypoint>
         <omgdi:waypoint x="313.0" y="141.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="36.0" x="266.0" y="85.0"></omgdc:Bounds>
+          <omgdc:Bounds height="17.0" width="33.0" x="266.0" y="85.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
@@ -114,7 +114,7 @@
         <omgdi:waypoint x="132.0" y="212.0"></omgdi:waypoint>
         <omgdi:waypoint x="132.0" y="91.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="42.0" width="44.0" x="151.0" y="192.0"></omgdc:Bounds>
+          <omgdc:Bounds height="17.0" width="44.0" x="151.0" y="192.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
@@ -125,7 +125,7 @@
         <omgdi:waypoint x="280.0" y="212.0"></omgdi:waypoint>
         <omgdi:waypoint x="615.0" y="212.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="42.0" width="44.0" x="608.0" y="240.0"></omgdc:Bounds>
+          <omgdc:Bounds height="17.0" width="44.0" x="608.0" y="240.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
