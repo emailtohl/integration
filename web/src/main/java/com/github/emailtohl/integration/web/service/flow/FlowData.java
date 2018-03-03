@@ -67,7 +67,7 @@ public class FlowData extends BaseEntity {
 	// 当前所在的活动id
 	private String activityId;
 	
-	@Column(name = "process_instance_id", nullable = false)
+	@Column(name = "process_instance_id")
 	public String getProcessInstanceId() {
 		return processInstanceId;
 	}
@@ -84,7 +84,7 @@ public class FlowData extends BaseEntity {
 		this.flowType = flowType;
 	}
 	
-	@Column(nullable = false)
+	@Column(name = "content", nullable = false)
 	public String getContent() {
 		return content;
 	}
@@ -132,7 +132,7 @@ public class FlowData extends BaseEntity {
 		this.checkerName = checkerName;
 	}
 	
-	@Column(name = "checker_approved")
+	@Column(name = "check_approved")
 	public Boolean getCheckApproved() {
 		return checkApproved;
 	}

@@ -29,6 +29,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
@@ -41,10 +42,12 @@ import com.github.emailtohl.integration.web.config.WebPresetData;
 
 /**
  * 流程服务
+ * 
  * @author HeLei
  */
-@Transactional
 @PreAuthorize("isAuthenticated()")
+@Transactional
+@Service
 public class FlowService {
 	protected static final Logger logger = LogManager.getLogger();
 	public final static String PROCESS_DEFINITION_KEY = "apply";
@@ -66,28 +69,41 @@ public class FlowService {
 	IdentityService identityService;
 	@Inject
 	FormService formService;
-	
+
 	@Inject
 	FlowRepository flowRepository;
-	
-	 /**
-     * 保存请假实体并启动流程
-     */
-    public ProcessInstance startWorkflow(FlowData entity, String userId) {
-    	flowRepository.save(entity);
-        String businessKey = entity.getId().toString();
 
-        // 用来设置启动流程的人员ID，引擎会自动把用户ID保存到activiti:initiator中
-        identityService.setAuthenticatedUserId(userId);
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, businessKey);
-        String processInstanceId = processInstance.getId();
-        entity.setProcessInstanceId(processInstanceId);
-        logger.debug("start process of {key={}, bkey={}, pid={}}", new Object[]{PROCESS_DEFINITION_KEY, businessKey, processInstanceId});
-        return processInstance;
-    }
-    
+	/**
+	 * 保存请假实体并启动流程
+	 */
+	public ProcessInstance startWorkflow(FlowData form) {
+		String userId = getCurrentUserId();
+		form.setApplicantId(Long.valueOf(userId));
+		FlowType flowType = form.getFlowType();
+		String content = form.getContent();
+		if (flowType == null || !StringUtils.hasText(content)) {
+			return null;
+		}
+		FlowData source = flowRepository.save(form);
+		String businessKey = source.getId().toString();
+
+		Map<String, Object> variables = new HashMap<>();
+		variables.put("flowType", flowType);
+		variables.put("content", content);
+		// 用来设置启动流程的人员ID，引擎会自动把用户ID保存到activiti:initiator中
+		identityService.setAuthenticatedUserId(userId);
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, businessKey, variables);
+		String processInstanceId = processInstance.getId();
+		source.setProcessInstanceId(processInstanceId);
+		source = flowRepository.save(source);
+		logger.debug("start process of {key={}, bkey={}, pid={}}",
+				new Object[] { PROCESS_DEFINITION_KEY, businessKey, processInstanceId });
+		return processInstance;
+	}
+
 	/**
 	 * 查询当前用户的任务
+	 * 
 	 * @return
 	 */
 	public List<FlowData> findTodoTasks() {
@@ -119,6 +135,7 @@ public class FlowService {
 
 	/**
 	 * 签收任务
+	 * 
 	 * @param taskId
 	 */
 	public ExecResult claim(String taskId) {
@@ -130,18 +147,19 @@ public class FlowService {
 			return new ExecResult(false, "Activiti task already claimed exception", null);
 		}
 	}
-	
+
 	/**
 	 * 审核任务
-	 * @param entity
+	 * 
+	 * @param form
 	 * @return
 	 */
-	public ExecResult check(FlowData entity) {
-		FlowData source = getFlowData(entity);
+	public ExecResult check(FlowData form) {
+		FlowData source = getFlowData(form);
 		if (source == null) {
 			return new ExecResult(false, "未找到此流程单", null);
 		}
-		String taskId = entity.getTaskId();
+		String taskId = form.getTaskId();
 		if (!StringUtils.hasText(taskId)) {
 			return new ExecResult(false, "提交数据没有任务id", null);
 		}
@@ -156,9 +174,9 @@ public class FlowService {
 		}
 		Map<String, Object> variables = new HashMap<>();
 		Boolean approved = null;
-		switch (entity.getActivityId()) {
+		switch (form.getActivityId()) {
 		case "check":
-			approved = entity.getCheckApproved();
+			approved = form.getCheckApproved();
 			if (approved == null) {
 				return new ExecResult(false, "初审没有审核结果", null);
 			}
@@ -168,13 +186,11 @@ public class FlowService {
 			variables.put("checkerId", source.getCheckerId());
 			source.setCheckTime(new Date());
 			variables.put("checkTime", source.getCheckTime());
-			source.setCheckOpinions(entity.getCheckOpinions());
-			variables.put("checkOpinions", entity.getCheckOpinions());
-			taskService.complete(taskId, variables);
-			taskService.complete(taskId, variables);
+			source.setCheckOpinions(form.getCheckOpinions());
+			variables.put("checkOpinions", form.getCheckOpinions());
 			break;
 		case "recheck":
-			approved = entity.getRecheckApproved();
+			approved = form.getRecheckApproved();
 			if (approved == null) {
 				return new ExecResult(false, "复审没有审核结果", null);
 			}
@@ -184,8 +200,12 @@ public class FlowService {
 			variables.put("recheckerId", source.getRecheckerId());
 			source.setRecheckTime(new Date());
 			variables.put("recheckTime", source.getRecheckTime());
-			source.setRecheckOpinions(entity.getRecheckOpinions());
-			variables.put("recheckOpinions", entity.getRecheckOpinions());
+			source.setRecheckOpinions(form.getRecheckOpinions());
+			variables.put("recheckOpinions", form.getRecheckOpinions());
+			if (approved) {
+				source.setPass(approved);
+				variables.put("pass", approved);
+			}
 			break;
 		default:
 			return new ExecResult(false, "处于未知审核任务下", null);
@@ -193,9 +213,47 @@ public class FlowService {
 		taskService.complete(taskId, variables);
 		return new ExecResult(true, "", null);
 	}
-	
-	private ExampleMatcher matcher = ExampleMatcher.matching()
-			.withIgnoreNullValues()
+
+	public ExecResult reApply(FlowData form) {
+		FlowData source = getFlowData(form);
+		if (source == null) {
+			return new ExecResult(false, "未查找到流程数据", null);
+		}
+		String userId = getCurrentUserId();
+		if (!source.getApplicantId().equals(Long.valueOf(userId))) {
+			return new ExecResult(false, "不是任务提交人", null);
+		}
+		String taskId = form.getTaskId();
+		if (!StringUtils.hasText(taskId)) {
+			return new ExecResult(false, "没有提交任务id", null);
+		}
+		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
+				.processInstanceId(source.getProcessInstanceId()).singleResult();
+		if (processInstance == null || !"modifyApply".equals(processInstance.getActivityId())) {
+			return new ExecResult(false, "modifyApply才能修改申请内容", null);
+		}
+		Boolean reApply = form.getReApply();
+		if (reApply == null) {
+			return new ExecResult(false, "没有reApply字段", null);
+		}
+		Map<String, Object> variables = new HashMap<>();
+		if (reApply) {
+			if (!StringUtils.hasText(form.getContent())) {
+				return new ExecResult(false, "更新内容不能为空", null);
+			}
+			source.setContent(form.getContent());
+			variables.put("content", form.getContent());
+			source.setReApply(reApply);
+			variables.put("reApply", reApply);
+		} else {
+			source.setReApply(reApply);
+			variables.put("reApply", reApply);
+		}
+		taskService.complete(taskId, variables);
+		return new ExecResult(true, "", null);
+	}
+
+	private ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues()
 			.withMatcher("processInstanceId", GenericPropertyMatchers.exact())
 			.withMatcher("flowType", GenericPropertyMatchers.exact())
 			.withMatcher("content", GenericPropertyMatchers.contains())
@@ -212,29 +270,43 @@ public class FlowService {
 			.withMatcher("recheckOpinions", GenericPropertyMatchers.contains())
 			.withMatcher("reApply", GenericPropertyMatchers.exact())
 			.withMatcher("pass", GenericPropertyMatchers.exact());
-	
+
 	/**
 	 * 查询流程数据
+	 * 
 	 * @param params
 	 * @param pageable
 	 * @return
 	 */
 	public Paging<FlowData> query(FlowData params, Pageable pageable) {
-		Example<FlowData> example = Example.of(params, matcher);
-		Page<FlowData> p = flowRepository.findAll(example, pageable);
+		Page<FlowData> p;
+		if (params == null) {
+			Example<FlowData> example = Example.of(params, matcher);
+			p = flowRepository.findAll(example, pageable);
+		} else {
+			p = flowRepository.findAll(pageable);
+		}
 		List<FlowData> ls = p.getContent().stream().collect(Collectors.toList());
 		return new Paging<FlowData>(ls, pageable, p.getTotalElements());
 	}
-	
+
 	public List<FlowData> query(FlowData params) {
-		Example<FlowData> example = Example.of(params, matcher);
-		return flowRepository.findAll(example).stream().collect(Collectors.toList());
+		List<FlowData> ls;
+		if (params == null) {
+			ls = flowRepository.findAll();
+		} else {
+			Example<FlowData> example = Example.of(params, matcher);
+			ls = flowRepository.findAll(example);
+		}
+		return ls.stream().collect(Collectors.toList());
 	}
-    
+
 	/**
 	 * 在上下文中获取当前用户id
+	 * 
 	 * @return
-	 * @throws UsernameNotFoundException 若未查找到将会抛出异常
+	 * @throws UsernameNotFoundException
+	 *             若未查找到将会抛出异常
 	 */
 	public String getCurrentUserId() throws UsernameNotFoundException {
 		String currentId = ThreadContext.get(Constant.USER_ID);
@@ -246,9 +318,10 @@ public class FlowService {
 		}
 		return currentId;
 	}
-	
+
 	/**
 	 * 若未查找到登录用户则抛异常
+	 * 
 	 * @return
 	 * @throws UsernameNotFoundException
 	 */
@@ -259,11 +332,12 @@ public class FlowService {
 		}
 		return userRef;
 	}
-	
+
 	/**
 	 * 返回持久化状态的FlowData
+	 * 
 	 * @param entity
-	 * @return
+	 * @return 未查找到，则为null
 	 */
 	protected FlowData getFlowData(FlowData entity) {
 		Long id = entity.getId();

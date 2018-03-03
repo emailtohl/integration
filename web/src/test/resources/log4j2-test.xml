@@ -39,8 +39,6 @@
 		</logger>
 		<!-- 
 		<logger name="org.hibernate.type.descriptor.sql" level="TRACE" />
-		<logger name="org.hibernate.engine.QueryParameters" level="DEBUG" />
-		<logger name="org.hibernate.engine.query.HQLQueryPlan" level="DEBUG" />
 		 -->
 	</loggers>
 </configuration>
