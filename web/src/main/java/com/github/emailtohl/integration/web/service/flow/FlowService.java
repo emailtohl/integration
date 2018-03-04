@@ -75,6 +75,11 @@ public class FlowService {
 
 	/**
 	 * 保存请假实体并启动流程
+	 * 表单需要参数：
+	 * flowType：流程类型
+	 * content： 申请内容
+	 * 已登录，可以获取到用户id
+	 * @return 启动的流程实例
 	 */
 	public ProcessInstance startWorkflow(FlowData form) {
 		String userId = getCurrentUserId();
@@ -103,7 +108,8 @@ public class FlowService {
 
 	/**
 	 * 查询当前用户的任务
-	 * 
+	 * 需要参数：
+	 * 已登录，可以获取到用户id
 	 * @return
 	 */
 	public List<FlowData> findTodoTasks() {
@@ -127,6 +133,7 @@ public class FlowService {
 			String businessKey = processInstance.getBusinessKey();
 			FlowData flowData = flowRepository.findOne(Long.valueOf(businessKey));
 			flowData.setTaskId(task.getId());
+			flowData.setTaskAssignee(task.getAssignee());
 			flowData.setActivityId(processInstance.getActivityId());
 			results.add(flowData);
 		}
@@ -135,7 +142,9 @@ public class FlowService {
 
 	/**
 	 * 签收任务
-	 * 
+	 * 表单需要参数：
+	 * taskId：任务id
+	 * 已登录，可以获取到用户id
 	 * @param taskId
 	 */
 	public ExecResult claim(String taskId) {
@@ -150,9 +159,14 @@ public class FlowService {
 
 	/**
 	 * 审核任务
-	 * 
-	 * @param form
-	 * @return
+	 * 表单需要参数：
+	 * id：流程单的id或者是流程实例id（processInstanceId）
+	 * taskId： 任务id
+	 * 已登录，可以获取到用户id
+	 * assignee：任务签收人的id
+	 * 如果是初审，则必填checkApproved：审核是否通过，checkOpinions可选
+	 * 如果是复审，则必填recheckApproved：审核是否通过，recheckOpinions可选
+	 * @return 执行是否成功
 	 */
 	public ExecResult check(FlowData form) {
 		FlowData source = getFlowData(form);
@@ -214,6 +228,12 @@ public class FlowService {
 		return new ExecResult(true, "", null);
 	}
 
+	/**
+	 * 重新申请
+	 * 表单modifyApply必填：若为true则重新申请，若为false则结束流程
+	 * content：若重新申请，则content需填写
+	 * @return 执行是否成功
+	 */
 	public ExecResult reApply(FlowData form) {
 		FlowData source = getFlowData(form);
 		if (source == null) {
@@ -304,7 +324,7 @@ public class FlowService {
 	/**
 	 * 在上下文中获取当前用户id
 	 * 
-	 * @return
+	 * @return 获取当前用户id
 	 * @throws UsernameNotFoundException
 	 *             若未查找到将会抛出异常
 	 */

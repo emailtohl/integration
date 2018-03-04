@@ -31,13 +31,19 @@ public class Notify implements ExecutionListener, TaskListener, Serializable {
 	@Override
 	public void notify(DelegateExecution execution) throws Exception {
 		System.out.println(execution.getClass().getSimpleName() + ", " + execution.getEventName());
-		System.out.println("VariableNames: " + execution.getVariableNames());
+		execution.getVariableNames().forEach(varName -> {
+			System.out.println(varName + " : " + execution.getVariable(varName));
+		});
 	}
 
 	@Override
 	public void notify(DelegateTask delegateTask) {
 		System.out.println(delegateTask.getClass().getSimpleName() + ", " + delegateTask.getEventName());
-		System.out.println("VariableNames: " + delegateTask.getVariableNames());
+		System.out.println("task: " + delegateTask.getTaskDefinitionKey() + " " + delegateTask.getName()
+				+ "  Assignee: " + delegateTask.getAssignee());
+		delegateTask.getVariableNames().forEach(varName -> {
+			System.out.println(varName + " : " + delegateTask.getVariable(varName));
+		});
 	}
 
 }

@@ -6,13 +6,17 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.history.HistoricFormProperty;
+import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.logging.log4j.ThreadContext;
 import org.junit.After;
@@ -30,6 +34,7 @@ import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.web.config.WebPresetData;
 import com.github.emailtohl.integration.web.config.WebTestConfig;
 import com.github.emailtohl.integration.web.config.WebTestData;
+import com.google.gson.Gson;
 /**
  * 测试流程
  * @author HeLei
@@ -42,6 +47,8 @@ public class FlowServiceTest {
 	WebPresetData webPresetData;
 	@Inject
 	WebTestData webTestData;
+	@Inject
+	Gson gson;
 	@Inject
 	RuntimeService runtimeService;
 	@Inject
@@ -140,13 +147,28 @@ public class FlowServiceTest {
 		historyService.createHistoricProcessInstanceQuery().finished().list().forEach(h -> {
 			System.out.println(h);
 		});
-		historyService.createHistoricTaskInstanceQuery().finished().list().forEach(h -> {
-			System.out.println(h);
-		});
 		historyService.createHistoricActivityInstanceQuery().finished().list().forEach(h ->  {
 			System.out.println(h);
 		});
-		
+		historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstanceId).list().forEach(h -> {
+			System.out.println(gson.toJson(h));
+		});
+		Map<String, Object> historyVariables = new HashMap<String, Object>();
+		historyService.createHistoricDetailQuery().processInstanceId(processInstanceId).list().forEach(historicDetail -> {
+            if (historicDetail instanceof HistoricFormProperty) {
+                // 表单中的字段
+                HistoricFormProperty field = (HistoricFormProperty) historicDetail;
+                historyVariables.put(field.getPropertyId(), field.getPropertyValue());
+                System.out.println("form field: taskId=" + field.getTaskId() + ", " + field.getPropertyId() + " = " + field.getPropertyValue());
+            } else if (historicDetail instanceof HistoricVariableUpdate) {
+                HistoricVariableUpdate variable = (HistoricVariableUpdate) historicDetail;
+                historyVariables.put(variable.getVariableName(), variable.getValue());
+                System.out.println("variable: " + variable.getVariableName() + " = " + variable.getValue());
+            }
+		});
+		System.out.println(gson.toJson(historyVariables));
+        
+        
 		form = new FlowData();
 		form.setApplicantId(Long.valueOf(applyUserId));
 		form.setFlowType(FlowType.WORK);

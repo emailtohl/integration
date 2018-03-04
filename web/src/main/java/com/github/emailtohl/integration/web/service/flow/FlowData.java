@@ -64,6 +64,8 @@ public class FlowData extends BaseEntity {
 	private Boolean pass;
 	// 当前任务id
 	private String taskId;
+	// 当前任务是否被签收
+	private String taskAssignee;
 	// 当前所在的活动id
 	private String activityId;
 	
@@ -235,6 +237,14 @@ public class FlowData extends BaseEntity {
 	}
 	
 	@Transient
+	public String getTaskAssignee() {
+		return taskAssignee;
+	}
+	public void setTaskAssignee(String taskAssignee) {
+		this.taskAssignee = taskAssignee;
+	}
+	
+	@Transient
 	public String getActivityId() {
 		return activityId;
 	}
@@ -250,7 +260,8 @@ public class FlowData extends BaseEntity {
 				+ ", checkOpinions=" + checkOpinions + ", checkTime=" + checkTime + ", recheckerId=" + recheckerId
 				+ ", recheckerNum=" + recheckerNum + ", recheckerName=" + recheckerName + ", recheckApproved="
 				+ recheckApproved + ", recheckOpinions=" + recheckOpinions + ", recheckTime=" + recheckTime
-				+ ", reApply=" + reApply + ", pass=" + pass + ", taskId=" + taskId + ", activityId=" + activityId + "]";
+				+ ", reApply=" + reApply + ", pass=" + pass + ", taskId=" + taskId + ", taskAssignee=" + taskAssignee
+				+ ", activityId=" + activityId + "]";
 	}
 	
 }
