@@ -17,10 +17,8 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricFormProperty;
-import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
 import org.apache.logging.log4j.ThreadContext;
 import org.junit.After;
 import org.junit.Before;
@@ -121,13 +119,8 @@ public class FlowServiceTest {
 		assertFalse(ls.isEmpty());
 		for (FlowData fd : ls) {
 			// 查看流程中的评论
-			taskService.getProcessInstanceComments(fd.getProcessInstanceId()).forEach(comment -> {
-				System.out.println(gson.toJson(comment));
-				// 查找任务名称
-				List<HistoricTaskInstance> list = historyService.createHistoricTaskInstanceQuery().processInstanceId(fd.getProcessInstanceId()).list();
-				System.out.println(list);
-			});;
-			
+			List<CommentInfo> commentInfos = flowService.getCommentInfo(fd.getProcessInstanceId());
+			System.out.println(gson.toJson(commentInfos));
 			fd.setReApply(true);
 			fd.setContent("调整申请内容为：……");
 			execResult = flowService.reApply(fd);

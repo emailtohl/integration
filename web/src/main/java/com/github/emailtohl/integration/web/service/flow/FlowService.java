@@ -23,6 +23,7 @@ import org.activiti.engine.task.Task;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers;
@@ -287,6 +288,29 @@ public class FlowService {
 		return new ExecResult(true, "", null);
 	}
 
+	/**
+	 * 查询审批时的批注信息
+	 * @param processInstanceId
+	 * @return
+	 */
+	public List<CommentInfo> getCommentInfo(String processInstanceId) {
+		// 查找任务名称
+		final Map<String, String> taskNames = historyService.createHistoricTaskInstanceQuery()
+				.processInstanceId(processInstanceId).list().stream()
+				.collect(Collectors.toMap(historicTaskInstance -> historicTaskInstance.getId(),
+						historicTaskInstance -> historicTaskInstance.getName()));
+		return taskService.getProcessInstanceComments(processInstanceId).stream().map(comment -> {
+			CommentInfo info = new CommentInfo();
+			BeanUtils.copyProperties(comment, info);
+			info.setTaskName(taskNames.get(comment.getTaskId()));
+			User user = identityService.createUserQuery().userId(comment.getUserId()).singleResult();
+			if (user != null) {
+				info.setUsername(user.getFirstName());
+			}
+			return info;
+		}).collect(Collectors.toList());
+	}
+	
 	private ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues()
 			.withMatcher("processInstanceId", GenericPropertyMatchers.exact())
 			.withMatcher("flowType", GenericPropertyMatchers.exact())
