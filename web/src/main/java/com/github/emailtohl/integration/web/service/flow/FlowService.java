@@ -217,7 +217,7 @@ public class FlowService {
 			variables.put("recheckTime", currentTime);
 			if (approved) {
 				source.setPass(approved);
-				variables.put("pass", approved);
+				variables.put("pass", true);
 			}
 			break;
 		default:
@@ -283,6 +283,7 @@ public class FlowService {
 		} else {
 			source.setReApply(reApply);
 			variables.put("reApply", reApply);
+			variables.put("pass", false);
 		}
 		taskService.complete(taskId, variables);
 		return new ExecResult(true, "", null);
@@ -344,7 +345,7 @@ public class FlowService {
 		} else {
 			p = flowRepository.findAll(pageable);
 		}
-		List<FlowData> ls = p.getContent().stream().collect(Collectors.toList());
+		List<FlowData> ls = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
 		return new Paging<FlowData>(ls, pageable, p.getTotalElements());
 	}
 
@@ -356,7 +357,25 @@ public class FlowService {
 			Example<FlowData> example = Example.of(params, matcher);
 			ls = flowRepository.findAll(example);
 		}
-		return ls.stream().collect(Collectors.toList());
+		return ls.stream().map(this::toTransient).collect(Collectors.toList());
+	}
+	
+	/**
+	 * 通过流程数据id查询流程数据
+	 * @param id
+	 * @return
+	 */
+	public FlowData findByFlowDataId(Long id) {
+		return transientDetail(flowRepository.findOne(id));
+	}
+	
+	/**
+	 * 通过流程实例id查询流程数据
+	 * @param processInstanceId
+	 * @return
+	 */
+	public FlowData findByProcessInstanceId(String processInstanceId) {
+		return transientDetail(flowRepository.findByProcessInstanceId(processInstanceId));
 	}
 
 	/**
@@ -398,5 +417,43 @@ public class FlowService {
 		}
 		flowData = flowRepository.findByProcessInstanceId(processInstanceId);
 		return flowData;
+	}
+	
+	/**
+	 * 用于列表
+	 * @param source
+	 * @return
+	 */
+	protected FlowData toTransient(FlowData source) {
+		if (source == null) {
+			return null;
+		}
+		FlowData target = new FlowData();
+		BeanUtils.copyProperties(source, target, "checks");
+		return target;
+	}
+	
+	/**
+	 * 用于详情
+	 * @param source
+	 * @return
+	 */
+	protected FlowData transientDetail(FlowData source) {
+		FlowData target = toTransient(source);
+		if (target == null) {
+			return null;
+		}
+		List<Check> checks = source.getChecks().stream().map(src -> {
+			Check tar = new Check();
+			tar.setActivityId(src.getActivityId());
+			tar.setCheckApproved(src.getCheckApproved());
+			tar.setCheckComment(src.getCheckComment());
+			tar.setCheckerId(src.getCheckerId());
+			tar.setCheckerName(src.getCheckerName());
+			tar.setCheckTime(src.getCheckTime());
+			return tar;
+		}).collect(Collectors.toList());
+		target.getChecks().addAll(checks);
+		return target;
 	}
 }

@@ -183,8 +183,16 @@ public class FlowServiceTest {
 		form.setFlowType(FlowType.WORK);
 		List<FlowData> flowDatas = flowService.query(form);
 		assertFalse(flowDatas.isEmpty());
+		System.out.println(gson.toJson(flowDatas));
 		Paging<FlowData> page = flowService.query(form, new PageRequest(0, 10));
 		assertFalse(page.getContent().isEmpty());
+		page.getContent().forEach(c -> {
+			FlowData fd = flowService.findByFlowDataId(c.getId());
+			assertNotNull(fd);
+			fd = flowService.findByProcessInstanceId(c.getProcessInstanceId());
+			assertNotNull(fd);
+			System.out.println(gson.toJson(fd));
+		});
 	}
 	
 	void changeUser(String userId) {

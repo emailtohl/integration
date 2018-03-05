@@ -23,6 +23,7 @@ import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -56,9 +57,9 @@ class ActivitiConfiguration {
 	 * @return
 	 */
 	@Bean
-	public Notify notify(UserService userService,
-			CustomerService customerService, EmployeeService employeeService) {
-		return new Notify(userService, customerService, employeeService);
+	public Notify notify(UserService userService, CustomerService customerService, EmployeeService employeeService,
+			ApplicationEventPublisher publisher) {
+		return new Notify(userService, customerService, employeeService, publisher);
 	}
 	
 	/**
@@ -70,7 +71,7 @@ class ActivitiConfiguration {
 	public SpringProcessEngineConfiguration processEngineConfiguration(DataSource dataSource,
 			@Named("annotationDrivenTransactionManager") PlatformTransactionManager platformTransactionManager,
 			EntityManagerFactory jpaEntityManagerFactory, Environment env, UserService userService,
-			CustomerService customerService, EmployeeService employeeService) {
+			CustomerService customerService, EmployeeService employeeService, ApplicationEventPublisher publisher) {
 		SpringProcessEngineConfiguration cfg = new SpringProcessEngineConfiguration();
 		cfg.setDataSource(dataSource);
 		cfg.setTransactionManager(platformTransactionManager);
@@ -95,7 +96,7 @@ class ActivitiConfiguration {
 		beans.put("userService", userService);
 		beans.put("customerService", customerService);
 		beans.put("employeeService", employeeService);
-		beans.put("notify", notify(userService, customerService, employeeService));
+		beans.put("notify", notify(userService, customerService, employeeService, publisher));
 		cfg.setBeans(beans);
 		
 		cfg.setCustomFormTypes(Arrays.asList(new BigtextFormType(), new DoubleFormType(), new JavascriptFormType()));
