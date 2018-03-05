@@ -15,9 +15,12 @@ import javax.inject.Inject;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricFormProperty;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.apache.logging.log4j.ThreadContext;
 import org.junit.After;
 import org.junit.Before;
@@ -54,6 +57,8 @@ public class FlowServiceTest {
 	@Inject
 	IdentityService identityService;
 	@Inject
+	TaskService taskService;
+	@Inject
 	HistoryService historyService;
 	@Inject
 	FlowService flowService;
@@ -83,6 +88,7 @@ public class FlowServiceTest {
 		
 		ExecResult execResult = null;
 		
+		// 初审通过
 		changeUser(webTestData.bar.getId().toString());
 		List<FlowData> ls = flowService.findTodoTasks();
 		assertFalse(ls.isEmpty());
@@ -90,11 +96,12 @@ public class FlowServiceTest {
 			execResult = flowService.claim(fd.getTaskId());
 			assertTrue(execResult.ok);
 			fd.setCheckApproved(true);
-			fd.setCheckOpinions("同意");
+			fd.setCheckComment("同意");
 			execResult = flowService.check(fd);
 			assertTrue(execResult.ok);
 		}
 		
+		// 复审不通过
 		changeUser(webTestData.foo.getId().toString());
 		ls = flowService.findTodoTasks();
 		assertFalse(ls.isEmpty());
@@ -102,24 +109,32 @@ public class FlowServiceTest {
 			execResult = flowService.claim(fd.getTaskId());
 			assertTrue(execResult.ok);
 			System.out.println(runtimeService.getVariable(fd.getProcessInstanceId(), "content", String.class));
-			fd.setRecheckApproved(false);
-			fd.setRecheckOpinions("不同意");
+			fd.setCheckApproved(false);
+			fd.setCheckComment("不同意，原因是……");
 			execResult = flowService.check(fd);
 			assertTrue(execResult.ok);
 		}
 		
+		// 调整申请
 		changeUser(applyUserId);
 		ls = flowService.findTodoTasks();
 		assertFalse(ls.isEmpty());
 		for (FlowData fd : ls) {
-//			execResult = flowService.claim(fd.getTaskId());
-//			assertTrue(execResult.ok);
+			// 查看流程中的评论
+			taskService.getProcessInstanceComments(fd.getProcessInstanceId()).forEach(comment -> {
+				System.out.println(gson.toJson(comment));
+				// 查找任务名称
+				List<HistoricTaskInstance> list = historyService.createHistoricTaskInstanceQuery().processInstanceId(fd.getProcessInstanceId()).list();
+				System.out.println(list);
+			});;
+			
 			fd.setReApply(true);
 			fd.setContent("调整申请内容为：……");
 			execResult = flowService.reApply(fd);
 			assertTrue(execResult.ok);
 		}
 
+		// 再次初审通过
 		changeUser(webTestData.bar.getId().toString());
 		ls = flowService.findTodoTasks();
 		assertFalse(ls.isEmpty());
@@ -128,19 +143,20 @@ public class FlowServiceTest {
 			assertTrue(execResult.ok);
 			System.out.println(runtimeService.getVariable(fd.getProcessInstanceId(), "content", String.class));
 			fd.setCheckApproved(true);
-			fd.setCheckOpinions("同意");
+			fd.setCheckComment("同意");
 			execResult = flowService.check(fd);
 			assertTrue(execResult.ok);
 		}
 		
+		// 再次复审
 		changeUser(webTestData.foo.getId().toString());
 		ls = flowService.findTodoTasks();
 		assertFalse(ls.isEmpty());
 		for (FlowData fd : ls) {
 			execResult = flowService.claim(fd.getTaskId());
 			assertTrue(execResult.ok);
-			fd.setRecheckApproved(true);
-			fd.setRecheckOpinions("同意");
+			fd.setCheckApproved(true);
+//			fd.setContent("同意");
 			execResult = flowService.check(fd);
 			assertTrue(execResult.ok);
 		}

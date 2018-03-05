@@ -3,8 +3,6 @@ package com.github.emailtohl.integration.web.config;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Named;
 import javax.persistence.EntityManagerFactory;
@@ -104,16 +102,7 @@ class ActivitiConfiguration {
 
 		cfg.setDeploymentResources(new Resource[] { new ClassPathResource("flow/apply.bpmn") });
 
-		// Windows环境下设置字体
-		String os = System.getenv().get("OS");
-		if (os != null) {
-			Pattern p = Pattern.compile("Windows", Pattern.CASE_INSENSITIVE);
-			Matcher m = p.matcher(os);
-			if (m.find()) {
-				cfg.setActivityFontName("宋体");
-				cfg.setLabelFontName("宋体");
-			}
-		}
+		cfg.setActivityFontName("宋体");
 		return cfg;
 	}
 

@@ -17,6 +17,7 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.identity.User;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.logging.log4j.LogManager;
@@ -36,8 +37,6 @@ import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.core.config.CorePresetData;
-import com.github.emailtohl.integration.core.user.UserService;
-import com.github.emailtohl.integration.core.user.entities.UserRef;
 import com.github.emailtohl.integration.web.config.WebPresetData;
 
 /**
@@ -55,8 +54,6 @@ public class FlowService {
 	CorePresetData corePresetData;
 	@Inject
 	WebPresetData webPresetData;
-	@Inject
-	UserService userService;
 	@Inject
 	RepositoryService repositoryService;
 	@Inject
@@ -164,8 +161,8 @@ public class FlowService {
 	 * taskId： 任务id
 	 * 已登录，可以获取到用户id
 	 * assignee：任务签收人的id
-	 * 如果是初审，则必填checkApproved：审核是否通过，checkOpinions可选
-	 * 如果是复审，则必填recheckApproved：审核是否通过，recheckOpinions可选
+	 * checkApproved：审核是否通过
+	 * checkComment： 审核意见可选
 	 * @return 执行是否成功
 	 */
 	public ExecResult check(FlowData form) {
@@ -181,50 +178,67 @@ public class FlowService {
 		if (task == null) {
 			return new ExecResult(false, "没有这个任务", null);
 		}
+		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult();
 		String currentUserId = getCurrentUserId();
 		String assignee = task.getAssignee();
 		if (!currentUserId.equals(assignee)) {
 			return new ExecResult(false, "当前用户是： " + currentUserId + " 任务所有人是： " + assignee, null);
 		}
+		User user = identityService.createUserQuery().userId(currentUserId).singleResult();
+		if (user == null) {
+			return new ExecResult(false, currentUserId + " 用户已不再系统中", null);
+		}
 		Map<String, Object> variables = new HashMap<>();
-		Boolean approved = null;
+		Boolean approved = form.getCheckApproved();
+		if (approved == null) {
+			return new ExecResult(false, "没有审核结果", null);
+		}
+		Date currentTime = new Date();
 		switch (form.getActivityId()) {
 		case "check":
-			approved = form.getCheckApproved();
-			if (approved == null) {
-				return new ExecResult(false, "初审没有审核结果", null);
-			}
-			source.setCheckApproved(approved);
+			// 与流程相关的
 			variables.put("checkApproved", approved);
-			source.setCheckerId(Long.valueOf(currentUserId));
-			variables.put("checkerId", source.getCheckerId());
-			source.setCheckTime(new Date());
-			variables.put("checkTime", source.getCheckTime());
-			source.setCheckOpinions(form.getCheckOpinions());
-			variables.put("checkOpinions", form.getCheckOpinions());
+			
+			// 其他附带信息
+			variables.put("checkerId", currentUserId);
+			variables.put("checkerName", user.getFirstName());
+			variables.put("checkComment", form.getCheckComment());
+			variables.put("checkTime", currentTime);
 			break;
 		case "recheck":
-			approved = form.getRecheckApproved();
-			if (approved == null) {
-				return new ExecResult(false, "复审没有审核结果", null);
-			}
-			source.setRecheckApproved(approved);
+			// 与流程相关的
 			variables.put("recheckApproved", approved);
-			source.setRecheckerId(Long.valueOf(currentUserId));
-			variables.put("recheckerId", source.getRecheckerId());
-			source.setRecheckTime(new Date());
-			variables.put("recheckTime", source.getRecheckTime());
-			source.setRecheckOpinions(form.getRecheckOpinions());
-			variables.put("recheckOpinions", form.getRecheckOpinions());
+			
+			// 其他附带信息
+			variables.put("recheckerId", currentUserId);
+			variables.put("recheckerName", user.getFirstName());
+			variables.put("recheckComment", form.getCheckComment());
+			variables.put("recheckTime", currentTime);
 			if (approved) {
 				source.setPass(approved);
 				variables.put("pass", approved);
 			}
 			break;
 		default:
-			return new ExecResult(false, "处于未知审核任务下", null);
+			return new ExecResult(false, "未处于审核任务下", null);
+		}
+		
+		if (StringUtils.hasText(form.getCheckComment())) {
+			// 将审批的评论添加进记录中
+			taskService.addComment(taskId, task.getProcessInstanceId(), form.getCheckComment());
 		}
 		taskService.complete(taskId, variables);
+		
+		// 将产生的过程数据保存在业务关系中
+		Check check = new Check();
+		check.setActivityId(processInstance.getActivityId());
+		check.setCheckApproved(approved);
+		check.setCheckerId(Long.valueOf(currentUserId));
+		check.setCheckerName(user.getFirstName());
+		check.setCheckComment(form.getCheckComment());
+		check.setCheckTime(currentTime);
+		source.getChecks().add(check);
+		
 		return new ExecResult(true, "", null);
 	}
 
@@ -340,34 +354,25 @@ public class FlowService {
 	}
 
 	/**
-	 * 若未查找到登录用户则抛异常
-	 * 
-	 * @return
-	 * @throws UsernameNotFoundException
-	 */
-	public UserRef getCurrentUserRef() throws UsernameNotFoundException {
-		UserRef userRef = userService.getRef(Long.valueOf(getCurrentUserId()));
-		if (userRef == null) {
-			throw new UsernameNotFoundException("没有此账号");
-		}
-		return userRef;
-	}
-
-	/**
 	 * 返回持久化状态的FlowData
 	 * 
 	 * @param entity
 	 * @return 未查找到，则为null
 	 */
 	protected FlowData getFlowData(FlowData entity) {
-		Long id = entity.getId();
-		if (id != null) {
-			return flowRepository.findOne(id);
+		FlowData flowData = null;
+		if (entity == null || entity.getId() == null) {
+			return null;
+		}
+		flowData = flowRepository.findOne(entity.getId());
+		if (flowData != null) {
+			return flowData;
 		}
 		String processInstanceId = entity.getProcessInstanceId();
-		if (StringUtils.hasText(processInstanceId)) {
-			return flowRepository.findByProcessInstanceId(processInstanceId);
+		if (!StringUtils.hasText(processInstanceId)) {
+			return null;
 		}
-		return null;
+		flowData = flowRepository.findByProcessInstanceId(processInstanceId);
+		return flowData;
 	}
 }
