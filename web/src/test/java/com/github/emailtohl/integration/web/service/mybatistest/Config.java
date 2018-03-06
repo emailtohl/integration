@@ -7,7 +7,10 @@ import org.springframework.context.annotation.Import;
 
 import com.github.emailtohl.integration.core.user.org.DepartmentService;
 import com.github.emailtohl.integration.web.config.WebTestConfig;
-
+/**
+ * 测试的配置
+ * @author HeLei
+ */
 @Configurable
 @Import(WebTestConfig.class)
 class Config {

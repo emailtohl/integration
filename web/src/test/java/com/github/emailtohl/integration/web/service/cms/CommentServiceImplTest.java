@@ -1,7 +1,5 @@
 package com.github.emailtohl.integration.web.service.cms;
 
-import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
-import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -15,12 +13,8 @@ import org.activiti.engine.IdentityService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.exception.NotAcceptableException;
 import com.github.emailtohl.integration.common.jpa.Paging;
@@ -28,8 +22,8 @@ import com.github.emailtohl.integration.common.utils.BeanUtil;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.web.config.WebPresetData;
-import com.github.emailtohl.integration.web.config.WebTestConfig;
 import com.github.emailtohl.integration.web.config.WebTestData;
+import com.github.emailtohl.integration.web.config.WebTestEnvironment;
 import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Comment;
 import com.google.gson.Gson;
@@ -38,10 +32,7 @@ import com.google.gson.Gson;
  * 测试
  * @author HeLei
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = WebTestConfig.class)
-@ActiveProfiles({ DB_RAM_H2, ENV_NO_SERVLET })
-public class CommentServiceImplTest {
+public class CommentServiceImplTest extends WebTestEnvironment {
 	@Inject
 	CommentService commentService;
 	@Inject

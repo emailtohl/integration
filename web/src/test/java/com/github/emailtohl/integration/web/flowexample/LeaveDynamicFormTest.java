@@ -1,7 +1,5 @@
 package com.github.emailtohl.integration.web.flowexample;
 
-import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
-import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -33,23 +31,15 @@ import org.activiti.engine.task.Task;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.web.config.WebPresetData;
-import com.github.emailtohl.integration.web.config.WebTestConfig;
+import com.github.emailtohl.integration.web.config.WebTestEnvironment;
 
 /**
  * 动态表单请假流程单元测试
- *
  * @author henryyan
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = WebTestConfig.class)
-@ActiveProfiles({ DB_RAM_H2, ENV_NO_SERVLET })
-public class LeaveDynamicFormTest {
+public class LeaveDynamicFormTest extends WebTestEnvironment {
 	@Inject
 	WebPresetData webPresetData;
 	@Inject

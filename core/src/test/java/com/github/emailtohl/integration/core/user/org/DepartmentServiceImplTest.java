@@ -1,8 +1,9 @@
 package com.github.emailtohl.integration.core.user.org;
 
-import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
-import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -11,16 +12,12 @@ import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.core.coreTestConfig.CoreTestConfiguration;
+import com.github.emailtohl.integration.core.coreTestConfig.CoreTestEnvironment;
 import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Department;
 import com.github.emailtohl.integration.core.user.entities.Employee;
@@ -30,11 +27,8 @@ import com.google.gson.Gson;
  * 业务类测试
  * @author HeLei
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = CoreTestConfiguration.class)
-@ActiveProfiles({ DB_RAM_H2, ENV_NO_SERVLET })
 @Rollback(false)
-public class DepartmentServiceImplTest {
+public class DepartmentServiceImplTest extends CoreTestEnvironment {
 	@Inject
 	DepartmentService departmentService;
 	@Inject

@@ -1,7 +1,5 @@
 package com.github.emailtohl.integration.web.aop;
 
-import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
-import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -16,27 +14,18 @@ import org.activiti.engine.identity.Group;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleService;
 import com.github.emailtohl.integration.core.role.RoleType;
-import com.github.emailtohl.integration.web.config.WebTestConfig;
 import com.github.emailtohl.integration.web.config.WebTestData;
+import com.github.emailtohl.integration.web.config.WebTestEnvironment;
 
 /**
  * 对切面的测试
- * 
  * @author HeLei
- *
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = WebTestConfig.class)
-@ActiveProfiles({ DB_RAM_H2, ENV_NO_SERVLET })
-public class RoleServiceProxyTest {
+public class RoleServiceProxyTest extends WebTestEnvironment {
 	@Inject
 	RoleService roleService;
 	@Inject

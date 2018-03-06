@@ -1,7 +1,5 @@
 package com.github.emailtohl.integration.web.service.flow;
 
-import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
-import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -23,27 +21,20 @@ import org.apache.logging.log4j.ThreadContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.web.config.WebPresetData;
-import com.github.emailtohl.integration.web.config.WebTestConfig;
 import com.github.emailtohl.integration.web.config.WebTestData;
+import com.github.emailtohl.integration.web.config.WebTestEnvironment;
 import com.google.gson.Gson;
 /**
  * 测试流程
  * @author HeLei
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = WebTestConfig.class)
-@ActiveProfiles({ DB_RAM_H2, ENV_NO_SERVLET })
-public class FlowServiceTest {
+public class FlowServiceTest extends WebTestEnvironment {
 	@Inject
 	WebPresetData webPresetData;
 	@Inject

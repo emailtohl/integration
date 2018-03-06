@@ -1,8 +1,6 @@
 package com.github.emailtohl.integration.web.controller;
 
-import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
-import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
@@ -11,19 +9,15 @@ import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.web.config.WebPresetData;
-import com.github.emailtohl.integration.web.config.WebTestConfig;
+import com.github.emailtohl.integration.web.config.WebTestEnvironment;
 import com.github.emailtohl.integration.web.service.cms.ArticleService;
 import com.github.emailtohl.integration.web.service.cms.CommentService;
 import com.github.emailtohl.integration.web.service.cms.TypeService;
@@ -35,10 +29,7 @@ import freemarker.template.TemplateException;
  * 内容控制器的测试
  * @author HeLei
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = WebTestConfig.class)
-@ActiveProfiles({ DB_RAM_H2, ENV_NO_SERVLET })
-public class CmsCtrlTest {
+public class CmsCtrlTest extends WebTestEnvironment {
 	@Inject
 	Configuration cfg;
 	@Inject

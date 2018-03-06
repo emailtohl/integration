@@ -1,7 +1,5 @@
 package com.github.emailtohl.integration.web.flowexample;
 
-import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
-import static com.github.emailtohl.integration.core.Profiles.ENV_NO_SERVLET;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -26,25 +24,17 @@ import org.activiti.engine.task.Task;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.emailtohl.integration.web.config.WebPresetData;
-import com.github.emailtohl.integration.web.config.WebTestConfig;
+import com.github.emailtohl.integration.web.config.WebTestEnvironment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
  * 购买办公用品流程测试
- *
  * @author henryyan
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = WebTestConfig.class)
-@ActiveProfiles({ DB_RAM_H2, ENV_NO_SERVLET })
-public class PurchaseSubProcessTest /* extends SpringActivitiTestCase */ {
+public class PurchaseSubProcessTest extends WebTestEnvironment {
 	@Inject
 	WebPresetData webPresetData;
 	@Inject
@@ -98,7 +88,6 @@ public class PurchaseSubProcessTest /* extends SpringActivitiTestCase */ {
 	 * 全部通过
 	 */
 	@Test
-	// @Deployment(resources = {"flowexample/purchase-subprocess.bpmn"})
 	public void testAllApproved() throws Exception {
 		LocalDate today = LocalDate.now();
 
@@ -176,7 +165,6 @@ public class PurchaseSubProcessTest /* extends SpringActivitiTestCase */ {
 	 * 财务拒绝
 	 */
 	@Test
-	// @Deployment(resources = {"flowexample/purchase-subprocess.bpmn"})
 	public void testRejectOnTreasurer() throws Exception {
 		LocalDate today = LocalDate.now();
 
