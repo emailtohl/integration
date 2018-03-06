@@ -79,7 +79,7 @@ public class FlowService {
 	 * 已登录，可以获取到用户id
 	 * @return 启动的流程实例
 	 */
-	public ProcessInstance startWorkflow(FlowData form) {
+	public FlowData startWorkflow(FlowData form) {
 		String userId = getCurrentUserId();
 		form.setApplicantId(Long.valueOf(userId));
 		FlowType flowType = form.getFlowType();
@@ -98,10 +98,10 @@ public class FlowService {
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, businessKey, variables);
 		String processInstanceId = processInstance.getId();
 		source.setProcessInstanceId(processInstanceId);
-		source = flowRepository.save(source);
+		source.setActivityId(processInstance.getActivityId());
 		logger.debug("start process of {key={}, bkey={}, pid={}}",
 				new Object[] { PROCESS_DEFINITION_KEY, businessKey, processInstanceId });
-		return processInstance;
+		return transientDetail(source);
 	}
 
 	/**

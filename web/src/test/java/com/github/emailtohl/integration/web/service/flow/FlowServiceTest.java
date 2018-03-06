@@ -16,7 +16,6 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricFormProperty;
 import org.activiti.engine.history.HistoricVariableUpdate;
-import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.logging.log4j.ThreadContext;
 import org.junit.After;
 import org.junit.Before;
@@ -70,10 +69,10 @@ public class FlowServiceTest extends WebTestEnvironment {
 		FlowData form = new FlowData();
 		form.setFlowType(FlowType.WORK);
 		form.setContent("提交一个申请，内容是：*****");
-		ProcessInstance processInstance = flowService.startWorkflow(form);
-		assertNotNull(processInstance);
-		processInstanceId = processInstance.getId();
-		System.out.println(processInstance.getActivityId());
+		FlowData flowData = flowService.startWorkflow(form);
+		assertNotNull(flowData);
+		processInstanceId = flowData.getProcessInstanceId();
+		System.out.println(flowData.getActivityId());
 		
 		ExecResult execResult = null;
 		

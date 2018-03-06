@@ -16,7 +16,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.employee.EmployeeService;
-import com.github.emailtohl.integration.web.message.event.UserNotify;
+import com.github.emailtohl.integration.web.message.event.UserNotifyEvent;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -55,7 +55,7 @@ public class Notify implements ExecutionListener, TaskListener, Serializable {
 		args.put("processInstanceId", execution.getProcessInstanceId());
 		args.put("processBusinessKey", execution.getProcessBusinessKey());
 		args.put("currentActivityId", execution.getCurrentActivityId());
-		UserNotify event = new UserNotify(gson.toJson(args));
+		UserNotifyEvent event = new UserNotifyEvent(gson.toJson(args));
 		publisher.publishEvent(event);
 	}
 
@@ -77,7 +77,7 @@ public class Notify implements ExecutionListener, TaskListener, Serializable {
 		args.put("name", delegateTask.getName());
 		args.put("candidates", delegateTask.getCandidates().stream().map(il -> il.getUserId()).collect(Collectors.toList()));
 		args.put("dueDate", delegateTask.getDueDate());
-		UserNotify event = new UserNotify(gson.toJson(args));
+		UserNotifyEvent event = new UserNotifyEvent(gson.toJson(args));
 		publisher.publishEvent(event);
 	}
 
