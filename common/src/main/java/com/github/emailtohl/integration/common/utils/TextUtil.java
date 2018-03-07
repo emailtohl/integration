@@ -1,5 +1,6 @@
 package com.github.emailtohl.integration.common.utils;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,20 +8,15 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.mozilla.intl.chardet.nsDetector;
 import org.mozilla.intl.chardet.nsICharsetDetectionObserver;
 import org.mozilla.intl.chardet.nsPSMDetector;
 
 /**
- * 文本工具
- * 
+ * 读取文本文件，自动检测文本编码
  * @author HeLei
  */
 public final class TextUtil {
-	private static final Logger logger = LogManager.getLogger();
-	
     /**
      * 检测内容编码格式
      * jchardet是mozilla自动字符集探测算法代码
@@ -30,41 +26,43 @@ public final class TextUtil {
 	public static String detect(InputStream inputStream) throws IOException {
 		class nsICharsetDetectionObserverImpl implements nsICharsetDetectionObserver {
 			boolean found = false;
-			String charset = "";
+			String result;
 			@Override
-			public void Notify(String a) {
+			public void Notify(String charset) {
 				found = true;
-				charset = a;
+				result = charset;
 			}
 		}
+		// Initalize the nsDetector() ;
+		nsDetector det = new nsDetector(nsPSMDetector.ALL);
+		// Set an observer...
+		// The Notify() will be called when a matching charset is found.
 		nsICharsetDetectionObserverImpl observer = new nsICharsetDetectionObserverImpl();
-		int lang = nsPSMDetector.ALL;
-		nsDetector det = new nsDetector(lang);
 		det.Init(observer);
-
-		byte[] buf = new byte[1024];
+		byte[] bytes = new byte[1024];
 		int len;
-		boolean done = false;
 		boolean isAscii = true;
-
-		while ((len = inputStream.read(buf, 0, buf.length)) != -1) {
+		while ((len = inputStream.read(bytes, 0, bytes.length)) != -1) {
+			// Check if the stream is only ascii.
 			if (isAscii)
-				isAscii = det.isAscii(buf, len);
-			if (!isAscii && !done)
-				done = det.DoIt(buf, len, false);
+				isAscii = det.isAscii(bytes, len);
+			// DoIt if non-ascii and not done yet.
+			if (!isAscii) {
+				if (det.DoIt(bytes, len, false))
+					break;
+			}
 		}
 		det.DataEnd();
-
+		String[] prob;
 		if (isAscii) {
-			observer.charset = "ASCII";
 			observer.found = true;
+			prob = new String[] { "ASCII" };
+		} else if (observer.found) {
+			prob = new String[] { observer.result };
+		} else {
+			prob = det.getProbableCharsets();
 		}
-
-		if (!observer.found) {
-			String prob[] = det.getProbableCharsets();
-			observer.charset = prob[0];
-		}
-		return observer.charset;
+		return prob[0];
 	}
 	/**
 	 * 读取内容
@@ -73,15 +71,11 @@ public final class TextUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static String readFileToString(InputStream inputStream, String charset) throws IOException {
-		Charset cset;
+	public static String readFileToString(InputStream inputStream) throws IOException {
+		ByteArrayOutputStream out = null;
+		ByteArrayInputStream in = null;
 		try {
-			cset = Charset.forName(charset);
-		} catch (IllegalArgumentException e) {
-			logger.warn("解析编码失败，使用系统默认编码：" + Charset.defaultCharset().name());
-			cset = Charset.defaultCharset();
-		}
-		try (ByteArrayOutputStream memory = new ByteArrayOutputStream()) {
+			out = new ByteArrayOutputStream();
 			byte[] bytes = new byte[512];
 			int i;
 			while (true) {
@@ -89,12 +83,22 @@ public final class TextUtil {
 				if (i == -1) {
 					break;
 				} else {
-					memory.write(bytes, 0, i);
+					out.write(bytes, 0, i);
 				}
 			}
-			ByteBuffer bbuf = ByteBuffer.wrap(memory.toByteArray());
-			CharBuffer cbuf = cset.decode(bbuf);
+			in = new ByteArrayInputStream(bytes);
+			String encoding = detect(in);
+			Charset charset = Charset.forName(encoding);
+			ByteBuffer bbuf = ByteBuffer.wrap(out.toByteArray());
+			CharBuffer cbuf = charset.decode(bbuf);
 			return cbuf.toString();
+		} finally {
+			if (out != null) {
+				out.close();
+			}
+			if (in != null) {
+				in.close();
+			}
 		}
 	}
 }

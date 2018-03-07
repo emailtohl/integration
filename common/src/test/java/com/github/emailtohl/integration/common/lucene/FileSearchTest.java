@@ -42,7 +42,7 @@ public class FileSearchTest {
 	@Before
 	public void setUp() throws Exception {
 		File thisFile = new File(PATH + File.separator + BeanUtil.convertPackageNameToFilePath(getClass().getName()) + ".java");
-		tempFile = new File(System.getProperty("java.io.tmpdir"), "testFileSearch.txt");
+		tempFile = new File(System.getProperty("java.io.tmpdir"), "testFileSearch");
 		FileUtils.copyFile(thisFile.getAbsoluteFile(), tempFile);
 		
 		// 创建一个内存目录

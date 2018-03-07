@@ -2,9 +2,9 @@ package com.github.emailtohl.integration.common.lucene;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +16,7 @@ import java.util.TreeSet;
 
 import javax.activation.FileTypeMap;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -48,6 +48,8 @@ import org.apache.lucene.store.FSDirectory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+
+import com.github.emailtohl.integration.common.utils.TextUtil;
 
 /**
  * lucene的数据源获取有很多开源框架，如Solr提取数据库和XML；Nutch、Heritrix、Grub获取web站点；
@@ -338,8 +340,17 @@ public class FileSearch implements AutoCloseable {
 	 * @throws IOException
 	 */
 	private Document getDocument(File file) throws IOException {
-		String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-//		String content = readFileToString(file);
+		// String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+		FileInputStream fis = null;
+		String content = "";
+		try {
+			fis = new FileInputStream(file);
+			content = TextUtil.readFileToString(fis);
+		} finally {
+			if (fis != null) {
+				fis.close();
+			}
+		}
 		// TextField既被索引又被分词，但是没有词向量
 		Field fName = new TextField(FILE_NAME, file.getName(), Store.YES);
 		fName.setBoost(1.2F);
@@ -414,28 +425,22 @@ public class FileSearch implements AutoCloseable {
 	}
 	
 	/**
-	 * 过滤出文本文件
-	 * 
+	 * 先行过滤一部分不是文本的文件
 	 * @author HeLei
-	 * @date 2017.02.04
 	 */
 	class TextFilesFilter implements FileFilter {
 		private static final long MAX_BYTES = 10_485_760L;// 10兆
 		private final FileTypeMap fileTypeMap = FileTypeMap.getDefaultFileTypeMap();
 		private final Set<String> TEXT_SUFFIX = new HashSet<String>(
-				Arrays.asList("txt", "md", "html", "xml", "js", "css", "java", "c", "cpp", "go", "csv", "properties"));
+				Arrays.asList("", "txt", "md", "html", "xml", "js", "css", "java", "c", "cpp", "go", "csv", "properties"));
 
 		@Override
 		public boolean accept(File f) {
 			if (f.isDirectory() || f.length() > MAX_BYTES)
 				return false;
 			boolean flag = false;
-			String name = f.getName();
-			int i = name.lastIndexOf(".");
-			if (i > -1 && name.length() > i) {
-				String suffix = name.substring(i + 1, name.length());
-				flag = TEXT_SUFFIX.contains(suffix.toLowerCase());
-			}
+			String ext = FilenameUtils.getExtension(f.getName());
+			flag = TEXT_SUFFIX.contains(ext.toLowerCase());
 			String fileType;
 			if (!flag) {
 				fileType = fileTypeMap.getContentType(f.getAbsolutePath());
