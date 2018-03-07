@@ -339,6 +339,7 @@ public class FileSearch implements AutoCloseable {
 	 */
 	private Document getDocument(File file) throws IOException {
 		String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+//		String content = readFileToString(file);
 		// TextField既被索引又被分词，但是没有词向量
 		Field fName = new TextField(FILE_NAME, file.getName(), Store.YES);
 		fName.setBoost(1.2F);

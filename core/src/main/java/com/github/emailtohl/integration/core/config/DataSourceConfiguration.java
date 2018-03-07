@@ -152,7 +152,7 @@ public class DataSourceConfiguration {
 	
 	/**
 	 * web资源目录，在dataPath 存放数据的目录下，此目录为公开外部访问的根目录，在tomcat上需配置虚拟目录的地址与此目录相对应，如：
-	 * <Context docBase="~/programs/apache-tomcat-8.5.24/wtpwebapps/integration-data/resources" path="/web/resources" reloadable="true"/>
+	 * <Context docBase="/home/helei/programs/apache-tomcat-8.5.24/wtpwebapps/integration-data/resources" path="/web/resources" reloadable="true"/>
 	 * @param
 	 * @return
 	 */

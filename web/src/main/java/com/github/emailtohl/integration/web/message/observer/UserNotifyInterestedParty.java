@@ -21,7 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 /**
- * 通知用户
+ * 通知用户 TODO
  * @author HeLei
  */
 @ServerEndpoint(value = "/services/notify", configurator = SpringConfigurator.class)
