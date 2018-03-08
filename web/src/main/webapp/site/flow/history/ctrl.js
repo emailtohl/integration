@@ -1,10 +1,10 @@
 /**
  * 查询审核记录
  */
-define(['applicationForm/module', 'applicationForm/service'], function(applicationFormModule, service) {
-	return applicationFormModule
-	.controller('ApplicationFormHistoryCtrl', [ '$scope', '$http', '$state', 'applicationFormService', 'util'
-	                         , function($scope, $http, $state, applicationFormService, util) {
+define(['flow/module', 'flow/service'], function(flowModule, service) {
+	return flowModule
+	.controller('FlowHistoryCtrl', [ '$scope', '$http', '$state', 'flowService', 'util'
+	                         , function($scope, $http, $state, flowService, util) {
 		var initForm = '{}';
 		var self = this;
 		require(['moment'], function(moment) {
@@ -35,7 +35,7 @@ define(['applicationForm/module', 'applicationForm/service'], function(applicati
 		};
 		
 		self.getPage = function() {
-			applicationFormService.history(
+			flowService.history(
 				self.form.page,
 				self.form.applicant,
 				self.form.handler,
@@ -63,7 +63,7 @@ define(['applicationForm/module', 'applicationForm/service'], function(applicati
 			if (!$scope.hasAuthority('application_form_transit')) {
 				return;
 			}
-			applicationFormService.getHistoryById(id).then(function(resp) {
+			flowService.getHistoryById(id).then(function(resp) {
 				self.detail = resp.data;
 				self.modal.open = true;
 			});

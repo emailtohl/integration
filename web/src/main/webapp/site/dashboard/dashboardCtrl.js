@@ -1,4 +1,4 @@
-define(['angular', 'dashboard/module'], function(angular) {
+define(['angular', 'toastr', 'dashboard/module'], function(angular, toastr) {
 	return angular.module('dashboardModule')
 	.controller('DashboardCtrl', ['$scope', '$http', '$state', '$cookies', 'util', function($scope, $http, $state, $cookies, util) {
 		var self = this, isHttps = window.location.protocol == 'https:' ? true : false;
@@ -48,12 +48,13 @@ define(['angular', 'dashboard/module'], function(angular) {
 			    }
 
 				connection.onerror = function(e) {
-			    	alert('WebSocketError! ' + e.data);
+			    	toastr.error('WebSocketError! ' + e.data);
+			    	connection.onopen();
 			    }
 				
 				self.send = function() {
 			    	if (connection.readyState != WebSocket.OPEN) {
-						alert('WebSocket is Not Open, current state is： ' + connection.readyState);
+						toastr.error('WebSocket is Not Open, current state is： ' + connection.readyState);
 						callee(data);
 						return;
 					}
@@ -116,14 +117,39 @@ define(['angular', 'dashboard/module'], function(angular) {
 				
 				connection.onclose = function(e) {
 					console.log('WebSocketClosed! ' + e.data);
-				}
+				};
 				
 				connection.onerror = function(e) {
-					alert('WebSocketError! ' + e.data);
-				}
+					toastr.error('WebSocketError! ' + e.data);
+					connection.onopen();
+				};
 			
 			});
 			// end systemInfo
+			
+			if ($scope.isAuthenticated()) {
+				notify();
+			}
+			function notify() {
+				var notifyUrl = util.getRootName() + '/services/notify';
+				var url = (isHttps ? 'wss://' : 'ws://') + window.location.host + notifyUrl;
+				var connection = new WebSocket(url);
+				connection.onopen = function(e) {
+					console.log('打开通知信息连接');
+					connection.send(JSON.stringify({userId:data.principal && data.principal.id}));
+				};
+				connection.onmessage = function(e) {
+					toastr.info(e);
+				};
+				connection.onclose = function(e) {
+					console.log('WebSocketClosed! ' + e.data);
+				}
+				connection.onerror = function(e) {
+					toastr.error('WebSocketError! ' + e.data);
+					connection.onopen();
+				}
+			};
+			// end notify
 		});// end promise
 		
 	  /**

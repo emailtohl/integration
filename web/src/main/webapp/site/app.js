@@ -7,7 +7,7 @@ define([
 	'customer/context',
 	'cms/context',
 	'encryption/context',
-//	'applicationForm/context',
+	'flow/context',
 	'dashboard/context',
 ], function(angular, i18n) {
 	return angular.module('app', [
@@ -18,7 +18,7 @@ define([
 			'customerModule',
 			'cmsModule',
 			'encryptionModule',
-//			'applicationFormModule',
+			'flowModule',
 			'dashboardModule',
 		])
 		.run(['$rootScope', '$state', '$stateParams', '$http', '$translate', function($rootScope, $state, $stateParams, $http, $translate) {

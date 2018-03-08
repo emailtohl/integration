@@ -27,6 +27,7 @@ public final class TextUtil {
 		class nsICharsetDetectionObserverImpl implements nsICharsetDetectionObserver {
 			boolean found = false;
 			String result;
+
 			@Override
 			public void Notify(String charset) {
 				found = true;
@@ -47,10 +48,8 @@ public final class TextUtil {
 			if (isAscii)
 				isAscii = det.isAscii(bytes, len);
 			// DoIt if non-ascii and not done yet.
-			if (!isAscii) {
-				if (det.DoIt(bytes, len, false))
-					break;
-			}
+			else if (det.DoIt(bytes, len, false))
+				break;
 		}
 		det.DataEnd();
 		String[] prob;

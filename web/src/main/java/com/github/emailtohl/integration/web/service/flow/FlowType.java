@@ -5,5 +5,5 @@ package com.github.emailtohl.integration.web.service.flow;
  * @author HeLei
  */
 public enum FlowType {
-	WORK
+	WORK/*工单*/
 }

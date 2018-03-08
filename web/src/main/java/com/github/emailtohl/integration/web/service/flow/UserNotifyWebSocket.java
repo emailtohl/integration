@@ -1,7 +1,8 @@
-package com.github.emailtohl.integration.web.message.observer;
+package com.github.emailtohl.integration.web.service.flow;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.security.Principal;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -14,18 +15,19 @@ import javax.websocket.server.ServerEndpoint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationListener;
-import org.springframework.web.socket.server.standard.SpringConfigurator;
 
+import com.github.emailtohl.integration.common.websocket.Configurator;
+import com.github.emailtohl.integration.core.auth.AuthenticationImpl;
+import com.github.emailtohl.integration.core.auth.UserDetailsImpl;
 import com.github.emailtohl.integration.web.message.event.UserNotifyEvent;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 /**
- * 通知用户 TODO
+ * 通知用户，既是websocket，也是Spring管理的bean，并且关注了UserNotifyEvent事件，可将事件转发给前端用户
  * @author HeLei
  */
-@ServerEndpoint(value = "/services/notify", configurator = SpringConfigurator.class)
-public class UserNotifyInterestedParty implements ApplicationListener<UserNotifyEvent> {
+@ServerEndpoint(value = "/services/notify", configurator = Configurator.class)
+public class UserNotifyWebSocket implements ApplicationListener<UserNotifyEvent> {
 	private static final Logger logger = LogManager.getLogger();
 
 	private String userId;
@@ -35,27 +37,32 @@ public class UserNotifyInterestedParty implements ApplicationListener<UserNotify
 	Type type = new TypeToken<Map<String, Object>>() {
 	}.getType();
 
+	@OnOpen
+	public void open(Session session) {
+		this.session = session;
+		Principal principal = Configurator.getExposedPrincipal(session);
+		if (principal instanceof AuthenticationImpl) {
+			AuthenticationImpl auth = (AuthenticationImpl) principal;
+			if (auth.getPrincipal() instanceof UserDetailsImpl) {
+				UserDetailsImpl detail = (UserDetailsImpl) auth.getPrincipal();
+				this.userId = detail.getId() == null ? null : detail.getId().toString();
+			}
+		}
+	}
+	
 	@Override
 	public void onApplicationEvent(UserNotifyEvent event) {
 		String json = (String) event.getSource();
 		Map<String, Object> map = gson.fromJson(json, type);
 		logger.debug(map);
 		Object assignee = map.get("assignee");
-		if (assignee instanceof String) {
-			Long userId = Long.valueOf((String) assignee);
-			if (userId.equals(this.userId)) {
-				try {
-					session.getBasicRemote().sendText(json);
-				} catch (IOException e) {
-					logger.catching(e);
-				}
+		if (assignee instanceof String && ((String) assignee).equals(this.userId)) {
+			try {
+				session.getBasicRemote().sendText(json);
+			} catch (IOException e) {
+				logger.catching(e);
 			}
 		}
-	}
-
-	@OnOpen
-	public void open(Session session) {
-		this.session = session;
 	}
 
 	@OnMessage
@@ -65,6 +72,8 @@ public class UserNotifyInterestedParty implements ApplicationListener<UserNotify
 		Object userId = map.get("userId");
 		if (userId instanceof String) {
 			this.userId = (String) userId;
+		} else if (userId instanceof Number) {
+			this.userId = userId.toString();
 		}
 	}
 
