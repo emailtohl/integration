@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -265,16 +264,12 @@ public class ResourceCtrl {
 	@RequestMapping(value = "loadText", method = POST, produces = MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8")
 	public String loadText(@RequestParam(value = "path", required = true) String path
 			, @RequestParam(value = "charset", required = false, defaultValue = "UTF-8") String charset) {
-		File f = fileService.getFile(getFilePath(path));
-		String result = "";
-		if (f != null && f.exists()) {
-			try {
-				result = FileUtils.readFileToString(f, charset);
-			} catch (IOException e) {
-				logger.catching(e);
-			}
+		ExecResult execResult = fileService.loadText(getFilePath(path), charset);
+		if (execResult.ok) {
+			return (String) execResult.attribute;
+		} else {
+			return execResult.cause;
 		}
-		return result;
 	}
 	
 	@RequestMapping(value = "writeText", method = POST)

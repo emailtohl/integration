@@ -9,5 +9,6 @@ define(['flow/module', 'flow/service'], function(flowModule) {
 		util.loadasync('lib/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css');
 		$scope.getAuthentication();
 		
+		
 	}]);
 });

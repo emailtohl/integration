@@ -37,24 +37,25 @@
 	  <!-- /.box-header -->
 	  <div class="box-body pad">
 	    <form name="f">
-      	  <div class="box">
-			<div class="form-group has-feedback" ng-class="{'has-success':f.title.$valid,'has-warning':f.title.$error.required,'has-error':f.title.$error.minlength}">
-	          <label for="exampleInputEmail1">标题</label>
-	          <input class="form-control" name="title" ng-model="ctrl.form.name" placeholder="填写标题" type="text" required="required">
-			  <span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':f.title.$valid,'glyphicon-warning-sign':f.title.$error.required,'glyphicon-remove':f.title.$error.minlength}"></span>
-			  <span ng-show="f.title.$error.required">
-			  This is a required field
-			  </span>
-			  <span ng-show="f.title.$error.minlength">
-			  Minimum length required is 6
-			  </span>
-			  <span ng-show="f.title.$invalid">
-			  This field is invalid
-			  </span>
-			</div>
-		  </div>
-	      <textarea class="textarea" name="body" ng-model="ctrl.form.description" placeholder="填写申请单内容" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
-	      <input type="submit" class="btn btn-primary btn-block" ng-disabled="f.$invalid || !ctrl.form.description || !isAuthenticated()" ng-click="ctrl.submit()">
+          <div class="form-group">
+            <label>流程类型</label>
+            <select class="form-control" name="flowType" ng-model="ctrl.form.flowType" ng-init="ctrl.form.flowType = 'WORK'" required="required">
+              <option value="WORK">工单</option>
+            </select>
+          </div>
+          <div class="form-group" class="form-group has-feedback" ng-class="{'has-success':f.content.$valid,'has-warning':f.content.$error.required,'has-error':f.content.$error.minlength}">
+            <label>申请单内容</label>
+            <textarea class="form-control" rows="3" name="content" ng-model="ctrl.form.content" placeholder="填写申请单内容" required="required" minlength="5"></textarea>
+          	<span ng-show="f.content.$error.required">
+			This is a required field
+			</span>
+			<span ng-show="f.content.$error.minlength">
+			Minimum length required is 5
+			</span>
+          </div>
+          <div class="box-footer">
+            <button type="submit" class="btn btn-primary" ng-disabled="f.$invalid || !isAuthenticated()" ng-click="ctrl.submit()">Submit</button>
+          </div>
 	    </form>
 	  </div>
 	</div>
