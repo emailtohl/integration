@@ -2,7 +2,6 @@ package com.github.emailtohl.integration.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
 /**
  * 在web层将异常转成http状态码
  * @author HeLei

@@ -2,7 +2,6 @@ package com.github.emailtohl.integration.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
 /**
  * 主要是前端表单数据存在问题，例如数据不完整或数据之间矛盾等
  * @author HeLei

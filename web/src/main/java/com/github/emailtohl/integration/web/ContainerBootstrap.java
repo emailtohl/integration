@@ -14,6 +14,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import com.github.emailtohl.integration.core.Profiles;
+import com.github.emailtohl.integration.web.config.ActivitiRestConfiguration;
 import com.github.emailtohl.integration.web.config.ServiceConfiguration;
 import com.github.emailtohl.integration.web.config.WebConfiguration;
 import com.github.emailtohl.integration.web.filter.PreSecurityLoggingFilter;
@@ -62,6 +63,15 @@ public class ContainerBootstrap implements WebApplicationInitializer {
 //		dispatcher.setInitParameter("spring.profiles.active", Profiles.DB_JNDI);
 //		container.setInitParameter("spring.profiles.active", Profiles.ENV_SERVLET);
 
+		webContext = new AnnotationConfigWebApplicationContext();
+		/* 载入配置 */
+		webContext.register(ActivitiRestConfiguration.class);
+		dispatcher = container.addServlet("activitiRestServlet", new DispatcherServlet(webContext));
+//		dispatcher.setLoadOnStartup(2);
+		/* 可以上传文件 */
+		dispatcher.setMultipartConfig(new MultipartConfigElement(null, 20_971_520L, 41_943_040L, 512_000));
+		dispatcher.addMapping("/activiti/*");
+		
 		/* 在Servlet容器中注册监听器 */
 		container.addListener(SessionListener.class);
 		
@@ -76,6 +86,7 @@ public class ContainerBootstrap implements WebApplicationInitializer {
 		// 自定义RSA解密用户密码
 		registration = container.addFilter("userPasswordEncryptionFilter", new UserPasswordEncryptionFilter());
 		registration.addMappingForUrlPatterns(null, false, "/login");
+		
 	}
 
 }

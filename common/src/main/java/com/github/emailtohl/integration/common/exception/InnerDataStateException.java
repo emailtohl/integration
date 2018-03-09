@@ -2,7 +2,6 @@ package com.github.emailtohl.integration.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
 /**
  * 内部系统数据的状态异常
  * @author HeLei

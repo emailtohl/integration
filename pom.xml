@@ -360,6 +360,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-ehcache</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-validator</artifactId>
 				<version>5.4.1.Final</version>
 				<exclusions>
@@ -473,6 +478,16 @@
 				<version>${activiti.version}</version>
 			</dependency>
 			<dependency>
+			    <groupId>org.activiti</groupId>
+			    <artifactId>activiti-rest</artifactId>
+			    <version>${activiti.version}</version>
+			</dependency>
+	        <dependency>
+	            <groupId>org.activiti</groupId>
+	            <artifactId>activiti-json-converter</artifactId>
+	            <version>${activiti.version}</version>
+	        </dependency>
+			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-core</artifactId>
 				<version>${jackson.version}</version>
@@ -487,10 +502,18 @@
 				<artifactId>jackson-databind</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
+			<!-- 探测文本编码 -->
 			<dependency>
 			    <groupId>net.sourceforge.jchardet</groupId>
 			    <artifactId>jchardet</artifactId>
 			    <version>1.0</version>
+			</dependency>
+			<!-- 邮件 -->
+			<dependency>
+			    <groupId>org.subethamail</groupId>
+			    <artifactId>subethasmtp</artifactId>
+			    <version>3.1.7</version>
+			    <scope>test</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

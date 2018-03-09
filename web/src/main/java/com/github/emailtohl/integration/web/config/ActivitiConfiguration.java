@@ -193,6 +193,7 @@ class ActivitiConfiguration {
 			engine.close();
 		};
 	}
+	
 }
 
 class BigtextFormType extends StringFormType {
