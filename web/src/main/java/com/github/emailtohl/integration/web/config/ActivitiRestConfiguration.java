@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 /**
- * Activiti基于Rest接口的配置
+ * 基于Activiti的Rest接口的配置
  * @author HeLei
  */
 @Configuration

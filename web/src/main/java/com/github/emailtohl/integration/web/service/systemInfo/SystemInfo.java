@@ -1,19 +1,23 @@
 package com.github.emailtohl.integration.web.service.systemInfo;
 
+import java.io.Serializable;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import com.github.emailtohl.integration.web.message.event.SystemInfoEvent;
 /**
  * 获取系统信息的定时任务
  * @author HeLei
@@ -21,6 +25,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class SystemInfo {
 	private static final Logger logger = LogManager.getLogger();
+	@Inject
+	ApplicationEventPublisher publisher;
 	
 	@Scheduled(fixedDelay = 5000)
 	public void showSystemInfo() {
@@ -29,7 +35,7 @@ public class SystemInfo {
 	
 	public void Runtime() {
 		OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
-		Map<String, Object> info = new HashMap<>();
+		Map<String, Serializable> info = new HashMap<>();
 		for (Method method : operatingSystemMXBean.getClass().getDeclaredMethods()) {
 			method.setAccessible(true);
 			if (method.getName().startsWith("get") && Modifier.isPublic(method.getModifiers())) {
@@ -37,27 +43,15 @@ public class SystemInfo {
 				try {
 					value = method.invoke(operatingSystemMXBean);
 					logger.log(Level.TRACE, method.getName() + " = " + value);
-					info.put(method.getName(), value);
+					if (value instanceof Serializable) {
+						info.put(method.getName(), (Serializable) value);
+					}
 				} catch (Exception e) {
 					logger.info(e);
 				} // try
 			} // if
 		} // for
-		observes.forEach(o -> o.notify(info));
+		publisher.publishEvent(new SystemInfoEvent(getClass().getName(), info));
 	}
 	
-	public static interface Observe {
-		void notify(Map<String, Object> info);
-	}
-	
-	private List<Observe> observes = new ArrayList<>();
-	
-	public void register(Observe o) {
-		observes.add(o);
-	}
-	
-	public void remove(Observe o) {
-		observes.remove(o);
-	}
-
 }

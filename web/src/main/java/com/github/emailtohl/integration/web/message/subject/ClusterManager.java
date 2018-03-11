@@ -62,13 +62,16 @@ public class ClusterManager implements ApplicationListener<ContextRefreshedEvent
 
 	@PostConstruct
 	public void listenForMulticastAnnouncements() throws Exception {
+		String scheme = env.getProperty("local.scheme");
 		String localPort = env.getProperty("local.host");
+		if (!StringUtils.hasText(scheme))
+			scheme = "http";
 		if (!StringUtils.hasText(localPort))
 			localPort = "8080";
-		pingUrl = "http://" + HOST + ":" + localPort + servletContext.getContextPath() + "/ping";
-		messagingUrl = "ws://" + HOST + ":" + localPort + servletContext.getContextPath()
-				+ "/services/messaging/" + SECURITY_CODE;
-		
+		pingUrl = scheme + "://" + HOST + ":" + localPort + servletContext.getContextPath() + "/ping";
+		messagingUrl = "http".equals(scheme) ? "ws" : "wss" + "://" + HOST + ":" + localPort 
+				+ servletContext.getContextPath() + "/cluster/" + SECURITY_CODE;
+
 		synchronized (mutex) {
 			socket = new MulticastSocket(PORT);
 			socket.joinGroup(GROUP);
@@ -115,7 +118,6 @@ public class ClusterManager implements ApplicationListener<ContextRefreshedEvent
 		if (initialized)
 			return;
 		initialized = true;
-
 		try {
 			URL url = new URL(pingUrl);
 			logger.info("Attempting to connect to self at {}.", url);

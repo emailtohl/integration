@@ -121,7 +121,11 @@ public class UserServiceProxy {
 		user.setEmail(u.getEmail());
 		user.setFirstName(u.getName());
 		user.setLastName(u.getNickname());
-		user.setPassword(u.getPassword());
+		// 密码这里比较特殊，一来，此字段在数据库中一定存在，但若在模型中不存在的话，则因安全因素被过滤掉。
+		// 所以不能将空字段存入Activiti的act_id_user表中
+		if (StringUtils.hasText(u.getPassword())) {
+			user.setPassword(u.getPassword());
+		}
 		identityService.saveUser(user);
 		
 		setUserPicture(u);

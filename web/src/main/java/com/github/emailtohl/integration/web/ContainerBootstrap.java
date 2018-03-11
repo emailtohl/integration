@@ -66,11 +66,11 @@ public class ContainerBootstrap implements WebApplicationInitializer {
 		webContext = new AnnotationConfigWebApplicationContext();
 		/* 载入配置 */
 		webContext.register(ActivitiRestConfiguration.class);
-		dispatcher = container.addServlet("activitiRestServlet", new DispatcherServlet(webContext));
+		dispatcher = container.addServlet("restServlet", new DispatcherServlet(webContext));
 //		dispatcher.setLoadOnStartup(2);
 		/* 可以上传文件 */
 		dispatcher.setMultipartConfig(new MultipartConfigElement(null, 20_971_520L, 41_943_040L, 512_000));
-		dispatcher.addMapping("/activiti/*");
+		dispatcher.addMapping("/rest/*");
 		
 		/* 在Servlet容器中注册监听器 */
 		container.addListener(SessionListener.class);

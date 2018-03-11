@@ -23,6 +23,7 @@ import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -32,6 +33,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -211,21 +213,17 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			// rememberMe默认的过期时间是2周，这里设为四周；默认的私钥名是SpringSecured，这里设为"integration-web"
 			.rememberMe().tokenValiditySeconds(2419200).key("integration-web")
 			//认证不通过后的处理
-			/*
 			.and().exceptionHandling()
 			.authenticationEntryPoint((HttpServletRequest request, HttpServletResponse response,
 					AuthenticationException authException) -> {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				PrintWriter writer = response.getWriter();
-				writer.println(authException.getMessage());
+				response.addHeader("statusText", authException.getMessage());
 			})
 			.accessDeniedHandler((HttpServletRequest request,
 					HttpServletResponse response, AccessDeniedException accessDeniedException) -> {
 				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-				PrintWriter writer = response.getWriter();
-				writer.println(accessDeniedException.getMessage());
+				response.addHeader("statusText", accessDeniedException.getMessage());
 			})
-			*/
 			;
 		
 	}

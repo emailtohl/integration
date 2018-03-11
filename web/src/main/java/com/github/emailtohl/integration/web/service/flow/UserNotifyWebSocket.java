@@ -19,7 +19,7 @@ import org.springframework.context.ApplicationListener;
 import com.github.emailtohl.integration.common.websocket.Configurator;
 import com.github.emailtohl.integration.core.auth.AuthenticationImpl;
 import com.github.emailtohl.integration.core.auth.UserDetailsImpl;
-import com.github.emailtohl.integration.web.message.event.UserNotifyEvent;
+import com.github.emailtohl.integration.web.message.event.FlowNotifyEvent;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 /**
@@ -27,7 +27,7 @@ import com.google.gson.reflect.TypeToken;
  * @author HeLei
  */
 @ServerEndpoint(value = "/services/notify", configurator = Configurator.class)
-public class UserNotifyWebSocket implements ApplicationListener<UserNotifyEvent> {
+public class UserNotifyWebSocket implements ApplicationListener<FlowNotifyEvent> {
 	private static final Logger logger = LogManager.getLogger();
 
 	private String userId;
@@ -51,7 +51,7 @@ public class UserNotifyWebSocket implements ApplicationListener<UserNotifyEvent>
 	}
 	
 	@Override
-	public void onApplicationEvent(UserNotifyEvent event) {
+	public void onApplicationEvent(FlowNotifyEvent event) {
 		String json = (String) event.getSource();
 		Map<String, Object> map = gson.fromJson(json, type);
 		logger.debug(map);

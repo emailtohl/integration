@@ -1,7 +1,8 @@
 package com.github.emailtohl.integration.web.controller;
-
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -15,6 +16,7 @@ import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.github.emailtohl.integration.common.utils.BeanUtil;
+import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.file.FileService;
 /**
  * 资源控制器测试
@@ -27,6 +29,7 @@ public class ResourceCtrlTest {
 	@Before
 	public void setUp() throws Exception {
 		FileService fileService = mock(FileService.class);
+		when(fileService.loadText(any(String.class), any(String.class))).thenReturn(new ExecResult(true, "", null));
 		String usrHome = System.getProperty("user.home");
 		resources = new File(usrHome, "test");
 		Field fileServiceField = ResourceCtrl.class.getDeclaredField("fileService");

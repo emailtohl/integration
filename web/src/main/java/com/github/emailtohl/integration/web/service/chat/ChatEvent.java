@@ -2,12 +2,12 @@ package com.github.emailtohl.integration.web.service.chat;
 
 import java.io.Serializable;
 
-import com.github.emailtohl.integration.web.message.event.AuthenticationEvent;
+import com.github.emailtohl.integration.web.message.event.ClusterEvent;
 /**
  * 聊天相关的事件
  * @author HeLei
  */
-public class ChatEvent extends AuthenticationEvent {
+public class ChatEvent extends ClusterEvent {
 	private static final long serialVersionUID = -1620174996342472535L;
 	private ChatMessage message;
 	

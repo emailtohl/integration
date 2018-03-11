@@ -2,6 +2,7 @@ package com.github.emailtohl.integration.web.service.flow;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -16,9 +17,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.employee.EmployeeService;
-import com.github.emailtohl.integration.web.message.event.UserNotifyEvent;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.github.emailtohl.integration.web.message.event.FlowNotifyEvent;
 
 /**
  * 用户通知服务
@@ -28,7 +27,6 @@ import com.google.gson.GsonBuilder;
 public class Notify implements ExecutionListener, TaskListener, Serializable {
 	private static final long serialVersionUID = -6779971905269762380L;
 	private static final Logger logger = LogManager.getLogger();
-	final Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 	final UserService userService;
 	final CustomerService customerService;
 	final EmployeeService employeeService;
@@ -49,13 +47,13 @@ public class Notify implements ExecutionListener, TaskListener, Serializable {
 		execution.getVariableNames().forEach(varName -> {
 			logger.debug(varName + " : " + execution.getVariable(varName));
 		});
-		Map<String, String> args = new HashMap<>();
+		Map<String, Serializable> args = new HashMap<>();
 		args.put("eventName", execution.getEventName());
 		args.put("id", execution.getId());
 		args.put("processInstanceId", execution.getProcessInstanceId());
 		args.put("processBusinessKey", execution.getProcessBusinessKey());
 		args.put("currentActivityId", execution.getCurrentActivityId());
-		UserNotifyEvent event = new UserNotifyEvent(gson.toJson(args));
+		FlowNotifyEvent event = new FlowNotifyEvent(Notify.class.getName(), args);
 		publisher.publishEvent(event);
 	}
 
@@ -68,16 +66,17 @@ public class Notify implements ExecutionListener, TaskListener, Serializable {
 			logger.debug(varName + " : " + delegateTask.getVariable(varName));
 		});
 
-		Map<String, Object> args = new HashMap<>();
+		Map<String, Serializable> args = new HashMap<>();
 		args.put("eventName", delegateTask.getEventName());
 		args.put("id", delegateTask.getId());
 		args.put("processInstanceId", delegateTask.getProcessInstanceId());
 		args.put("executionId", delegateTask.getExecutionId());
 		args.put("assignee", delegateTask.getAssignee());
 		args.put("name", delegateTask.getName());
-		args.put("candidates", delegateTask.getCandidates().stream().map(il -> il.getUserId()).collect(Collectors.toList()));
+		List<String> candidates = delegateTask.getCandidates().stream().map(il -> il.getUserId()).collect(Collectors.toList());
+		args.put("candidates", String.join(",", candidates.toArray(new String[candidates.size()])));
 		args.put("dueDate", delegateTask.getDueDate());
-		UserNotifyEvent event = new UserNotifyEvent(gson.toJson(args));
+		FlowNotifyEvent event = new FlowNotifyEvent(Notify.class.getName(), args);
 		publisher.publishEvent(event);
 	}
 

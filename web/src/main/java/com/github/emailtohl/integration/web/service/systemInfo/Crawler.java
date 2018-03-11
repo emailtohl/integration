@@ -1,12 +1,19 @@
 package com.github.emailtohl.integration.web.service.systemInfo;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.servlet.ServletContext;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -19,10 +26,35 @@ import org.springframework.util.StringUtils;
 @Component
 public class Crawler {
 	private static final Logger logger = LogManager.getLogger();
+	private static final String HOST;
+	static {
+		try {
+			HOST = InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			throw new FatalBeanException("Could not initialize IP addresses.", e);
+		}
+	}
 	@Value("${proxyHost}")
 	private String proxyHost;
 	@Value("${proxyPort}")
 	private String proxyPort;
+	@Value("${local.scheme}")
+	private String scheme;
+	@Value("${local.host}")
+	private String localPort;
+	@Inject
+	ServletContext servletContext;
+	
+	private String location;
+	
+	@PostConstruct
+	public void init() throws Exception {
+		if (!StringUtils.hasText(scheme))
+			scheme = "http";
+		if (!StringUtils.hasText(localPort))
+			localPort = "8080";
+		location = scheme + "://" + HOST + ":" + localPort + servletContext.getContextPath();
+	}
 	
 	public Connection getConnection(String url) {
 		Connection conn = Jsoup.connect(url)
@@ -42,7 +74,7 @@ public class Crawler {
 	
 	@Scheduled(fixedDelay = 50000)
 	public void fetch() {
-		Connection conn = getConnection("http://localhost:8080/building/article");
+		Connection conn = getConnection(location + "/cms/article");
 //		conn.cookie("cookie_admin_username", "zt")
 //		.cookie("cookie_admin_password", "4da64b5779c9d82140c450b33124ccc3");
 		Document doc = null;
@@ -60,7 +92,7 @@ public class Crawler {
 		doc.getElementsByTag("a").forEach(a -> {
 			String href = a.attr("href");
 			if (StringUtils.hasText(href) && href.startsWith("detail?id=")) {
-				Connection subConn = getConnection("http://localhost:8080/building/" + href);
+				Connection subConn = getConnection(location + "/" + href);
 				try {
 					Document detailDoc = subConn.get();
 					String body = detailDoc.getElementById("article-body").text();

@@ -30,7 +30,7 @@ import com.github.emailtohl.integration.web.message.event.ClusterEvent;
  * 负责集群间的websocket通信端，服务端和客户端处理逻辑相似，估共用本类
  * @author HeLei
  */
-@ServerEndpoint(value = "/services/messaging/{securityCode}", 
+@ServerEndpoint(value = "/cluster/{securityCode}", 
 	encoders = { ClusterMessagingEndpoint.Codec.class }, 
 	decoders = { ClusterMessagingEndpoint.Codec.class }, 
 	configurator = SpringConfigurator.class)
@@ -47,7 +47,7 @@ public class ClusterMessagingEndpoint {
 	@OnOpen
 	public void open(Session session) {
 		Map<String, String> parameters = session.getPathParameters();
-		if (parameters.containsKey("securityCode") && !ClusterManager.SECURITY_CODE.equals(parameters.get("securityCode"))) {
+		if (!parameters.containsKey("securityCode") || !ClusterManager.SECURITY_CODE.equals(parameters.get("securityCode"))) {
 			try {
 				logger.error("Received connection with illegal code {}.", parameters.get("securityCode"));
 				session.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Illegal Code"));
