@@ -4,15 +4,14 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.Date;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.websocket.CloseReason;
 import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
+import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
@@ -21,8 +20,8 @@ import javax.websocket.server.ServerEndpoint;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.StringUtils;
 
 import com.github.emailtohl.integration.common.websocket.Configurator;
@@ -43,9 +42,8 @@ import com.google.gson.Gson;
  */
 @ServerEndpoint(value = "/websocket/{securityCode}", configurator = Configurator.class)
 //@ClientEndpoint(encoders = { ClusterMessagingEndpoint.Codec.class }, decoders = { ClusterMessagingEndpoint.Codec.class })
-public class WebSocketEndpoint implements ApplicationListener<ClusterEvent> {
+public class WebSocketEndpoint {
 	// 用户id和websocket session的
-	private static final Set<Session> SESSIONS = new CopyOnWriteArraySet<>();
 	private static final Logger LOG = LogManager.getLogger();
 	private String userId;
 	private Session session;
@@ -60,6 +58,8 @@ public class WebSocketEndpoint implements ApplicationListener<ClusterEvent> {
 	Gson gson;
 	@Inject
 	ChatService chatService;
+	@Inject
+	EventListener eventListener;
 	
 	@OnOpen
 	public void onOpen(EndpointConfig config, Session session, @PathParam("securityCode") String securityCode) throws IOException {
@@ -70,7 +70,6 @@ public class WebSocketEndpoint implements ApplicationListener<ClusterEvent> {
 			return;
 		}
 		this.session = session;
-		SESSIONS.add(session);
 
 		Principal principal = Configurator.getExposedPrincipal(session);
 		if (principal instanceof AuthenticationImpl) {
@@ -97,6 +96,7 @@ public class WebSocketEndpoint implements ApplicationListener<ClusterEvent> {
 			LOG.warn("websocket faild in server", e);
 		}
 		*/
+		eventListener.addEndpoint(this);
 	}
 
 	@OnMessage
@@ -131,11 +131,21 @@ public class WebSocketEndpoint implements ApplicationListener<ClusterEvent> {
 		if (principal != null) {
 			LOG.info("Node {} disconnected.", principal.getName());
 		}
-		SESSIONS.remove(session);
+		eventListener.remove(this);
 	}
 	
-	@Override
-	public void onApplicationEvent(ClusterEvent event) {
+	@OnError
+	public void onError(Throwable t) {
+		LOG.catching(t);
+		eventListener.remove(this);
+	}
+	
+	/**
+	 * 响应事件的回调
+	 * @param event
+	 */
+	@Async
+	public void onEvent(ClusterEvent event) {
 		try {
 			if (event instanceof FlowNotifyEvent) {
 				FlowNotifyEvent e = (FlowNotifyEvent) event;
@@ -177,5 +187,30 @@ public class WebSocketEndpoint implements ApplicationListener<ClusterEvent> {
 			LOG.catching(et);
 		}
 	}
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((session == null) ? 0 : session.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		WebSocketEndpoint other = (WebSocketEndpoint) obj;
+		if (session == null) {
+			if (other.session != null)
+				return false;
+		} else if (!session.equals(other.session))
+			return false;
+		return true;
+	}
+
 }

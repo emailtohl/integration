@@ -1,9 +1,11 @@
-define(['angular', 'toastr', 'dashboard/module'], function(angular, toastr) {
+define(['angular', 'toastr', 'dashboard/module', 'knob'], function(angular, toastr) {
 	return angular.module('dashboardModule')
 	.controller('DashboardCtrl', ['$scope', '$http', '$state', '$cookies', 'util', function($scope, $http, $state, $cookies, util) {
-		var self = this, connection, isHttps = window.location.protocol == 'https:' ? true : false, SECURITY_CODE = "abcdefg0123456789";;
+		var self = this, connection, isHttps = window.location.protocol == 'https:' ? true : false, 
+				SECURITY_CODE = "abcdefg0123456789", $knob = $(".knob"), isCreated = false;
 		$scope.getAuthentication();
 		self.chatlist = [];
+		self.systemInfo = {};
 		self.send = function() {
 	    	if (connection.readyState != WebSocket.OPEN) {
 				toastr.error('WebSocket is Not Open, current state is： ' + connection.readyState);
@@ -33,13 +35,13 @@ define(['angular', 'toastr', 'dashboard/module'], function(angular, toastr) {
 			console.log('打开连接');
 		};
 		connection.onmessage = function(e) {
-			var data = JSON.parse(e.data);
-			if (data.messageType == 'chat') {
-				chat(data);
-			} else if (data.messageType == 'systemInfo') {
-				systemInfo(data);
-			} else if (data.messageType == 'flowNotify') {
-				flowNotify(data);
+			var message = JSON.parse(e.data);
+			if (message.messageType == 'chat') {
+				chat(message);
+			} else if (message.messageType == 'systemInfo') {
+				systemInfo(message);
+			} else if (message.messageType == 'flowNotify') {
+				flowNotify(message);
 			}
 		};
 		connection.onclose = function(e) {
@@ -56,8 +58,8 @@ define(['angular', 'toastr', 'dashboard/module'], function(angular, toastr) {
 			return new WebSocket(url);
 		}
 		
-		function chat(data) {
-			console.log(data);
+		function chat(message) {
+			console.log(message);
 			var time = (new Date(data.time)).toString();
 			$scope.$apply(function() {
 				self.chatlist.push({
@@ -73,12 +75,45 @@ define(['angular', 'toastr', 'dashboard/module'], function(angular, toastr) {
 			container.scrollTop(h);
 		}
 		
-		function systemInfo(data) {
-			console.log(data);
+		function systemInfo(message) {
+			var cpuPoints = [], $cpu = $('span#cpuInfo'), memoryPoints = [], $memory = $('span#memoryInfo'), swapPoints = [], $swap = $('span#swapInfo'), mpoints_max = 30;
+			if (!$state.includes('dashboard'))
+				return;
+			var data = message.data;
+			if (data.getFreePhysicalMemorySize && data.getTotalPhysicalMemorySize) {
+				self.systemInfo.memory = (data.getFreePhysicalMemorySize / data.getTotalPhysicalMemorySize) * 100;
+				memoryPoints.push(self.systemInfo.memory);
+				if (memoryPoints.length > mpoints_max)
+					memoryPoints.splice(0, 1);
+				$memory.sparkline(memoryPoints);
+			}
+			if (data.getFreeSwapSpaceSize && data.getTotalSwapSpaceSize) {
+				self.systemInfo.swap = (data.getFreeSwapSpaceSize / data.getTotalSwapSpaceSize) * 100;
+				swapPoints.push(self.systemInfo.swap);
+				if (swapPoints.length > mpoints_max)
+					swapPoints.splice(0, 1);
+				$swap.sparkline(swapPoints);
+			}
+			if (data.getSystemCpuLoad) {
+				self.systemInfo.cpu = data.getSystemCpuLoad * 100;
+				cpuPoints.push(self.systemInfo.cpu);
+				if (cpuPoints.length > mpoints_max)
+					cpuPoints.splice(0, 1);
+				$cpu.sparkline(cpuPoints);
+			}
+			$scope.$apply(function() {
+				if (isCreated) {
+					$knob.trigger('change');
+				} else {
+					$knob.knob().trigger('change');
+					isCreated = true;
+				}
+			});
+		
 		}
 		
-		function flowNotify(data) {
-			console.log(data);
+		function flowNotify(message) {
+			console.log(message);
 		}
 		
 
