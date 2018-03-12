@@ -1,8 +1,10 @@
-package com.github.emailtohl.integration.web.message.event;
+package com.github.emailtohl.integration.web.service.flow;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.github.emailtohl.integration.web.message.event.ClusterEvent;
 /**
  * 用户通知事件
  * @author HeLei

@@ -19,7 +19,6 @@ import org.springframework.context.ApplicationListener;
 import com.github.emailtohl.integration.common.websocket.Configurator;
 import com.github.emailtohl.integration.core.auth.AuthenticationImpl;
 import com.github.emailtohl.integration.core.auth.UserDetailsImpl;
-import com.github.emailtohl.integration.web.message.event.FlowNotifyEvent;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 /**

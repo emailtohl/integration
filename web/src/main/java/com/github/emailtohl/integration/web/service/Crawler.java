@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.web.service.systemInfo;
+package com.github.emailtohl.integration.web.service;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -74,14 +74,14 @@ public class Crawler {
 	
 	@Scheduled(fixedDelay = 50000)
 	public void fetch() {
-		Connection conn = getConnection(location + "/cms/article");
+		Connection conn = getConnection(location + "/article");
 //		conn.cookie("cookie_admin_username", "zt")
 //		.cookie("cookie_admin_password", "4da64b5779c9d82140c450b33124ccc3");
 		Document doc = null;
 		try {
 			doc = conn.get();
 		} catch (IOException e1) {
-//			logger.catching(e1);
+			logger.warn("{} 获取{} 失败", getClass().getName(), location + "/article");
 		}
 		if (doc == null) {
 			return;

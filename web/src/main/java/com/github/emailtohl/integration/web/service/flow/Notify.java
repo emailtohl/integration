@@ -17,7 +17,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.employee.EmployeeService;
-import com.github.emailtohl.integration.web.message.event.FlowNotifyEvent;
 
 /**
  * 用户通知服务

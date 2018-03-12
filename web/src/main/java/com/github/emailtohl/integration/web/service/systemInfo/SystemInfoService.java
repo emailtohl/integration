@@ -15,15 +15,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-
-import com.github.emailtohl.integration.web.message.event.SystemInfoEvent;
+import org.springframework.stereotype.Service;
 /**
  * 获取系统信息的定时任务
  * @author HeLei
  */
-@Component
-public class SystemInfo {
+@Service
+public class SystemInfoService {
 	private static final Logger logger = LogManager.getLogger();
 	@Inject
 	ApplicationEventPublisher publisher;

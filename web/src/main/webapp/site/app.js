@@ -78,6 +78,12 @@ define([
 					$rootScope.authentication.principal &&
 					$rootScope.authentication.principal.username;
 			};
+			// 获取当前userId
+			$rootScope.getUserId = function() {
+				return $rootScope.authentication &&
+					$rootScope.authentication.principal &&
+					$rootScope.authentication.principal.id;
+			};
 
 			// 个人资料
 			$rootScope.profile = function() {

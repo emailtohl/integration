@@ -1,8 +1,26 @@
 define(['angular', 'toastr', 'dashboard/module'], function(angular, toastr) {
 	return angular.module('dashboardModule')
 	.controller('DashboardCtrl', ['$scope', '$http', '$state', '$cookies', 'util', function($scope, $http, $state, $cookies, util) {
-		var self = this, isHttps = window.location.protocol == 'https:' ? true : false;
+		var self = this, connection, isHttps = window.location.protocol == 'https:' ? true : false, SECURITY_CODE = "abcdefg0123456789";;
+		$scope.getAuthentication();
 		self.chatlist = [];
+		self.send = function() {
+	    	if (connection.readyState != WebSocket.OPEN) {
+				toastr.error('WebSocket is Not Open, current state is： ' + connection.readyState);
+				connection.onopen();
+				return;
+			}
+	    	var msg = JSON.stringify({
+	    		messageType : 'chat',
+	    		userId : $scope.getUserId(),
+	    		data : {
+	    			content : self.message,
+		    		iconSrc : $scope.getIconSrc()
+	    		},
+	    	});
+	    	connection.send(msg); // 通过套接字传递该内容
+	    	self.message = '';
+		};
 		// bootstrap-datepicker.js由require加载有问题
 		util.loadasync('lib/datepicker/bootstrap-datepicker.js').success(function() {
 			util.loadasync('lib/datepicker/locales/bootstrap-datepicker.zh-CN.js').success(function() {
@@ -10,147 +28,60 @@ define(['angular', 'toastr', 'dashboard/module'], function(angular, toastr) {
 			});
 		});
 		
-		/**
-		 * 向获取身份认证方法中注册聊天程序.
-		 */
-		$scope.getAuthentication(function(data) {
-			var callee = arguments.callee;
-			if (data && data.username) {
-				var chatUrl = util.getRootName() + '/chat/';
-				var url = (isHttps ? 'wss://' : 'ws://') + window.location.host + chatUrl + data.username;
-				var connection = new WebSocket(url);
-				
-				connection.onopen = function(e) {
-					console.log('打开聊天连接');
-				};
-				
-				connection.onmessage = function(e) {
-					var data = JSON.parse(e.data);
-					var time = (new Date(data.timestamp.seconds)).toString();
-					$scope.$apply(function() {
-						self.chatlist.push({
-							name : data.user,
-							timestamp : data.timestamp,
-							message : data.userContent,
-							time : time,
-							iconSrc : data.iconSrc
-						});
-					});
-					
-					// 划动到底部
-					var container = $('.direct-chat-messages');
-					var h = container.scrollParent().height() + container.height();
-					container.scrollTop(h);
-				};
-				
-				connection.onclose = function(e) {
-			    	console.log('WebSocketClosed! ' + e.data);
-			    }
-
-				connection.onerror = function(e) {
-			    	toastr.error('WebSocketError! ' + e.data);
-			    	connection.onopen();
-			    }
-				
-				self.send = function() {
-			    	if (connection.readyState != WebSocket.OPEN) {
-						toastr.error('WebSocket is Not Open, current state is： ' + connection.readyState);
-						callee(data);
-						return;
-					}
-			    	var msg = JSON.stringify({
-			    		message : self.message,
-			    		iconSrc : $scope.getIconSrc()
-			    	});
-			    	connection.send(msg); // 通过套接字传递该内容
-			    	self.message = '';
-				};
+		connection = openWebsocket();
+		connection.onopen = function(e) {
+			console.log('打开连接');
+		};
+		connection.onmessage = function(e) {
+			var data = JSON.parse(e.data);
+			if (data.messageType == 'chat') {
+				chat(data);
+			} else if (data.messageType == 'systemInfo') {
+				systemInfo(data);
+			} else if (data.messageType == 'flowNotify') {
+				flowNotify(data);
 			}
-			// end chat
-			
-			require(['knob'], function() {
-				self.systemInfo = {};
-				var systemInfoUrl = util.getRootName() + '/systemInfo';
-				var url = (isHttps ? 'wss://' : 'ws://') + window.location.host + systemInfoUrl;
-				var connection = new WebSocket(url);
-				var $knob = $(".knob"), isCreated = false;
-				
-				connection.onopen = function(e) {
-					console.log('打开系统信息连接');
-				};
-				
-				var cpuPoints = [], $cpu = $('span#cpuInfo'), memoryPoints = [], $memory = $('span#memoryInfo'), swapPoints = [], $swap = $('span#swapInfo'), mpoints_max = 30;
-				connection.onmessage = function(e) {
-					if (!$state.includes('dashboard'))
-						return;
-					var data = JSON.parse(e.data);
-					if (data.getFreePhysicalMemorySize && data.getTotalPhysicalMemorySize) {
-						self.systemInfo.memory = (data.getFreePhysicalMemorySize / data.getTotalPhysicalMemorySize) * 100;
-						memoryPoints.push(self.systemInfo.memory);
-						if (memoryPoints.length > mpoints_max)
-							memoryPoints.splice(0, 1);
-						$memory.sparkline(memoryPoints);
-					}
-					if (data.getFreeSwapSpaceSize && data.getTotalSwapSpaceSize) {
-						self.systemInfo.swap = (data.getFreeSwapSpaceSize / data.getTotalSwapSpaceSize) * 100;
-						swapPoints.push(self.systemInfo.swap);
-						if (swapPoints.length > mpoints_max)
-							swapPoints.splice(0, 1);
-						$swap.sparkline(swapPoints);
-					}
-					if (data.getSystemCpuLoad) {
-						self.systemInfo.cpu = data.getSystemCpuLoad * 100;
-						cpuPoints.push(self.systemInfo.cpu);
-						if (cpuPoints.length > mpoints_max)
-							cpuPoints.splice(0, 1);
-						$cpu.sparkline(cpuPoints);
-					}
-					$scope.$apply(function() {
-						if (isCreated) {
-							$knob.trigger('change');
-						} else {
-							$knob.knob().trigger('change');
-							isCreated = true;
-						}
-					});
-				};
-				
-				connection.onclose = function(e) {
-					console.log('WebSocketClosed! ' + e.data);
-				};
-				
-				connection.onerror = function(e) {
-					toastr.error('WebSocketError! ' + e.data);
-					connection.onopen();
-				};
-			
+		};
+		connection.onclose = function(e) {
+			toastr.error('WebSocketClosed! ' + e.data);
+	    }
+		connection.onerror = function(e) {
+	    	toastr.error('WebSocketError! ' + e.data);
+	    	connection.onopen();
+	    }
+		
+		function openWebsocket() {
+			var site = util.getRootName() + '/websocket/';
+			var url = (isHttps ? 'wss://' : 'ws://') + window.location.host + site + SECURITY_CODE;
+			return new WebSocket(url);
+		}
+		
+		function chat(data) {
+			console.log(data);
+			var time = (new Date(data.time)).toString();
+			$scope.$apply(function() {
+				self.chatlist.push({
+					name : data.userId,
+					message : data.content,
+					time : time,
+					iconSrc : data.iconSrc
+				});
 			});
-			// end systemInfo
-			
-			if ($scope.isAuthenticated()) {
-				notify();
-			}
-			function notify() {
-				var notifyUrl = util.getRootName() + '/services/notify';
-				var url = (isHttps ? 'wss://' : 'ws://') + window.location.host + notifyUrl;
-				var connection = new WebSocket(url);
-				connection.onopen = function(e) {
-					console.log('打开通知信息连接');
-					connection.send(JSON.stringify({userId:data.principal && data.principal.id}));
-				};
-				connection.onmessage = function(e) {
-					toastr.info(e);
-				};
-				connection.onclose = function(e) {
-					console.log('WebSocketClosed! ' + e.data);
-				}
-				connection.onerror = function(e) {
-					toastr.error('WebSocketError! ' + e.data);
-					connection.onopen();
-				}
-			};
-			// end notify
-		});// end promise
+			// 划动到底部
+			var container = $('.direct-chat-messages');
+			var h = container.scrollParent().height() + container.height();
+			container.scrollTop(h);
+		}
+		
+		function systemInfo(data) {
+			console.log(data);
+		}
+		
+		function flowNotify(data) {
+			console.log(data);
+		}
+		
+
 		
 	  /**
 	   ** Draw the little mouse speed animated graph
