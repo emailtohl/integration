@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.web.message.subject;
+package com.github.emailtohl.integration.web.cluster;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,11 +26,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 /**
- * 集群管理器，当Spring容器初始化完成后，将自己的websocket服务地址发布到广播地址，其他端收到消息后，将发起websocket连接
+ * 集群系统的引导程序
+ * 初始化时会监听网络中的广播：socket.receive(packet);
+ * 该广播会在收到新加入集群的端点的url时触发。
+ * 一旦接收到新加入集群的端点的url时，该引导程序就会新建一个Websocket连接：multicaster.registerNode(url);
  * @author HeLei
  */
 @Component
-public class ClusterManager implements ApplicationListener<ContextRefreshedEvent> {
+public class ClusterBoot implements ApplicationListener<ContextRefreshedEvent> {
 	private static final Logger logger = LogManager.getLogger();
 	public static final String SECURITY_CODE = "abcdefg0123456789";
 	public static final String RESPONSE_OK = "ok";
@@ -47,7 +50,6 @@ public class ClusterManager implements ApplicationListener<ContextRefreshedEvent
 		}
 	}
 
-	private final Object mutex = new Object();
 	private volatile boolean initialized = false, destroyed = false;
 	private String pingUrl, messagingUrl;
 	private MulticastSocket socket;
@@ -72,7 +74,7 @@ public class ClusterManager implements ApplicationListener<ContextRefreshedEvent
 		messagingUrl = "http".equals(scheme) ? "ws" : "wss" + "://" + HOST + ":" + localPort 
 				+ servletContext.getContextPath() + "/cluster/" + SECURITY_CODE;
 
-		synchronized (mutex) {
+		synchronized (getClass()) {
 			socket = new MulticastSocket(PORT);
 			socket.joinGroup(GROUP);
 			listener = new Thread(this::listen, "cluster-listener");
@@ -132,7 +134,7 @@ public class ClusterManager implements ApplicationListener<ContextRefreshedEvent
 						logger.info("Broadcasting multicast announcement packet.");
 						DatagramPacket packet = new DatagramPacket(messagingUrl.getBytes(),
 								messagingUrl.length(), GROUP, PORT);
-						synchronized (mutex) {
+						synchronized (getClass()) {
 							socket.send(packet);
 						}
 						return;

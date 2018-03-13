@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.web.message.event;
+package com.github.emailtohl.integration.web.cluster;
 
 import java.io.Serializable;
 

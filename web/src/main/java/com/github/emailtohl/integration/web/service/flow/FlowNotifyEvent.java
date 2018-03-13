@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.emailtohl.integration.web.message.event.ClusterEvent;
+import com.github.emailtohl.integration.web.cluster.ClusterEvent;
 /**
  * 用户通知事件
  * @author HeLei

@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.web.message.observer;
+package com.github.emailtohl.integration.web.eventlistener;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;

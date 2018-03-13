@@ -12,7 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
-import com.github.emailtohl.integration.web.message.event.ClusterEvent;
+import com.github.emailtohl.integration.web.cluster.ClusterEvent;
 /**
  * 事件监听器
  * @author HeLei

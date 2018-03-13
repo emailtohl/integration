@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.web.message.observer;
+package com.github.emailtohl.integration.web.eventlistener;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.integration.web.message.event.ClusterEvent;
+import com.github.emailtohl.integration.web.cluster.ClusterEvent;
 /**
  * 对集群事件感兴趣的监听器
  * @author HeLei

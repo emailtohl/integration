@@ -1,20 +1,12 @@
-package com.github.emailtohl.integration.web.message.subject;
+package com.github.emailtohl.integration.web.cluster;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.websocket.ClientEndpoint;
 import javax.websocket.CloseReason;
-import javax.websocket.DecodeException;
-import javax.websocket.Decoder;
 import javax.websocket.EncodeException;
-import javax.websocket.Encoder;
-import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -24,18 +16,17 @@ import javax.websocket.server.ServerEndpoint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.socket.server.standard.SpringConfigurator;
-
-import com.github.emailtohl.integration.web.message.event.ClusterEvent;
 /**
- * 负责集群间的websocket通信端，服务端和客户端处理逻辑相似，估共用本类
+ * 集群间websocket通信端，由于websocket是双向通信，所以它既是服务端也是客户端。
+ * 首先，ClusterBoot调用ClusterEventMulticaster的registerNode打开了集群另一个端点的ClusterMessagingEndpoint；
+ * 然后，在@OnOpen方法中反过来向ClusterEventMulticaster.registerEndpoint方法注册自己；
+ * 最后，ClusterEventMulticaster在接收到集群事件时，通过send方法对外发送集群事件；
+ * 另外，receive方法在收到另一个端点的集群事件时，将该事件交由ClusterEventMulticaster.handleReceivedClusteredEvent统一处理。
  * @author HeLei
  */
-@ServerEndpoint(value = "/cluster/{securityCode}", 
-	encoders = { ClusterMessagingEndpoint.Codec.class }, 
-	decoders = { ClusterMessagingEndpoint.Codec.class }, 
-	configurator = SpringConfigurator.class)
-@ClientEndpoint(encoders = { ClusterMessagingEndpoint.Codec.class }, 
-	decoders = { ClusterMessagingEndpoint.Codec.class })
+@ServerEndpoint(value = "/cluster/{securityCode}", encoders = { Codec.class }, decoders = {
+		Codec.class }, configurator = SpringConfigurator.class)
+@ClientEndpoint(encoders = { Codec.class }, decoders = { Codec.class })
 public class ClusterMessagingEndpoint {
 	private static final Logger logger = LogManager.getLogger();
 
@@ -47,7 +38,7 @@ public class ClusterMessagingEndpoint {
 	@OnOpen
 	public void open(Session session) {
 		Map<String, String> parameters = session.getPathParameters();
-		if (!parameters.containsKey("securityCode") || !ClusterManager.SECURITY_CODE.equals(parameters.get("securityCode"))) {
+		if (!parameters.containsKey("securityCode") || !ClusterBoot.SECURITY_CODE.equals(parameters.get("securityCode"))) {
 			try {
 				logger.error("Received connection with illegal code {}.", parameters.get("securityCode"));
 				session.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Illegal Code"));
@@ -87,29 +78,4 @@ public class ClusterMessagingEndpoint {
 		}
 	}
 
-	public static class Codec implements Encoder.BinaryStream<ClusterEvent>, Decoder.BinaryStream<ClusterEvent> {
-		@Override
-		public ClusterEvent decode(InputStream stream) throws DecodeException, IOException {
-			try (ObjectInputStream input = new ObjectInputStream(stream)) {
-				return (ClusterEvent) input.readObject();
-			} catch (ClassNotFoundException e) {
-				throw new DecodeException((String) null, "Failed to decode.", e);
-			}
-		}
-
-		@Override
-		public void encode(ClusterEvent event, OutputStream stream) throws IOException {
-			try (ObjectOutputStream output = new ObjectOutputStream(stream)) {
-				output.writeObject(event);
-			}
-		}
-
-		@Override
-		public void init(EndpointConfig endpointConfig) {
-		}
-
-		@Override
-		public void destroy() {
-		}
-	}
 }

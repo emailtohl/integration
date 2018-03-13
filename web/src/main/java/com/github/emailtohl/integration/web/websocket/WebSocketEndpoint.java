@@ -28,8 +28,8 @@ import com.github.emailtohl.integration.common.websocket.Configurator;
 import com.github.emailtohl.integration.core.auth.AuthenticationImpl;
 import com.github.emailtohl.integration.core.auth.UserDetailsImpl;
 import com.github.emailtohl.integration.core.config.CorePresetData;
-import com.github.emailtohl.integration.web.message.event.ClusterEvent;
-import com.github.emailtohl.integration.web.message.subject.ClusterManager;
+import com.github.emailtohl.integration.web.cluster.ClusterBoot;
+import com.github.emailtohl.integration.web.cluster.ClusterEvent;
 import com.github.emailtohl.integration.web.service.chat.Chat;
 import com.github.emailtohl.integration.web.service.chat.ChatEvent;
 import com.github.emailtohl.integration.web.service.chat.ChatService;
@@ -64,7 +64,7 @@ public class WebSocketEndpoint {
 	@OnOpen
 	public void onOpen(EndpointConfig config, Session session, @PathParam("securityCode") String securityCode) throws IOException {
 		LOG.debug(config.getUserProperties());
-		if (!ClusterManager.SECURITY_CODE.equals(securityCode)) {
+		if (!ClusterBoot.SECURITY_CODE.equals(securityCode)) {
 			LOG.debug(CloseReason.CloseCodes.VIOLATED_POLICY.name());
 			session.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Illegal Code"));
 			return;

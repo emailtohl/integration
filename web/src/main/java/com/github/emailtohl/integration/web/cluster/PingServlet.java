@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.web.message.subject;
+package com.github.emailtohl.integration.web.cluster;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -23,7 +23,7 @@ public class PingServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.addHeader("Content-Type", "text/plain;charset=UTF-8");
 		response.setStatus(200);
-		response.getWriter().print(ClusterManager.RESPONSE_OK);
+		response.getWriter().print(ClusterBoot.RESPONSE_OK);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

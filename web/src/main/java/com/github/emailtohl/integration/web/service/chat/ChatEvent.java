@@ -2,7 +2,7 @@ package com.github.emailtohl.integration.web.service.chat;
 
 import java.io.Serializable;
 
-import com.github.emailtohl.integration.web.message.event.ClusterEvent;
+import com.github.emailtohl.integration.web.cluster.ClusterEvent;
 /**
  * 聊天相关的事件
  * @author HeLei
