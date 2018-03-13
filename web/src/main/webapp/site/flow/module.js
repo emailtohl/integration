@@ -6,6 +6,11 @@ define(['angular', 'ui-router', 'common/context'], function(angular) {
 				url: '/flow',
 				template: '<div ui-view></div>'
 			})
+			.state('flow.mine', {
+				url: '/mine',
+				templateUrl: 'site/flow/mine/template.html',
+				controller: 'FlowMineCtrl as ctrl'
+			})
 			.state('flow.submit', {
 				url: '/submit',
 				templateUrl: 'site/flow/submit/template.html',

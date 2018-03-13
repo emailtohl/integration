@@ -33,6 +33,9 @@ define([ 'flow/module' ], function(flowModule) {
 			findByProcessInstanceId : function(processInstanceId) {
 				return $http.get('flow/byProcessInstanceId/' + processInstanceId);
 			},
+			findByFlowNum : function(flowNum) {
+				return $http.get('flow/byFlowNum/' + flowNum);
+			},
 		};
 	}]);
 });

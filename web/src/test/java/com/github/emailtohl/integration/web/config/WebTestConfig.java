@@ -1,6 +1,10 @@
 package com.github.emailtohl.integration.web.config;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +17,6 @@ import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;
-import com.github.emailtohl.integration.web.config.PresetDataConfiguration;
 
 /**
  * 对Web层测试的配置
@@ -29,6 +32,13 @@ public class WebTestConfig {
 	CustomerService customerService;
 	@Inject
 	EmployeeService employeeService;
+	
+	@Bean
+	public ServletContext servletContext() {
+		ServletContext servletContext = mock(ServletContext.class);
+		when(servletContext.getContextPath()).thenReturn("/web");
+		return servletContext;
+	}
 
 	@Bean
 	public WebTestData webTestData(CorePresetData pd) {

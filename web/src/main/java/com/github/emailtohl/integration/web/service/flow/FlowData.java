@@ -26,6 +26,8 @@ public class FlowData extends BaseEntity {
 	private static final long serialVersionUID = 6027660935630687413L;
 	// 关联Activiti的流程id
 	private String processInstanceId;
+	// 表单号
+	private String flowNum;
 	// 流程类型
 	private FlowType flowType;
 	// 申请内容
@@ -59,6 +61,14 @@ public class FlowData extends BaseEntity {
 		this.processInstanceId = processInstanceId;
 	}
 
+	@Column(name = "flow_num")
+	public String getFlowNum() {
+		return flowNum;
+	}
+	public void setFlowNum(String flowNum) {
+		this.flowNum = flowNum;
+	}
+	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "flow_type", nullable = false)
 	public FlowType getFlowType() {
@@ -157,4 +167,12 @@ public class FlowData extends BaseEntity {
 		this.activityId = activityId;
 	}
 	
+	@Override
+	public String toString() {
+		return "FlowData [processInstanceId=" + processInstanceId + ", flowNum=" + flowNum + ", flowType=" + flowType
+				+ ", content=" + content + ", applicantId=" + applicantId + ", applicantName=" + applicantName
+				+ ", reApply=" + reApply + ", pass=" + pass + ", checks=" + checks + ", checkApproved=" + checkApproved
+				+ ", checkComment=" + checkComment + ", taskId=" + taskId + ", taskAssignee=" + taskAssignee
+				+ ", activityId=" + activityId + "]";
+	}
 }

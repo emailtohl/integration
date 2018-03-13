@@ -1,29 +1,11 @@
 define(['angular', 'toastr', 'dashboard/module', 'knob'], function(angular, toastr) {
 	return angular.module('dashboardModule')
-	.controller('DashboardCtrl', ['$scope', '$http', '$state', '$cookies', 'util', function($scope, $http, $state, $cookies, util) {
+	.controller('DashboardCtrl', ['$rootScope', '$scope', '$http', '$state', '$cookies', 'util', function($rootScope, $scope, $http, $state, $cookies, util) {
 		var self = this, connection, isHttps = window.location.protocol == 'https:' ? true : false, 
 				SECURITY_CODE = "abcdefg0123456789", $knob = $(".knob"), isCreated = false;
 		$scope.getAuthentication();
 		self.chatlist = [];
 		self.systemInfo = {};
-		self.send = function() {
-	    	if (connection.readyState != WebSocket.OPEN) {
-				toastr.error('WebSocket is Not Open, current state is： ' + connection.readyState);
-				connection.onopen();
-				return;
-			}
-	    	var msg = JSON.stringify({
-	    		messageType : 'chat',
-	    		userId : $scope.getUserId(),
-	    		data : {
-	    			nickname : $scope.authentication && $scope.authentication.username,
-	    			content : self.message,
-		    		iconSrc : $scope.getIconSrc()
-	    		},
-	    	});
-	    	connection.send(msg); // 通过套接字传递该内容
-	    	self.message = '';
-		};
 		// bootstrap-datepicker.js由require加载有问题
 		util.loadasync('lib/datepicker/bootstrap-datepicker.js').success(function() {
 			util.loadasync('lib/datepicker/locales/bootstrap-datepicker.zh-CN.js').success(function() {
@@ -32,6 +14,7 @@ define(['angular', 'toastr', 'dashboard/module', 'knob'], function(angular, toas
 		});
 		
 		connection = openWebsocket();
+		$rootScope.websocket = connection;
 		connection.onopen = function(e) {
 			console.log('打开连接');
 		};
@@ -60,7 +43,6 @@ define(['angular', 'toastr', 'dashboard/module', 'knob'], function(angular, toas
 		}
 		
 		function chat(message) {
-//			console.log(message);
 			$scope.$apply(function() {
 				self.chatlist.push({
 					nickname : message.data && message.data.nickname,
@@ -119,7 +101,24 @@ define(['angular', 'toastr', 'dashboard/module', 'knob'], function(angular, toas
 			console.log(message);
 		}
 		
-
+		self.send = function() {
+	    	if (connection.readyState != WebSocket.OPEN) {
+				toastr.error('WebSocket is Not Open, current state is： ' + connection.readyState);
+				connection.onopen();
+				return;
+			}
+	    	var msg = JSON.stringify({
+	    		messageType : 'chat',
+	    		userId : $scope.getUserId(),
+	    		data : {
+	    			nickname : $scope.authentication && $scope.authentication.username,
+	    			content : self.message,
+		    		iconSrc : $scope.getIconSrc()
+	    		},
+	    	});
+	    	connection.send(msg); // 通过套接字传递该内容
+	    	self.message = '';
+		};
 		
 	  /**
 	   ** Draw the little mouse speed animated graph

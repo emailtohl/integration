@@ -10,4 +10,5 @@ interface FlowRepository extends JpaRepository<FlowData, Long> {
 	
 	FlowData findByProcessInstanceId(String processInstanceId);
 	
+	FlowData findByFlowNum(String flowNum);
 }

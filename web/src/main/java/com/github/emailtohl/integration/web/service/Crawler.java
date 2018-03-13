@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
@@ -14,7 +13,7 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.FatalBeanException;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -34,21 +33,13 @@ public class Crawler {
 			throw new FatalBeanException("Could not initialize IP addresses.", e);
 		}
 	}
-	@Value("${proxyHost}")
-	private String proxyHost;
-	@Value("${proxyPort}")
-	private String proxyPort;
-	@Value("${local.scheme}")
-	private String scheme;
-	@Value("${local.host}")
-	private String localPort;
-	@Inject
-	ServletContext servletContext;
 	
 	private String location;
 	
-	@PostConstruct
-	public void init() throws Exception {
+	@Inject
+	public Crawler(Environment env, ServletContext servletContext) {
+		String scheme = env.getProperty("local.scheme", "http");
+		String localPort = env.getProperty("local.port", "8080");
 		if (!StringUtils.hasText(scheme))
 			scheme = "http";
 		if (!StringUtils.hasText(localPort))

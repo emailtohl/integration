@@ -41,13 +41,11 @@ import com.google.gson.Gson;
  * @author HeLei
  */
 @ServerEndpoint(value = "/websocket/{securityCode}", configurator = Configurator.class)
-//@ClientEndpoint(encoders = { ClusterMessagingEndpoint.Codec.class }, decoders = { ClusterMessagingEndpoint.Codec.class })
 public class WebSocketEndpoint {
 	// 用户id和websocket session的
 	private static final Logger LOG = LogManager.getLogger();
-	private String userId;
+	private volatile String userId;
 	private Session session;
-//	private Session client;
 	@Inject
 	CorePresetData corePresetData;
 	@Inject
@@ -107,6 +105,12 @@ public class WebSocketEndpoint {
 			return;
 		}
 		switch (message.getMessageType()) {
+		case userId:
+			if (StringUtils.hasText(message.userId))
+				userId = message.userId;
+			else
+				userId = corePresetData.user_anonymous.getId().toString();
+			break;
 		case flowNotify:
 			break;
 		case systemInfo:
@@ -138,8 +142,11 @@ public class WebSocketEndpoint {
 	}
 	
 	@OnError
-	public void onError(Throwable t) {
+	public void onError(Throwable t) throws IOException {
 		LOG.catching(t);
+		if (session.isOpen()) {
+			session.close();
+		}
 		eventListener.remove(this);
 	}
 	

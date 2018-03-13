@@ -151,9 +151,9 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity security) throws Exception {
 		String[] permitUrl = {
 			"/"/* 首页 */,
-			"/services/**"/* 提供服务的地址 */,
 			"/ping"/* 内部服务器之间的连接 */,
 			"/cluster/**"/* 内部服务器之间的连接 */,
+			"/websocket/**"/* websocket通信 */,
 			"/register"/* 获取注册页面GET以及注册新用户POST */,
 			"/forgetPassword"/* 在邮箱中获取忘记密码页面 */,
 			"/getUpdatePasswordPage"/* 在邮箱中获取忘记密码页面 */,
@@ -163,8 +163,6 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			"/home.html",
 			"/signup",
 			"/about",
-			"/chat/**",
-			"/systemInfo",
 		};
 		security
 			.authorizeRequests()
@@ -174,6 +172,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/**").permitAll()
 				/*.antMatchers("/login").permitAll()
 				.antMatchers(permitUrl).permitAll()
+				.antMatchers("/rest/**").fullyAuthenticated()
 				.antMatchers("/user/**").fullyAuthenticated()
 				.antMatchers("/encryption/**").fullyAuthenticated()
 				.antMatchers("/secure").fullyAuthenticated()

@@ -37,13 +37,19 @@ define([
 					console.log('authentication:')
 					console.log(data);
 					$rootScope.authentication = data;
+					if ($rootScope.websocket) {// 反向刷新websocket endpoint中的userId
+						var msg = JSON.stringify({
+				    		messageType : 'userId',
+				    		userId : $rootScope.getUserId(),
+				    	});
+						$rootScope.websocket.send(msg);
+					}
 					if(callback) {
 						callback(data);
 					}
 					if(promise.fun instanceof Function) {
 						promise.fun(data);
 					}
-
 				})
 				['catch'](function(resp) {
 					

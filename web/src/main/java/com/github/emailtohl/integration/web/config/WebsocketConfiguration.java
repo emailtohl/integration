@@ -45,5 +45,4 @@ class WebsocketConfiguration implements WebSocketConfigurer {
 			session.sendMessage(new TextMessage("收到消息了：" + message));
 		}
 	}
-	
 }

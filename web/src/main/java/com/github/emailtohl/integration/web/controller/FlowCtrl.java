@@ -47,7 +47,7 @@ public class FlowCtrl {
 	 */
 	@RequestMapping(value = "startWorkflow", method = POST)
 	@ResponseStatus(HttpStatus.CREATED)
-	public FlowData startWorkflow(FlowData form) {
+	public FlowData startWorkflow(@RequestBody FlowData form) {
 		return flowService.startWorkflow(form);
 	}
 
@@ -151,4 +151,14 @@ public class FlowCtrl {
 		return flowService.findByProcessInstanceId(processInstanceId);
 	}
 
+	/**
+	 * 通过流程单号查询流程数据
+	 * 
+	 * @param processInstanceId
+	 * @return
+	 */
+	@RequestMapping(value = "byFlowNum/{flowNum}", method = GET)
+	public FlowData findByFlowNum(@PathVariable("flowNum") String flowNum) {
+		return flowService.findByFlowNum(flowNum);
+	}
 }

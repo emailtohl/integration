@@ -1,5 +1,6 @@
 package com.github.emailtohl.integration.web.service.flow;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -89,7 +90,24 @@ public class FlowService {
 		}
 		FlowData source = flowRepository.save(form);
 		String businessKey = source.getId().toString();
-
+		// 计算表单号
+		LocalDate d = LocalDate.now();
+		int year = d.getYear(), month = d.getMonthValue(), day = d.getDayOfMonth();
+		StringBuilder flowNum = new StringBuilder();
+		flowNum.append(flowType.name().toUpperCase()).append(year);
+		if (month < 10) {
+			flowNum.append(0).append(month);
+		} else {
+			flowNum.append(month);
+		}
+		if (day < 10) {
+			flowNum.append(0).append(day);
+		} else {
+			flowNum.append(day);
+		}
+		flowNum.append(businessKey);
+		source.setFlowNum(flowNum.toString());
+		
 		Map<String, Object> variables = new HashMap<>();
 		variables.put("flowType", flowType);
 		variables.put("content", content);
@@ -376,6 +394,15 @@ public class FlowService {
 	 */
 	public FlowData findByProcessInstanceId(String processInstanceId) {
 		return transientDetail(flowRepository.findByProcessInstanceId(processInstanceId));
+	}
+	
+	/**
+	 * 通过流程单号查询流程数据
+	 * @param processInstanceId
+	 * @return
+	 */
+	public FlowData findByFlowNum(String flowNum) {
+		return transientDetail(flowRepository.findByFlowNum(flowNum));
 	}
 
 	/**

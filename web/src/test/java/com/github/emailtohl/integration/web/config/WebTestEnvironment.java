@@ -13,7 +13,7 @@ import com.github.emailtohl.integration.core.Profiles;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = WebTestConfig.class)
-@ActiveProfiles({ Profiles.DB_RAM_H2, Profiles.ENV_NO_SERVLET })
+@ActiveProfiles({ Profiles.DB_CONFIG, Profiles.ENV_NO_SERVLET })
 public abstract class WebTestEnvironment {
 
 }

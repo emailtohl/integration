@@ -8,7 +8,15 @@ define(['flow/module', 'flow/service'], function(flowModule) {
 		var self = this;
 		util.loadasync('lib/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css');
 		$scope.getAuthentication();
-		
+		self.form = {
+			flowType: null,
+			content: null,
+		};
+		self.submit = function() {
+			flowService.startWorkflow(self.form).then(function(data) {
+				console.log(data);
+			});
+		};
 		
 	}]);
 });

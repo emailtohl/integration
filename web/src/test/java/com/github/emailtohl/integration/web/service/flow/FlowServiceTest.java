@@ -71,6 +71,9 @@ public class FlowServiceTest extends WebTestEnvironment {
 		form.setContent("提交一个申请，内容是：*****");
 		FlowData flowData = flowService.startWorkflow(form);
 		assertNotNull(flowData);
+		System.out.println(flowData.getActivityId());
+		System.out.println(flowData.getProcessInstanceId());
+		System.out.println(flowData.getFlowNum());
 		processInstanceId = flowData.getProcessInstanceId();
 		System.out.println(flowData.getActivityId());
 		
