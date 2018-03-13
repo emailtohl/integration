@@ -16,6 +16,7 @@ define(['angular', 'toastr', 'dashboard/module', 'knob'], function(angular, toas
 	    		messageType : 'chat',
 	    		userId : $scope.getUserId(),
 	    		data : {
+	    			nickname : $scope.authentication && $scope.authentication.username,
 	    			content : self.message,
 		    		iconSrc : $scope.getIconSrc()
 	    		},
@@ -59,14 +60,13 @@ define(['angular', 'toastr', 'dashboard/module', 'knob'], function(angular, toas
 		}
 		
 		function chat(message) {
-			console.log(message);
-			var time = (new Date(data.time)).toString();
+//			console.log(message);
 			$scope.$apply(function() {
 				self.chatlist.push({
-					name : data.userId,
-					message : data.content,
-					time : time,
-					iconSrc : data.iconSrc
+					nickname : message.data && message.data.nickname,
+					message : message.data && message.data.content,
+					time : message.time,
+					iconSrc : message.data && message.data.iconSrc
 				});
 			});
 			// 划动到底部
@@ -100,6 +100,9 @@ define(['angular', 'toastr', 'dashboard/module', 'knob'], function(angular, toas
 				if (cpuPoints.length > mpoints_max)
 					cpuPoints.splice(0, 1);
 				$cpu.sparkline(cpuPoints);
+			}
+			if (data.getCommittedVirtualMemorySize) {
+				self.systemInfo.committedVirtualMemorySize = data.getCommittedVirtualMemorySize / 1024 / 1024 / 1024;
 			}
 			$scope.$apply(function() {
 				if (isCreated) {

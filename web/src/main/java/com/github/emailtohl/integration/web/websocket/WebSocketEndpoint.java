@@ -126,10 +126,13 @@ public class WebSocketEndpoint {
 	}
 
 	@OnClose
-	public void onClose(CloseReason reason) {
+	public void onClose(CloseReason reason) throws IOException {
 		Principal principal = Configurator.getExposedPrincipal(session);
 		if (principal != null) {
 			LOG.info("Node {} disconnected.", principal.getName());
+		}
+		if (session.isOpen()) {
+			session.close();
 		}
 		eventListener.remove(this);
 	}

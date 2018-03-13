@@ -83,7 +83,7 @@
              <!-- /.direct-chat-msg -->
 			<div class="direct-chat-msg right" ng-repeat="x in ctrl.chatlist">
                  <div class="direct-chat-info clearfix">
-                   <span class="direct-chat-name pull-right">{{x.name}}</span>
+                   <span class="direct-chat-name pull-right">{{x.nickname}}</span>
                    <span class="direct-chat-timestamp pull-left">{{x.time}}</span>
                  </div>
                  <!-- /.direct-chat-info -->
@@ -356,9 +356,9 @@
             </div>
             <!-- ./col -->
             <div class="col-xs-6 col-md-3 text-center">
-              <div style="display:inline;width:120px;height:120px;"><canvas width="120" height="120"></canvas><input ng-model="ctrl.systemInfo.swap" class="knob" data-thickness="0.2" data-anglearc="250" data-angleoffset="-125" value="30" data-width="120" data-height="120" data-fgcolor="#00c0ef" style="width: 64px; height: 40px; position: absolute; vertical-align: middle; margin-top: 40px; margin-left: -92px; border: 0px none; background: transparent none repeat scroll 0% 0%; font: bold 24px Arial; text-align: center; color: rgb(0, 192, 239); padding: 0px;" type="text"></div>
+              <div style="display:inline;width:120px;height:120px;"><canvas width="120" height="120"></canvas><input ng-model="ctrl.systemInfo.committedVirtualMemorySize" class="knob" data-thickness="0.2" data-anglearc="250" data-angleoffset="-125" value="30" data-width="120" data-height="120" data-fgcolor="#00c0ef" style="width: 64px; height: 40px; position: absolute; vertical-align: middle; margin-top: 40px; margin-left: -92px; border: 0px none; background: transparent none repeat scroll 0% 0%; font: bold 24px Arial; text-align: center; color: rgb(0, 192, 239); padding: 0px;" type="text"></div>
 
-              <div class="knob-label">虚拟机内存</div>
+              <div class="knob-label">虚拟机内存GB</div>
             </div>
             <!-- ./col -->
           </div>
