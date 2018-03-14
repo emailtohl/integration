@@ -15,6 +15,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.github.emailtohl.integration.common.Constant;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.UserRef;
@@ -73,9 +74,8 @@ public class Article extends BaseEntity implements Comparable<Article> {
 	}
 	
 	@org.hibernate.search.annotations.Field(store = org.hibernate.search.annotations.Store.NO)
-	@org.hibernate.annotations.Type(type = "org.hibernate.type.MaterializedClobType")
+	@org.hibernate.annotations.Type(type = Constant.LOB_TEXT)
 	@Lob
-	@Column(columnDefinition="text")
 	public String getBody() {
 		return body;
 	}
@@ -84,7 +84,7 @@ public class Article extends BaseEntity implements Comparable<Article> {
 	}
 	
 	@org.hibernate.search.annotations.Field(store = org.hibernate.search.annotations.Store.YES, boost = @org.hibernate.search.annotations.Boost(1.2f))
-	@org.hibernate.annotations.Type(type = "org.hibernate.type.MaterializedClobType")
+	@org.hibernate.annotations.Type(type = Constant.LOB_TEXT)
 	@Lob
 	public String getSummary() {
 		return summary;

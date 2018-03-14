@@ -8,6 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.github.emailtohl.integration.common.Constant;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.UserRef;
@@ -39,8 +40,8 @@ public class Comment extends BaseEntity implements Comparable<Comment> {
 	private EmployeeRef approver;
 	private Boolean canComment;
 	
-	@org.hibernate.annotations.Type(type = "org.hibernate.type.MaterializedClobType")
 	@org.hibernate.search.annotations.Field
+	@org.hibernate.annotations.Type(type = Constant.LOB_TEXT)
 	@Lob
 	public String getContent() {
 		return content;

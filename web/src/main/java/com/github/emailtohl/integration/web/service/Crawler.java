@@ -63,7 +63,7 @@ public class Crawler {
 		return conn;
 	}
 	
-	@Scheduled(fixedDelay = 50000)
+	@Scheduled(fixedDelay = 1000 * 3600)
 	public void fetch() {
 		Connection conn = getConnection(location + "/article");
 //		conn.cookie("cookie_admin_username", "zt")

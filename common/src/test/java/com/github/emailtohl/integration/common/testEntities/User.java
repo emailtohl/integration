@@ -47,6 +47,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.github.emailtohl.integration.common.Constant;
 import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 /**
@@ -262,6 +263,8 @@ public class User extends BaseEntity {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	@org.hibernate.annotations.Type(type = Constant.LOB_TEXT)
 	@Lob
 	public String getPublicKey() {
 		return publicKey;

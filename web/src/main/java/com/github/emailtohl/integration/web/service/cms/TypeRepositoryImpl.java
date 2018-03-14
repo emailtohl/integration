@@ -66,5 +66,4 @@ public class TypeRepositoryImpl implements TypeRepositoryCustomization {
 			return t;
 		}).collect(Collectors.toList());
 	}
-
 }

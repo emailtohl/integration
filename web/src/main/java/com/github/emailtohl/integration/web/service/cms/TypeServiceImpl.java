@@ -159,8 +159,9 @@ public class TypeServiceImpl extends StandardService<Type> implements TypeServic
 			return;
 		}
 		isIllegal(source);
+		Type unclassified = typeRepository.findOne(webPresetData.unclassified.getId());
 		source.getArticles().forEach(a -> {
-			a.setType(webPresetData.unclassified);
+			a.setType(unclassified);
 		});
 		// 将原先以本type为parent的下级type改为连接到本type的上级（本type的上级type可以是null）
 		typeRepository.findByParentId(id).forEach(sub -> sub.setParent(source.getParent()));

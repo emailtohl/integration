@@ -19,7 +19,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.annotation.Rollback;
 
 import com.github.emailtohl.integration.common.encryption.myrsa.KeyGenerator;
 import com.github.emailtohl.integration.common.encryption.myrsa.KeyPairs;
@@ -38,7 +37,6 @@ import com.google.gson.Gson;
  * 业务类测试
  * @author HeLei
  */
-@Rollback(false)
 public class EmployeeServiceImplTest extends CoreTestEnvironment {
 	final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	ClassLoader cl = EmployeeServiceImplTest.class.getClassLoader();
@@ -58,7 +56,6 @@ public class EmployeeServiceImplTest extends CoreTestEnvironment {
 	@Before
 	public void setUp() throws Exception {
 		Employee e = new Employee();
-		e = employeeService.create(e);
 		e.setName("haha");
 		e.setNickname("haha");
 		e.setPassword("112233");

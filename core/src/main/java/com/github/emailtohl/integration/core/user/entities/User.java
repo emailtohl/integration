@@ -36,6 +36,7 @@ import org.hibernate.search.annotations.Store;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.emailtohl.integration.common.Constant;
 import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.common.exception.InnerDataStateException;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
@@ -266,9 +267,8 @@ public class User extends BaseEntity {
 		this.description = description;
 	}
 	
-	// 不要作为搜索的条件
-	@org.hibernate.annotations.Type(type = "org.hibernate.type.MaterializedClobType")
 	@org.hibernate.envers.NotAudited
+	@org.hibernate.annotations.Type(type = Constant.LOB_TEXT)
 	@Lob
 	public String getPublicKey() {
 		return publicKey;

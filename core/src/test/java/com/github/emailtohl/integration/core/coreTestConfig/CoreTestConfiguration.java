@@ -4,6 +4,7 @@ import java.security.SecureRandom;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
@@ -11,9 +12,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.env.Environment;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -26,6 +29,7 @@ import com.github.emailtohl.integration.core.user.entities.CustomerRef;
 import com.github.emailtohl.integration.core.user.entities.Department;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
+import com.github.emailtohl.integration.core.user.entities.User;
 
 /**
  * 业务层的配置
@@ -34,15 +38,16 @@ import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
  */
 @Configuration
 @Import(CoreConfiguration.class)
-public class CoreTestConfiguration {
-
+public class CoreTestConfiguration implements ApplicationListener<ContextClosedEvent> {
+	@Inject
+	LocalContainerEntityManagerFactoryBean entityManagerFactory;
 	/**
 	 * 创造测试数据
 	 * 
 	 * @return
 	 */
 	@Bean
-	public CoreTestData coreTestData(LocalContainerEntityManagerFactoryBean entityManagerFactory, Environment env) {
+	public CoreTestData coreTestData(Environment env) {
 		synchronized (getClass()) {
 			EntityManagerFactory factory = entityManagerFactory.getObject();
 			String customerDefaultPassword = env.getProperty(Constant.PROP_CUSTOMER_DEFAULT_PASSWORD);
@@ -207,5 +212,53 @@ public class CoreTestConfiguration {
 	private String hashpw(String password) {
 		String salt = BCrypt.gensalt(10, new SecureRandom());
 		return BCrypt.hashpw(password, salt);
+	}
+
+	@Override
+	public void onApplicationEvent(ContextClosedEvent event) {
+		synchronized (getClass()) {
+			CoreTestData td = new CoreTestData();
+			EntityManagerFactory factory = entityManagerFactory.getObject();
+			EntityManager em = factory.createEntityManager();
+			em.getTransaction().begin();
+			
+			User foo = getUserByEmail(em, td.foo.getEmail());
+			if (foo != null) {
+				foo.getRoles().forEach(r -> r.getUsers().remove(foo));
+				((Employee) foo).getDepartment().getEmployees().remove(foo);
+				em.remove(foo);
+			}
+			User bar = getUserByEmail(em, td.bar.getEmail());
+			if (bar != null) {
+				bar.getRoles().forEach(r -> r.getUsers().remove(bar));
+				((Employee) bar).getDepartment().getEmployees().remove(bar);
+				em.remove(bar);
+			}
+			User baz = getUserByEmail(em, td.baz.getEmail());
+			if (baz != null) {
+				baz.getRoles().forEach(r -> r.getUsers().remove(baz));
+				em.remove(baz);
+			}
+			User qux = getUserByEmail(em, td.qux.getEmail());
+			if (qux != null) {
+				qux.getRoles().forEach(r -> r.getUsers().remove(qux));
+				em.remove(qux);
+			}
+			
+			em.getTransaction().commit();
+			em.close();
+		}
+	}
+	
+	private User getUserByEmail(EntityManager em, String email) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<User> q = cb.createQuery(User.class);
+		Root<User> r = q.from(User.class);
+		q = q.select(r).where(cb.equal(r.get("email"), email));
+		User u = null;
+		try {
+			u = em.createQuery(q).getSingleResult();
+		} catch (NoResultException e) {}
+		return u;
 	}
 }

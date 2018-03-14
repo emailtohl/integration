@@ -13,6 +13,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.github.emailtohl.integration.common.Constant;
 import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 
 /**
@@ -59,6 +60,7 @@ public class Article extends BaseEntity implements Comparable<Article> {
 	}
 	
 	@org.hibernate.search.annotations.Field(store = org.hibernate.search.annotations.Store.NO)
+	@org.hibernate.annotations.Type(type = Constant.LOB_TEXT)
 	@Lob
 	public String getBody() {
 		return body;
@@ -68,6 +70,7 @@ public class Article extends BaseEntity implements Comparable<Article> {
 	}
 	
 	@org.hibernate.search.annotations.Field(store = org.hibernate.search.annotations.Store.YES, boost = @org.hibernate.search.annotations.Boost(1.2f))
+	@org.hibernate.annotations.Type(type = Constant.LOB_TEXT)
 	@Lob
 	public String getSummary() {
 		return summary;

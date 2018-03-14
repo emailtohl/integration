@@ -7,10 +7,12 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.event.ContextClosedEvent;
 
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
@@ -27,11 +29,13 @@ import com.github.emailtohl.integration.core.user.entities.Employee;
 @Import(PresetDataConfiguration.class)
 @ComponentScan({ "com.github.emailtohl.integration.web.aop", "com.github.emailtohl.integration.web.service" })
 @EnableAspectJAutoProxy
-public class WebTestConfig {
+public class WebTestConfig implements ApplicationListener<ContextClosedEvent> {
 	@Inject
 	CustomerService customerService;
 	@Inject
 	EmployeeService employeeService;
+	@Inject
+	CorePresetData pd;
 	
 	@Bean
 	public ServletContext servletContext() {
@@ -41,7 +45,7 @@ public class WebTestConfig {
 	}
 
 	@Bean
-	public WebTestData webTestData(CorePresetData pd) {
+	public WebTestData webTestData() {
 		synchronized (getClass()) {
 			WebTestData td = new WebTestData(pd);
 			Customer c = customerService.getByUsername(td.baz.getEmail());
@@ -93,6 +97,32 @@ public class WebTestConfig {
 			}
 
 			return td;
+		}
+	}
+
+	@Override
+	public void onApplicationEvent(ContextClosedEvent event) {
+		synchronized (getClass()) {
+			WebTestData td = new WebTestData(pd);
+			Customer c = customerService.getByUsername(td.baz.getEmail());
+			if (c != null) {
+				customerService.delete(c.getId());
+			}
+
+			c = customerService.getByUsername(td.qux.getEmail());
+			if (c != null) {
+				customerService.delete(c.getId());
+			}
+
+			Employee e = employeeService.getByEmail(td.foo.getEmail());
+			if (e != null) {
+				employeeService.delete(e.getId());
+			}
+
+			e = employeeService.getByEmail(td.bar.getEmail());
+			if (e != null) {
+				employeeService.delete(e.getId());
+			}
 		}
 	}
 

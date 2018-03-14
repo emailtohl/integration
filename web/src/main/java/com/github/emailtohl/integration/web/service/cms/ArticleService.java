@@ -51,7 +51,6 @@ public interface ArticleService {
 	
 	/**
 	 * 查询文章
-	 * postgresql会将@Lob字段用数字存储，不支持字符串查询
 	 * @param params
 	 * @param pageable
 	 * @return
@@ -60,7 +59,6 @@ public interface ArticleService {
 
 	/**
 	 * 查询文章
-	 * postgresql会将@Lob字段用数字存储，不支持字符串查询
 	 * @param params
 	 * @return
 	 */

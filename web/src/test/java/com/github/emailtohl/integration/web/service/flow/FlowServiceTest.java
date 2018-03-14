@@ -71,11 +71,10 @@ public class FlowServiceTest extends WebTestEnvironment {
 		form.setContent("提交一个申请，内容是：*****");
 		FlowData flowData = flowService.startWorkflow(form);
 		assertNotNull(flowData);
-		System.out.println(flowData.getActivityId());
-		System.out.println(flowData.getProcessInstanceId());
-		System.out.println(flowData.getFlowNum());
 		processInstanceId = flowData.getProcessInstanceId();
 		System.out.println(flowData.getActivityId());
+		System.out.println(processInstanceId);
+		System.out.println(flowData.getFlowNum());
 		
 		ExecResult execResult = null;
 		
@@ -189,7 +188,7 @@ public class FlowServiceTest extends WebTestEnvironment {
 	}
 	
 	void changeUser(String userId) {
-		ThreadContext.put(Constant.USER_ID, userId);
 		identityService.setAuthenticatedUserId(userId);
+		ThreadContext.put(Constant.USER_ID, userId);
 	}
 }
