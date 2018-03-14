@@ -30,13 +30,15 @@ requirejs.config({
 		'adminlte-app': '../lib/adminLTE/js/app.min',
 		select2: '../lib/select2/select2.full.min',
 		ztree: '../lib/ztree/jquery.ztree.all.min',
-		'ckeditor': '../lib/ckeditor/ckeditor',
-		'ckeditorConfig': '../lib/ckeditor/config',
-		'moment': '../lib/moment/moment',
+		ckeditor: '../lib/ckeditor/ckeditor',
+		ckeditorConfig: '../lib/ckeditor/config',
+		moment: '../lib/moment/moment',
 		'angular-datepicker': '../lib/angular-datepicker/angular-datepicker',
 		'ng-verify': '../lib/ng-verify/ng-verify',
-		'sparkline' : '../lib/sparkline/jquery.sparkline.min',
-		'knob' : '../lib/knob/jquery.knob',
+		sparkline : '../lib/sparkline/jquery.sparkline.min',
+		knob : '../lib/knob/jquery.knob',
+		dataTables : '../lib/datatables/jquery.dataTables.min',
+		'dataTables-bootstrap' : '../lib/datatables/dataTables.bootstrap.min',
 		toastr : '../lib/toastr/toastr.min',
 		rx : '../lib/RxJS/rx.all.min'
 	},
@@ -50,7 +52,7 @@ requirejs.config({
 			exports: 'ui',
 		},
 		bootstrap: {
-			deps: ['jquery'],
+			deps: ['jquery', 'jquery-ui'],
 			exports: 'bootstrap'
 		},
 		angular: {
@@ -77,15 +79,15 @@ requirejs.config({
 			exports: 'translate',
 		},
 		'jquery-slimscroll': {
-			deps: ['jquery'],
+			deps: ['jquery', 'jquery-ui'],
 			exports: 'jquerySlimscroll'
 		},
 		fastclick: {
-			deps: ['jquery-slimscroll', 'bootstrap'],
+			deps: ['jquery'],
 			exports: 'fastclick'
 		},
 		adminlte: {
-			deps: ['fastclick'],
+			deps: ['bootstrap'],
 			exports: 'adminlte'
 		},
 		'adminlte-app': {
@@ -118,13 +120,21 @@ requirejs.config({
 		'ng-verify': {
 			deps: ['angular'],
 		},
-		'sparkline' : {
+		sparkline : {
 			deps : [ 'jquery' ],
 			exports : 'sparkline'
 		},
-		'knob' : {
+		knob : {
 			deps : [ 'jquery-ui' ],
 			exports : 'knob'
+		},
+		dataTables : {
+			deps : [ 'jquery' ],
+			exports : 'dataTables'
+		},
+		'dataTables-bootstrap' : {
+			deps : [ 'dataTables' ],
+			exports : 'dataTablesbootstrap'
 		},
 		toastr : {
             deps : ['jquery'],
@@ -141,18 +151,13 @@ requirejs.config({
 
 // Start the main app logic.
 requirejs(['jquery', 'jquery-ui'], function($) {
-	// 当dom加载完成时
-	$(function() {
-		// Resolve conflict in jQuery UI tooltip with Bootstrap tooltip
-		$.widget.bridge('uibutton', $.ui.button);
-		// 加载项目
-		require(['bootstrap', 'jquery-slimscroll', 'fastclick', 'adminlte', 'adminlte-app'], function() {
-			// 加载项目所需的框架
-			require(['angular', 'app'], function(angular) {
-				angular.element(document).ready(function() {
-					angular.bootstrap(document, [ 'app' ]);
-					console.log('app started');
-				});
+	// Resolve conflict in jQuery UI tooltip with Bootstrap tooltip
+	$.widget.bridge('uibutton', $.ui.button);
+	require(['bootstrap', 'jquery-slimscroll', 'fastclick', 'adminlte', 'adminlte-app'], function() {
+		require(['angular', 'app'], function(angular) {
+			angular.element(document).ready(function() {
+				angular.bootstrap(document, [ 'app' ]);
+				console.log('app started');
 			});
 		});
 	});

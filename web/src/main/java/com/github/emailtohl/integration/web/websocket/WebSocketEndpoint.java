@@ -178,19 +178,17 @@ public class WebSocketEndpoint {
 				msg.messageType = MessageType.systemInfo;
 				msg.data = e.getSystemInfo();
 				session.getBasicRemote().sendText(gson.toJson(msg));
-			} else if (event instanceof ChatEvent) {// 内部事件的响应就发布到集群中
+			} else if (event instanceof ChatEvent) {// 将消息发送给包括自己的所有人
 				ChatEvent e = (ChatEvent) event;
 				if (e.getChat() != null && StringUtils.hasText(e.getChat().getUserId())) {
 					String srcUserId = e.getChat().getUserId();
-					if (srcUserId.equals(userId)) {
-						Message msg = new Message();
-						msg.id = UUID.randomUUID().toString();
-						msg.time = new Date();
-						msg.userId = srcUserId;
-						msg.messageType = MessageType.chat;
-						msg.data = e.getChat();
-						session.getBasicRemote().sendText(gson.toJson(msg));
-					}
+					Message msg = new Message();
+					msg.id = UUID.randomUUID().toString();
+					msg.time = new Date();
+					msg.userId = srcUserId;
+					msg.messageType = MessageType.chat;
+					msg.data = e.getChat();
+					session.getBasicRemote().sendText(gson.toJson(msg));
 				}
 			}
 		} catch (IOException et) {

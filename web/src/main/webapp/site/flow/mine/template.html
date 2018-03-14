@@ -12,23 +12,14 @@
 <!-- Main content -->
 <section class="content">
   <div class="row">
-	<div class="col-xs-12">
-	  <div class="box">
-	    <div class="box-header">
-	      <h3 class="box-title">流程单</h3>
-	
-	      <div class="box-tools">
-	        <form  ng-submit="ctrl.getPage()" class="input-group input-group-sm" style="width: 150px;">
-	          <input ng-model="ctrl.form.name" name="table_search" class="form-control pull-right" placeholder="Search title" type="text">
-	          <div class="input-group-btn">
-	            <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-	          </div>
-	        </form>
-	      </div>
-	    </div>
-	    <!-- /.box-header -->
-	    <div class="box-body table-responsive no-padding">
-           <table id="flow-list" class="table table-bordered table-striped">
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">流程单</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+			<table id="flow-list" class="table table-bordered table-striped">
                <thead>
                <tr>
                    <th>流程单号</th>
@@ -39,7 +30,7 @@
                </tr>
                </thead>
                <tbody>
-               <tr ng-repeat="x in ctrl.list">
+               <tr ng-repeat="x in ctrl.list" repeat-finish="ctrl.table()">
                    <td>{{x.flowNum}}</td>
                    <td>{{x.createDate}}</td>
                    <td>{{x.flowType}}</td>
@@ -57,13 +48,19 @@
                </tr>
                </tfoot>
            </table>
-	    </div>
-	    <!-- /.box-body -->
-	    <page page-number="ctrl.page.pageNumber" total-pages="ctrl.page.totalPages" button-count="5" on-click="ctrl.page(pageNumber)">
-	  </div>
-	  <!-- /.box -->
-	  </div>
-	</div>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+    </div>
+    <!-- /.col -->
+  </div>
+  <!-- /.row -->
+</section>
+<!-- /.content -->
+
+
+
 	
 	<div modal open="ctrl.modal.open" title="{{ctrl.modal.title}}" when-confirm="ctrl.modal.whenConfirm()" type="{{ctrl.modal.type}}">
 	    <div class="box box-widget">
@@ -115,4 +112,3 @@
           </div>
 	    <!-- /.box-body -->
 	</div>
-</section>

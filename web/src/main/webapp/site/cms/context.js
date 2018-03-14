@@ -1,4 +1,4 @@
-require(['cms/module',
+define(['cms/module',
 	'cms/resource/service',
 	'cms/resource/ctrl',
 	'cms/category/service',
@@ -7,4 +7,4 @@ require(['cms/module',
 	'cms/article/ctrl',
 	'cms/comment/service',
 	'cms/comment/ctrl',
-], function() {});
+]);

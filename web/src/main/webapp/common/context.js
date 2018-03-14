@@ -1,4 +1,4 @@
-require([
+define([
 	'common/module',
 	'common/service/util',
 	'common/service/interceptors',
@@ -14,4 +14,4 @@ require([
 	'common/filter',
 	'common/service/myaes',
 	'common/service/myrsa',
-]);
+], function() {});

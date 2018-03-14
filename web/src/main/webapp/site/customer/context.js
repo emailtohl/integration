@@ -1,4 +1,4 @@
-require([
+define([
 	'customer/module',
 	'customer/service',
 	'customer/list/ctrl',
@@ -6,4 +6,4 @@ require([
 	'customer/edit/ctrl',
 	'customer/audit/list/ctrl',
 	'customer/audit/detail/ctrl',
-]);
+], function() {});
