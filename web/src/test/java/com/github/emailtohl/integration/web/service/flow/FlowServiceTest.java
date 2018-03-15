@@ -75,6 +75,7 @@ public class FlowServiceTest extends WebTestEnvironment {
 		System.out.println(flowData.getActivityId());
 		System.out.println(processInstanceId);
 		System.out.println(flowData.getFlowNum());
+		System.out.println(flowData.getTaskName());
 		
 		ExecResult execResult = null;
 		

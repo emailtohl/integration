@@ -117,6 +117,11 @@ public class FlowService {
 		String processInstanceId = processInstance.getId();
 		source.setProcessInstanceId(processInstanceId);
 		source.setActivityId(processInstance.getActivityId());
+		Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
+		if (task != null) {
+			source.setTaskId(task.getId());
+			source.setTaskName(task.getName());
+		}
 		logger.debug("start process of {key={}, bkey={}, pid={}}",
 				new Object[] { PROCESS_DEFINITION_KEY, businessKey, processInstanceId });
 		return transientDetail(source);
@@ -149,6 +154,7 @@ public class FlowService {
 			String businessKey = processInstance.getBusinessKey();
 			FlowData flowData = flowRepository.findOne(Long.valueOf(businessKey));
 			flowData.setTaskId(task.getId());
+			flowData.setTaskName(task.getName());
 			flowData.setTaskAssignee(task.getAssignee());
 			flowData.setActivityId(processInstance.getActivityId());
 			results.add(flowData);
@@ -363,19 +369,21 @@ public class FlowService {
 		} else {
 			p = flowRepository.findAll(pageable);
 		}
-		List<FlowData> ls = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
-		return new Paging<FlowData>(ls, pageable, p.getTotalElements());
+		List<FlowData> flowDatas = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
+		setTaskInfo(flowDatas);
+		return new Paging<FlowData>(flowDatas, pageable, p.getTotalElements());
 	}
 
 	public List<FlowData> query(FlowData params) {
-		List<FlowData> ls;
+		List<FlowData> flowDatas;
 		if (params == null) {
-			ls = flowRepository.findAll();
+			flowDatas = flowRepository.findAll().stream().map(this::toTransient).collect(Collectors.toList());
 		} else {
 			Example<FlowData> example = Example.of(params, matcher);
-			ls = flowRepository.findAll(example);
+			flowDatas = flowRepository.findAll(example).stream().map(this::toTransient).collect(Collectors.toList());
 		}
-		return ls.stream().map(this::toTransient).collect(Collectors.toList());
+		setTaskInfo(flowDatas);
+		return flowDatas;
 	}
 	
 	/**
@@ -482,5 +490,32 @@ public class FlowService {
 		}).collect(Collectors.toList());
 		target.getChecks().addAll(checks);
 		return target;
+	}
+	
+	/**
+	 * 在FlowData列表中设置任务信息，包括任务名、任务id等
+	 * @param flowDatas
+	 */
+	private void setTaskInfo(List<FlowData> flowDatas) {
+		// 在查询过程中同时记录下所涉及的流程id，以便于查询当前活动名
+		List<String> processInstanceIds = flowDatas.stream()
+				.filter(flowData -> StringUtils.hasText(flowData.getProcessInstanceId()))
+				.map(flowData -> flowData.getProcessInstanceId()).collect(Collectors.toList());
+		if (!processInstanceIds.isEmpty()) {
+			// 根据活动id集合查询对应的当前任务映射
+			final Map<String, Task> processInstanceIdTotask = taskService.createTaskQuery()
+					.processInstanceIdIn(processInstanceIds).list().stream()
+					.collect(Collectors.toMap(task -> task.getProcessInstanceId(), task -> task));
+			// 最后将活动名添加进结果中
+			flowDatas.stream().filter(flowData -> StringUtils.hasText(flowData.getProcessInstanceId()))
+					.forEach(flowData -> {
+						Task task = processInstanceIdTotask.get(flowData.getProcessInstanceId());
+						if (task != null) {
+							flowData.setTaskId(task.getId());
+							flowData.setActivityId(task.getTaskDefinitionKey());
+							flowData.setTaskName(task.getName());
+						}
+					});
+		}
 	}
 }

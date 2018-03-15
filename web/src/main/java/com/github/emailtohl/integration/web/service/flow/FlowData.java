@@ -48,6 +48,8 @@ public class FlowData extends BaseEntity {
 	private String checkComment;
 	// 当前任务id
 	private String taskId;
+	// 任务的名字
+	private String taskName;
 	// 当前任务是否被签收
 	private String taskAssignee;
 	// 当前所在的活动id
@@ -151,6 +153,14 @@ public class FlowData extends BaseEntity {
 		this.taskId = taskId;
 	}
 
+	@Transient
+	public String getTaskName() {
+		return taskName;
+	}
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
+	}
+	
 	@Transient
 	public String getTaskAssignee() {
 		return taskAssignee;
