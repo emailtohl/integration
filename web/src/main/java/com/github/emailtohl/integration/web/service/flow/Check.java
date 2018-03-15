@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  * @author HeLei
  */
 @Embeddable
-@AttributeOverrides({ @AttributeOverride(name = "activityId", column = @Column(name = "activity_id")),
+@AttributeOverrides({ @AttributeOverride(name = "taskDefinitionKey", column = @Column(name = "task_definition_key")),
 		@AttributeOverride(name = "checkerId", column = @Column(name = "checker_id")),
 		@AttributeOverride(name = "checkerNum", column = @Column(name = "checker_num")),
 		@AttributeOverride(name = "checkerName", column = @Column(name = "checker_name")),
@@ -28,7 +28,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class Check implements Serializable {
 	private static final long serialVersionUID = 7833201762513830536L;
 	// 所处节点
-	private String activityId;
+	private String taskDefinitionKey;
+	// 所审核的任务名
+	private String taskName;
 	// 审核人id
 	private Long checkerId;
 	// 审核人姓名
@@ -40,12 +42,20 @@ public class Check implements Serializable {
 	// 审核时间
 	private Date checkTime;
 	
-	public String getActivityId() {
-		return activityId;
+	public String getTaskDefinitionKey() {
+		return taskDefinitionKey;
 	}
 
-	public void setActivityId(String activityId) {
-		this.activityId = activityId;
+	public void setTaskDefinitionKey(String activityId) {
+		this.taskDefinitionKey = activityId;
+	}
+
+	public String getTaskName() {
+		return taskName;
+	}
+
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
 	}
 
 	public Long getCheckerId() {
@@ -92,9 +102,9 @@ public class Check implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Comment [activityId=" + activityId + ", checkerId=" + checkerId + ", checkerName=" + checkerName
-				+ ", checkApproved=" + checkApproved + ", checkComment=" + checkComment + ", checkTime=" + checkTime
-				+ "]";
+		return "Check [activityId=" + taskDefinitionKey + ", taskName=" + taskName + ", checkerId=" + checkerId
+				+ ", checkerName=" + checkerName + ", checkApproved=" + checkApproved + ", checkComment=" + checkComment
+				+ ", checkTime=" + checkTime + "]";
 	}
 
 }

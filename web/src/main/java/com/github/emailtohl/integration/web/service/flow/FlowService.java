@@ -203,7 +203,6 @@ public class FlowService {
 		if (task == null) {
 			return new ExecResult(false, "没有这个任务", null);
 		}
-		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult();
 		String currentUserId = getCurrentUserId();
 		String assignee = task.getAssignee();
 		if (!currentUserId.equals(assignee)) {
@@ -256,7 +255,8 @@ public class FlowService {
 		
 		// 将产生的过程数据保存在业务关系中
 		Check check = new Check();
-		check.setActivityId(processInstance.getActivityId());
+		check.setTaskDefinitionKey(task.getTaskDefinitionKey());
+		check.setTaskName(task.getName());
 		check.setCheckApproved(approved);
 		check.setCheckerId(Long.valueOf(currentUserId));
 		check.setCheckerName(user.getFirstName());
@@ -480,7 +480,8 @@ public class FlowService {
 		}
 		List<Check> checks = source.getChecks().stream().map(src -> {
 			Check tar = new Check();
-			tar.setActivityId(src.getActivityId());
+			tar.setTaskDefinitionKey(src.getTaskDefinitionKey());
+			tar.setTaskName(src.getTaskName());
 			tar.setCheckApproved(src.getCheckApproved());
 			tar.setCheckComment(src.getCheckComment());
 			tar.setCheckerId(src.getCheckerId());
@@ -489,6 +490,27 @@ public class FlowService {
 			return tar;
 		}).collect(Collectors.toList());
 		target.getChecks().addAll(checks);
+		if (StringUtils.hasText(source.getProcessInstanceId())) {
+			Task task = taskService.createTaskQuery().processInstanceId(source.getProcessInstanceId()).singleResult();
+			if (task != null) {
+				target.setTaskId(task.getId());
+				target.setTaskAssignee(task.getAssignee());
+				target.setTaskName(task.getName());
+				target.setActivityId(task.getTaskDefinitionKey());
+			}
+		}
+		if (source.getApplicantId() != null) {
+			User u = identityService.createUserQuery().userId(source.getApplicantId().toString()).singleResult();
+			if (u != null) {
+				target.setApplicantName(u.getFirstName());
+			}
+		}
+		if (StringUtils.hasText(source.getTaskAssignee())) {
+			User u = identityService.createUserQuery().userId(source.getTaskAssignee()).singleResult();
+			if (u != null) {
+				target.setTaskAssignee(u.getFirstName());
+			}
+		}
 		return target;
 	}
 	

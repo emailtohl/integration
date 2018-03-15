@@ -1,0 +1,91 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>详情
+    <small>流程单的详情</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li ui-sref="dashboard"><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+    <li class="active" ui-sref="flow.mine">My FlowData</li>
+    <li class="active">Detail</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">详情表</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+			<table id="flow-list" class="table table-bordered table-striped">
+               <tbody>
+               <tr>
+                   <td>流程单号</td>
+                   <td>{{ctrl.flowData.flowNum}}</td>
+                   <td>流程类型</td>
+                   <td>{{ctrl.flowData.flowType}}</td>
+               </tr>
+               <tr>
+                   <td>创建时间</td>
+                   <td>{{ctrl.flowData.createDate}}</td>
+                   <td>申请人</td>
+                   <td>{{ctrl.flowData.applicantName}}</td>
+               </tr>
+               <tr>
+                   <td>进程</td>
+                   <td>{{ctrl.flowData.taskName}}</td>
+                   <td>受理人</td>
+                   <td>{{ctrl.flowData.taskAssignee}}</td>
+               </tr>
+               </tbody>
+           </table>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+    </div>
+    <!-- /.col -->
+    <div class="row">
+	  	<div class="col-xs-12">
+	      <div class="box-body">
+	      	<div class="box-header">
+	          <h3 class="box-title">内容</h3>
+	        </div>
+	        <!-- /.box-header -->
+	        <div class="box-body">
+	        	{{ctrl.flowData.content}}
+	        </div>
+	      </div>
+	  	</div>
+    </div>
+
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">审核详情</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body table-responsive no-padding">
+          <table class="table table-hover">
+            <tr ng-repeat="x in ctrl.flowData.checks">
+              <th>{{x.taskName}}</th>
+              <th>{{x.checkerName}}</th>
+              <th>{{x.checkApproved}}</th>
+              <th>{{x.checkComment}}</th>
+              <th>{{x.checkTime}}</th>
+            </tr>
+          </table>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+    </div>
+    
+    
+  </div>
+  <!-- /.row -->
+</section>
+<!-- /.content -->

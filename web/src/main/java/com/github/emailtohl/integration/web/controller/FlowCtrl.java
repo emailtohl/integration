@@ -137,7 +137,7 @@ public class FlowCtrl {
 	 */
 	@RequestMapping(value = "{id}", method = GET)
 	public FlowData findByFlowDataId(@PathVariable("id") Long id) {
-		return findByFlowDataId(id);
+		return flowService.findByFlowDataId(id);
 	}
 
 	/**
