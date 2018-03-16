@@ -6,15 +6,15 @@ define(['flow/module', 'flow/service'], function(flowModule, service) {
 	.controller('FlowMineCtrl', [ '$scope', '$http', '$state', 'flowService', 'util'
 	                         , function($scope, $http, $state, flowService, util) {
 		var self = this;
+		util.loadasync('lib/datatables/dataTables.bootstrap.css');
 		$scope.getAuthentication().then(function() {
 			flowService.list({applicantId: $scope.getUserId()}).then(function(resp) {
-				console.log(resp);
 				self.list = resp.data;
 			});
 		});
 		
 		self.table = function() {
-			require(['jquery', 'dataTables-bootstrap'], function($) {
+			requirejs(['jquery', 'dataTables', 'dataTables-bootstrap'], function($) {
 				$("#flow-list").DataTable({
                     stateSave: true,
                     // 0行是checkbox，7行是操作按钮，不进行排序
@@ -34,7 +34,7 @@ define(['flow/module', 'flow/service'], function(flowModule, service) {
                         },
                     },
                 });
-			})
+			});
 		};
 		
 	}]);

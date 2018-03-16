@@ -11,8 +11,8 @@ define(['angular', 'ui-router', 'common/context'], function(angular) {
 				templateUrl: 'site/flow/mine/template.html',
 				controller: 'FlowMineCtrl as ctrl'
 			})
-			.state('flow.detail', {
-				url: '/detail/{id}',
+			.state('flow.detail', {// audit参数代表是否审批，如果是申请人进去则是0，如果是审核人进去，则是1可以签收并提交意见
+				url: '/detail/{id}/audit/{audit}',
 				templateUrl: 'site/flow/detail/template.html',
 				controller: 'FlowDetailCtrl as ctrl'
 			})
@@ -20,6 +20,11 @@ define(['angular', 'ui-router', 'common/context'], function(angular) {
 				url: '/submit',
 				templateUrl: 'site/flow/submit/template.html',
 				controller: 'FlowSubmitCtrl as ctrl'
+			})
+			.state('flow.reSubmit', {
+				url: '/reSubmit/{id}',
+				templateUrl: 'site/flow/submit/template.html',
+				controller: 'FlowReSubmitCtrl as ctrl'
 			})
 			.state('flow.audit', {
 				url: '/audit',

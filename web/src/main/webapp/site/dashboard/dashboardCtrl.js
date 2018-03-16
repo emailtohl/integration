@@ -99,6 +99,7 @@ define(['angular', 'toastr', 'dashboard/module', 'knob'], function(angular, toas
 		
 		function flowNotify(message) {
 			console.log(message);
+			toastr.info(message.data && message.data.content);
 		}
 		
 		self.send = function() {

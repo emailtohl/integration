@@ -1,7 +1,6 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
-  <h1>
-            审核申请
+  <h1>审核
     <small>审核申请单</small>
   </h1>
   <ol class="breadcrumb">
@@ -12,131 +11,53 @@
 
 <!-- Main content -->
 <section class="content">
-<div class="row">
-	<div class="col-xs-12">
-	  <div class="box">
-	    <div class="box-header">
-	      <h3 class="box-title">申请单列表</h3>
-	      <div class="box-tools">
-	        <form ng-submit="ctrl.getPage()" class="input-group input-group-sm" style="width: 150px;">
-	          <input name="table_search" ng-model="ctrl.form.name" class="form-control pull-right" placeholder="Search title" type="text">
-	          <div class="input-group-btn">
-	            <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-	          </div>
-	        </form>
-	      </div>
-	    </div>
-	    <!-- /.box-header -->
-	    <div class="box-body table-responsive no-padding">
-	      <table class="table table-hover">
-	        <tbody><tr>
-	          <th>申请人</th>
-	          <th>申请日期</th>
-	          <th>标题</th>
-	          <th>内容</th>
-	          <th>状态</th>
-	          <th>审核人</th>
-	          <th>审核日期</th>
-	          <th>处理意见</th>
-	          <th ng-if="hasAuthority('application_form_delete')">删除</th>
-	        </tr>
-	        <tr style="cursor: pointer;" ng-repeat="x in ctrl.page.content" ng-click="ctrl.openModal(x.id)">
-	          <td>{{x.applicant.email}}</td>
-	          <td>{{x.createDate}}</td>
-	          <td>{{x.name}}</td>
-	          <td>{{x.description}}</td>
-	          <td><span class="label" ng-class="{'label-primary': x.status == 'REQUEST', 'label-warning' : x.status == 'PROCESSING', 'label-danger' : x.status == 'REJECT', 'label-success' : x.status == 'COMPLETION'}">{{ctrl.statusMap[x.status]}}</span></td>
-	          <td>{{x.handler.email}}</td>
-	          <td>{{x.modifyDate}}</td>
-	          <td>{{x.cause}}</td>
-	          <td ng-if="hasAuthority('application_form_delete')"><button type="button" class="btn btn-block btn-danger btn-xs" ng-click="ctrl.delete(x.id, $event)">删除</button></td>
-	        </tr>
-	      </tbody></table>
-	    </div>
-	    <!-- /.box-body -->
-	    <page page-number="ctrl.page.pageNumber" total-pages="ctrl.page.totalPages" button-count="5" on-click="ctrl.page(pageNumber)">
-	  </div>
-	  <!-- /.box -->
-	  </div>
-	</div>
-	
-	<div modal open="ctrl.modal.open" title="{{ctrl.modal.title}}" when-confirm="ctrl.modal.whenConfirm()" type="{{ctrl.modal.type}}" disabled="!ctrl.form.cause || !ctrl.form.status">
-	    <div class="box box-widget">
-            <div class="box-header with-border">
-              <div class="user-block">
-                <img class="img-circle" ng-src="{{ctrl.detail.applicant.iconSrc}}" alt="User Image">
-                <span class="username"><a href="#">{{ctrl.detail.applicant.email}}</a></span>
-                <span class="description">{{ctrl.detail.createDate}}</span>
-              </div>
-              <!-- /.user-block -->
-              <div class="box-tools">
-                <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="Mark as read">
-                  <i class="fa fa-circle-o"></i></button>
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
-                <!-- <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button> -->
-              </div>
-              <!-- /.box-tools -->
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-              <!-- post text -->
-              
-              <p>{{ctrl.detail.description}}</p>
-
-            </div>
-            <!-- /.box-body -->
-            <div class="box-footer box-comments">
-              <div class="box-comment" ng-repeat="x in ctrl.detail.historyList">
-                <!-- User image -->
-                <img class="img-circle img-sm" ng-src="{{x.handler.iconSrc}}" alt="User Image">
-
-                <div class="comment-text">
-                      <span class="username">
-                        {{x.handler.email}}
-                        <span class="text-muted pull-right">{{x.createDate}}</span>
-                        <span class="label" ng-class="{'label-primary': x.status == 'REQUEST', 'label-warning' : x.status == 'PROCESSING', 'label-danger' : x.status == 'REJECT', 'label-success' : x.status == 'COMPLETION'}">{{ctrl.statusMap[x.status]}}</span>
-                      </span>
-                  {{x.cause}}
-                </div>
-                <!-- /.comment-text -->
-              </div>
-              <!-- /.box-comment -->
-            </div>
-            <!-- /.box-footer -->
-            <div class="box-footer">
-              <form name="f" ng-if="ctrl.detail.status != 'COMPLETION'">
-                <img class="img-responsive img-circle img-sm" ng-src="{{getIconSrc()}}" alt="Alt Text">
-                <!-- .img-push is used to add margin to elements next to floating images -->
-                <div class="img-push">
-                  <input name="cause" class="form-control input-sm" placeholder="Press enter to post comment" type="text" ng-model="ctrl.form.cause">
-                </div>
-                <div class="form-group">
-                  <div class="radio">
-                    <label>
-                      <input name="status" value="REJECT" ng-model="ctrl.form.status" checked="" type="radio">
-                      	拒绝
-                    </label>
-                  </div>
-                  <div class="radio">
-                    <label>
-                      <input name="status" value="PROCESSING" ng-model="ctrl.form.status" type="radio">
-                      	接受申请
-                    </label>
-                  </div>
-                  <div class="radio">
-                    <label>
-                      <input name="status" value="COMPLETION" ng-model="ctrl.form.status" type="radio">
-                      	完成
-                    </label>
-                  </div>
-                </div>
-              </form>
-            </div>
-            <!-- /.box-footer -->
-          </div>
-	  
-	    <!-- /.box-body -->
-	</div>
-	
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">流程单</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+			<table id="flow-list" class="table table-bordered table-striped">
+               <thead>
+               <tr>
+                   <th>流程单号</th>
+                   <th>创建时间</th>
+                   <th>流程类型</th>
+                   <th>状态</th>
+                   <th>内容</th>
+                   <th>详情</th>
+               </tr>
+               </thead>
+               <tbody>
+               <tr ng-repeat="x in ctrl.list" repeat-finish="ctrl.table()">
+                   <td>{{x.flowNum}}</td>
+                   <td>{{x.createDate}}</td>
+                   <td>{{x.flowType}}</td>
+                   <td>{{x.taskName}}</td>
+                   <td>{{x.content}}</td>
+                   <td><a href="javascript:void(0)" ui-sref="flow.detail({id:x.id, audit:1})">查看</a></td>
+               </tr>
+               </tbody>
+               <tfoot>
+               <tr>
+                   <th>流程单号</th>
+                   <th>创建时间</th>
+                   <th>流程类型</th>
+                   <th>状态</th>
+                   <th>内容</th>
+                   <th>详情</th>
+               </tr>
+               </tfoot>
+           </table>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+    </div>
+    <!-- /.col -->
+  </div>
+  <!-- /.row -->
 </section>
+<!-- /.content -->

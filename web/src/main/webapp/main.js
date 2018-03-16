@@ -16,7 +16,7 @@ requirejs.config({
 		jquery: '../lib/jquery/jquery-3.2.1.min',
 		'jquery-ui': '../lib/jquery/jquery-ui.min',
 		bootstrap: '../lib/bootstrap/js/bootstrap.min',
-		angular: '../lib/angular/angular',
+		angular: '../lib/angular/angular.min',
 		'angular-animate': '../lib/angular/angular-animate.min',
 		'angular-cookies': '../lib/angular/angular-cookies.min',
 		'angular-touch': '../lib/angular/angular-touch.min',

@@ -8,7 +8,7 @@ define([ 'flow/module' ], function(flowModule) {
 				return $http.get('flow/todoTasks');
 			},
 			claim : function(taskId) {
-				return $http.get('flow/claim/' + taskId);
+				return $http.post('flow/claim/' + taskId);
 			},
 			check : function(flowData) {
 				return $http.post('flow/check', flowData);

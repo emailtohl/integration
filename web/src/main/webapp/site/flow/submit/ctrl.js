@@ -13,10 +13,41 @@ define(['flow/module', 'flow/service'], function(flowModule) {
 			content: null,
 		};
 		self.submit = function() {
-			flowService.startWorkflow(self.form).then(function(data) {
-				console.log(data);
+			flowService.startWorkflow(self.form).then(function(resp) {
+				if (resp.data.id) {
+					$state.go('flow.detail', {id: resp.data.id});
+				}
 			});
 		};
 		
-	}]);
+		if ($state.params.id) {
+			flowService.get($state.params.id).then(function(resp) {
+				self.form = resp.data;
+			});
+		}
+	}])
+	.controller('FlowReSubmitCtrl', [ '$scope', '$http', '$state', 'flowService', 'util'
+		, function($scope, $http, $state, flowService, util) {
+		var self = this;
+		util.loadasync('lib/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css');
+		$scope.getAuthentication();
+		self.form = {
+			flowType: null,
+			content: null,
+		};
+		self.submit = function() {
+			flowService.startWorkflow(self.form).then(function(data) {
+				if (resp.data.id) {
+					$state.go('flow.detail', {id: resp.data.id});
+				}
+			});
+		};
+		
+		flowService.get($state.params.id).then(function(resp) {
+			self.form = resp.data;
+		});
+		
+	}])
+	
+	;
 });

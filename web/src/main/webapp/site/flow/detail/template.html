@@ -17,6 +17,9 @@
       <div class="box">
         <div class="box-header">
           <h3 class="box-title">详情表</h3>
+          <div class="box-tools">
+          	<button class="btn btn-success" ng-if="ctrl.isAudit()" ng-click="ctrl.claim()">审批</button>
+          </div>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
@@ -94,8 +97,24 @@
       <!-- /.box -->
     </div>
     
-    
   </div>
   <!-- /.row -->
 </section>
 <!-- /.content -->
+
+<div modal type="primary" title="审批" open="ctrl.openModal" when-confirm="ctrl.audit()">
+	<form name="f">
+       <div class="form-group">
+         <label>是否同意</label>
+         <select class="form-control" name="checkApproved" ng-model="ctrl.check.checkApproved" required="required">
+           <option value="true">同意</option>
+           <option value="false">不同意</option>
+         </select>
+       </div>
+       <div class="form-group">
+         <label>申请单内容</label>
+         <textarea class="form-control" rows="3" name="checkComment" ng-model="ctrl.check.checkComment" placeholder="审批意见" ></textarea>
+       </div>
+	</form>
+</div>
+

@@ -61,21 +61,21 @@ public class ActivitiListener implements ExecutionListener, TaskListener, Serial
 				userIds.addAll(userIdMapper.findUserIdInGroupId(groupIds));
 			}
 			event.getToUserIds().addAll(userIds);
-			event.setContent("你有“" + delegateTask.getName() + "”任务可以签收");
+			event.setContent("你有“" + delegateTask.getName() + "”任务可以签收:\n" + delegateTask.getVariable("content"));
 			break;
 		case "assignment":// 分配后，告知申请人
 			String applyUserId = delegateTask.getVariable("applyUserId", String.class);
 			if (StringUtils.hasText(applyUserId)) {
 				event.getToUserIds().add(applyUserId);
 			}
-			event.setContent("你申请的任务被“" + delegateTask.getAssignee() + "”签收");
+			event.setContent("你申请的任务“" + delegateTask.getVariable("flowNum") + "”被“" + delegateTask.getAssignee() + "”签收");
 			break;
 		case "complete":// 完成后，告知申请人
 			String _applyUserId = delegateTask.getVariable("applyUserId", String.class);
 			if (StringUtils.hasText(_applyUserId)) {
 				event.getToUserIds().add(_applyUserId);
 			}
-			event.setContent("你申请的任务被“" + delegateTask.getAssignee() + "”完成");
+			event.setContent("你申请的任务“" + delegateTask.getVariable("flowNum") + "”被“" + delegateTask.getAssignee() + "”完成");
 			break;
 		case "all":
 			break;
