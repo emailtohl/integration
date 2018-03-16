@@ -86,7 +86,7 @@
             <tr ng-repeat="x in ctrl.flowData.checks">
               <th>{{x.taskName}}</th>
               <th>{{x.checkerName}}</th>
-              <th>{{x.checkApproved}}</th>
+              <th>{{x.checkApproved ? '通过' : '不通过'}}</th>
               <th>{{x.checkComment}}</th>
               <th>{{x.checkTime}}</th>
             </tr>
@@ -102,19 +102,37 @@
 </section>
 <!-- /.content -->
 
-<div modal type="primary" title="审批" open="ctrl.openModal" when-confirm="ctrl.audit()">
-	<form name="f">
-       <div class="form-group">
-         <label>是否同意</label>
-         <select class="form-control" name="checkApproved" ng-model="ctrl.check.checkApproved" required="required">
-           <option value="true">同意</option>
-           <option value="false">不同意</option>
-         </select>
-       </div>
-       <div class="form-group">
-         <label>申请单内容</label>
-         <textarea class="form-control" rows="3" name="checkComment" ng-model="ctrl.check.checkComment" placeholder="审批意见" ></textarea>
-       </div>
-	</form>
+
+<div class="modal fade" id="modal-audit">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">审批</h4>
+      </div>
+      <div class="modal-body">
+		 <form name="f">
+			<div class="form-group">
+	            <select class="form-control" name="checkApproved" ng-model="ctrl.check.checkApproved" required="required">
+	              <option value="true">同意</option>
+	              <option value="false">不同意</option>
+	            </select>
+	       </div>
+	       <div class="form-group">
+	         <label>申请单内容</label>
+	         <textarea class="form-control" rows="3" name="checkComment" ng-model="ctrl.check.checkComment" placeholder="审批意见" ></textarea>
+	       </div>
+		</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">取消</button>
+        <button type="submit" class="btn btn-primary" ng-click="ctrl.audit()" ng-disabled="f.$invalid || !isAuthenticated()">确认</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
 </div>
+<!-- /.modal -->
 

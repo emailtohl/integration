@@ -15,7 +15,7 @@ define(['flow/module', 'flow/service'], function(flowModule) {
 		self.submit = function() {
 			flowService.startWorkflow(self.form).then(function(resp) {
 				if (resp.data.id) {
-					$state.go('flow.detail', {id: resp.data.id});
+					$state.go('flow.detail', {id: resp.data.id, audit:0});
 				}
 			});
 		};
@@ -38,7 +38,7 @@ define(['flow/module', 'flow/service'], function(flowModule) {
 		self.submit = function() {
 			flowService.startWorkflow(self.form).then(function(data) {
 				if (resp.data.id) {
-					$state.go('flow.detail', {id: resp.data.id});
+					$state.go('flow.detail', {id: resp.data.id, audit:0});
 				}
 			});
 		};

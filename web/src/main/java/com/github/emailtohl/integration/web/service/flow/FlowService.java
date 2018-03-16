@@ -83,6 +83,8 @@ public class FlowService {
 	public FlowData startWorkflow(FlowData form) {
 		String userId = getCurrentUserId();
 		form.setApplicantId(Long.valueOf(userId));
+		User u = identityService.createUserQuery().userId(userId).singleResult();
+		form.setApplicantName(u.getFirstName());
 		FlowType flowType = form.getFlowType();
 		String content = form.getContent();
 		if (flowType == null || !StringUtils.hasText(content)) {
@@ -219,7 +221,7 @@ public class FlowService {
 			return new ExecResult(false, "没有审核结果", null);
 		}
 		Date currentTime = new Date();
-		switch (form.getActivityId()) {
+		switch (task.getTaskDefinitionKey()) {
 		case "check":
 			// 与流程相关的
 			variables.put("checkApproved", approved);
@@ -498,12 +500,6 @@ public class FlowService {
 				target.setTaskAssignee(task.getAssignee());
 				target.setTaskName(task.getName());
 				target.setActivityId(task.getTaskDefinitionKey());
-			}
-		}
-		if (source.getApplicantId() != null) {
-			User u = identityService.createUserQuery().userId(source.getApplicantId().toString()).singleResult();
-			if (u != null) {
-				target.setApplicantName(u.getFirstName());
 			}
 		}
 		if (StringUtils.hasText(source.getTaskAssignee())) {
