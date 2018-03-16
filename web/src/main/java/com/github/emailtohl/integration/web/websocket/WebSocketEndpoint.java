@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -100,14 +101,13 @@ public class WebSocketEndpoint {
 	@OnMessage
 	public void onMessage(String json) {
 		Message message = gson.fromJson(json, Message.class);
-		message.setUserId(userId);
 		if (message.getMessageType() == null) {
 			return;
 		}
 		switch (message.getMessageType()) {
-		case userId:
-			if (StringUtils.hasText(message.userId))
-				userId = message.userId;
+		case refreshUserId:
+			if (message.data instanceof String || message.data instanceof Number)
+				userId = message.data.toString().split("\\.")[0];
 			else
 				userId = corePresetData.user_anonymous.getId().toString();
 			break;
@@ -157,16 +157,19 @@ public class WebSocketEndpoint {
 	@Async
 	public void onEvent(ClusterEvent event) {
 		try {
+			// Activiti框架触发事件通知ActivitiListener；
+			// 然后ActivitiListener发布事件被EventListener收到；
+			// 最后EventListener将事件通知给每个WebSocketEndpoint。
 			if (event instanceof FlowNotifyEvent) {
 				FlowNotifyEvent e = (FlowNotifyEvent) event;
-				Object assignee = e.getVariables().get("assignee");
-				if (assignee instanceof String && ((String) assignee).equals(userId)) {
+				Set<String> toUserIds = e.getToUserIds();
+				if (toUserIds.contains(userId)) {
 					Message msg = new Message();
 					msg.id = UUID.randomUUID().toString();
 					msg.time = new Date();
-					msg.userId = userId;
+					msg.toUserIds.addAll(toUserIds);
 					msg.messageType = MessageType.flowNotify;
-					msg.data = e.getVariables();
+					msg.data = e;
 					session.getBasicRemote().sendText(gson.toJson(msg));
 				}
 			} else if (event instanceof SystemInfoEvent) {
@@ -174,18 +177,17 @@ public class WebSocketEndpoint {
 				Message msg = new Message();
 				msg.id = UUID.randomUUID().toString();
 				msg.time = new Date();
-				msg.userId = userId;
+				msg.toUserIds.add(userId);
 				msg.messageType = MessageType.systemInfo;
 				msg.data = e.getSystemInfo();
 				session.getBasicRemote().sendText(gson.toJson(msg));
 			} else if (event instanceof ChatEvent) {// 将消息发送给包括自己的所有人
 				ChatEvent e = (ChatEvent) event;
 				if (e.getChat() != null && StringUtils.hasText(e.getChat().getUserId())) {
-					String srcUserId = e.getChat().getUserId();
 					Message msg = new Message();
 					msg.id = UUID.randomUUID().toString();
 					msg.time = new Date();
-					msg.userId = srcUserId;
+					msg.toUserIds.add(userId);
 					msg.messageType = MessageType.chat;
 					msg.data = e.getChat();
 					session.getBasicRemote().sendText(gson.toJson(msg));
@@ -220,5 +222,4 @@ public class WebSocketEndpoint {
 			return false;
 		return true;
 	}
-
 }

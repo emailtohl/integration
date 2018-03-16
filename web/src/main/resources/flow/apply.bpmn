@@ -5,24 +5,28 @@
     <startEvent id="startevent1" name="Start" activiti:initiator="applyUserId"></startEvent>
     <userTask id="check" name="初审" activiti:candidateGroups="staff">
       <extensionElements>
-        <activiti:taskListener event="assignment" delegateExpression="${notify}"></activiti:taskListener>
+        <activiti:taskListener event="create" delegateExpression="${activitiListener}"></activiti:taskListener>
+        <activiti:taskListener event="assignment" delegateExpression="${activitiListener}"></activiti:taskListener>
+        <activiti:taskListener event="complete" delegateExpression="${activitiListener}"></activiti:taskListener>
       </extensionElements>
     </userTask>
     <exclusiveGateway id="exclusivegateway5" name="Exclusive Gateway"></exclusiveGateway>
     <userTask id="modifyApply" name="调整申请" activiti:assignee="${applyUserId}">
       <extensionElements>
-        <activiti:taskListener event="create" delegateExpression="${notify}"></activiti:taskListener>
+        <activiti:taskListener event="assignment" delegateExpression="${activitiListener}"></activiti:taskListener>
       </extensionElements>
     </userTask>
     <userTask id="recheck" name="复审" activiti:candidateGroups="manager">
       <extensionElements>
-        <activiti:taskListener event="assignment" delegateExpression="${notify}"></activiti:taskListener>
+        <activiti:taskListener event="create" delegateExpression="${activitiListener}"></activiti:taskListener>
+        <activiti:taskListener event="assignment" delegateExpression="${activitiListener}"></activiti:taskListener>
+        <activiti:taskListener event="complete" delegateExpression="${activitiListener}"></activiti:taskListener>
       </extensionElements>
     </userTask>
     <exclusiveGateway id="exclusivegateway6" name="Exclusive Gateway"></exclusiveGateway>
     <endEvent id="endevent1" name="End">
       <extensionElements>
-        <activiti:executionListener event="end" delegateExpression="${notify}"></activiti:executionListener>
+        <activiti:executionListener event="end" delegateExpression="${activitiListener}"></activiti:executionListener>
       </extensionElements>
     </endEvent>
     <exclusiveGateway id="exclusivegateway7" name="Exclusive Gateway"></exclusiveGateway>

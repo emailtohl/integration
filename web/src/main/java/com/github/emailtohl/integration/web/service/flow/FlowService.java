@@ -255,7 +255,7 @@ public class FlowService {
 		
 		// 将产生的过程数据保存在业务关系中
 		Check check = new Check();
-		check.setTaskDefinitionKey(task.getTaskDefinitionKey());
+		check.setActivityId(task.getTaskDefinitionKey());
 		check.setTaskName(task.getName());
 		check.setCheckApproved(approved);
 		check.setCheckerId(Long.valueOf(currentUserId));
@@ -480,7 +480,7 @@ public class FlowService {
 		}
 		List<Check> checks = source.getChecks().stream().map(src -> {
 			Check tar = new Check();
-			tar.setTaskDefinitionKey(src.getTaskDefinitionKey());
+			tar.setActivityId(src.getActivityId());
 			tar.setTaskName(src.getTaskName());
 			tar.setCheckApproved(src.getCheckApproved());
 			tar.setCheckComment(src.getCheckComment());

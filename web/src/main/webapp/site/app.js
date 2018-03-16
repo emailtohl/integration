@@ -39,8 +39,8 @@ define([
 					$rootScope.authentication = data;
 					if ($rootScope.websocket) {// 反向刷新websocket endpoint中的userId
 						var msg = JSON.stringify({
-				    		messageType : 'userId',
-				    		userId : $rootScope.getUserId(),
+				    		messageType : 'refreshUserId',
+				    		data : $rootScope.getUserId(),
 				    	});
 						$rootScope.websocket.send(msg);
 					}

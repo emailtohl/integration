@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  * @author HeLei
  */
 @Embeddable
-@AttributeOverrides({ @AttributeOverride(name = "taskDefinitionKey", column = @Column(name = "task_definition_key")),
+@AttributeOverrides({ @AttributeOverride(name = "activityId", column = @Column(name = "activity_id")),
 		@AttributeOverride(name = "checkerId", column = @Column(name = "checker_id")),
 		@AttributeOverride(name = "checkerNum", column = @Column(name = "checker_num")),
 		@AttributeOverride(name = "checkerName", column = @Column(name = "checker_name")),
@@ -28,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class Check implements Serializable {
 	private static final long serialVersionUID = 7833201762513830536L;
 	// 所处节点
-	private String taskDefinitionKey;
+	private String activityId;
 	// 所审核的任务名
 	private String taskName;
 	// 审核人id
@@ -42,18 +42,16 @@ public class Check implements Serializable {
 	// 审核时间
 	private Date checkTime;
 	
-	public String getTaskDefinitionKey() {
-		return taskDefinitionKey;
+	public String getActivityId() {
+		return activityId;
 	}
-
-	public void setTaskDefinitionKey(String activityId) {
-		this.taskDefinitionKey = activityId;
+	public void setActivityId(String activityId) {
+		this.activityId = activityId;
 	}
 
 	public String getTaskName() {
 		return taskName;
 	}
-
 	public void setTaskName(String taskName) {
 		this.taskName = taskName;
 	}
@@ -61,7 +59,6 @@ public class Check implements Serializable {
 	public Long getCheckerId() {
 		return checkerId;
 	}
-
 	public void setCheckerId(Long checkerId) {
 		this.checkerId = checkerId;
 	}
@@ -69,7 +66,6 @@ public class Check implements Serializable {
 	public String getCheckerName() {
 		return checkerName;
 	}
-
 	public void setCheckerName(String checkerName) {
 		this.checkerName = checkerName;
 	}
@@ -77,7 +73,6 @@ public class Check implements Serializable {
 	public Boolean getCheckApproved() {
 		return checkApproved;
 	}
-
 	public void setCheckApproved(Boolean checkApproved) {
 		this.checkApproved = checkApproved;
 	}
@@ -85,7 +80,6 @@ public class Check implements Serializable {
 	public String getCheckComment() {
 		return checkComment;
 	}
-
 	public void setCheckComment(String checkComment) {
 		this.checkComment = checkComment;
 	}
@@ -95,16 +89,39 @@ public class Check implements Serializable {
 	public Date getCheckTime() {
 		return checkTime;
 	}
-
 	public void setCheckTime(Date checkTime) {
 		this.checkTime = checkTime;
 	}
-
+	
 	@Override
 	public String toString() {
-		return "Check [activityId=" + taskDefinitionKey + ", taskName=" + taskName + ", checkerId=" + checkerId
+		return "Check [activityId=" + activityId + ", taskName=" + taskName + ", checkerId=" + checkerId
 				+ ", checkerName=" + checkerName + ", checkApproved=" + checkApproved + ", checkComment=" + checkComment
 				+ ", checkTime=" + checkTime + "]";
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((checkTime == null) ? 0 : checkTime.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Check other = (Check) obj;
+		if (checkTime == null) {
+			if (other.checkTime != null)
+				return false;
+		} else if (!checkTime.equals(other.checkTime))
+			return false;
+		return true;
 	}
 
 }

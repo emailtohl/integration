@@ -37,7 +37,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.employee.EmployeeService;
-import com.github.emailtohl.integration.web.service.flow.Notify;
+import com.github.emailtohl.integration.web.service.flow.ActivitiListener;
+import com.github.emailtohl.integration.web.service.flow.UserIdMapper;
 
 /**
  * 流程配置
@@ -57,9 +58,8 @@ class ActivitiConfiguration {
 	 * @return
 	 */
 	@Bean
-	public Notify notify(UserService userService, CustomerService customerService, EmployeeService employeeService,
-			ApplicationEventPublisher publisher) {
-		return new Notify(userService, customerService, employeeService, publisher);
+	public ActivitiListener activitiListener(UserIdMapper userIdMapper, ApplicationEventPublisher publisher) {
+		return new ActivitiListener(userIdMapper, publisher);
 	}
 	
 	/**
@@ -71,7 +71,8 @@ class ActivitiConfiguration {
 	public SpringProcessEngineConfiguration processEngineConfiguration(DataSource dataSource,
 			@Named("annotationDrivenTransactionManager") PlatformTransactionManager platformTransactionManager,
 			EntityManagerFactory jpaEntityManagerFactory, Environment env, UserService userService,
-			CustomerService customerService, EmployeeService employeeService, ApplicationEventPublisher publisher) {
+			CustomerService customerService, EmployeeService employeeService, UserIdMapper userIdMapper,
+			ApplicationEventPublisher publisher) {
 		SpringProcessEngineConfiguration cfg = new SpringProcessEngineConfiguration();
 		cfg.setDataSource(dataSource);
 		cfg.setTransactionManager(platformTransactionManager);
@@ -96,9 +97,9 @@ class ActivitiConfiguration {
 		beans.put("userService", userService);
 		beans.put("customerService", customerService);
 		beans.put("employeeService", employeeService);
-		beans.put("notify", notify(userService, customerService, employeeService, publisher));
+		beans.put("activitiListener", activitiListener(userIdMapper, publisher));
 		cfg.setBeans(beans);
-		
+
 		cfg.setCustomFormTypes(Arrays.asList(new BigtextFormType(), new DoubleFormType(), new JavascriptFormType()));
 
 		cfg.setDeploymentResources(new Resource[] { new ClassPathResource("flow/apply.bpmn") });

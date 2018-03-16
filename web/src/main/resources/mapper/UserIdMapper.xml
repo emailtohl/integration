@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.emailtohl.integration.web.service.flow.UserIdMapper">
+	
+	<select id="findUserIdInGroupId" resultType="String" parameterType="java.util.List">
+		SELECT im.user_id_ FROM act_id_group g INNER JOIN act_id_membership im ON g.id_ = im.group_id_ WHERE g.id_ IN
+		<foreach collection="list" index="index" item="groupId" open="("
+			separator="," close=")">
+			#{groupId}
+		</foreach>
+	</select>
+
+</mapper>

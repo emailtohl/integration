@@ -40,6 +40,18 @@
                    <td>受理人</td>
                    <td>{{ctrl.flowData.taskAssignee}}</td>
                </tr>
+               <tr>
+                   <td>当前审核</td>
+                   <td>{{ctrl.flowData.checkApproved === null ? '' : (ctrl.flowData.checkApproved === true ? '通过' : '不通过')}}</td>
+                   <td>当前审核意见</td>
+                   <td>{{ctrl.flowData.checkComment}}</td>
+               </tr>
+               <tr>
+                   <td>是否重提</td>
+                   <td>{{ctrl.flowData.reApply | boolToString}}</td>
+                   <td>最后结果</td>
+                   <td>{{ctrl.flowData.pass === null ? '' : (ctrl.flowData.pass === true ? '通过' : '不通过')}}</td>
+               </tr>
                </tbody>
            </table>
         </div>
@@ -48,19 +60,17 @@
       <!-- /.box -->
     </div>
     <!-- /.col -->
-    <div class="row">
-	  	<div class="col-xs-12">
-	      <div class="box-body">
-	      	<div class="box-header">
-	          <h3 class="box-title">内容</h3>
-	        </div>
-	        <!-- /.box-header -->
-	        <div class="box-body">
-	        	{{ctrl.flowData.content}}
-	        </div>
-	      </div>
-	  	</div>
-    </div>
+  	<div class="col-xs-12">
+      <div class="box">
+      	<div class="box-header">
+          <h3 class="box-title">内容</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+        	{{ctrl.flowData.content}}
+        </div>
+      </div>
+  	</div>
 
     <div class="col-xs-12">
       <div class="box">
