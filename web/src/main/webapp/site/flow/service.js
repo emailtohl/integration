@@ -17,7 +17,7 @@ define([ 'flow/module' ], function(flowModule) {
 				return $http.post('flow/reApply', flowData);
 			},
 			getCommentInfo : function(processInstanceId) {
-				return $http.post('flow/commentInfo/processInstanceId', processInstanceId);
+				return $http.get('flow/commentInfo/' + processInstanceId);
 			},
 			page : function(param) {
 				var query = util.encodeUrlParams(param);

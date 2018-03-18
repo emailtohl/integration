@@ -272,7 +272,7 @@ public class FlowService {
 
 	/**
 	 * 重新申请
-	 * 表单modifyApply必填：若为true则重新申请，若为false则结束流程
+	 * 表单reApply必填：若为true则重新申请，若为false则结束流程
 	 * content：若重新申请，则content需填写
 	 * @return 执行是否成功
 	 */
@@ -497,13 +497,13 @@ public class FlowService {
 			Task task = taskService.createTaskQuery().processInstanceId(source.getProcessInstanceId()).singleResult();
 			if (task != null) {
 				target.setTaskId(task.getId());
-				target.setTaskAssignee(task.getAssignee());
 				target.setTaskName(task.getName());
 				target.setActivityId(task.getTaskDefinitionKey());
+				target.setTaskAssignee(task.getAssignee());
 			}
 		}
-		if (StringUtils.hasText(source.getTaskAssignee())) {
-			User u = identityService.createUserQuery().userId(source.getTaskAssignee()).singleResult();
+		if (StringUtils.hasText(target.getTaskAssignee())) {
+			User u = identityService.createUserQuery().userId(target.getTaskAssignee()).singleResult();
 			if (u != null) {
 				target.setTaskAssignee(u.getFirstName());
 			}

@@ -3,7 +3,7 @@
  */
 define(['flow/module', 'flow/service'], function(flowModule) {
 	return flowModule
-	.controller('FlowAuditCtrl', [ '$scope', '$http', '$state', 'flowService', 'util'
+	.controller('FlowCandidateCtrl', [ '$scope', '$http', '$state', 'flowService', 'util'
 	                         , function($scope, $http, $state, flowService, util) {
 		const initForm = JSON.stringify({
 			page : 0,

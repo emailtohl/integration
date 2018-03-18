@@ -35,11 +35,11 @@
                    <td>{{x.flowNum}}</td>
                    <td>{{x.createDate}}</td>
                    <td>{{x.flowType}}</td>
-                   <td>{{x.taskName}}</td>
+                   <td>{{x.taskName ? x.flowType : (x.pass === true ? '通过':'未通过')}}</td>
                    <td>{{x.content}}</td>
                    <td>
                      <a href="javascript:void(0)" ui-sref="flow.detail({id:x.id, audit:0})">查看</a>
-                     <a href="javascript:void(0)" ng-if="x.checkApproved === false" ui-sref="flow.reSubmit({id:x.id})">重提</a>
+                     <a href="javascript:void(0)" ng-if="x.activityId === 'modifyApply'" ui-sref="flow.reSubmit({id:x.id})">重提</a>
                    </td>
                </tr>
                </tbody>

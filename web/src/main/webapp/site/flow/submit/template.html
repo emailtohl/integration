@@ -54,7 +54,8 @@
 			</span>
           </div>
           <div class="box-footer">
-            <button type="submit" class="btn btn-primary" ng-disabled="f.$invalid || !isAuthenticated()" ng-click="ctrl.submit()">Submit</button>
+            <button type="button" class="btn btn-default pull-left" ng-if="ctrl.isReSubmit()" ng-disabled="!isAuthenticated()" ng-click="ctrl.cancel()">取消申请</button>
+            <button type="submit" class="btn btn-primary pull-right" ng-disabled="f.$invalid || !isAuthenticated()" ng-click="ctrl.submit()">提交</button>
           </div>
 	    </form>
 	  </div>

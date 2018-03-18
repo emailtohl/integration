@@ -5,7 +5,7 @@
   </h1>
   <ol class="breadcrumb">
     <li ui-sref="dashboard"><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-    <li class="active" ui-sref="flow.mine">My FlowData</li>
+    <li class="active" ui-sref="flow.mine" href="javascript:void(0)">My FlowData</li>
     <li class="active">Detail</li>
   </ol>
 </section>
@@ -42,12 +42,6 @@
                    <td>{{ctrl.flowData.taskName}}</td>
                    <td>受理人</td>
                    <td>{{ctrl.flowData.taskAssignee}}</td>
-               </tr>
-               <tr>
-                   <td>当前审核</td>
-                   <td>{{ctrl.flowData.checkApproved === null ? '' : (ctrl.flowData.checkApproved === true ? '通过' : '不通过')}}</td>
-                   <td>当前审核意见</td>
-                   <td>{{ctrl.flowData.checkComment}}</td>
                </tr>
                <tr>
                    <td>是否重提</td>

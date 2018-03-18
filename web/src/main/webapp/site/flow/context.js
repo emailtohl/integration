@@ -4,6 +4,5 @@ define([
 	'flow/mine/ctrl',
 	'flow/detail/ctrl',
 	'flow/submit/ctrl',
-	'flow/audit/ctrl',
-	'flow/history/ctrl',
+	'flow/candidate/ctrl',
 ], function() {});

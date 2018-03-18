@@ -1,3 +1,6 @@
+/**
+ * 在详情里面审批
+ */
 define(['flow/module', 'flow/service', 'toastr'], function(flowModule, service, toastr) {
 	return flowModule
 	.controller('FlowDetailCtrl', [ '$scope', '$http', '$state', 'flowService', 'util'
@@ -17,7 +20,9 @@ define(['flow/module', 'flow/service', 'toastr'], function(flowModule, service, 
 					taskId : self.flowData.taskId
 				};
 			}
-			console.log(self.flowData);
+			flowService.getCommentInfo(self.flowData.processInstanceId).then(function(resp) {
+				console.log(resp.data);
+			});
 		});
 		
 		
@@ -27,7 +32,7 @@ define(['flow/module', 'flow/service', 'toastr'], function(flowModule, service, 
 					$('#modal-audit').modal();
 				} else {
 					toastr.error('该任务已被人签收');
-					$state.go('flow.audit');
+					$state.go('flow.candidate');
 				}
 			});
 		};
@@ -39,7 +44,7 @@ define(['flow/module', 'flow/service', 'toastr'], function(flowModule, service, 
 				if (!resp.data.ok) {
 					toastr.error(resp.data.cause);
 				}
-				$state.go('flow.audit');
+				$state.go('flow.candidate');
 			});
 		};
 		

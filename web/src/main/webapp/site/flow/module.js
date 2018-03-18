@@ -26,15 +26,11 @@ define(['angular', 'ui-router', 'common/context'], function(angular) {
 				templateUrl: 'site/flow/submit/template.html',
 				controller: 'FlowReSubmitCtrl as ctrl'
 			})
-			.state('flow.audit', {
-				url: '/audit',
-				templateUrl: 'site/flow/audit/template.html',
-				controller: 'FlowAuditCtrl as ctrl'
+			.state('flow.candidate', {
+				url: '/candidate',
+				templateUrl: 'site/flow/candidate/template.html',
+				controller: 'FlowCandidateCtrl as ctrl'
 			})
-			.state('flow.history', {
-				url: '/history',
-				templateUrl: 'site/flow/history/template.html',
-				controller: 'FlowHistoryCtrl as ctrl'
-			});
+			;
 	});
 });
