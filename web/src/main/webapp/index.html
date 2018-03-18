@@ -354,10 +354,9 @@
 	          <i class="fa fa-angle-left pull-right"></i>
 	      </a>
           <ul class="treeview-menu">
-            <li data-ng-class="{active: $state.includes('flow.mine')}" ><a ui-sref="flow.mine" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>我的流程单</a></li>
-            <li data-ng-class="{active: $state.includes('flow.submit')}" ><a ui-sref="flow.submit" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>提交申请表</a></li>
-            <li data-ng-class="{active: $state.includes('flow.candidate')}" ><a ui-sref="flow.candidate" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>处理申请表</a></li>
-            <li data-ng-class="{active: $state.includes('flow.history')}"><a ui-sref="flow.history" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>处理记录</a></li>
+            <li data-ng-class="{active: $state.includes('flow.mine')}" ><a ui-sref="flow.mine" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>{{'flow-mine' | translate}}</a></li>
+            <li data-ng-class="{active: $state.includes('flow.submit')}" ><a ui-sref="flow.submit" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>{{'flow-submit' | translate}}</a></li>
+            <li data-ng-class="{active: $state.includes('flow.candidate')}" ><a ui-sref="flow.candidate" style="margin-left: 35px;"><i class="fa fa-circle-o"></i>{{'flow-handle' | translate}}</a></li>
           </ul>
         </li>
         <li class="treeview" data-ng-class="{active: $state.includes('cms')}" >

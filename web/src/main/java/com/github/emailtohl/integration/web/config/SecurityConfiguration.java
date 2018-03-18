@@ -23,6 +23,7 @@ import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -51,6 +52,7 @@ import org.springframework.web.util.WebUtils;
 import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
 import com.github.emailtohl.integration.core.auth.LoginEvent;
 import com.github.emailtohl.integration.core.config.CoreConfiguration;
+import com.github.emailtohl.integration.core.role.Authority;
 import com.github.emailtohl.integration.web.filter.UserPasswordEncryptionFilter;
 
 /**
@@ -163,21 +165,56 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			"/home.html",
 			"/signup",
 			"/about",
+			"/login",
+			"/logout",
+			"/article",
+			"/detail",
+			"/public/recentArticles",
+			"/public/recentComments",
+			"/public/classify",
 		};
 		security
 			.authorizeRequests()
 				// 跨域请求登录页面时，要发送一个预访问请求：PreflightRequest，让spring security不做拦截
 				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-				.antMatchers("/").permitAll()
-				.antMatchers("/**").permitAll()
-				/*.antMatchers("/login").permitAll()
 				.antMatchers(permitUrl).permitAll()
 				.antMatchers("/rest/**").fullyAuthenticated()
-				.antMatchers("/user/**").fullyAuthenticated()
-				.antMatchers("/encryption/**").fullyAuthenticated()
+				.antMatchers(HttpMethod.GET, "/audit/role/**").hasAuthority(Authority.AUDIT_ROLE)
+				.antMatchers(HttpMethod.GET, "/audit/customer/**", "/audit/employee/**").hasAuthority(Authority.AUDIT_USER)
+				.antMatchers(HttpMethod.DELETE, "/cms/**").hasAuthority(Authority.CONTENT)
+				.antMatchers(HttpMethod.POST, "/cms/type", "/cms/approveArticle", "/cms/rejectArticle", "/cms/openComment", "/cms/closeComment", "/cms/approvedComment", "/cms/rejectComment").hasAuthority(Authority.CONTENT)
+				.antMatchers(HttpMethod.PUT, "/cms/type").hasAuthority(Authority.CONTENT)
+				.antMatchers(HttpMethod.GET, "/cms/**").permitAll()
+				.antMatchers(HttpMethod.POST, "/customer", "/customer/updatePassword").permitAll()
+				.antMatchers(HttpMethod.GET, "/customer/exist", "/customer/token").permitAll()
+				.antMatchers(HttpMethod.GET, "/customer/page", "/customer/search", "/customer/cellPhoneOrEmail").hasAuthority(Authority.CUSTOMER)
+				.antMatchers(HttpMethod.PUT, "/customer").hasAuthority(Authority.CUSTOMER)
+				.antMatchers(HttpMethod.DELETE, "/customer").hasAuthority(Authority.CUSTOMER_DELETE)
+				.antMatchers(HttpMethod.POST, "/customer/enabled").hasAuthority(Authority.CUSTOMER_ENABLED)
+				.antMatchers(HttpMethod.POST, "/customer/grandRoles").hasAuthority(Authority.CUSTOMER_ROLE)
+				.antMatchers(HttpMethod.POST, "/customer/grandLevel").hasAuthority(Authority.CUSTOMER_LEVEL)
+				.antMatchers(HttpMethod.POST, "/customer/resetPassword").hasAuthority(Authority.CUSTOMER_RESET_PASSWORD)
+				.antMatchers("/customer/**").authenticated()
+				.antMatchers(HttpMethod.GET, "/employee/exist").permitAll()
+				.antMatchers(HttpMethod.POST, "/employee").hasAuthority(Authority.EMPLOYEE)
+				.antMatchers(HttpMethod.PUT, "/employee").hasAuthority(Authority.EMPLOYEE)
+				.antMatchers(HttpMethod.DELETE, "/employee").hasAuthority(Authority.EMPLOYEE_DELETE)
+				.antMatchers(HttpMethod.POST, "/employee/grandRoles").hasAuthority(Authority.EMPLOYEE_ROLE)
+				.antMatchers(HttpMethod.POST, "/employee/resetPassword").hasAuthority(Authority.EMPLOYEE_RESET_PASSWORD)
+				.antMatchers(HttpMethod.POST, "/employee/enabled").hasAuthority(Authority.EMPLOYEE_ENABLED)
+				.antMatchers("/employee/**").authenticated()
+				.antMatchers(HttpMethod.GET, "/resource/**").permitAll()
+				.antMatchers(HttpMethod.POST, "/resource/createDir", "/resource/reName", "/resource/delete").hasAuthority(Authority.RESOURCE)
+				.antMatchers(HttpMethod.POST, "/resource/writeText").hasAuthority(Authority.CONTENT)
+				.antMatchers("/resource/**").authenticated()
+				.antMatchers(HttpMethod.GET, "/authority/**").permitAll()
+				.antMatchers(HttpMethod.GET, "/role/**").permitAll()
+				.antMatchers(HttpMethod.POST, "/role").hasAuthority(Authority.ROLE)
+				.antMatchers(HttpMethod.PUT, "/role").hasAuthority(Authority.ROLE)
+				.antMatchers(HttpMethod.DELETE, "/role").hasAuthority(Authority.ROLE)
+				.antMatchers("/encryption/**").authenticated()
 				.antMatchers("/secure").fullyAuthenticated()
-				.antMatchers("/forum/**").fullyAuthenticated()
-				.anyRequest().authenticated()*/
+				.anyRequest().authenticated()
 			// 登录配置
 			.and().addFilterBefore(new CORSFilter(), ChannelProcessingFilter.class)
 			.formLogin()

@@ -117,6 +117,11 @@ public class CustomerCtrl extends RestCtrl<Customer> {
 		customerService.grandRoles(form.id, form.roleNames);
 	}
 
+	@RequestMapping(value = "grandLevel", method = RequestMethod.POST)
+	public void grandLevel(Long id, Form form) {
+		
+	}
+	
 	/**
 	 * 如果用手机号码，则将token以短信形式发送给用户；
 	 * 若用邮箱，则将token以邮件发送给用户。
@@ -179,6 +184,7 @@ public class CustomerCtrl extends RestCtrl<Customer> {
 		String token;
 		String newPassword;
 		Boolean enabled;
+		Customer.Level level;
 		public Long getId() {
 			return id;
 		}
@@ -214,6 +220,12 @@ public class CustomerCtrl extends RestCtrl<Customer> {
 		}
 		public void setEnabled(Boolean enabled) {
 			this.enabled = enabled;
+		}
+		public Customer.Level getLevel() {
+			return level;
+		}
+		public void setLevel(Customer.Level level) {
+			this.level = level;
 		}
 	}
 
