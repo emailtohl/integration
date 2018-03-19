@@ -145,12 +145,6 @@ define(['jquery', 'cms/module', 'toastr', 'cms/resource/service'/*, 'ztree'*/], 
 		 */
 		function zTreeBeforeRemove(treeId, treeNode) {
 			var filename;
-			/*
-			if (treeNode.getParentNode() == null) {
-				alert('根目录不能删除!');
-				return false;
-			}
-			*/
 			if (confirm('确认删除吗？')) {
 				filename = ztreeutil.getFilePath(treeNode);
 				service['delete'](filename).then(function(resp) {

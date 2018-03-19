@@ -448,7 +448,7 @@ public class CmsCtrl {
 	 * @throws IOException
 	 * @throws NotFoundException 
 	 */
-	@RequestMapping(value = "public/detail", method = GET)
+	@RequestMapping(value = "detail", method = GET)
 	public void getDetail(@RequestParam long id, HttpServletRequest request, HttpServletResponse response) throws TemplateException, IOException, NotFoundException {
 		Article a = articleService.get(id);
 		Map<String, Object> model = new HashMap<>();

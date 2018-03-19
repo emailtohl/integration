@@ -1,4 +1,4 @@
-define(['encryption/module', 'common/service/myrsa', 'encryption/service'], function(encryptionModule, myrsa) {
+define(['encryption/module', 'common/service/myrsa', 'toastr', 'encryption/service'], function(encryptionModule, myrsa, toastr) {
 	return encryptionModule
 	.controller('RsaCtrl', ['$scope', '$http', '$state', 'encryptionService', 'util',
 	                                function($scope, $http, $state, service, util) {
@@ -29,7 +29,7 @@ define(['encryption/module', 'common/service/myrsa', 'encryption/service'], func
 		};
 		self.uploadPublicKey = function() {
 			service.uploadPublicKey(self.publicKey).then(function(resp) {
-				alert('公钥上传成功');
+				toastr.info('公钥上传成功');
 			});
 		};
 		self.cleanLocalStorage = function() {
@@ -46,7 +46,7 @@ define(['encryption/module', 'common/service/myrsa', 'encryption/service'], func
 			if (self.testMessage && self.serverPublicKey) {
 				var ciphertext = myrsa.encrypt(self.testMessage, self.serverPublicKey);
 				service.secret(ciphertext).then(function(resp) {
-					alert('提交成功');
+					toastr.info('提交成功');
 				});
 			}
 		}
