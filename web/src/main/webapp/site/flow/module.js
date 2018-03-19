@@ -32,5 +32,6 @@ define(['angular', 'ui-router', 'common/context'], function(angular) {
 				controller: 'FlowCandidateCtrl as ctrl'
 			})
 			;
-	});
+	})
+	;
 });

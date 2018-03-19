@@ -35,7 +35,7 @@
                    <td>{{x.flowNum}}</td>
                    <td>{{x.createDate}}</td>
                    <td>{{x.flowType}}</td>
-                   <td>{{x.taskName ? x.flowType : (x.pass === true ? '通过':'未通过')}}</td>
+                   <td ng-bind="ctrl.getTaskName(x)"></td>
                    <td>{{x.content}}</td>
                    <td>
                      <a href="javascript:void(0)" ui-sref="flow.detail({id:x.id, audit:0})">查看</a>
@@ -64,57 +64,3 @@
   <!-- /.row -->
 </section>
 <!-- /.content -->
-
-
-
-	
-	<div modal open="ctrl.modal.open" title="{{ctrl.modal.title}}" when-confirm="ctrl.modal.whenConfirm()" type="{{ctrl.modal.type}}">
-	    <div class="box box-widget">
-            <div class="box-header with-border">
-              <div class="user-block">
-                <img class="img-circle" ng-src="{{ctrl.detail.applicationForm.applicant.iconSrc}}" alt="User Image">
-                <span class="username"><a href="#">{{ctrl.detail.applicationForm.applicant.email}}</a></span>
-                <span class="description">{{ctrl.detail.applicationForm.createDate}}</span>
-              </div>
-              <!-- /.user-block -->
-              <div class="box-tools">
-                <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="Mark as read">
-                  <i class="fa fa-circle-o"></i></button>
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
-                <!-- <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button> -->
-              </div>
-              <!-- /.box-tools -->
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-              <!-- post text -->
-              
-              <p>{{ctrl.detail.applicationForm.description}}</p>
-
-            </div>
-            <!-- /.box-body -->
-            <div class="box-footer box-comments">
-              <div class="box-comment">
-                <!-- User image -->
-                <img class="img-circle img-sm" ng-src="{{ctrl.detail.handler.iconSrc}}" alt="User Image">
-
-                <div class="comment-text">
-                      <span class="username">
-                        {{ctrl.detail.handler.email}}
-                        <span class="text-muted pull-right">{{ctrl.detail.createDate}}</span>
-                        <span class="label" ng-class="{'label-primary': x.status == 'REQUEST', 'label-warning' : x.status == 'PROCESSING', 'label-danger' : x.status == 'REJECT', 'label-success' : x.status == 'COMPLETION'}">{{ctrl.statusMap[x.status]}}</span>
-                      </span><!-- /.username -->
-                  {{ctrl.detail.cause}}
-                </div>
-                <!-- /.comment-text -->
-              </div>
-              <!-- /.box-comment -->
-            </div>
-            <!-- /.box-footer -->
-            <div class="box-footer">
-            </div>
-            <!-- /.box-footer -->
-          </div>
-	    <!-- /.box-body -->
-	</div>

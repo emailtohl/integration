@@ -1,5 +1,6 @@
 define([
-	'angular', 'i18n', 'angular-animate', 'angular-cookies', 'angular-touch', 'ui-router', 
+	'angular', 'i18n', 'WebsocketEndpoint', 'toastr', 
+	'angular-animate', 'angular-cookies', 'angular-touch', 'ui-router', 
 	'angular-datepicker', 'ng-verify', 'angular-translate',
 	'common/context',
 	'role/context',
@@ -9,7 +10,7 @@ define([
 	'encryption/context',
 	'flow/context',
 	'dashboard/context',
-], function(angular, i18n) {
+], function(angular, i18n, WebsocketEndpoint, toastr) {
 	return angular.module('app', [
 			'ui.router', 'ngAnimate', 'ngCookies', 'ngTouch', 'pascalprecht.translate',
 			'commonModule',
@@ -21,10 +22,22 @@ define([
 			'flowModule',
 			'dashboardModule',
 		])
-		.run(['$rootScope', '$state', '$stateParams', '$http', '$translate', function($rootScope, $state, $stateParams, $http, $translate) {
+		.run(['$rootScope', '$state', '$stateParams', '$http', '$translate', 'util', function($rootScope, $state, $stateParams, $http, $translate, util) {
 			// 让页面能同步状态，显示出该状态应有的效果，例如某菜单被激活的样式
 			$rootScope.$state = $state;
 			$rootScope.$stateParams = $stateParams;
+			
+			// websocket
+			var SECURITY_CODE = "abcdefg0123456789";
+			var site = util.getRootName() + '/websocket/';
+			var isHttps = window.location.protocol == 'https:' ? true : false;
+			var url = (isHttps ? 'wss://' : 'ws://') + window.location.host + site + SECURITY_CODE;
+			$rootScope.websocketEndpoint = new WebsocketEndpoint(url);
+			$rootScope.websocketEndpoint.addListener('flowNotify', function(message) {
+				console.log(message);
+				toastr.info(message.data && message.data.content);
+			});
+			
 			// 获取当前用户的认证信息，页面可以直接通过{{authentication.username}}获取用户名
 			$rootScope.getAuthentication = function(callback) {
 				var promise = {
@@ -37,12 +50,15 @@ define([
 					console.log('authentication:')
 					console.log(data);
 					$rootScope.authentication = data;
-					if ($rootScope.websocket) {// 反向刷新websocket endpoint中的userId
+					if ($rootScope.websocketEndpoint.isOpen()) {// 反向刷新websocket endpoint中的userId
 						var msg = JSON.stringify({
 				    		messageType : 'refreshUserId',
 				    		data : $rootScope.getUserId(),
 				    	});
-						$rootScope.websocket.send(msg);
+						$rootScope.websocketEndpoint.send(msg);
+					} else {
+						toastr.error('websocket disconnect, try reopen');
+						$rootScope.websocketEndpoint = new WebsocketEndpoint(url);
 					}
 					if(callback) {
 						callback(data);

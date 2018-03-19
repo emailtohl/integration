@@ -37,5 +37,17 @@ define(['flow/module', 'flow/service'], function(flowModule, service) {
 			});
 		};
 		
+		self.getTaskName = function(flowData) {
+			if (flowData.taskName) {
+				return flowData.taskName;
+			}
+			if (flowData.pass == null) {
+				return '';
+			}
+			if (flowData.pass === false) {
+				return '未通过';
+			}
+			return '通过';
+		};
 	}]);
 });

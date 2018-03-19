@@ -1,8 +1,7 @@
 define(['angular', 'toastr', 'dashboard/module', 'knob'], function(angular, toastr) {
 	return angular.module('dashboardModule')
 	.controller('DashboardCtrl', ['$rootScope', '$scope', '$http', '$state', '$cookies', 'util', function($rootScope, $scope, $http, $state, $cookies, util) {
-		var self = this, connection, isHttps = window.location.protocol == 'https:' ? true : false, 
-				SECURITY_CODE = "abcdefg0123456789", $knob = $(".knob"), isCreated = false;
+		var self = this, $knob = $(".knob"), isCreated = false;
 		$scope.getAuthentication();
 		self.chatlist = [];
 		self.systemInfo = {};
@@ -13,34 +12,8 @@ define(['angular', 'toastr', 'dashboard/module', 'knob'], function(angular, toas
 			});
 		});
 		
-		connection = openWebsocket();
-		$rootScope.websocket = connection;
-		connection.onopen = function(e) {
-			console.log('打开连接');
-		};
-		connection.onmessage = function(e) {
-			var message = JSON.parse(e.data);
-			if (message.messageType == 'chat') {
-				chat(message);
-			} else if (message.messageType == 'systemInfo') {
-				systemInfo(message);
-			} else if (message.messageType == 'flowNotify') {
-				flowNotify(message);
-			}
-		};
-		connection.onclose = function(e) {
-			toastr.error('WebSocketClosed! ' + e.data);
-	    }
-		connection.onerror = function(e) {
-	    	toastr.error('WebSocketError! ' + e.data);
-	    	connection.onopen();
-	    }
-		
-		function openWebsocket() {
-			var site = util.getRootName() + '/websocket/';
-			var url = (isHttps ? 'wss://' : 'ws://') + window.location.host + site + SECURITY_CODE;
-			return new WebSocket(url);
-		}
+		$rootScope.websocketEndpoint.addListener('chat', chat);
+		$rootScope.websocketEndpoint.addListener('systemInfo', systemInfo);
 		
 		function chat(message) {
 			$scope.$apply(function() {
@@ -97,17 +70,7 @@ define(['angular', 'toastr', 'dashboard/module', 'knob'], function(angular, toas
 		
 		}
 		
-		function flowNotify(message) {
-			console.log(message);
-			toastr.info(message.data && message.data.content);
-		}
-		
 		self.send = function() {
-	    	if (connection.readyState != WebSocket.OPEN) {
-				toastr.error('WebSocket is Not Open, current state is： ' + connection.readyState);
-				connection.onopen();
-				return;
-			}
 	    	var msg = JSON.stringify({
 	    		messageType : 'chat',
 	    		userId : $scope.getUserId(),
@@ -117,7 +80,7 @@ define(['angular', 'toastr', 'dashboard/module', 'knob'], function(angular, toas
 		    		iconSrc : $scope.getIconSrc()
 	    		},
 	    	});
-	    	connection.send(msg); // 通过套接字传递该内容
+	    	$rootScope.websocketEndpoint.send(msg); // 通过套接字传递该内容
 	    	self.message = '';
 		};
 		

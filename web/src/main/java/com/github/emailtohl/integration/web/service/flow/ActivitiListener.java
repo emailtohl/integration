@@ -39,6 +39,7 @@ public class ActivitiListener implements ExecutionListener, TaskListener, Serial
 		if (StringUtils.hasText(applyUserId)) {
 			event.getToUserIds().add(applyUserId);
 		}
+		event.setContent(execution.getVariable("flowNum") + "  " + execution.getEventName());
 		publisher.publishEvent(event);
 	}
 
@@ -68,14 +69,16 @@ public class ActivitiListener implements ExecutionListener, TaskListener, Serial
 			if (StringUtils.hasText(applyUserId)) {
 				event.getToUserIds().add(applyUserId);
 			}
-			event.setContent("你申请的任务“" + delegateTask.getVariable("flowNum") + "”被“" + delegateTask.getAssignee() + "”签收");
+			event.setContent("你申请的任务“" + delegateTask.getVariable("flowNum") + "”被“"
+					+ userIdMapper.getFirstNameByUserId(delegateTask.getAssignee()) + "”签收");
 			break;
 		case "complete":// 完成后，告知申请人
 			String _applyUserId = delegateTask.getVariable("applyUserId", String.class);
 			if (StringUtils.hasText(_applyUserId)) {
 				event.getToUserIds().add(_applyUserId);
 			}
-			event.setContent("你申请的任务“" + delegateTask.getVariable("flowNum") + "”被“" + delegateTask.getAssignee() + "”完成");
+			event.setContent("你申请的任务“" + delegateTask.getVariable("flowNum") + "”被“"
+					+ userIdMapper.getFirstNameByUserId(delegateTask.getAssignee()) + "”完成");
 			break;
 		case "all":
 			break;

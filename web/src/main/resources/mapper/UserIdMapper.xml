@@ -11,5 +11,8 @@
 			#{groupId}
 		</foreach>
 	</select>
+	<select id="getFirstNameByUserId" resultType="String" parameterType="String">
+		SELECT u.first_ FROM act_id_user u WHERE u.id_ = #{userId}
+	</select>
 
 </mapper>

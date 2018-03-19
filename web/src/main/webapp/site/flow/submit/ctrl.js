@@ -39,7 +39,7 @@ define(['flow/module', 'flow/service', 'toastr'], function(flowModule) {
 			self.form.reApply = true;
 			flowService.reApply(self.form).then(function(resp) {
 				if (resp.data.ok) {
-					$state.go('flow.detail', {id: resp.data.id, audit:0});
+					$state.go('flow.detail', {id: $state.params.id, audit:0});
 				} else {
 					toastr.error('提交失败');
 				}
@@ -50,7 +50,7 @@ define(['flow/module', 'flow/service', 'toastr'], function(flowModule) {
 			self.form.reApply = false;
 			flowService.reApply(self.form).then(function(resp) {
 				if (resp.data.ok) {
-					$state.go('flow.detail', {id: resp.data.id, audit:0});
+					$state.go('flow.detail', {id: $state.params.id, audit:0});
 				} else {
 					toastr.error('提交失败');
 				}

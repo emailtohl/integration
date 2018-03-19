@@ -82,19 +82,6 @@ public class WebSocketEndpoint {
 			LOG.warn("userId is empty");
 			userId = corePresetData.user_anonymous.getId().toString();
 		}
-		/*
-		String host = InetAddress.getLocalHost().getHostAddress();
-		String localPort = env.getProperty("local.host");
-		if (!StringUtils.hasText(localPort))
-			localPort = "8080";
-		try {
-			URI uri = new URI("ws", host + ":" + localPort,
-					servletContext.getContextPath() + "/cluster/" + securityCode, null, null);
-			this.client = ContainerProvider.getWebSocketContainer().connectToServer(this, uri);
-		} catch (URISyntaxException | IOException | DeploymentException e) {
-			LOG.warn("websocket faild in server", e);
-		}
-		*/
 		eventListener.addEndpoint(this);
 	}
 

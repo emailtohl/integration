@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
@@ -312,7 +313,11 @@ public class FlowService {
 			variables.put("reApply", reApply);
 			variables.put("pass", false);
 		}
-		taskService.complete(taskId, variables);
+		try {
+			taskService.complete(taskId, variables);
+		} catch (ActivitiObjectNotFoundException e) {
+			return new ExecResult(false, "没查找到此id为“" + taskId +"”的任务", null);
+		}
 		return new ExecResult(true, "", null);
 	}
 
