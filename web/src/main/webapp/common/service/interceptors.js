@@ -19,7 +19,7 @@ define([ 'common/module', 'toastr', 'common/service/util' ], function(commonModu
 				// return $q.reject('Not allowed');
 			},
 			requestError : function(rejection) {
-				console.log('Request error due to ', rejection);
+				console.error('Request error due to ', rejection);
 				// Continue to ensure that the next promise chain
 				// sees an error
 				return $q.reject(rejection);
@@ -32,7 +32,7 @@ define([ 'common/module', 'toastr', 'common/service/util' ], function(commonModu
 				return response || $q.when(response);
 			},
 			responseError : function(rejection) {
-				console.log('Error in response ', rejection);
+				console.error('Error in response ', rejection);
 				// Continue to ensure that the next promise chain
 				// sees an error
 				// Can check auth status code here if need to

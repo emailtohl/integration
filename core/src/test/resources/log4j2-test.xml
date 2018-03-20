@@ -38,8 +38,8 @@
 		<logger name="org.apache" level="info">
 			<!-- <appender-ref ref="CoreTestFileAppender" /> -->
 		</logger>
-		<!-- 
-		<logger name="org.hibernate.type.descriptor.sql" level="TRACE" />
-		 -->
+		<!-- 配置为TRACE，则可让hibernate打印sql -->
+		<logger name="org.hibernate.type.descriptor.sql" level="info" />
+		
 	</loggers>
 </configuration>

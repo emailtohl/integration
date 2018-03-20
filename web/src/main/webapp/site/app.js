@@ -34,7 +34,6 @@ define([
 			var url = (isHttps ? 'wss://' : 'ws://') + window.location.host + site + SECURITY_CODE;
 			$rootScope.websocketEndpoint = new WebsocketEndpoint(url);
 			$rootScope.websocketEndpoint.addListener('flowNotify', function(message) {
-				console.log(message);
 				toastr.info(message.data && message.data.content);
 			});
 			

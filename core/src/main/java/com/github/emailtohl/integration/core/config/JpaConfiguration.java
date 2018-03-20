@@ -3,6 +3,7 @@ package com.github.emailtohl.integration.core.config;
 import static com.github.emailtohl.integration.core.Profiles.DB_RAM_H2;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,10 +13,15 @@ import javax.inject.Named;
 import javax.sql.DataSource;
 
 import org.hibernate.dialect.PostgreSQL9Dialect;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.dao.support.PersistenceExceptionTranslator;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -32,6 +38,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.util.StringUtils;
 
 /**
  * 测试的spring上下文配置
@@ -109,9 +116,11 @@ class JpaConfiguration {
 		Map<String, Object> properties = new HashMap<String, Object>();
 		properties.put("hibernate.hbm2ddl.auto", hibernate_hbm2ddl_auto);
 		// 关于sql的打印
-//		properties.put("hibernate.show_sql", "true");
-//		properties.put("hibernate.format_sql", "true");
-//		properties.put("hibernate.use_sql_comments", "true");
+		if (showSql()) {
+			properties.put("hibernate.show_sql", "true");
+			properties.put("hibernate.format_sql", "true");
+//			properties.put("hibernate.use_sql_comments", "true");
+		}
 		// hibernate.search.default.directory_provider默认是filesystem
 		// 设置hibernate.search.default.indexBase可指定索引目录
 		if (contains(DB_RAM_H2)) // 使用内存数据库一般是测试环境，可以使用内存来做索引的存储空间
@@ -183,5 +192,37 @@ class JpaConfiguration {
 		return Arrays.stream(env.getActiveProfiles()).anyMatch(s -> envName.equals(s));
 	}
 	
+	/**
+	 * 根据在日志文件中hibernate参数的级别，确定是否显示sql
+	 * @return
+	 */
+	private boolean showSql() {
+		Document d = null;
+		try {// 首先查看测试环境
+			Resource r = new ClassPathResource("log4j2-test.xml");
+			d = Jsoup.parse(r.getFile(), "UTF-8");
+		} catch (IOException e) {}
+		if (d == null) {
+			try {// 再查看正式环境
+				Resource r = new ClassPathResource("log4j2.xml");
+				d = Jsoup.parse(r.getFile(), "UTF-8");
+			} catch (IOException e) {}
+		}
+		if (d == null) {// 若没查找到，直接返回
+			return false;
+		}
+		Element e = d.selectFirst("logger[name=\"org.hibernate.type.descriptor.sql\"]");
+		if (e == null) {// 若没查找到该元素，则返回
+			return false;
+		}
+		String level = e.attr("level");
+		if (!StringUtils.hasText(level)) {// 若没查找到该属性，则返回
+			return false;
+		}
+		if ("TRACE".equals(level.toUpperCase())) {// 若是TRACE级别的，则hibernate会打印参数，返回true
+			return true;
+		}
+		return false;
+	}
 }
 

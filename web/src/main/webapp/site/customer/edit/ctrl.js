@@ -16,7 +16,6 @@ define(['customer/module', 'customer/service'], function(customerModule) {
 			
 			self.submit = function() {
 				service.update(self.form.id, self.form).then(function(resp) {
-					console.log(resp.data && resp.data.id);
 					$state.go('customer.detail', {id : self.form.id}, {
 						reload: true
 					});

@@ -2,22 +2,46 @@
 
 **Java JavaScript 业务框架 spring springmvc springsecurity springdata JPA Hibernate search Envers Lucene Activiti AngularJS1.× AdminLTE**
 
-说明
-----
+## 说明
 
-之前的web-building，由于想包罗万象，同样功能有多份实现，所以十分复杂，这次对项目的重构，主要目标是拆分模块，简化配置，优化测试等几个方面，旨在简化之前的复杂和冗余，使项目更加模块化，清晰度更高，也更加易于学习和使用。
+本项目集成了企业级项目开发中所涉及的大多数内容，如“关系管理”、“内容管理”、“文件管理”、“索引搜索”、“流程管理”、“通信安全”等等，涉及的Java组件众多，整个项目规范统一、配置简洁、测试充分、架构合理，可简单移植到真实开发环境中。
 
-这是第二次重构了，第一次重构后的版本已转存到milestone分支上，master主分支则在二次重构过程中，本次主要重点在后端架构上，目标是真实的业务系统，而不再是简单demo。
+项目基于前后端分离，作为后端，主要提供API接口，为了验证接口，项目中含有基于AngularJS1.×的前端代码，也可在此API之上新建一个基于Angular或Vue的独立的前端项目。
 
-基于前后端分离，后端主要提供API接口，不过为了验证接口，除了单元测试外，仍然含有基于AngularJS1.×的代码，后续计划在此API之上新建一个基于Angular或Vue的独立的前端项目。
+项目分为三个模块，common作为工具包，可被其他项目引用；core模块作为集成项目的核心包搭建了整个integration环境，包括统一的数据源和管理接口，基础配置，以及严格的单元测试等，所以在integration环境中的其他模块（如web）只需在Maven中引入core模块即统一了一致的开发环境，具体使用可见web模块。
 
-本次重构，项目分为三个模块，其中common仍然保留原状，可被其他项目引用；本次主要开发是core模块，它架设了整个integration环境，包括提供基于Spring的基础配置，统一访问接口，严格单元测试等，这让配置和接口统一化，如此一来在integration环境中的所有上层模块（如web）只需引入core即拥有统一开发环境。具体使用可见web模块。
+## 数据
 
-另外core模块依托于JPA，内置了基础业务数据，启动项目即可及时观察效果。
+项目运行的基础数据是在配置中自动化生成的，配置好数据源并启动项目，即可直接运行，若需定制数据（如用户、初始化密码）可在配置文件中修改：
+```
+com.github.emailtohl.integration.core.config.CorePresetData
+```
+以及
+```
+com.github.emailtohl.integration.web.config.WebPresetData
+```
+
+## 项目启动
+
+首先，web容器（tomcat）会引导web模块中的：
+~~~
+com.github.emailtohl.integration.web.ContainerBootstrap
+~~~
+该类创建了Spring上下文，并注册了Servlet、Listener、Filter。
+
+初始化Spring时，同时设置了Spring运行的环境变量：
+1. Profiles.DB_JNDI：从JNDI中查找数据源，当然也可以改为Profiles.DB_CONFIG，这样就是直接读取src/main/resources/config.properties中的数据源，逻辑位于：
+```
+com.github.emailtohl.integration.core.config.DataSourceConfiguration
+```
+2. Profiles.ENV_SERVLET：这主要区分单元测试环境和在实际Servlet容器环境下代码的逻辑。
+
+
+## 配置
 
 当maven下载完所有依赖包后，初始化项目:
 
-首先创建数据库，项目默认通过JNDI获取数据源，这是为了避免数据泄漏的标准做法，所以需要在tomcat的context.xml中配置：
+首先创建数据库，项目默认通过JNDI获取数据源，这是为了避免数据泄漏的标准做法。所以需要在tomcat的context.xml中配置：
 ```xml
     <Resource name="jdbc/integration" type="javax.sql.DataSource"
 		maxActive="20" maxIdle="5" maxWait="10000" username="postgres"
@@ -26,13 +50,13 @@
 		url="jdbc:postgresql://localhost:5432/integration"></Resource>
 ```
 
-当然也可以使用integration-core中src/main/resources/database.properties中的数据库配置，将web模块的ContainerBootstrap类中setActiveProfiles为Profiles.DB_CONFIG，这样core模块中的DataSourceConfiguration就会用配置来创建数据源。：
+若将web模块的ContainerBootstrap类中setActiveProfiles改为Profiles.DB_CONFIG，则core模块中的DataSourceConfiguration就会读取integration-core中src/main/resources/database.properties中的数据库配置：
 
 ```java
 	rootContext.getEnvironment().setActiveProfiles(Profiles.DB_JNDI, Profiles.ENV_SERVLET);// 激活spring配置中的profile
 ```
 
-项目会使用文件系统，配置在integration-core的src/main/resources/config.properties中，若不配置，则默认使用与项目同级目录下的integration-data，该目录包括索引目录(integration-data/index)、资源目录(integration-data/resources)等，所以还需在tomcat的server.xml中的Host标签下配置虚拟目录：
+项目会使用文件系统，配置位于integration-core的src/main/resources/config.properties中，若不配置，则默认使用与项目同级目录下的integration-data，该目录包括索引目录(integration-data/index)、资源目录(integration-data/resources)等，为了在浏览器上访问资源文件，还需在tomcat的server.xml中的Host标签下配置虚拟目录：
 
 ```xml
 <Context docBase="/home/helei/programs/apache-tomcat-8.5.24/wtpwebapps/integration-data/resources" path="/web/resources" reloadable="true"/>
@@ -45,3 +69,17 @@
 > 1000/admin
 
 若要自定义账号等数据，可在com.github.emailtohl.integration.core.config.PresetData中进行配置，并在该类同级的InitData中进行初始化。
+
+## 注意
+
+在引入core的模块中，若有修改用户信息的功能，则需要将web模块中的：
+~~~
+com.github.emailtohl.integration.web.aop.UserServiceProxy
+~~~
+和
+~~~
+com.github.emailtohl.integration.web.aop.RoleServiceProxy
+~~~
+拷贝一份，并在Spring中启动切面，这是用于同步更新Activiti的用户信息。
+
+当然最好将修改用户信息的功能集中在web模块中进行管理。

@@ -10,7 +10,6 @@ define(['customer/module', 'customer/service'], function(customerModule) {
 				function getAtRevision(roleId, revision) {
 					service.getAtRevision(roleId, revision).then(function(resp) {
 						self.detail = resp.data;
-						console.log(self.detail);
 					});
 				}
 				getAtRevision(self.id, self.revision);

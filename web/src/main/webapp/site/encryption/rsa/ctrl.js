@@ -56,7 +56,6 @@ define(['encryption/module', 'common/service/myrsa', 'toastr', 'encryption/servi
 		});
 		service.testMessage().then(function(resp) {
 			var data = resp.data;
-			console.log(data);
 			if (self.privateKey && data.ciphertext) {
 				self.testMessage = myrsa.decrypt(data.ciphertext, self.privateKey);
 			} else {
@@ -77,9 +76,7 @@ define(['encryption/module', 'common/service/myrsa', 'toastr', 'encryption/servi
 			var publicKey = keys[0];
 			var privateKey = keys[1];
 			var c = myrsa.encrypt(plaintext, publicKey);
-			console.log(c);
 			var r = myrsa.decrypt(c, privateKey);
-			console.log(r);
 		}
 	}])
 	;

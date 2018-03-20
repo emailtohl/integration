@@ -19,7 +19,6 @@ define(['cms/module', 'cms/category/service'], function(cmsModule) {
 			});*/
 			service.getTypes(self.queryParam).then(function(resp) {
 				self.list = resp.data;
-				console.log(self.list);
 				self.isDetail = false;
 			});
 		};

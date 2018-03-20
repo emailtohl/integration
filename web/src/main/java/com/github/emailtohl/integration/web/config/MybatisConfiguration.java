@@ -2,7 +2,9 @@ package com.github.emailtohl.integration.web.config;
 
 import javax.sql.DataSource;
 
+import org.apache.ibatis.logging.log4j2.Log4j2Impl;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.type.JdbcType;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
@@ -15,11 +17,12 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import com.github.emailtohl.integration.core.config.CoreConfiguration;
 /**
  * 使用 MyBatis-Spring 的主要原因是它允许 MyBatis 参与到 Spring 的事务管理中。而不是给 MyBatis 创建一个新的特定的事务管理器。
+ * 
  * Mybatis的基本使用是先在SqlSessionFactory中获取非线程安全的SqlSession，后再使用SqlSession的getMapper获取数据访问的Mapper接口
  * 
- * 而SqlSessionTemplate的配置，使得可以将SqlSession直接注入到业务Bean中，通过代理使得SqlSession线程安全。
+ * 注册SqlSessionTemplate后，使得可以将SqlSession直接注入到业务Bean中，Spring的代理将使得SqlSession线程安全。
  * 
- * 然而同样会使用许多SqlSession.getMapper重复代码，所以MapperScannerConfigurer的配置可将Mapper接口注入到业务Bean中。
+ * 不过在Bean中会使用许多SqlSession.getMapper重复代码，所以MapperScannerConfigurer可更进一步，直接将Mapper接口注入到业务Bean中。
  * 
  * 需要注意的是，Mybatis初始化时并没有将Mapper.xml的命名空间与Mapper接口关联起来，而是在调用Mapper接口时再在Mapper.xml配置中查询配置。
  * 
@@ -45,9 +48,6 @@ class MybatisConfiguration {
 	 */
 	@Bean
 	public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
-//		Environment env = new Environment("web", new JdbcTransactionFactory(), dataSource);
-//		org.apache.ibatis.session.Configuration cfg = new org.apache.ibatis.session.Configuration();
-//		cfg.setEnvironment(env);
 		SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
 		sessionFactory.setDataSource(dataSource);
 		// 配置类型别名
@@ -55,7 +55,14 @@ class MybatisConfiguration {
 		// 配置mapper的扫描，找到所有的mapper.xml映射文件
 		Resource[] resources = new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*Mapper.xml");
 		sessionFactory.setMapperLocations(resources);
-//		sessionFactory.setTransactionFactory(new JdbcTransactionFactory());
+		org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+		// 数据为空的情况
+		configuration.setJdbcTypeForNull(JdbcType.NULL);
+		// 查询时自动将数据库下划线字段映射到Entity的驼峰属性
+		configuration.setMapUnderscoreToCamelCase(true);
+		// 显示sql
+		configuration.setLogImpl(Log4j2Impl.class);
+		sessionFactory.setConfiguration(configuration);
 		return sessionFactory.getObject();
 	}
 	
@@ -65,7 +72,7 @@ class MybatisConfiguration {
 	 * @return
 	 */
 	@Bean
-	public SqlSessionTemplate sqlSession(SqlSessionFactory sqlSessionFactory) {
+	public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
 		return new SqlSessionTemplate(sqlSessionFactory);
 	}
 	

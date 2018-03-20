@@ -69,9 +69,6 @@ define(['jquery', 'cms/module', 'toastr', 'cms/resource/service'/*, 'ztree'*/], 
 			self.queryParam = $state.params.query;
 		}
 		self.query();
-		self.reloadText = function(charset) {
-			console.log(charset);
-		}
 		// 获取所有的字符集
 		service.getAvailableCharsets().then(function(resp) {
 			self.availableCharsets = resp.data;

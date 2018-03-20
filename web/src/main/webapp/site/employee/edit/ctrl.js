@@ -16,7 +16,6 @@ define(['employee/module', 'employee/service'], function(employeeModule) {
 			
 			self.submit = function() {
 				service.update(self.form.id, self.form).then(function(resp) {
-					console.log(resp.data && resp.data.id);
 					$state.go('employee.detail', {id : self.form.id}, {
 						reload: true
 					});

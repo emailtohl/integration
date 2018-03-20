@@ -25,7 +25,6 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 		self.query = function() {
 			service.queryComments(self.queryParam.query, self.queryParam.page).then(function(resp) {
 				self.page = resp.data;
-				console.log(resp.data);
 				self.isDetail = false;
 			});
 		};
@@ -35,7 +34,6 @@ define(['cms/module', 'cms/article/service', 'cms/category/service'], function(c
 		self.edit = function(id) {
 			service.findComment(id).then(function(resp) {
 				var data = resp.data;
-				console.log(data);
 				self.comment = data;
 				self.isDetail = true;
 				
