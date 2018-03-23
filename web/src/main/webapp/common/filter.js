@@ -24,5 +24,15 @@ define(['common/module'], function(commonModule) {
 			return array.join(', ');
 		}
 	})
+	.filter('omit', function() {
+		return function(content) {
+			if (typeof content != 'string')
+				return content;
+			var i = content.length;
+			if (i > 20)
+				i = 20;
+			return content.substring(0, i) + '……';
+		}
+	})
 	;
 });

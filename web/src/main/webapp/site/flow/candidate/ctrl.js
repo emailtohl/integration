@@ -10,7 +10,7 @@ define(['flow/module', 'flow/service'], function(flowModule) {
 			name : null,
 			status : null
 		});
-		var self = this;
+		var self = this, datatable;
 		util.loadasync('lib/datatables/dataTables.bootstrap.css');
 		$scope.getAuthentication().then(function() {
 			load();
@@ -34,7 +34,7 @@ define(['flow/module', 'flow/service'], function(flowModule) {
 		
 		self.table = function() {
 			requirejs(['jquery', 'dataTables', 'dataTables-bootstrap'], function($) {
-				$("#flow-list").DataTable({
+				datatable = $("#flow-list").DataTable({
                     stateSave: true,
                     // 0行是checkbox，7行是操作按钮，不进行排序
 //                    aoColumnDefs : [ { bSortable: false, aTargets: [ 0, 7 ] }],
@@ -52,6 +52,7 @@ define(['flow/module', 'flow/service'], function(flowModule) {
                             last : '尾页'
                         },
                     },
+                    destroy: true, //Cannot reinitialise DataTable,解决重新加载表格内容问题
                 });
 			});
 		};

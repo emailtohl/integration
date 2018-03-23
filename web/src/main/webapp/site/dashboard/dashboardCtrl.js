@@ -54,14 +54,18 @@ define(['angular', 'toastr', 'dashboard/module', 'knob'], function(angular, toas
 				swapPoints.push(self.systemInfo.swap);
 				if (swapPoints.length > mpoints_max)
 					swapPoints.splice(0, 1);
-				$swap.sparkline(swapPoints);
+				if ($swap && $swap.sparkline instanceof Function) {
+					$swap.sparkline(swapPoints);
+				}
 			}
 			if (data.getSystemCpuLoad) {
 				self.systemInfo.cpu = data.getSystemCpuLoad * 100;
 				cpuPoints.push(self.systemInfo.cpu);
 				if (cpuPoints.length > mpoints_max)
 					cpuPoints.splice(0, 1);
-				$cpu.sparkline(cpuPoints);
+				if ($cpu && $cpu.sparkline instanceof Function) {
+					$cpu.sparkline(cpuPoints);
+				}
 			}
 			if (data.getCommittedVirtualMemorySize) {
 				self.systemInfo.committedVirtualMemorySize = data.getCommittedVirtualMemorySize / 1024 / 1024 / 1024;

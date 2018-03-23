@@ -36,7 +36,7 @@
                    <td>{{x.createDate}}</td>
                    <td>{{x.flowType}}</td>
                    <td ng-bind="ctrl.getTaskName(x)"></td>
-                   <td>{{x.content}}</td>
+                   <td>{{x.content | omit}}</td>
                    <td>
                      <a href="javascript:void(0)" ui-sref="flow.detail({id:x.id, audit:0})">查看</a>
                      <a href="javascript:void(0)" ng-if="x.activityId === 'modifyApply'" ui-sref="flow.reSubmit({id:x.id})">重提</a>

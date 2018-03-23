@@ -1,15 +1,5 @@
 define(['cms/module', 'cms/article/service', 'cms/category/service'], function(cmsModule) {
 	return cmsModule
-	.filter('omit', function() {
-		return function(content) {
-			if (typeof content != 'string')
-				return content;
-			var i = content.length;
-			if (i > 20)
-				i = 20;
-			return content.substring(0, i) + '……';
-		}
-	})
 	.controller('CommentCtrl', ['$scope', '$http', '$state', 'commentService', 'util',
 	                                function($scope, $http, $state, service, util) {
 		const editorID = "comment-article-body";
