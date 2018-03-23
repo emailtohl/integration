@@ -12,8 +12,13 @@ define(['angular', 'toastr', 'dashboard/module', 'knob'], function(angular, toas
 			});
 		});
 		
-		$rootScope.websocketEndpoint.addListener('chat', chat);
-		$rootScope.websocketEndpoint.addListener('systemInfo', systemInfo);
+		$scope.websocketEndpoint.addListener('chat', chat);
+		$scope.websocketEndpoint.addListener('systemInfo', systemInfo);
+		
+		$scope.$on('$destroy',function () {
+			$scope.websocketEndpoint.removeListener('chat');
+			$scope.websocketEndpoint.removeListener('systemInfo');
+        });
 		
 		function chat(message) {
 			$scope.$apply(function() {
@@ -40,7 +45,9 @@ define(['angular', 'toastr', 'dashboard/module', 'knob'], function(angular, toas
 				memoryPoints.push(self.systemInfo.memory);
 				if (memoryPoints.length > mpoints_max)
 					memoryPoints.splice(0, 1);
-				$memory.sparkline(memoryPoints);
+				if ($memory.sparkline instanceof Function) {
+					$memory.sparkline(memoryPoints);
+				}
 			}
 			if (data.getFreeSwapSpaceSize && data.getTotalSwapSpaceSize) {
 				self.systemInfo.swap = (data.getFreeSwapSpaceSize / data.getTotalSwapSpaceSize) * 100;

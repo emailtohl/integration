@@ -8,10 +8,24 @@ define(['flow/module', 'flow/service'], function(flowModule, service) {
 		var self = this;
 		util.loadasync('lib/datatables/dataTables.bootstrap.css');
 		$scope.getAuthentication().then(function() {
+			load();
+		});
+		
+		var subscription = $scope.websocketEndpoint.messageStream.subscribe(function(message) {
+			if ('flowNotify' == message.messageType) {
+				load();
+			}
+		});
+		
+		$scope.$on('$destroy',function () {
+			subscription.completed();
+        });
+		
+		function load() {
 			flowService.list({applicantId: $scope.getUserId()}).then(function(resp) {
 				self.list = resp.data;
 			});
-		});
+		}
 		
 		self.table = function() {
 			requirejs(['jquery', 'dataTables', 'dataTables-bootstrap'], function($) {

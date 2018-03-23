@@ -24,7 +24,7 @@ define([ 'common/module', 'rx', 'toastr' ], function(common, Rx, toastr) {
 						.map(function(e) {
 							return e.target.value; // Project the text from the input
 						})
-						.debounce(1000 /* Pause for 1m */)
+						.debounce(1000 /* Pause for 1s */)
 						.filter(function(text) {
 							if ($scope.ignore && text == $scope.ignore) {
 								return false;

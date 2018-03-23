@@ -6,26 +6,35 @@ define(['flow/module', 'flow/service', 'toastr'], function(flowModule, service, 
 	.controller('FlowDetailCtrl', [ '$scope', '$http', '$state', 'flowService', 'util'
 	                         , function($scope, $http, $state, flowService, util) {
 		var self = this;
-		$scope.getAuthentication();
-		
-		self.isAudit = function() {
-			return $state.params.audit == 1;
-		}
-		
-		flowService.get($state.params.id).then(function(resp) {
-			self.flowData = resp.data;
-			if (self.isAudit()) {
-				self.check = {
-					id : self.flowData.id,
-					taskId : self.flowData.taskId
-				};
+		$scope.getAuthentication().then(function() {
+			load();
+		});
+
+		var subscription = $scope.websocketEndpoint.messageStream.subscribe(function(message) {
+			if ('flowNotify' == message.messageType) {
+				load();
 			}
-			flowService.getCommentInfo(self.flowData.processInstanceId).then(function(resp) {
-				console.log(resp.data);
-			});
 		});
 		
+		$scope.$on('$destroy',function () {
+			subscription.completed();
+        });
 		
+		function load() {
+			flowService.get($state.params.id).then(function(resp) {
+				self.flowData = resp.data;
+				if (self.isAudit()) {
+					self.check = {
+						id : self.flowData.id,
+						taskId : self.flowData.taskId
+					};
+				}
+				flowService.getCommentInfo(self.flowData.processInstanceId).then(function(resp) {
+					console.log(resp.data);
+				});
+			});
+		}
+
 		self.claim = function() {
 			flowService.claim(self.flowData.taskId).then(function(resp) {
 				if (resp.data.ok) {
@@ -48,5 +57,8 @@ define(['flow/module', 'flow/service', 'toastr'], function(flowModule, service, 
 			});
 		};
 		
+		self.isAudit = function() {
+			return $state.params.audit == 1;
+		}
 	}]);
 });

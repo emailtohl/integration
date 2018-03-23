@@ -1,7 +1,8 @@
 /**
  * websocket端点
+ * 提供注册函数和订阅两种方式
  */
-define(['toastr'], function(toastr) {
+define(['toastr', 'rx'], function(toastr) {
 	return function WebsocketEndpoint(url) {
 		var self = this;
 		self.connection = new WebSocket(url);
@@ -12,11 +13,26 @@ define(['toastr'], function(toastr) {
 		self.removeListener = function(eventName) {
 			delete self.map[eventName];
 		};
+		self.observers = [];
+		self.messageStream = Rx.Observable.create(function(observer) {
+			self.observers.push(observer);
+		});
 		self.connection.onmessage = function(e) {
-			var message = JSON.parse(e.data);
-			var listener = self.map[message.messageType];
+			var message, listener, i, observers = [];
+			message = JSON.parse(e.data);
+			listener = self.map[message.messageType];
 			if (listener instanceof Function) {
 				listener(message);
+			}
+			for (i = 0; i < self.observers.length; i++) {
+				if (!self.observers[i].isStopped) {
+					observers.push(self.observers[i]);
+					self.observers[i].next(message);
+				}
+			}
+			self.observers.length = 0;
+			for (i = 0; i < observers.length; i++) {
+				self.observers.push(observers[i]);
 			}
 		};
 		self.connection.onclose = function(e) {

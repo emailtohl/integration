@@ -12,11 +12,25 @@ define(['flow/module', 'flow/service'], function(flowModule) {
 		});
 		var self = this;
 		util.loadasync('lib/datatables/dataTables.bootstrap.css');
-		$scope.getAuthentication();
-		
-		flowService.findTodoTasks().then(function(resp) {
-			self.list = resp.data;
+		$scope.getAuthentication().then(function() {
+			load();
 		});
+		
+		var subscription = $scope.websocketEndpoint.messageStream.subscribe(function(message) {
+			if ('flowNotify' == message.messageType) {
+				load();
+			}
+		});
+		
+		$scope.$on('$destroy',function () {
+			subscription.completed();
+        });
+		
+		function load() {
+			flowService.findTodoTasks().then(function(resp) {
+				self.list = resp.data;
+			});
+		}
 		
 		self.table = function() {
 			requirejs(['jquery', 'dataTables', 'dataTables-bootstrap'], function($) {
