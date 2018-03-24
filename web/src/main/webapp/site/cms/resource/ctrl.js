@@ -47,7 +47,7 @@ define(['jquery', 'cms/module', 'toastr', 'cms/resource/service'/*, 'ztree'*/], 
 		 */
 		function loadTreeAndOpenPath(openPath) {
 			requirejs(['ztree'], function() {
-				service.query().then(function(resp) {
+				service.query(self.queryParam).then(function(resp) {
 					zNodes = resp.data;
 					if (openPath) {
 						ztreeutil.setOpen(zNodes, openPath);
@@ -99,7 +99,6 @@ define(['jquery', 'cms/module', 'toastr', 'cms/resource/service'/*, 'ztree'*/], 
 					name = pre + index;
 				}
 			}
-//			var fullname = decodeURIComponent(self.path) + '/' + name;
 			var fullname = self.path + '/' + name;
 			service.createDir(fullname).then(function(resp) {
 				loadTreeAndOpenPath(fullname);
@@ -111,10 +110,7 @@ define(['jquery', 'cms/module', 'toastr', 'cms/resource/service'/*, 'ztree'*/], 
 				return;
 			// 后台识别的是相对路径
 			var i = self.path.indexOf('/');
-			var path = self.path.substring(i);
-			service.writeText(path, self.content, self.charset).then(function(resp) {
-				self.query();
-				ztreeutil.setNodes();
+			service.writeText(self.path, self.content, self.charset).then(function(resp) {
 				loadTreeAndOpenPath(self.path);
 			});
 		};

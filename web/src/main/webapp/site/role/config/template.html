@@ -27,10 +27,11 @@
 			                </tr>
 		                </thead>
 		                <tbody>
-		                	<tr style="cursor:pointer;" ng-repeat="x in ctrl.roles" ng-click="ctrl.openModal(x.id, $event)">
+		                	<tr ng-repeat="x in ctrl.roles">
                   				<td ng-bind="x.name" class="col-md-5"></td>
                   				<td ng-bind="x.description" class="col-md-5"></td>
                   				<td class="col-md-2">
+                  					<button class="btn btn-default btn-xs" type="button" ng-click="ctrl.openModal(x.id, $event)" ng-if="!ctrl.isPresetRoleId(x.id)">编辑</button>
                   					<button class="btn btn-danger btn-xs" type="button" ng-click="ctrl.delete(x.id, x.name, $event)" ng-if="!ctrl.isPresetRoleId(x.id)">删除</button>
                   					<button class="btn btn-info btn-xs" type="button" ng-click="ctrl.history(x.id)">历史</button>
                 				</td>

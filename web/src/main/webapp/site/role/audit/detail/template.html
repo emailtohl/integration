@@ -17,17 +17,25 @@
         <div class="box-header with-border">
           <i class="fa fa-text-width"></i>
 
-          <h3 class="box-title">{{ctrl.detail.name}}</h3>
+          <h3 class="box-title">角色名 {{ctrl.detail.name}}</h3>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-          <ul>
-            <li ng-repeat="x in ctrl.detail.authorities">{{x.name}}
-              <ul>
-                <li>{{x.description}}</li>
-              </ul>
-            </li>
-          </ul>
+			<table id="flow-list" class="table table-bordered table-striped">
+               <tbody>
+               <tr>
+                   <td>描述</td>
+                   <td class="ng-binding">{{ctrl.detail.description}}</td>
+                   <td>角色类型</td>
+                   <td class="ng-binding">{{ctrl.detail.roleType}}</td>
+               </tr>
+               </tbody>
+           </table>
+           <ul>
+           	<li ng-repeat="x in ctrl.detail.authorities">
+           		{{x.name}}
+           	</li>
+           </ul>
         </div>
         <!-- /.box-body -->
       </div>
