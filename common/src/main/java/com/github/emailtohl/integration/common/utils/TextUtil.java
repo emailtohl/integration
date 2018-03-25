@@ -8,6 +8,8 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mozilla.intl.chardet.nsDetector;
 import org.mozilla.intl.chardet.nsICharsetDetectionObserver;
 import org.mozilla.intl.chardet.nsPSMDetector;
@@ -17,60 +19,56 @@ import org.mozilla.intl.chardet.nsPSMDetector;
  * @author HeLei
  */
 public final class TextUtil {
+	private static final Logger logger = LogManager.getLogger();
     /**
      * 检测内容编码格式
      * jchardet是mozilla自动字符集探测算法代码
-     * @return
-     * @throws Exception
+     * @return 若没有找出编码集，则返回null
      */
-	public static String detect(InputStream inputStream) throws IOException {
-		class nsICharsetDetectionObserverImpl implements nsICharsetDetectionObserver {
+	public static String detect(InputStream inputStream) {
+		class Detector implements nsICharsetDetectionObserver {
 			boolean found = false;
-			String result;
-
+			
 			@Override
 			public void Notify(String charset) {
 				found = true;
-				result = charset;
+				logger.debug("charset maybe: " + charset);
 			}
+			
+			String detect(InputStream inputStream) {
+				nsDetector det = new nsDetector(nsPSMDetector.ALL);
+				det.Init(this);
+				byte[] bytes = new byte[1024];
+				int len;
+				try {
+					while ((len = inputStream.read(bytes, 0, bytes.length)) != -1 && !this.found) {
+						det.DoIt(bytes, len, false);
+					}
+				} catch (IOException e) {
+					logger.catching(e);
+				}
+				det.DataEnd();
+				String[] probableCharsets = det.getProbableCharsets();
+				if (logger.isDebugEnabled()) {
+					logger.debug("可能的编码：");
+					logger.debug(join(probableCharsets));
+				}
+				if (probableCharsets.length == 0 || "nomatch".equals(probableCharsets[0])) {
+					return null;
+				}
+				return probableCharsets[0];
+			}
+			
 		}
-		// Initalize the nsDetector() ;
-		nsDetector det = new nsDetector(nsPSMDetector.ALL);
-		// Set an observer...
-		// The Notify() will be called when a matching charset is found.
-		nsICharsetDetectionObserverImpl observer = new nsICharsetDetectionObserverImpl();
-		det.Init(observer);
-		byte[] bytes = new byte[1024];
-		int len;
-		boolean isAscii = true;
-		while ((len = inputStream.read(bytes, 0, bytes.length)) != -1) {
-			// Check if the stream is only ascii.
-			if (isAscii)
-				isAscii = det.isAscii(bytes, len);
-			// DoIt if non-ascii and not done yet.
-			else if (det.DoIt(bytes, len, false))
-				break;
-		}
-		det.DataEnd();
-		String[] prob;
-		if (isAscii) {
-			observer.found = true;
-			prob = new String[] { "ASCII" };
-		} else if (observer.found) {
-			prob = new String[] { observer.result };
-		} else {
-			prob = det.getProbableCharsets();
-		}
-		return prob[0];
+		return new Detector().detect(inputStream);
 	}
 	/**
 	 * 读取内容
 	 * 
 	 * @param inputStream
-	 * @return
-	 * @throws IOException
+	 * @return 如果执行失败，则返回空字符串
 	 */
-	public static String readFileToString(InputStream inputStream) throws IOException {
+	public static String readFileToString(InputStream inputStream) {
 		ByteArrayOutputStream out = null;
 		ByteArrayInputStream in = null;
 		try {
@@ -87,17 +85,41 @@ public final class TextUtil {
 			}
 			in = new ByteArrayInputStream(bytes);
 			String encoding = detect(in);
+			if (encoding == null) {
+				return "";
+			}
 			Charset charset = Charset.forName(encoding);
 			ByteBuffer bbuf = ByteBuffer.wrap(out.toByteArray());
 			CharBuffer cbuf = charset.decode(bbuf);
 			return cbuf.toString();
+		} catch (IOException e) {
+			logger.catching(e);
+			return "";
 		} finally {
-			if (out != null) {
-				out.close();
-			}
-			if (in != null) {
-				in.close();
+			try {
+				if (out != null) {
+					out.close();
+				}
+				if (in != null) {
+					in.close();
+				}
+			} catch (IOException e) {
+				logger.catching(e);
 			}
 		}
+	}
+	
+	public static String join(String[] arr) {
+		boolean first = true;
+		StringBuilder s = new StringBuilder();
+		for (String c : arr) {
+			if (first) {
+				s.append(c);
+				first = false;
+			} else {
+				s.append(',').append(c);
+			}
+		}
+		return s.toString();
 	}
 }

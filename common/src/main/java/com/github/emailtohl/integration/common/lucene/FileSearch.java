@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URLConnection;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,8 +12,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
-import javax.activation.FileTypeMap;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
@@ -269,11 +266,12 @@ public class FileSearch implements AutoCloseable {
 	 * @throws IOException
 	 */
 	public void addIndex(File file) throws IOException {
-		if (textFileFilter.accept(file)) {
-			Document doc = getDocument(file);
-			indexWriter.addDocument(doc);
-			indexWriter.commit();
+		if (!textFileFilter.accept(file)) {
+			return;
 		}
+		Document doc = getDocument(file);
+		indexWriter.addDocument(doc);
+		indexWriter.commit();
 		refreshIndexReader();
 		isIndexed = true;
 	}
@@ -285,12 +283,14 @@ public class FileSearch implements AutoCloseable {
 	 * @throws IOException
 	 */
 	public void updateIndex(File file) throws IOException {
-		if (textFileFilter.accept(file)) {
-			Document doc = getDocument(file);
-			indexWriter.updateDocument(new Term(FILE_PATH, file.getPath()), doc);
-			indexWriter.commit();
+		if (!textFileFilter.accept(file)) {
+			return;
 		}
+		Document doc = getDocument(file);
+		indexWriter.updateDocument(new Term(FILE_PATH, file.getPath()), doc);
+		indexWriter.commit();
 		refreshIndexReader();
+		isIndexed = true;
 	}
 
 	/**
@@ -425,33 +425,21 @@ public class FileSearch implements AutoCloseable {
 	}
 	
 	/**
-	 * 先行过滤一部分不是文本的文件
+	 * 根据后缀过滤一部分不是文本的文件
 	 * @author HeLei
 	 */
 	class TextFilesFilter implements FileFilter {
 		private static final long MAX_BYTES = 10_485_760L;// 10兆
-		private final FileTypeMap fileTypeMap = FileTypeMap.getDefaultFileTypeMap();
-		private final Set<String> TEXT_SUFFIX = new HashSet<String>(
-				Arrays.asList("", "txt", "md", "html", "xml", "js", "css", "java", "c", "cpp", "go", "csv", "properties"));
+		private final Set<String> SUFFIX_SET = new HashSet<String>(Arrays.asList("dll", "jpg", "png", "gif", "tif",
+				"bmp", "dwg", "psd", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "mdb", "wpd", "zip", "gz", "rar",
+				"wav", "avi", "ram", "rm", "mpg", "mpq", "mov", "asf", "mid", "exe", "wps"));
 
 		@Override
 		public boolean accept(File f) {
 			if (f.isDirectory() || f.length() > MAX_BYTES)
 				return false;
-			boolean flag = false;
 			String ext = FilenameUtils.getExtension(f.getName());
-			flag = TEXT_SUFFIX.contains(ext.toLowerCase());
-			String fileType;
-			if (!flag) {
-				fileType = fileTypeMap.getContentType(f.getAbsolutePath());
-				flag = fileType.contains("text");
-			}
-			if (!flag) {
-				fileType = URLConnection.guessContentTypeFromName(f.getAbsolutePath());
-				if (fileType != null)
-					flag = fileType.contains("text");
-			}
-			return flag;
+			return !SUFFIX_SET.contains(ext);
 		}
 	}
 

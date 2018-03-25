@@ -29,7 +29,7 @@ public class TextUtilTest {
 //		encoding = "GBK";
 //		encoding = "GB2312";
 //		encoding = "GB18030";
-		System.out.println("获取的编码是: " + encoding);
+		System.out.println("实际编码是: " + encoding);
 		in = new ByteArrayInputStream(content.getBytes(encoding));
 	}
 

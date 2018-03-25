@@ -168,11 +168,14 @@ public class FileServiceImpl implements FileService {
 		try {
 			File f = new File(resources, filterPath(pathname));
 			boolean exist = f.exists();
+			if (exist && f.isDirectory()) {
+				return new ExecResult(false, "this pathname is directory", null);
+			}
 			FileUtils.copyToFile(in, f);
 			if (exist) {
-				fileSearch.addIndex(f);
-			} else {
 				fileSearch.updateIndex(f);
+			} else {
+				fileSearch.addIndex(f);
 			}
 		} catch (IOException e) {
 			LOG.catching(e);
