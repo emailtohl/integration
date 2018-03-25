@@ -5,7 +5,7 @@ import org.activiti.rest.service.api.RestResponseFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 /**
@@ -13,16 +13,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author HeLei
  */
 @Configuration
-@ComponentScan(basePackages = "org.activiti.rest", includeFilters = @ComponentScan.Filter(Controller.class))
+@EnableWebMvc
+@ComponentScan(basePackages = {"org.activiti.rest", "org.activiti.conf"})
 public class ActivitiRestConfiguration {
 
+	/**
+	 * 集成REST服务需要的bean
+	 * @return
+	 */
 	@Bean
 	public RestResponseFactory restResponseFactory() {
 		return new RestResponseFactory();
 	}
 	
 	@Bean
-	public DefaultContentTypeResolver DefaultContentTypeResolver() {
+	public DefaultContentTypeResolver contentTypeResolver() {
 		return new DefaultContentTypeResolver();
 	}
 	
@@ -30,4 +35,5 @@ public class ActivitiRestConfiguration {
 	public ObjectMapper ObjectMapper() {
 		return new ObjectMapper();
 	}
+	
 }

@@ -84,9 +84,10 @@ public class FileSearchTest {
 				try {
 					FileUtils.writeStringToFile(tempFile, r.nextInt(100) + " ", StandardCharsets.UTF_8, true);
 					fs.updateIndex(tempFile);
-					latch.countDown();
 				} catch (IOException e) {
 					e.printStackTrace();
+				} finally {
+					latch.countDown();
 				}
 			});
 		}

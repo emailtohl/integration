@@ -52,7 +52,13 @@ define(['flow/module', 'flow/service'], function(flowModule) {
                             last : '尾页'
                         },
                     },
-                    destroy: true, //Cannot reinitialise DataTable,解决重新加载表格内容问题
+                    destroy: true, //Cannot reinitialise DataTable,解决重新加载表格内容问题,
+                    columnDefs: [
+                     	{
+							orderSequence : [ "desc" ],
+							targets : [ 1 ]
+						},
+                    ]
                 });
 			});
 		};

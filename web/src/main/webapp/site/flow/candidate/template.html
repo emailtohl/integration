@@ -37,7 +37,11 @@
                    <td>{{x.flowType}}</td>
                    <td>{{x.taskName}}</td>
                    <td>{{x.content | omit}}</td>
-                   <td><a href="javascript:void(0)" ui-sref="flow.detail({id:x.id, audit:1})">查看</a></td>
+                   <td>
+                     <div class="btn-group">
+                     	<button type="button" class="btn btn-default btn-xs margin" ui-sref="flow.detail({id:x.id, audit:1})">查看</button>
+                     </div>
+                   </td>
                </tr>
                </tbody>
                <tfoot>

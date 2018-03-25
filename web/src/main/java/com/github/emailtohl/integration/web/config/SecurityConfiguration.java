@@ -144,7 +144,8 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		.antMatchers("/resources/**")
 		.antMatchers("/download/**")
 		.antMatchers("/article/**")
-		.antMatchers("/detail/**");
+		.antMatchers("/detail/**")
+		;
 	}
 	/**
 	 * 配置Http安全访问规则
@@ -178,7 +179,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				// 跨域请求登录页面时，要发送一个预访问请求：PreflightRequest，让spring security不做拦截
 				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 				.antMatchers(permitUrl).permitAll()
-				.antMatchers("/rest/**").fullyAuthenticated()
+				.antMatchers("/rest/**").authenticated()
 				.antMatchers(HttpMethod.GET, "/audit/role/**").hasAuthority(Authority.AUDIT_ROLE)
 				.antMatchers(HttpMethod.GET, "/audit/customer/**", "/audit/employee/**").hasAuthority(Authority.AUDIT_USER)
 				.antMatchers(HttpMethod.DELETE, "/cms/**").hasAuthority(Authority.CONTENT)

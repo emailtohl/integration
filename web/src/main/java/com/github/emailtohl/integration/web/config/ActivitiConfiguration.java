@@ -105,6 +105,7 @@ class ActivitiConfiguration {
 		cfg.setDeploymentResources(new Resource[] { new ClassPathResource("flow/apply.bpmn") });
 
 		cfg.setActivityFontName("宋体");
+		cfg.setLabelFontName("宋体");
 		return cfg;
 	}
 
