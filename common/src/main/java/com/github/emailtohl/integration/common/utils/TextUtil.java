@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.Random;
 
 import org.apache.logging.log4j.LogManager;
@@ -100,7 +101,7 @@ public final class TextUtil {
 			ByteBuffer bbuf = ByteBuffer.wrap(out.toByteArray());
 			CharBuffer cbuf = charset.decode(bbuf);
 			return cbuf.toString();
-		} catch (IOException e) {
+		} catch (IOException | UnsupportedCharsetException e) {
 			logger.catching(e);
 			return "";
 		} finally {

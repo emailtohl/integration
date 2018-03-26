@@ -26,52 +26,6 @@ define(['employee/module', 'employee/service'], function(employeeModule) {
 				'FEMALE': '女',
 				'UNSPECIFIED': '未知',
 			};
-			/**
-			 * 在详情中展示字符串，有的值是对象，所以需要处理
-			 */
-			self.getValue = function(k, v) {
-				var result, i, j, temp, auth;
-				switch(k) {
-					case 'enabled':
-						result = v ? '是' : '否';
-						break;
-					case 'accountNonExpired':
-						result = v ? '是' : '否';
-						break;
-					case 'credentialsNonExpired':
-						result = v ? '是' : '否';
-						break;
-					case 'accountNonLocked':
-						result = v ? '是' : '否';
-						break;
-					case 'image':
-						result = v && v.filename;
-						break;
-					case 'department':
-						result = v && v.name;
-						break;
-					case 'address':
-						result = v.city + ' ' + v.street + ' ' + v.zipcode;
-						break;
-					case 'gender':
-						result = self.dictionary[v];
-						break;
-					case 'classify':
-						result = self.dictionary[v];
-						break;
-					case 'roles':
-						temp = [];
-						for(i = 0; i < v.length; i++) {
-							temp.push(v[i].name);
-						}
-						return temp.join(',');
-						break;
-					default:
-						result = v;
-						break;
-				}
-				return result;
-			};
 
 			$('input[name="icon"]').on('change', function(e) {
 				$('#submit-file').attr('disabled', null);
@@ -122,5 +76,18 @@ define(['employee/module', 'employee/service'], function(employeeModule) {
 					});
 				},
 			};
-		}]);
+		}])
+		.filter('rolepipe', function() {
+			return function(v) {
+				if (! (v instanceof Array)) {
+					return '';
+				}
+				temp = [];
+				for(i = 0; i < v.length; i++) {
+					temp.push(v[i].name);
+				}
+				return temp.join(',');
+			}
+		})
+		;
 });

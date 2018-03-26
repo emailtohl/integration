@@ -36,22 +36,64 @@
 	      </form>
 	    </div>
 	    <div class="box-body">
-	      <table class="table table-bordered">
-	        <tbody><tr>
-	          <th style="width: 10px">#</th>
-	          <th>属性名</th>
-	          <th>属性值</th>
-	          <!-- <th style="width: 40px">Label</th> -->
-	        </tr>
-	        <tr ng-repeat="(k, v) in ctrl.detail">
-	          <td>{{$index}}</td>
-	          <td>{{k}}</td>
-	          <td>
-	            {{ctrl.getValue(k, v, $index)}}
-	          </td>
-	          <!-- <td><span class="badge bg-red">55%</span></td> -->
-	        </tr>
-	      </tbody></table>
+	    
+			<table id="flow-list" class="table table-bordered table-striped">
+               <tbody>
+               <tr>
+                   <td>员工号</td>
+                   <td>{{ctrl.detail.empNum}}</td>
+                   <td>邮箱</td>
+                   <td>{{ctrl.detail.email}}</td>
+               </tr>
+               <tr>
+                   <td>姓名</td>
+                   <td>{{ctrl.detail.name}}</td>
+                   <td>昵称</td>
+                   <td>{{ctrl.detail.nickname}}</td>
+               </tr>
+               <tr>
+                   <td>电话</td>
+                   <td>{{ctrl.detail.telephone}}</td>
+                   <td>手机</td>
+                   <td>{{ctrl.detail.cellPhone}}</td>
+               </tr>
+               <tr>
+                   <td>创建时间</td>
+                   <td>{{ctrl.detail.createDate}}</td>
+                   <td>最后登录</td>
+                   <td>{{ctrl.detail.lastLogin}}</td>
+               </tr>
+               <tr>
+               	   <td>年龄</td>
+                   <td>{{ctrl.detail.age}}</td>
+                   <td>性别</td>
+                   <td>{{ctrl.dictionary[ctrl.detail.gender]}}</td>
+               </tr>
+               <tr>
+                   <td>职位</td>
+                   <td>{{ctrl.detail.post}}</td>
+                   <td>部门</td>
+                   <td>{{ctrl.detail.department && ctrl.detail.department.description}}</td>
+               </tr>
+               <tr>
+                   <td>是否启用</td>
+                   <td>{{ctrl.detail.enabled | boolToString}}</td>
+                   <td>角色</td>
+                   <td>{{ctrl.detail.roles | rolepipe}}</td>
+               </tr>
+               <tr>
+                   <td>账号有效</td>
+                   <td>{{ctrl.detail.accountNonExpired | boolToString}}</td>
+                   <td>密码有效</td>
+                   <td>{{ctrl.detail.credentialsNonExpired | boolToString}}</td>
+               </tr>
+               <tr>
+                   <td>描述</td>
+                   <td colspan="3">{{ctrl.detail.description}}</td>
+               </tr>
+               </tbody>
+           </table>
+	    
 	    </div>
 	    <!-- /.box-body -->
 	    <div class="box-footer clearfix">
@@ -59,17 +101,9 @@
 	      <button type="button" class="btn btn-primary pull-left margin" ui-sref="employee.edit({id:ctrl.detail.id})" ng-if="ctrl.editable()">编辑</button>
 	      <button type="button" class="btn btn-primary pull-left margin" ng-click="ctrl.openModal()" ng-if="ctrl.editable() && hasAuthority('employee_role')">角色</button>
 	      <button type="button" class="btn btn-primary pull-left margin" ui-sref="employee.audit.list({id:ctrl.detail.id})" ng-if="hasAuthority('employee')">审计</button>
-	      <ul class="pagination pagination-sm no-margin pull-right">
-	        <li><a href="#">«</a></li>
-	        <li><a href="#">1</a></li>
-	        <li><a href="#">2</a></li>
-	        <li><a href="#">3</a></li>
-	        <li><a href="#">»</a></li>
-	      </ul>
 	    </div>
 	  </div>
 	  <!-- /.box -->
-	
 	</div>
 </section>
 
