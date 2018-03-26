@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
+import java.util.Random;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,7 +16,7 @@ import org.mozilla.intl.chardet.nsICharsetDetectionObserver;
 import org.mozilla.intl.chardet.nsPSMDetector;
 
 /**
- * 读取文本文件，自动检测文本编码
+ * 读取流，自动检测流中的文本编码
  * @author HeLei
  */
 public final class TextUtil {
@@ -28,17 +29,19 @@ public final class TextUtil {
 	public static String detect(InputStream inputStream) {
 		class Detector implements nsICharsetDetectionObserver {
 			boolean found = false;
+			String charset = null;
 			
 			@Override
 			public void Notify(String charset) {
 				found = true;
+				this.charset = charset;
 				logger.debug("charset maybe: " + charset);
 			}
 			
 			String detect(InputStream inputStream) {
 				nsDetector det = new nsDetector(nsPSMDetector.ALL);
 				det.Init(this);
-				byte[] bytes = new byte[1024];
+				byte[] bytes = new byte[512];
 				int len;
 				try {
 					while ((len = inputStream.read(bytes, 0, bytes.length)) != -1 && !this.found) {
@@ -53,17 +56,22 @@ public final class TextUtil {
 					logger.debug("可能的编码：");
 					logger.debug(join(probableCharsets));
 				}
+				if (this.charset != null) {
+					return this.charset;
+				}
 				if (probableCharsets.length == 0 || "nomatch".equals(probableCharsets[0])) {
 					return null;
 				}
-				return probableCharsets[0];
+				Random r = new Random();
+				// 从可能的编码中随机返回一个
+				return probableCharsets[r.nextInt(probableCharsets.length)];
 			}
 			
 		}
 		return new Detector().detect(inputStream);
 	}
 	/**
-	 * 读取内容
+	 * 猜测文件的编码格式，并读取内容，若读取失败或无法识别编码，则返回空字符串
 	 * 
 	 * @param inputStream
 	 * @return 如果执行失败，则返回空字符串
@@ -96,15 +104,19 @@ public final class TextUtil {
 			logger.catching(e);
 			return "";
 		} finally {
-			try {
-				if (out != null) {
+			if (out != null) {
+				try {
 					out.close();
+				} catch (IOException e) {
+					logger.catching(e);
 				}
-				if (in != null) {
+			}
+			if (in != null) {
+				try {
 					in.close();
+				} catch (IOException e) {
+					logger.catching(e);
 				}
-			} catch (IOException e) {
-				logger.catching(e);
 			}
 		}
 	}

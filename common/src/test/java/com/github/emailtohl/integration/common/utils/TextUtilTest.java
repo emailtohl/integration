@@ -28,6 +28,8 @@ public class TextUtilTest {
 //		encoding = "UTF-8";
 //		encoding = "GBK";
 //		encoding = "GB2312";
+//		encoding = "UTF-16";
+//		encoding = "ISO8859-1";
 //		encoding = "GB18030";
 		System.out.println("实际编码是: " + encoding);
 		in = new ByteArrayInputStream(content.getBytes(encoding));
@@ -41,7 +43,7 @@ public class TextUtilTest {
 	@Test
 	public void testDetect() throws IOException {
 		String encoding = TextUtil.detect(in);
-		logger.debug("Detect: " + encoding);
+		logger.debug("返回的编码是: " + encoding);
 	}
 
 	@Test
