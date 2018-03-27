@@ -100,6 +100,19 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		return customerRepository.usernameIsExist(_matcherValue);
 	}
 
+	/**
+	 * 引用实体匹配器
+	 */
+	private ExampleMatcher identificationMatcher = ExampleMatcher.matching().withIgnoreCase()
+			.withMatcher("identification", GenericPropertyMatchers.exact());
+	@Override
+	public boolean identificationExist(String identification) {
+		Customer c = new Customer();
+		c.setIdentification(identification);
+		Example<Customer> example = Example.of(c, identificationMatcher);
+		return customerRepository.exists(example);
+	}
+	
 	@Cacheable(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer get(Long id) {

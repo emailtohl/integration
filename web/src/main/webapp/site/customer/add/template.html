@@ -5,7 +5,7 @@
   </h1>
   <ol class="breadcrumb">
     <li ui-sref="dashboard"><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-    <li ui-sref="employee.list"><a href="#">Employee List</a></li>
+    <li ui-sref="customer.list"><a href="#">customer List</a></li>
     <li class="active">新增平台账号</li>
   </ol>
 </section>
@@ -33,7 +33,7 @@
 		      </div>
 		      <div class="form-group has-feedback" ng-class="{'has-success':addUserform.email.$valid,'has-warning':addUserform.email.$error.required,'has-error':addUserform.email.$invalid || addUserform.email.$error.notexist}">
 		        <label for="">邮箱</label>
-		        <input asynvalidation local="employee/exist?cellPhoneOrEmail=" result="ctrl.emailValidation(exist)" type="email" placeholder="email" name="email" class="form-control" ng-model="ctrl.form.email" required="required">
+		        <input asynvalidation local="customer/exist?cellPhoneOrEmail=" result="ctrl.emailValidation(exist)" type="email" placeholder="email" name="email" class="form-control" ng-model="ctrl.form.email" required="required">
 		        <span class="glyphicon glyphicon-ok form-control-feedback" ng-class="{'glyphicon-ok':addUserform.email.$valid,'glyphicon-warning-sign':addUserform.email.$error.required,'glyphicon-remove':addUserform.email.$invalid || addUserform.email.$error.notexist}"></span>
 		      	<span ng-show="addUserform.email.$error.required">
 				This is a required field
@@ -93,7 +93,7 @@
 		      </div>
 		      <div class="form-group has-feedback" ng-class="{'has-success':addUserform.cellPhone.$valid,'has-warning':addUserform.cellPhone.$error.pattern,'has-error':addUserform.cellPhone.$error.notexist}">
 		        <label for="">手机</label>
-		        <input asynvalidation local="employee/exist?cellPhoneOrEmail=" result="ctrl.cellPhoneValidation(exist)" type="text" placeholder="cellPhone" class="form-control" name="cellPhone" ng-model="ctrl.form.cellPhone" pattern="^1[0-9]{10}$"/>
+		        <input asynvalidation local="customer/exist?cellPhoneOrEmail=" result="ctrl.cellPhoneValidation(exist)" type="text" placeholder="cellPhone" class="form-control" name="cellPhone" ng-model="ctrl.form.cellPhone" pattern="^1[0-9]{10}$"/>
 		      	<span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':addUserform.cellPhone.$valid,'glyphicon-warning-sign':addUserform.cellPhone.$error.pattern,'glyphicon-remove':addUserform.cellPhone.$error.notexist}"></span>
 			    <span ng-show="addUserform.cellPhone.$error.notexist">
 				This field is exist
@@ -102,26 +102,23 @@
 				This field is invalid
 				</span>
 		      </div>
-		      <div class="form-group has-feedback"  ng-class="{'has-success':addUserform.post.$valid,'has-warning':addUserform.post.$error.required,'has-error':addUserform.post.$error.minlength}">
-		        <label for="">岗位</label>
-		        <input type="text" placeholder="岗位" name="post" class="form-control" ng-model="ctrl.form.post" required="required">
-     		    <span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':addUserform.post.$valid,'glyphicon-warning-sign':addUserform.post.$error.required,'glyphicon-remove':addUserform.post.$error.minlength}"></span>
-			    <span ng-show="addUserform.post.$error.required">
-				This is a required field
+		      <div class="form-group has-feedback" ng-class="{'has-success':addUserform.identification.$valid,'has-warning':addUserform.identification.$error.pattern,'has-error':addUserform.identification.$error.notexist}">
+		        <label for="">证件号</label>
+		        <input asynvalidation local="customer/identificationValidate?identification=" result="ctrl.IDCardValidate(exist, vaild)" type="text" placeholder="identification" class="form-control" name="identification" ng-model="ctrl.form.identification"/>
+		      	<span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':addUserform.identification.$valid,'glyphicon-warning-sign':addUserform.identification.$error.pattern,'glyphicon-remove':addUserform.identification.$error.notexist}"></span>
+			    <span ng-show="addUserform.identification.$error.notexist">
+				This field is exist
 				</span>
-				<span ng-show="addUserform.post.$error.minlength">
-				Minimum length required is 6
-				</span>
-				<span ng-show="addUserform.post.$invalid">
+				<span ng-show="addUserform.identification.$error.pattern">
 				This field is invalid
 				</span>
 		      </div>
 		      <div class="form-group">
-		        <label for="">部门</label>
-		        <select class="form-control select2" style="width: 100%;" select2 ng-model="ctrl.form.department.name">
-			      <option value="">请选择</option>
-			      <option value="生产部">生产部</option>
-			      <option value="质量部">质量部</option>
+		        <label for="">性别</label>
+		        <select class="form-control select2" style="width: 100%;" select2 ng-model="ctrl.form.gender">
+			      <option value="UNSPECIFIED">未知</option>
+			      <option value="MALE">男</option>
+			      <option value="FEMALE">女</option>
 			    </select>
 		      </div>
 		      <div class="form-group">
@@ -130,7 +127,7 @@
 		      </div>
 	        </div>
 	        <div class="col-md-12">
-	          <button type="button" class="btn btn-default" ui-sref="employee.list">{{'btn-cancel' | translate}}</button>
+	          <button type="button" class="btn btn-default" ui-sref="customer.list">{{'btn-cancel' | translate}}</button>
 			  <button type="submit" ng-disabled="addUserform.$invalid || ctrl.form.password != ctrl.form.confirmPassword" ng-click="ctrl.submit()" class="btn btn-primary pull-right" style="margin-top: 18px;">
 	            <i class="fa fa-plus"></i> {{'btn-submit' | translate}}
 	          </button>

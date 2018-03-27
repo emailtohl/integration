@@ -48,6 +48,13 @@ public interface CustomerService {
 	boolean exist(Object cellPhoneOrEmail);
 	
 	/**
+	 * 查看此IDCard是否存在
+	 * @param identification
+	 * @return
+	 */
+	boolean identificationExist(String identification);
+	
+	/**
 	 * 根据ID获取用户
 	 * @param id
 	 * @return

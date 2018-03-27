@@ -1,6 +1,7 @@
 define([
 	'customer/module',
 	'customer/service',
+	'customer/add/ctrl',
 	'customer/list/ctrl',
 	'customer/detail/ctrl',
 	'customer/edit/ctrl',

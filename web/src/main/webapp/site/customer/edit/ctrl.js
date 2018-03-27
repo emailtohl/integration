@@ -31,5 +31,11 @@ define(['customer/module', 'customer/service'], function(customerModule) {
 				$scope.editUserform.cellPhone.$setValidity('notexist', !exist);
 				$scope.$apply();
 			};
+			// 异步校验证件号
+			self.IDCardValidate = function(exist, vaild) {
+				$scope.editUserform.identification.$setValidity('notexist', !exist);
+				$scope.editUserform.identification.$setValidity('pattern', vaild);
+				$scope.$apply();
+			};
 		}]);
 });

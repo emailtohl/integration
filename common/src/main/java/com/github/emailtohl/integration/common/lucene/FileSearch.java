@@ -439,7 +439,7 @@ public class FileSearch implements AutoCloseable {
 			if (f.isDirectory() || f.length() > MAX_BYTES)
 				return false;
 			String ext = FilenameUtils.getExtension(f.getName());
-			return !SUFFIX_SET.contains(ext);
+			return !SUFFIX_SET.contains(ext.toLowerCase());
 		}
 	}
 

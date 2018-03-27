@@ -96,7 +96,17 @@
 		        <label for="">邮编</label>
 		        <input type="tel" placeholder="telephone" class="form-control" name="zipcode" ng-model="ctrl.form.address.zipcode">
 		      </div>
-
+		      <div class="form-group has-feedback" ng-class="{'has-success':editUserform.identification.$valid,'has-warning':editUserform.identification.$error.pattern,'has-error':editUserform.identification.$error.notexist}">
+		        <label for="">证件号</label>
+		        <input asynvalidation local="customer/identificationValidate?identification=" result="ctrl.IDCardValidate(exist, vaild)" type="text" placeholder="identification" class="form-control" name="identification" ng-model="ctrl.form.identification"/>
+		      	<span class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok':editUserform.identification.$valid,'glyphicon-warning-sign':editUserform.identification.$error.pattern,'glyphicon-remove':editUserform.identification.$error.notexist}"></span>
+			    <span ng-show="editUserform.identification.$error.notexist">
+				This field is exist
+				</span>
+				<span ng-show="editUserform.identification.$error.pattern">
+				This field is invalid
+				</span>
+		      </div>
 		      <div class="form-group">
 		        <label>描述</label>
 		        <textarea rows="3" type="text" placeholder="description" class="form-control" name="description" ng-model="ctrl.form.description" ng-maxlength="300"></textarea>

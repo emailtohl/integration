@@ -79,6 +79,9 @@
                 </tfoot>
               </table>
               <page page-number="ctrl.page.pageNumber" total-pages="ctrl.page.totalPages" button-count="5" on-click="ctrl.btnClick(pageNumber)"></page>
+              <button ng-if="hasAuthority('customer')" ui-sref="customer.add" type="button" class="btn btn-primary pull-right" style="margin-top: 18px;">
+	            <i class="fa fa-plus"></i> 新增
+	          </button>
             </div>
             <!-- /.box-body -->
           </div>

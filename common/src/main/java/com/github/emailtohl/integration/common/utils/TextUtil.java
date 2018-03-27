@@ -101,8 +101,11 @@ public final class TextUtil {
 			ByteBuffer bbuf = ByteBuffer.wrap(out.toByteArray());
 			CharBuffer cbuf = charset.decode(bbuf);
 			return cbuf.toString();
-		} catch (IOException | UnsupportedCharsetException e) {
+		} catch (IOException e) {
 			logger.catching(e);
+			return "";
+		} catch (UnsupportedCharsetException e) {
+			logger.trace(e);
 			return "";
 		} finally {
 			if (out != null) {
