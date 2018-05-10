@@ -40,6 +40,7 @@ import com.github.emailtohl.integration.common.utils.BeanUtil;
 public abstract class AbstractSearchableRepository<E extends Serializable> extends AbstractCriterionQueryRepository<E> implements SearchableRepository<E> {
 	private static final Logger logger = LogManager.getLogger();
 	protected String[] onFields;
+	private volatile boolean isInit = false;
 	
 	/**
 	 * 根据entityClass、索引字段以及query参数获取FullTextQuery
@@ -48,6 +49,18 @@ public abstract class AbstractSearchableRepository<E extends Serializable> exten
 	 */
 	protected FullTextQuery getFullTextQuery(String query) {
 		FullTextEntityManager manager = Search.getFullTextEntityManager(entityManager);
+		if (!isInit) {
+			synchronized (entityClass) {
+				if (!isInit) {
+					try {
+						manager.createIndexer().startAndWait();
+						isInit = true;
+					} catch (InterruptedException e) {
+						logger.error(entityClass + "初始化索引失败", e);
+					}
+				}
+			}
+		}
 		QueryBuilder builder = manager.getSearchFactory().buildQueryBuilder().forEntity(entityClass).get();
 		Query lucene = builder.keyword().onFields(onFields).matching(query).createQuery();
 		return manager.createFullTextQuery(lucene, entityClass);

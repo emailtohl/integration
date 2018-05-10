@@ -262,6 +262,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 				response.addHeader("statusText", accessDeniedException.getMessage());
 			})
+			.and().headers().frameOptions().disable() // 放开可上传图片
 			;
 		
 	}

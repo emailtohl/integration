@@ -303,8 +303,6 @@ public class ResourceCtrl {
 			String submittedFileName = image.getSubmittedFileName();
 			String suffix = FilenameUtils.getExtension(submittedFileName);
 			execResult = fileService.autoSaveFile(in, suffix);
-		} catch (Exception e) {
-			logger.warn("上传失败，可能是文件名后缀不对，或是IO异常", e);
 		}
 		String html;
 		if (execResult.ok) {
@@ -320,9 +318,9 @@ public class ResourceCtrl {
 		}
 		response.addHeader("X-Frame-OPTIONS", "SAMEORIGIN");
 		response.setContentType("text/html; charset=utf-8");  
-        PrintWriter out = response.getWriter();
-        out.println(html);
-        out.close();
+        try (PrintWriter out = response.getWriter()) {
+        	out.println(html);
+        }
 	}
 	
 	/**
