@@ -16,6 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
+import org.hibernate.search.exception.EmptyQueryException;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.Search;
@@ -73,7 +74,12 @@ public abstract class AbstractSearchableRepository<E extends Serializable> exten
 	@SuppressWarnings("unchecked")
 	@Override
 	public Page<SearchResult<E>> searchWithScore(String query, Pageable pageable) {
-		FullTextQuery q = getFullTextQuery(query);
+		FullTextQuery q;
+		try {
+			q = getFullTextQuery(query);
+		} catch (EmptyQueryException e) {
+			return new PageImpl<>(new ArrayList<>());
+		}
 		q.setProjection(FullTextQuery.THIS, FullTextQuery.SCORE, FullTextQuery.DOCUMENT);
 		int total = q.getResultSize();
 		q.setFirstResult(pageable.getOffset()).setMaxResults(pageable.getPageSize());
