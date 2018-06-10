@@ -239,13 +239,12 @@ public abstract class AbstractAuditedRepository<E extends Serializable> implemen
 		EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			em.getTransaction().begin();
-			AuditReader auditReader = AuditReaderFactory.get(entityManager);
+			AuditReader auditReader = AuditReaderFactory.get(em);
 			E bygone = auditReader.find(entityClass, id, revision);
 			em.unwrap(Session.class).replicate(bygone, ReplicationMode.OVERWRITE);
 			em.getTransaction().commit();
 		} finally {
-			if (em.isOpen())
-				em.close();
+			em.close();
 		}
 	}
 	

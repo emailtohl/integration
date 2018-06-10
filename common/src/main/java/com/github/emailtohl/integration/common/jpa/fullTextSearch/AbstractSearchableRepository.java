@@ -78,7 +78,7 @@ public abstract class AbstractSearchableRepository<E extends Serializable> exten
 		try {
 			q = getFullTextQuery(query);
 		} catch (EmptyQueryException e) {
-			return new PageImpl<>(new ArrayList<>());
+			return new PageImpl<SearchResult<E>>(new ArrayList<SearchResult<E>>());
 		}
 		q.setProjection(FullTextQuery.THIS, FullTextQuery.SCORE, FullTextQuery.DOCUMENT);
 		int total = q.getResultSize();

@@ -65,15 +65,19 @@ public abstract class AbstractJpaRepository<ID, E extends Serializable> {
 		idClass = (Class<ID>) classes[0];
 		entityClass = (Class<E>) classes[1];
 		if (idClass == null) {
-			LOG.debug("初始化： " + this.getClass() + " 时，idClass == null");
-			throw new IllegalStateException("初始化： " + this.getClass() + " 时，idClass == null");
+			String cause = "The type of entity is unknown";
+			LOG.debug(cause);
+			throw new IllegalStateException(cause);
 		}
 		if (entityClass == null) {
-			LOG.debug("初始化： " + this.getClass() + " 时，entityClass == null");
-			throw new IllegalStateException("初始化： " + this.getClass() + " 时，entityClass == null");
+			String cause = "The type of id is unknown";
+			LOG.debug(cause);
+			throw new IllegalStateException(cause);
 		}
-		LOG.debug(idClass);
-		LOG.debug(entityClass);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("The type of entity is {}", entityClass.getSimpleName());
+			LOG.debug("The type of id is {}", idClass.getSimpleName());
+		}
 	}
 
 	/**
