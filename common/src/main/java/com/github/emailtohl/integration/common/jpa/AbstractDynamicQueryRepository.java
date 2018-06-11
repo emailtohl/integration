@@ -26,7 +26,9 @@ import java.util.regex.Pattern;
 import javax.persistence.AccessType;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
@@ -86,7 +88,7 @@ public abstract class AbstractDynamicQueryRepository<E extends Serializable> ext
 	public Paging<E> getPage(String jpql, Object[] args, Integer pageNumber, Integer pageSize) {
 		Matcher m;
 		if (jpql == null || !(m = jpqlPattern.matcher(jpql)).find())
-			throw new IllegalArgumentException("JPQL可能是null，或者格式可能不对，也可能是正则表达式编写不对");
+			throw new IllegalArgumentException("JPQL can be in the wrong format, or it can be a regular expression writing error");
 		// 从第0页开始
 		if (pageNumber == null || pageNumber < 0L)
 			pageNumber = 0;
@@ -139,7 +141,7 @@ public abstract class AbstractDynamicQueryRepository<E extends Serializable> ext
 	public Paging<E> getPage(String jpql, Map<String, Object> args, Integer pageNumber, Integer pageSize) {
 		Matcher m;
 		if (jpql == null || !(m = jpqlPattern.matcher(jpql)).find())
-			throw new IllegalArgumentException("JPQL可能是null，或者格式可能不对，也可能是正则表达式编写不对");
+			throw new IllegalArgumentException("JPQL can be in the wrong format, or it can be a regular expression writing error");
 		// 从第0页开始
 		if (pageNumber == null || pageNumber < 0L)
 			pageNumber = 1;
@@ -248,25 +250,25 @@ public abstract class AbstractDynamicQueryRepository<E extends Serializable> ext
 						if (value == null) {
 							continue;
 						}
-						if (availableObj(value)) {
+						if (availableObj(value) || (BeanUtil.getAnnotation(descriptor, EmbeddedId.class) != null)) {
 							String name = descriptor.getName();
 							if (first) {
 								jpql.append(" WHERE ");
 								first = false;
-								if (value instanceof String && isFuzzy) {
+								if (value instanceof String && isFuzzy && BeanUtil.getAnnotation(descriptor, Id.class) == null) {
 									jpql.append("lower(").append(prefix).append('.').append(name).append(')').append(" LIKE ?").append(position);
 								} else {
 									jpql.append(prefix).append('.').append(name).append(" = ?").append(position);
 								}
 							} else {
 								jpql.append(" AND ");
-								if (value instanceof String && isFuzzy) {
+								if (value instanceof String && isFuzzy && BeanUtil.getAnnotation(descriptor, Id.class) == null) {
 									jpql.append("lower(").append(prefix).append('.').append(name).append(')').append(" LIKE ?").append(position);
 								} else {
 									jpql.append(prefix).append('.').append(name).append(" = ?").append(position);
 								}
 							}
-							if (value instanceof String && isFuzzy) {
+							if (value instanceof String && isFuzzy && BeanUtil.getAnnotation(descriptor, Id.class) == null) {
 								args.add(((String) value).trim().toLowerCase());
 							} else {
 								args.add(value);
@@ -356,25 +358,25 @@ public abstract class AbstractDynamicQueryRepository<E extends Serializable> ext
 						if (value == null) {
 							continue;
 						}
-						if (availableObj(value)) {
+						if (availableObj(value) || (field.getAnnotation(EmbeddedId.class) != null)) {
 							String name = field.getName();
 							if (first) {
 								jpql.append(" WHERE ");
 								first = false;
-								if (value instanceof String && isFuzzy) {
+								if (value instanceof String && isFuzzy && field.getAnnotation(Id.class) == null) {
 									jpql.append("lower(").append(prefix).append('.').append(name).append(')').append(" LIKE ?").append(position);
 								} else {
 									jpql.append("lower(").append(prefix).append('.').append(name).append(')').append(" = ?").append(position);
 								}
 							} else {
 								jpql.append(" AND ");
-								if (value instanceof String && isFuzzy) {
+								if (value instanceof String && isFuzzy && field.getAnnotation(Id.class) == null) {
 									jpql.append("lower(").append(prefix).append('.').append(name).append(')').append(" LIKE ?").append(position);
 								} else {
 									jpql.append("lower(").append(prefix).append('.').append(name).append(')').append(" = ?").append(position);
 								}
 							}
-							if (value instanceof String && isFuzzy) {
+							if (value instanceof String && isFuzzy && field.getAnnotation(Id.class) == null) {
 								args.add(((String) value).trim().toLowerCase());
 							} else {
 								args.add(value);
@@ -503,7 +505,7 @@ public abstract class AbstractDynamicQueryRepository<E extends Serializable> ext
 		}
 		Matcher m = jpqlPattern.matcher(jaa.jpql);
 		if (!m.find()) {
-			throw new IllegalStateException("内部错误：可能是生成的JPQL有错，或者是jpqlPattern正则式有错");
+			throw new IllegalStateException("Internal error: it may be the generated JPQL is wrong, or the jpqlPattern regular is wrong");
 		}
 		String predicate = m.group(predicateIndex);
 		predicate = predicate == null ? "" : predicate.trim();

@@ -16,7 +16,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
-import org.hibernate.search.exception.EmptyQueryException;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.Search;
@@ -39,9 +38,9 @@ import com.github.emailtohl.integration.common.utils.BeanUtil;
  * @param <E extends Serializable> 存储搜索结果的实体类
  */
 public abstract class AbstractSearchableRepository<E extends Serializable> extends AbstractCriterionQueryRepository<E> implements SearchableRepository<E> {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger LOG = LogManager.getLogger();
+	private static volatile boolean IS_INIT = false;
 	protected String[] onFields;
-	private volatile boolean isInit = false;
 	
 	/**
 	 * 根据entityClass、索引字段以及query参数获取FullTextQuery
@@ -50,14 +49,14 @@ public abstract class AbstractSearchableRepository<E extends Serializable> exten
 	 */
 	protected FullTextQuery getFullTextQuery(String query) {
 		FullTextEntityManager manager = Search.getFullTextEntityManager(entityManager);
-		if (!isInit) {
+		if (!IS_INIT) {
 			synchronized (entityClass) {
-				if (!isInit) {
+				if (!IS_INIT) {
 					try {
 						manager.createIndexer().startAndWait();
-						isInit = true;
+						IS_INIT = true;
 					} catch (InterruptedException e) {
-						logger.error(entityClass + "初始化索引失败", e);
+						LOG.error(entityClass + "init failed", e);
 					}
 				}
 			}
@@ -74,12 +73,7 @@ public abstract class AbstractSearchableRepository<E extends Serializable> exten
 	@SuppressWarnings("unchecked")
 	@Override
 	public Page<SearchResult<E>> searchWithScore(String query, Pageable pageable) {
-		FullTextQuery q;
-		try {
-			q = getFullTextQuery(query);
-		} catch (EmptyQueryException e) {
-			return new PageImpl<SearchResult<E>>(new ArrayList<SearchResult<E>>());
-		}
+		FullTextQuery q = getFullTextQuery(query);
 		q.setProjection(FullTextQuery.THIS, FullTextQuery.SCORE, FullTextQuery.DOCUMENT);
 		int total = q.getResultSize();
 		q.setFirstResult(pageable.getOffset()).setMaxResults(pageable.getPageSize());
@@ -176,7 +170,7 @@ public abstract class AbstractSearchableRepository<E extends Serializable> exten
 	 */
 	private void findProper(String name, Class<?> clz, List<String> fields) {
 		if (clz.getAnnotation(Entity.class) == null && clz.getAnnotation(Embeddable.class) == null)
-			throw new IllegalArgumentException("被注解为@IndexedEmbedded的属性既不是实体(被@Entity注解)也不是可嵌入类(被@Embeddable注解)");
+			throw new IllegalArgumentException("The attribute annotated @indexedembedded is neither an Entity (annotated by @entity) nor an Embeddable class (annotated by @embeddable)");
 		try {
 			for (PropertyDescriptor p : Introspector.getBeanInfo(clz, Object.class).getPropertyDescriptors()) {
 				org.hibernate.search.annotations.IndexedEmbedded e = BeanUtil.getAnnotation(p, org.hibernate.search.annotations.IndexedEmbedded.class);
@@ -188,7 +182,7 @@ public abstract class AbstractSearchableRepository<E extends Serializable> exten
 						if (void.class.equals(embclz)) {// 如果没有指定目标类，那就分析该泛型类
 							Class<?>[] genericClasses = BeanUtil.getGenericClass(p);
 							if (genericClasses.length != 1) {
-								throw new IllegalArgumentException("分析不了" + embclz.getName() + "集合存储的实体类型");
+								throw new IllegalArgumentException(String.format("The entity %s type of the collection is unknown" + embclz.getSimpleName()));
 							} else {
 								embclz = genericClasses[0];
 							}
@@ -203,7 +197,7 @@ public abstract class AbstractSearchableRepository<E extends Serializable> exten
 				}
 			}
 		} catch (IntrospectionException e) {
-			logger.warn("通过Javabean属性获取" + clz.getName() + "的索引出现异常！", e);
+			LOG.warn("There was an index error getting the " + clz.getSimpleName() + " attribute", e);
 		}
 	}
 	
@@ -216,7 +210,7 @@ public abstract class AbstractSearchableRepository<E extends Serializable> exten
 	 */
 	private void findField(String name, Class<?> clz, List<String> fields) {
 		if (clz.getAnnotation(Entity.class) == null && clz.getAnnotation(Embeddable.class) == null)
-			throw new IllegalArgumentException("被注解为@IndexedEmbedded的属性既不是实体(被@Entity注解)也不是可嵌入类(被@Embeddable注解)");
+			throw new IllegalArgumentException("The attribute annotated @indexedembedded is neither an Entity (annotated by @entity) nor an Embeddable class (annotated by @embeddable)");
 		Class<?> clzz = clz;
 		while (clzz != Object.class) {
 			java.lang.reflect.Field[] fs = clz.getDeclaredFields();
@@ -232,7 +226,7 @@ public abstract class AbstractSearchableRepository<E extends Serializable> exten
 						if (void.class.equals(embclz)) {// 如果没有指定目标类，那就分析该泛型类
 							Class<?>[] genericClasses = BeanUtil.getGenericClass(fs[i]);
 							if (genericClasses.length != 1) {
-								throw new IllegalArgumentException("分析不了" + embclz.getName() + "集合存储的实体类型");
+								throw new IllegalArgumentException(String.format("The entity %s type of the collection is unknown" + embclz.getSimpleName()));
 							} else {
 								embclz = genericClasses[0];
 							}

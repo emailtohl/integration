@@ -17,7 +17,9 @@ import java.util.Set;
 import javax.persistence.AccessType;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
@@ -192,7 +194,7 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 						if (value == null) {
 							continue;
 						}
-						if (availableObj(value)) {
+						if (availableObj(value) || (BeanUtil.getAnnotation(descriptor, EmbeddedId.class) != null)) {
 							String name = descriptor.getName();
 							Path<?> path;
 							if (prefix == null) {
@@ -200,7 +202,7 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 							} else {
 								path = prefix.get(name);
 							}
-							if (value instanceof String && isFuzzy) {
+							if (value instanceof String && isFuzzy && BeanUtil.getAnnotation(descriptor, Id.class) == null) {
 								predicates.add(b.like(b.lower((Path<String>) path), ((String) value).trim().toLowerCase()));
 							} else {
 								predicates.add(b.equal(path, value));
@@ -271,7 +273,7 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 						if (value == null) {
 							continue;
 						}
-						if (availableObj(value)) {
+						if (availableObj(value) || (field.getAnnotation(EmbeddedId.class) != null)) {
 							String name = field.getName();
 							Path<?> path;
 							if (prefix == null) {
@@ -279,7 +281,7 @@ public abstract class AbstractCriterionQueryRepository<E extends Serializable> e
 							} else {
 								path = prefix.get(name);
 							}
-							if (value instanceof String && isFuzzy) {
+							if (value instanceof String && isFuzzy && field.getAnnotation(Id.class) == null) {
 								predicates.add(b.like(b.lower((Path<String>) path), ((String) value).trim().toLowerCase()));
 							} else {
 								predicates.add(b.equal(path, value));

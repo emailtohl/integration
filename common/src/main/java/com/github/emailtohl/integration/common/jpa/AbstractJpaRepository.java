@@ -11,6 +11,7 @@ import javax.persistence.PersistenceUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Repository;
 
 /**
  * 管理JPA资源的基础仓库，包括：
@@ -18,6 +19,7 @@ import org.apache.logging.log4j.Logger;
  * id的class以及实体class的管理和初始化。
  * @author HeLei
  */
+@Repository
 public abstract class AbstractJpaRepository<ID, E extends Serializable> {
 	protected static final Logger LOG = LogManager.getLogger();
 	protected final Class<ID> idClass;
