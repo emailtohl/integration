@@ -59,7 +59,7 @@ com.github.emailtohl.integration.core.config.DataSourceConfiguration
 项目会使用文件系统，配置位于integration-core的src/main/resources/config.properties中，若不配置，则默认使用与项目同级目录下的integration-data，该目录包括索引目录(integration-data/index)、资源目录(integration-data/resources)等，为了在浏览器上访问资源文件，还需在tomcat的server.xml中的Host标签下配置虚拟目录：
 
 ```xml
-<Context docBase="/home/helei/programs/apache-tomcat-8.5.24/wtpwebapps/integration-data/resources" path="/web/resources" reloadable="true"/>
+<Context docBase="/home/helei/programs/apache-tomcat-9.0.8/wtpwebapps/integration-data/resources" path="/web/resources" reloadable="true"/>
 ```
 
 > 注意：第一次启动项目时，若没有integration-data/resources目录，则tomcat会报无法找到资源的异常：The main resource set specified [integration-data/resources] is not valid。不过启动一次后，该目录就会被创建，第二次就能正确启动。

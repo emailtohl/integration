@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
 	private static final long serialVersionUID = -411374988586534072L;
+	
 	/**
 	 * "ID"属性名称
 	 */

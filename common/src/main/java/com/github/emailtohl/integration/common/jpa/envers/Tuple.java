@@ -13,12 +13,9 @@ public class Tuple<E> {
 	private DefaultRevisionEntity defaultRevisionEntity;
 	private RevisionType revisionType;
 	
-	public Tuple() {
-		super();
-	}
+	public Tuple() {}
 	
 	public Tuple(E entity, DefaultRevisionEntity defaultRevisionEntity, RevisionType revisionType) {
-		super();
 		this.entity = entity;
 		this.defaultRevisionEntity = defaultRevisionEntity;
 		this.revisionType = revisionType;
