@@ -24,7 +24,7 @@ public class RoleAuditedServiceImpl implements RoleAuditedService {
 	public List<Tuple<Role>> getRoleRevision(Long id) {
 		List<Tuple<Role>> ls = roleAudit.getRevisions(id);
 		return ls.stream().map(t -> {
-			return new Tuple<Role>(t.entity, transientRevisionEntity(t.defaultRevisionEntity), t.revisionType);
+			return new Tuple<Role>(toTransient(t.entity), transientRevisionEntity(t.defaultRevisionEntity), t.revisionType);
 		}).collect(Collectors.toList());
 	}
 

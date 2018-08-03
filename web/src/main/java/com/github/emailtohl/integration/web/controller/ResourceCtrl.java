@@ -350,8 +350,8 @@ public class ResourceCtrl {
 			if (execResult.ok) {
 				String src = resources.getName() + "/" + String.join("/", path.split(ConstantPattern.SEPARATOR));
 				Image img = new Image(name, src);
+				u.setImage(img);
 				if (u instanceof Employee) {
-					u.setImage(img);
 					employeeService.update(id, (Employee) u);
 				} else if (u instanceof Customer) {
 					customerService.update(id, (Customer) u);
