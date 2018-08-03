@@ -1,6 +1,7 @@
 package com.github.emailtohl.integration.core.user.employee;
 
-import static com.github.emailtohl.integration.core.config.Constant.*;
+import static com.github.emailtohl.integration.core.config.Constant.SPEL_MATCH_EMP_NUM;
+import static com.github.emailtohl.integration.core.config.Constant.SPEL_MATCH_ID;
 import static com.github.emailtohl.integration.core.role.Authority.EMPLOYEE;
 import static com.github.emailtohl.integration.core.role.Authority.EMPLOYEE_DELETE;
 import static com.github.emailtohl.integration.core.role.Authority.EMPLOYEE_ENABLED;
@@ -13,14 +14,14 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.access.method.P;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import com.github.emailtohl.integration.common.exception.NotAcceptableException;
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
+import com.github.emailtohl.lib.exception.NotAcceptableException;
+import com.github.emailtohl.lib.jpa.Paging;
 
 /**
  * 平台账号的服务层

@@ -20,8 +20,6 @@ import org.junit.Test;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import com.github.emailtohl.integration.common.exception.NotAcceptableException;
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.web.config.WebPresetData;
@@ -29,6 +27,8 @@ import com.github.emailtohl.integration.web.config.WebTestData;
 import com.github.emailtohl.integration.web.config.WebTestEnvironment;
 import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
+import com.github.emailtohl.lib.exception.NotAcceptableException;
+import com.github.emailtohl.lib.jpa.Paging;
 import com.google.gson.Gson;
 
 /**
@@ -92,7 +92,7 @@ public class ArticleServiceImplTest extends WebTestEnvironment {
 		System.out.println(gson.toJson(ls));
 		assertFalse(ls.isEmpty());
 
-		Pageable pageable = new PageRequest(0, 20);
+		Pageable pageable = PageRequest.of(0, 20);
 		Paging<Article> p = articleService.query(params, pageable);
 		System.out.println(gson.toJson(p));
 		assertFalse(p.getContent().isEmpty());

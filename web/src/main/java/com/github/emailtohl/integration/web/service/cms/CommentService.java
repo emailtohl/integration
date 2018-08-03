@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 
-import com.github.emailtohl.integration.common.exception.NotAcceptableException;
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.web.service.cms.entities.Comment;
+import com.github.emailtohl.lib.exception.NotAcceptableException;
+import com.github.emailtohl.lib.jpa.Paging;
 
 /**
  * 文章的评论接口

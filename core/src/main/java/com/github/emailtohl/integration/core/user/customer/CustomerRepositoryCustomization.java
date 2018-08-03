@@ -2,15 +2,15 @@ package com.github.emailtohl.integration.core.user.customer;
 
 import java.util.List;
 
-import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchableRepository;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.CustomerRef;
+import com.github.emailtohl.lib.jpa.SearchInterface;
 
 /**
  * 自定义
  * @author HeLei
  */
-interface CustomerRepositoryCustomization extends SearchableRepository<Customer> {
+interface CustomerRepositoryCustomization extends SearchInterface<Customer, Long> {
 	
 	/**
 	 * 创建一个客户实例，同时包括其引用

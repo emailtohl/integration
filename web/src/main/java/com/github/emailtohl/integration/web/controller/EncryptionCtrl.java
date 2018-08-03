@@ -14,7 +14,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
 import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
@@ -22,6 +21,7 @@ import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.User;
 import com.github.emailtohl.integration.web.filter.UserPasswordEncryptionFilter;
+import com.github.emailtohl.lib.encryption.myrsa.Encipher;
 import com.google.gson.Gson;
 
 /**

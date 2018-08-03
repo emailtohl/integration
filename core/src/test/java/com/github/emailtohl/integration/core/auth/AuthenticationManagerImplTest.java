@@ -10,11 +10,11 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
-import com.github.emailtohl.integration.common.exception.InvalidDataException;
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestEnvironment;
+import com.github.emailtohl.lib.encryption.myrsa.Encipher;
+import com.github.emailtohl.lib.exception.InvalidDataException;
 /**
  * 业务类测试
  * @author HeLei

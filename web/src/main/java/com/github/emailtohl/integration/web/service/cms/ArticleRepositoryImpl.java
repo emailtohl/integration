@@ -11,16 +11,16 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 
-import com.github.emailtohl.integration.common.jpa.fullTextSearch.AbstractSearchableRepository;
 import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Comment;
+import com.github.emailtohl.lib.jpa.SearchRepository;
 
 /**
  * 文章实体的数据访问层
  * 
  * @author HeLei
  */
-class ArticleRepositoryImpl extends AbstractSearchableRepository<Article>
+class ArticleRepositoryImpl extends SearchRepository<Article, Long>
 		implements ArticleRepositoryCustomization {
 
 	/*

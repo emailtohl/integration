@@ -13,9 +13,9 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Pattern;
 
-import com.github.emailtohl.integration.common.ConstantPattern;
-import com.github.emailtohl.integration.common.exception.InnerDataStateException;
 import com.github.emailtohl.integration.core.user.UserType;
+import com.github.emailtohl.lib.ConstantPattern;
+import com.github.emailtohl.lib.exception.InnerDataStateException;
 
 /**
  * 用户实体经常被外部引用，但由于信息量较大，加载性能低，本实体存储必要信息，并应用用户实体

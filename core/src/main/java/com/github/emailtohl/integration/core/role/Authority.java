@@ -13,8 +13,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.core.common.SelfRef;
+import com.github.emailtohl.lib.jpa.BaseEntity;
 /**
  * 角色关联的授权
  * @author HeLei

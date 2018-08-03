@@ -16,9 +16,6 @@ import org.junit.Test;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import com.github.emailtohl.integration.common.exception.NotAcceptableException;
-import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.common.utils.BeanUtil;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.web.config.WebPresetData;
@@ -26,6 +23,8 @@ import com.github.emailtohl.integration.web.config.WebTestData;
 import com.github.emailtohl.integration.web.config.WebTestEnvironment;
 import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Comment;
+import com.github.emailtohl.lib.exception.NotAcceptableException;
+import com.github.emailtohl.lib.jpa.Paging;
 import com.google.gson.Gson;
 
 /**
@@ -99,8 +98,7 @@ public class CommentServiceImplTest extends WebTestEnvironment {
 
 	@Test
 	public void testQueryCommentPageable() {
-		Pageable pageable = new PageRequest(0, 20);
-		
+		Pageable pageable = PageRequest.of(0, 20);
 		Comment params = new Comment();
 		params.setContent("针对文章的评论1");
 		params.setApprover(pd.user_bot.getEmployeeRef());
@@ -139,7 +137,7 @@ public class CommentServiceImplTest extends WebTestEnvironment {
 		assertEquals("update", c.getContent());
 		
 		c = commentService.approve(commentId2, false);
-		final Comment copy = BeanUtil.deepCopy(c);
+		final Comment copy = (Comment) c.clone();
 		boolean f = commentService.recentComments().stream().anyMatch(cm -> cm.equals(copy));
 		assertFalse(f);
 		

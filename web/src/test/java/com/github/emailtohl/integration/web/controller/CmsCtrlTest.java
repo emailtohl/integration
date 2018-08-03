@@ -13,7 +13,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.util.StringUtils;
 
-import com.github.emailtohl.integration.common.exception.NotFoundException;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.web.config.WebPresetData;
@@ -22,6 +21,7 @@ import com.github.emailtohl.integration.web.service.cms.ArticleService;
 import com.github.emailtohl.integration.web.service.cms.CommentService;
 import com.github.emailtohl.integration.web.service.cms.TypeService;
 import com.github.emailtohl.integration.web.service.cms.entities.Article;
+import com.github.emailtohl.lib.exception.NotFoundException;
 
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;

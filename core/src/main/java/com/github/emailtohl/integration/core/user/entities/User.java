@@ -36,14 +36,13 @@ import org.hibernate.search.annotations.Store;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.github.emailtohl.integration.common.Constant;
-import com.github.emailtohl.integration.common.ConstantPattern;
-import com.github.emailtohl.integration.common.exception.InnerDataStateException;
-import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
-import com.github.emailtohl.integration.common.jpa.entity.EnumBridgeCust;
 import com.github.emailtohl.integration.core.file.Image;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.user.UserType;
+import com.github.emailtohl.lib.ConstantPattern;
+import com.github.emailtohl.lib.exception.InnerDataStateException;
+import com.github.emailtohl.lib.jpa.BaseEntity;
+import com.github.emailtohl.lib.jpa.EnumBridgeCust;
 /**
  * 用户实体类
  * javax校验的注解在field上，JPA约束的注解写在JavaBean属性上
@@ -268,7 +267,7 @@ public class User extends BaseEntity {
 	}
 	
 	@org.hibernate.envers.NotAudited
-	@org.hibernate.annotations.Type(type = Constant.LOB_TEXT)
+	@org.hibernate.annotations.Type(type = "org.hibernate.type.TextType")
 	@Lob
 	public String getPublicKey() {
 		return publicKey;

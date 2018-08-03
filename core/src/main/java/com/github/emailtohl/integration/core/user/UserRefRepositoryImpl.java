@@ -7,18 +7,18 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import com.github.emailtohl.integration.common.jpa.fullTextSearch.AbstractSearchableRepository;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.CustomerRef;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.UserRef;
+import com.github.emailtohl.lib.jpa.SearchRepository;
 
 /**
  * 自定义的用户引用数据访问层的实现
  * @author HeLei
  */
-class UserRefRepositoryImpl extends AbstractSearchableRepository<UserRef> implements UserRefRepositoryCustomization {
+class UserRefRepositoryImpl extends SearchRepository<UserRef, Long> implements UserRefRepositoryCustomization {
 
 	@Override
 	public List<UserRef> findUserRefByRoleName(String roleName) {

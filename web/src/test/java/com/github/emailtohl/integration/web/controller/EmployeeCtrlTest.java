@@ -47,7 +47,7 @@ public class EmployeeCtrlTest {
 	
 	Long id;
 	Integer empNum;
-	Pageable pageable = new PageRequest(0, 20);
+	Pageable pageable = PageRequest.of(0, 20);
 	MockMvc mockMvc;
 
 	@Before

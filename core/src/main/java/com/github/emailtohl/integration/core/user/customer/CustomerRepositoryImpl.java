@@ -9,16 +9,16 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.stereotype.Repository;
 
-import com.github.emailtohl.integration.common.jpa.fullTextSearch.AbstractSearchableRepository;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.CustomerRef;
+import com.github.emailtohl.lib.jpa.SearchRepository;
 
 /**
  * 客户管理数据访问接口实现类
  * @author HeLei
  */
 @Repository
-class CustomerRepositoryImpl extends AbstractSearchableRepository<Customer> implements CustomerRepositoryCustomization {
+class CustomerRepositoryImpl extends SearchRepository<Customer, Long> implements CustomerRepositoryCustomization {
 	private static final String USERNAMES_PROPERTY_NAME = "usernames";
 	
 	@Override

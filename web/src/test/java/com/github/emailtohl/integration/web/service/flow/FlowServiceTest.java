@@ -22,12 +22,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.data.domain.PageRequest;
 
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.web.config.WebPresetData;
 import com.github.emailtohl.integration.web.config.WebTestData;
 import com.github.emailtohl.integration.web.config.WebTestEnvironment;
+import com.github.emailtohl.lib.jpa.Paging;
 import com.google.gson.Gson;
 /**
  * 测试流程
@@ -177,7 +177,8 @@ public class FlowServiceTest extends WebTestEnvironment {
 		List<FlowData> flowDatas = flowService.query(form);
 		assertFalse(flowDatas.isEmpty());
 		System.out.println(gson.toJson(flowDatas));
-		Paging<FlowData> page = flowService.query(form, new PageRequest(0, 10));
+		
+		Paging<FlowData> page = flowService.query(form, PageRequest.of(0, 20));
 		assertFalse(page.getContent().isEmpty());
 		page.getContent().forEach(c -> {
 			FlowData fd = flowService.findByFlowDataId(c.getId());

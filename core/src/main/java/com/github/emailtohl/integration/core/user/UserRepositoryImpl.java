@@ -1,7 +1,7 @@
 package com.github.emailtohl.integration.core.user;
 
-import com.github.emailtohl.integration.common.jpa.fullTextSearch.AbstractSearchableRepository;
 import com.github.emailtohl.integration.core.user.entities.User;
+import com.github.emailtohl.lib.jpa.SearchRepository;
 
 /**
  * spring data扫描到接口UserRepository时，会认为UserRepository+Impl作为自定义实现
@@ -9,6 +9,6 @@ import com.github.emailtohl.integration.core.user.entities.User;
  * @author HeLei
  */
 //@Repository //不由spring管理，而是由spring data管理
-class UserRepositoryImpl extends AbstractSearchableRepository<User> implements UserRepositoryCustomization {
+class UserRepositoryImpl extends SearchRepository<User, Long> implements UserRepositoryCustomization {
 
 }

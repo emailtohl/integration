@@ -7,13 +7,13 @@ import javax.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.github.emailtohl.integration.common.jpa.jpaCriterionQuery.CriterionQueryRepository;
+import com.github.emailtohl.lib.jpa.QueryInterface;
 
 /**
  * 访问角色的自定义接口
  * @author HeLei
  */
-interface RoleRepositoryCustomization extends CriterionQueryRepository<Role> {
+interface RoleRepositoryCustomization extends QueryInterface<Role, Long> {
 	/**
      * 根据角色名和权限名组合查询
      * @param roleName

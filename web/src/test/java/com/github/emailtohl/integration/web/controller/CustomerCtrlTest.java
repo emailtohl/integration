@@ -56,7 +56,7 @@ public class CustomerCtrlTest {
 	Long id;
 	final String token = "a_token";
 	String cellPhoneOrEmail;
-	Pageable pageable = new PageRequest(0, 20);
+	Pageable pageable = PageRequest.of(0, 20);
 	MockMvc mockMvc;
 
 	@Before

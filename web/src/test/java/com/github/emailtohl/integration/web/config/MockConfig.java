@@ -31,6 +31,8 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -38,7 +40,6 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.core.config.CorePresetData;
@@ -51,6 +52,7 @@ import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.User;
+import com.github.emailtohl.lib.jpa.Paging;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
@@ -222,7 +224,7 @@ public class MockConfig {
 			userDB.put(c.getId(), c);
 			return c;
 		});
-		when(dao.get(any(Long.class))).then(invocation -> {
+		when(dao.find(any(Long.class))).then(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];
 			return userDB.get(userId);
 		});
@@ -230,7 +232,7 @@ public class MockConfig {
 			Long userId = (Long) invocation.getArguments()[0];
 			userDB.remove(userId);
 			return invocation.getMock();
-		}).when(dao).delete(any(Long.class));
+		}).when(dao).deleteById(any(Long.class));
 		when(dao.findByUsername(anyString())).then(invocation -> {
 			String username = (String) invocation.getArguments()[0];
 			Matcher m = Constant.PATTERN_EMAIL.matcher(username);
@@ -269,7 +271,7 @@ public class MockConfig {
 			userDB.put(e.getId(), e);
 			return e;
 		});
-		when(dao.get(any(Long.class))).then(invocation -> {
+		when(dao.find(any(Long.class))).then(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];
 			return userDB.get(userId);
 		});
@@ -277,7 +279,7 @@ public class MockConfig {
 			Long userId = (Long) invocation.getArguments()[0];
 			userDB.remove(userId);
 			return invocation.getMock();
-		}).when(dao).delete(any(Long.class));
+		}).when(dao).deleteById(any(Long.class));
 		when(dao.findByEmpNum(any())).then(invocation -> {
 			Integer empNum = (Integer) invocation.getArguments()[0];
 			User user = null;
@@ -301,11 +303,11 @@ public class MockConfig {
 		});
 		when(service.get(any())).thenAnswer(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];
-			return re.get(userId);
+			return re.find(userId);
 		});
 		when(service.getUsernames(anyLong())).thenAnswer(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];
-			User u = re.get(userId);
+			User u = re.find(userId);
 			List<String> usernames;
 			if (u instanceof Customer) {
 				usernames = new ArrayList<String>(((Customer) u).getUsernames());
@@ -316,7 +318,7 @@ public class MockConfig {
 		});
 		when(service.update(any(), any())).thenAnswer(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];
-			Customer target = re.get(userId);
+			Customer target = re.find(userId);
 			if (target != null) {
 				Customer source = (Customer) invocation.getArguments()[1];
 				BeanUtils.copyProperties(source, target, Customer.getIgnoreProperties("password", "roles", "enabled", "email", "cellPhone"));
@@ -325,7 +327,7 @@ public class MockConfig {
 		});
 		doAnswer(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];
-			re.delete(userId);
+			re.deleteById(userId);
 			return invocation.getMock();
 		}).when(service).delete(any(Long.class));
 		when(service.getByUsername(td.pd.user_emailtohl.getCellPhone())).thenReturn(td.pd.user_emailtohl);
@@ -335,7 +337,7 @@ public class MockConfig {
 		
 		when(service.grandRoles(anyLong(), anyVararg())).thenAnswer(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];
-			Customer target = re.get(userId);
+			Customer target = re.find(userId);
 			if (target != null && invocation.getArguments().length > 1) {
 				Set<Role> roles = Arrays.stream(invocation.getArguments())
 				.filter(arg -> arg instanceof String)
@@ -349,7 +351,7 @@ public class MockConfig {
 		});
 		when(service.grandLevel(anyLong(), any(Customer.Level.class))).thenAnswer(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];
-			Customer target = re.get(userId);
+			Customer target = re.find(userId);
 			if (target != null) {
 				target.setLevel((Customer.Level) invocation.getArguments()[1]);
 			}
@@ -357,16 +359,17 @@ public class MockConfig {
 		});
 		when(service.enabled(anyLong(), anyBoolean())).thenAnswer(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];
-			Customer target = re.get(userId);
+			Customer target = re.find(userId);
 			if (target != null) {
 				target.setEnabled((Boolean) invocation.getArguments()[1]);
 			}
 			return target;
 		});
 		List<Customer> ls = userDB.values().stream().filter(u -> u instanceof Customer).map(u -> (Customer) u).collect(Collectors.toList());
+		Pageable pageable = PageRequest.of(0, 20);
 		when(service.query(any())).thenReturn(ls);
-		when(service.query(any(), any())).thenReturn(new Paging<>(ls));
-		when(service.search(any(), any())).thenReturn(new Paging<>(ls));
+		when(service.query(any(), any())).thenReturn(new Paging<>(ls, pageable, ls.size()));
+		when(service.search(any(), any())).thenReturn(new Paging<>(ls, pageable, ls.size()));
 		when(service.resetPassword(anyLong())).thenReturn(new ExecResult(true, "", td.baz));
 		when(service.updatePassword(anyString(), anyString(), anyString())).thenReturn(new ExecResult(true, "", td.baz));
 		when(service.exist(anyString())).thenReturn(true);
@@ -385,11 +388,11 @@ public class MockConfig {
 		});
 		when(service.get(any())).thenAnswer(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];
-			return re.get(userId);
+			return re.find(userId);
 		});
 		when(service.update(any(), any())).thenAnswer(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];
-			Employee target = re.get(userId);
+			Employee target = re.find(userId);
 			if (target != null) {
 				Employee source = (Employee) invocation.getArguments()[1];
 				BeanUtils.copyProperties(source, target, Employee.getIgnoreProperties("password", "empNum", "email", "cellPhone", "roles", "enabled"));
@@ -398,12 +401,12 @@ public class MockConfig {
 		});
 		doAnswer(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];
-			re.delete(userId);
+			re.deleteById(userId);
 			return invocation.getMock();
 		}).when(service).delete(any(Long.class));
 		when(service.grandRoles(anyLong(), anyVararg())).thenAnswer(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];
-			Employee target = re.get(userId);
+			Employee target = re.find(userId);
 			if (target != null && invocation.getArguments().length > 1) {
 				Set<Role> roles = Arrays.stream(invocation.getArguments())
 				.filter(arg -> arg instanceof String)
@@ -417,16 +420,17 @@ public class MockConfig {
 		});
 		when(service.enabled(anyLong(), anyBoolean())).thenAnswer(invocation -> {
 			Long userId = (Long) invocation.getArguments()[0];
-			Employee target = re.get(userId);
+			Employee target = re.find(userId);
 			if (target != null) {
 				target.setEnabled((Boolean) invocation.getArguments()[1]);
 			}
 			return target;
 		});
 		List<Employee> ls = userDB.values().stream().filter(u -> u instanceof Employee).map(u -> (Employee) u).collect(Collectors.toList());
+		Pageable pageable = PageRequest.of(0, 20);
 		when(service.query(any())).thenReturn(ls);
-		when(service.query(any(), any())).thenReturn(new Paging<>(ls));
-		when(service.search(any(), any())).thenReturn(new Paging<>(ls));
+		when(service.query(any(), any())).thenReturn(new Paging<>(ls, pageable, ls.size()));
+		when(service.search(any(), any())).thenReturn(new Paging<>(ls, pageable, ls.size()));
 		when(service.getByEmpNum(any())).then(invocation -> {
 			Integer empNum = (Integer) invocation.getArguments()[0];
 			return re.findByEmpNum(empNum);

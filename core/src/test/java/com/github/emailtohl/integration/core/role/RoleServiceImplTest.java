@@ -15,9 +15,9 @@ import org.junit.Test;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestEnvironment;
+import com.github.emailtohl.lib.jpa.Paging;
 import com.google.gson.Gson;
 
 /**
@@ -71,10 +71,11 @@ public class RoleServiceImplTest extends CoreTestEnvironment {
 
 	@Test
 	public void testQueryRolePageable() {
-		Pageable pageable = new PageRequest(0, 20);
+		Pageable pageable = PageRequest.of(0, 20);
 		Paging<Role> p = roleService.query(null, pageable);
 		assertFalse(p.getContent().isEmpty());
-		p = roleService.query(cpd.role_manager, pageable);
+		Role param = new Role(cpd.role_manager.getName(), cpd.role_manager.getRoleType(), cpd.role_manager.getDescription());
+		p = roleService.query(param, pageable);
 		assertFalse(p.getContent().isEmpty());
 		System.out.println(gson.toJson(p));
 	}
@@ -83,7 +84,8 @@ public class RoleServiceImplTest extends CoreTestEnvironment {
 	public void testQueryRole() {
 		List<Role> ls = roleService.query(null);
 		assertFalse(ls.isEmpty());
-		ls = roleService.query(cpd.role_staff);
+		Role param = new Role(cpd.role_staff.getName(), cpd.role_staff.getRoleType(), cpd.role_staff.getDescription());
+		ls = roleService.query(param);
 		assertFalse(ls.isEmpty());
 		System.out.println(gson.toJson(ls));
 	}

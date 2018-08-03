@@ -17,16 +17,16 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.method.P;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import com.github.emailtohl.integration.common.ConstantPattern;
-import com.github.emailtohl.integration.common.exception.NotAcceptableException;
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.user.entities.Card;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.CustomerRef;
+import com.github.emailtohl.lib.ConstantPattern;
+import com.github.emailtohl.lib.exception.NotAcceptableException;
+import com.github.emailtohl.lib.jpa.Paging;
 
 /**
  * 客户的服务层

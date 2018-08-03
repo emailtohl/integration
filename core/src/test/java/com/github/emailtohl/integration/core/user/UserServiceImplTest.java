@@ -15,7 +15,6 @@ import org.junit.Test;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestEnvironment;
@@ -24,6 +23,7 @@ import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.User;
 import com.github.emailtohl.integration.core.user.entities.UserRef;
+import com.github.emailtohl.lib.jpa.Paging;
 import com.google.gson.Gson;
 
 /**
@@ -39,7 +39,7 @@ public class UserServiceImplTest extends CoreTestEnvironment {
 	CorePresetData cpd;
 	@Inject
 	CoreTestData td;
-	Pageable pageable = new PageRequest(0, 20);
+	Pageable pageable = PageRequest.of(0, 20);
 
 	@Test
 	public void testSearchStringPageable() {
@@ -118,7 +118,7 @@ public class UserServiceImplTest extends CoreTestEnvironment {
 		System.out.println(gson.toJson(p));
 		
 		EmployeeRef refParam = new EmployeeRef();
-		refParam.setEmpNum(td.foo.getEmpNum());
+		refParam.setName(td.foo.getName());
 		p = userService.queryRef(refParam, pageable);
 		assertFalse(p.getContent().isEmpty());
 		

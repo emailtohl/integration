@@ -6,8 +6,7 @@ import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import com.github.emailtohl.integration.common.jpa.envers.Tuple;
-import com.github.emailtohl.integration.core.role.Role;
+import com.github.emailtohl.lib.jpa.AuditedRepository.Tuple;
 
 /**
  * 审计角色的历史记录

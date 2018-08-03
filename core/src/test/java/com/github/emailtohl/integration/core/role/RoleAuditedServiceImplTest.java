@@ -13,9 +13,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.emailtohl.integration.common.jpa.envers.Tuple;
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestEnvironment;
+import com.github.emailtohl.lib.jpa.AuditedRepository.Tuple;
 import com.google.gson.Gson;
 
 /**
@@ -61,11 +61,10 @@ public class RoleAuditedServiceImplTest extends CoreTestEnvironment {
 	@Test
 	public void test() {
 		List<Tuple<Role>> ls = roleAuditedService.getRoleRevision(id);
-		System.out.println(gson.toJson(ls));
 		assertFalse(ls.isEmpty());
 		ls.forEach(t -> {
 			System.out.println(t);
-			int revision = t.getDefaultRevisionEntity().getId();
+			int revision = t.defaultRevisionEntity.getId();
 			Role r = roleAuditedService.getRoleAtRevision(id, revision);
 			assertNotNull(r);
 			System.out.println(gson.toJson(r));

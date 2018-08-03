@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.github.emailtohl.integration.common.exception.RestException;
+import com.github.emailtohl.lib.exception.RestException;
 
 /**
  * 处理异常

@@ -16,11 +16,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.integration.common.exception.NotAcceptableException;
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.user.entities.Company;
 import com.github.emailtohl.integration.core.user.entities.Department;
+import com.github.emailtohl.lib.exception.NotAcceptableException;
+import com.github.emailtohl.lib.jpa.Paging;
 
 /**
  * 部门服务层实现
@@ -79,7 +79,7 @@ public class DepartmentServiceImpl extends StandardService<Department> implement
 	@Cacheable(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Department get(Long id) {
-		return transientDetail(departmentRepository.findOne(id));
+		return transientDetail(departmentRepository.findById(id).orElse(null));
 	}
 	
 	@Override
@@ -123,7 +123,7 @@ public class DepartmentServiceImpl extends StandardService<Department> implement
 	@Override
 	public Department update(Long id, Department newEntity) {
 		validate(newEntity);
-		Department src = departmentRepository.findOne(id);
+		Department src = departmentRepository.findById(id).orElse(null);
 		if (src == null) {
 			return null;
 		}
@@ -164,7 +164,7 @@ public class DepartmentServiceImpl extends StandardService<Department> implement
 	@CacheEvict(value = CACHE_NAME, key = "#root.args[0]")
 	@Override
 	public void delete(Long id) {
-		Department src = departmentRepository.findOne(id);
+		Department src = departmentRepository.findById(id).orElse(null);
 		if (src == null) {
 			return;
 		}

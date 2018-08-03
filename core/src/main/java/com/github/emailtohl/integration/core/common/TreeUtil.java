@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.common.utils;
+package com.github.emailtohl.integration.core.common;
 
 import java.io.File;
 import java.util.ArrayList;

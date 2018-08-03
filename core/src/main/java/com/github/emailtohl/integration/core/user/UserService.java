@@ -6,9 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.user.entities.User;
 import com.github.emailtohl.integration.core.user.entities.UserRef;
+import com.github.emailtohl.lib.jpa.Paging;
 
 /**
  * 统一查询功能

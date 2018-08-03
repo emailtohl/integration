@@ -2,8 +2,8 @@ package com.github.emailtohl.integration.core.config;
 
 import java.util.regex.Pattern;
 
-import com.github.emailtohl.integration.common.ConstantPattern;
 import com.github.emailtohl.integration.core.user.entities.Employee;
+import com.github.emailtohl.lib.ConstantPattern;
 
 /**
  * 模块相关常量

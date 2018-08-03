@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -36,11 +37,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.web.config.WebPresetData;
+import com.github.emailtohl.lib.jpa.Paging;
 
 /**
  * 流程服务
@@ -156,7 +157,11 @@ public class FlowService {
 			ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
 					.processInstanceId(processInstanceId).singleResult();
 			String businessKey = processInstance.getBusinessKey();
-			FlowData flowData = flowRepository.findOne(Long.valueOf(businessKey));
+			Optional<FlowData> flowDataOpt = flowRepository.findById(Long.valueOf(businessKey));
+			if (!flowDataOpt.isPresent()) {
+				continue;
+			}
+			FlowData flowData = flowDataOpt.get();
 			flowData.setTaskId(task.getId());
 			flowData.setTaskName(task.getName());
 			flowData.setTaskAssignee(task.getAssignee());
@@ -400,7 +405,7 @@ public class FlowService {
 	 * @return
 	 */
 	public FlowData findByFlowDataId(Long id) {
-		return transientDetail(flowRepository.findOne(id));
+		return transientDetail(flowRepository.findById(id).orElse(null));
 	}
 	
 	/**
@@ -450,7 +455,7 @@ public class FlowService {
 		if (entity == null || entity.getId() == null) {
 			return null;
 		}
-		flowData = flowRepository.findOne(entity.getId());
+		flowData = flowRepository.findById(entity.getId()).orElse(null);
 		if (flowData != null) {
 			return flowData;
 		}

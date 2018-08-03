@@ -11,15 +11,16 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Pattern;
 
-import com.github.emailtohl.integration.common.ConstantPattern;
-import com.github.emailtohl.integration.common.jpa.entity.EnumBridgeCust;
 import com.github.emailtohl.integration.core.file.Image;
+import com.github.emailtohl.lib.ConstantPattern;
+import com.github.emailtohl.lib.jpa.EnumBridgeCust;
 
 /**
  * 客户，如顾客、商家、匿名访问者等等
@@ -120,7 +121,7 @@ public class Customer extends User {
 		this.points = points;
 	}
 
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	@JoinTable(name = "customer_card")
 	public Set<Card> getCards() {
 		return cards;

@@ -1,8 +1,6 @@
 package com.github.emailtohl.integration.core.user.employee;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -12,30 +10,28 @@ import org.hibernate.envers.DefaultRevisionEntity;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.integration.common.jpa.envers.Tuple;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.user.entities.Department;
 import com.github.emailtohl.integration.core.user.entities.Employee;
+import com.github.emailtohl.lib.jpa.AuditedRepository.Tuple;
+
 /**
  * 审计平台账号的历史记录
+ * 
  * @author HeLei
  */
 @Transactional
 @Service
 public class EmployeeAuditedServiceImpl implements EmployeeAuditedService {
-	@Inject EmployeeAudit employeeAudit;
+	@Inject
+	EmployeeAudit employeeAudit;
 
 	@Override
 	public List<Tuple<Employee>> getEmployeeRevision(Long id) {
-		Map<String, Object> propertyNameValueMap = new HashMap<>();
-		propertyNameValueMap.put("id", id);
-		List<Tuple<Employee>> ls = employeeAudit.getAllRevisionInfo(propertyNameValueMap);
+		List<Tuple<Employee>> ls = employeeAudit.getRevisions(id);
 		return ls.stream().map(t -> {
-			Tuple<Employee> n = new Tuple<Employee>();
-			n.setDefaultRevisionEntity(transientRevisionEntity(t.getDefaultRevisionEntity()));
-			n.setRevisionType(t.getRevisionType());
-			n.setEntity(toTransient(t.getEntity()));
-			return n;
+			return new Tuple<Employee>(toTransient(t.entity), transientRevisionEntity(t.defaultRevisionEntity),
+					t.revisionType);
 		}).collect(Collectors.toList());
 	}
 
@@ -43,7 +39,7 @@ public class EmployeeAuditedServiceImpl implements EmployeeAuditedService {
 	public Employee getEmployeeAtRevision(Long id, Number revision) {
 		return transientDetail(employeeAudit.getEntityAtRevision(id, revision));
 	}
-	
+
 	private Employee toTransient(Employee source) {
 		if (source == null) {
 			return null;
@@ -57,7 +53,7 @@ public class EmployeeAuditedServiceImpl implements EmployeeAuditedService {
 		}
 		return target;
 	}
-	
+
 	private Employee transientDetail(Employee source) {
 		if (source == null) {
 			return null;
@@ -69,10 +65,11 @@ public class EmployeeAuditedServiceImpl implements EmployeeAuditedService {
 			d.setName(source.getDepartment().getName());
 			target.setDepartment(d);
 		}
-		source.getRoles().forEach(role -> target.getRoles().add(new Role(role.getName(), role.getRoleType(), role.getDescription())));
+		source.getRoles().forEach(
+				role -> target.getRoles().add(new Role(role.getName(), role.getRoleType(), role.getDescription())));
 		return target;
 	}
-	
+
 	private DefaultRevisionEntity transientRevisionEntity(DefaultRevisionEntity re) {
 		if (re == null) {
 			return null;

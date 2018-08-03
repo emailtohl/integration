@@ -34,12 +34,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.emailtohl.integration.common.exception.ConflictException;
-import com.github.emailtohl.integration.common.exception.InvalidDataException;
-import com.github.emailtohl.integration.common.exception.NotFoundException;
-import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.core.user.UserService;
+import com.github.emailtohl.lib.exception.ConflictException;
+import com.github.emailtohl.lib.exception.InvalidDataException;
+import com.github.emailtohl.lib.exception.NotFoundException;
+import com.github.emailtohl.lib.jpa.BaseEntity;
+import com.github.emailtohl.lib.jpa.Paging;
 
 /**
  * 基本增删改查。基类注解仅做参考，为保证映射有效，导出类同样需添加MVC注解。

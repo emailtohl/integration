@@ -13,7 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
+import com.github.emailtohl.lib.jpa.BaseEntity;
 
 /**
  * 整个流程涉及的数据，既作为接收流程相关的表单数据，也作为显示层的数据承载对象

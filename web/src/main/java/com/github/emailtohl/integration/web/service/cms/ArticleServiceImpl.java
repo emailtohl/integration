@@ -20,9 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.integration.common.exception.NotAcceptableException;
-import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.user.UserService;
@@ -34,6 +31,9 @@ import com.github.emailtohl.integration.web.config.WebPresetData;
 import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Comment;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
+import com.github.emailtohl.lib.exception.NotAcceptableException;
+import com.github.emailtohl.lib.jpa.BaseEntity;
+import com.github.emailtohl.lib.jpa.Paging;
 
 /**
  * 文章服务实现
@@ -112,13 +112,13 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 		Type type = null;
 		if (entity.getType() != null) {
 			if (entity.getType().getId() != null) {
-				type = typeRepository.findOne(entity.getType().getId());
+				type = typeRepository.findById(entity.getType().getId()).orElse(null);
 			} else if (hasText(entity.getType().getName())) {
 				type = typeRepository.getByName(entity.getType().getName());
 			}
 		}
 		if (type == null) {
-			type = typeRepository.findOne(webPresetData.unclassified.getId());
+			type = typeRepository.findById(webPresetData.unclassified.getId()).orElse(null);
 		}
 		if (type != null) {
 			entity.setType(type);
@@ -135,7 +135,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 	@Cacheable(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Article get(Long id) {
-		Article a = articleRepository.get(id);
+		Article a = articleRepository.find(id);
 		return transientDetail(a);
 	}
 
@@ -171,7 +171,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Article update(Long id, Article newEntity) {
-		Article a = articleRepository.findOne(id);
+		Article a = articleRepository.find(id);
 		if (a == null) {
 			return null;
 		}
@@ -213,7 +213,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 		Type type = null;
 		if (newEntity.getType() != null) {
 			if (newEntity.getType().getId() != null) {
-				type = typeRepository.findOne(newEntity.getType().getId());
+				type = typeRepository.findById(newEntity.getType().getId()).orElse(null);
 			} else if (hasText(newEntity.getType().getName())) {
 				type = typeRepository.getByName(newEntity.getType().getName());
 			}
@@ -228,7 +228,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 	@CacheEvict(value = { CACHE_NAME, CACHE_ALL }, allEntries = true)
 	@Override
 	public void delete(Long id) {
-		Article a = articleRepository.findOne(id);
+		Article a = articleRepository.find(id);
 		if (a == null) {
 			return;
 		}
@@ -241,7 +241,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Article approve(long id, boolean canApproved) {
-		Article a = articleRepository.findOne(id);
+		Article a = articleRepository.find(id);
 		if (a == null) {
 			return null;
 		}
@@ -263,7 +263,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Article canComment(Long id, boolean canComment) {
-		Article a = articleRepository.findOne(id);
+		Article a = articleRepository.find(id);
 		if (a == null) {
 			return null;
 		}
@@ -281,7 +281,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 				.collect(Collectors.groupingBy(article -> article.getType()));
 	}
 
-	private Pageable zeroToHundred  = new PageRequest(0, 100, Sort.Direction.DESC, BaseEntity.MODIFY_DATE_PROPERTY_NAME);
+	private Pageable zeroToHundred  = PageRequest.of(0, 100, Sort.Direction.DESC, BaseEntity.MODIFY_DATE_PROPERTY_NAME);
 	@Override
 	public List<Article> recentArticles() {
 		return articleRepository.findAll(zeroToHundred).getContent()
@@ -293,7 +293,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 	@Cacheable(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Article readArticle(Long id) throws NotAcceptableException {
-		Article a = articleRepository.findOne(id);
+		Article a = articleRepository.find(id);
 		if (a == null) {
 			return null;
 		}

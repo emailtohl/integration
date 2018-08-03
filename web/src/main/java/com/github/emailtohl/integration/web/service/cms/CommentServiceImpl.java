@@ -18,8 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.integration.common.exception.NotAcceptableException;
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.user.UserService;
@@ -29,6 +27,8 @@ import com.github.emailtohl.integration.core.user.entities.UserRef;
 import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Comment;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
+import com.github.emailtohl.lib.exception.NotAcceptableException;
+import com.github.emailtohl.lib.jpa.Paging;
 
 /**
  * 文章评论服务实现
@@ -82,7 +82,7 @@ public class CommentServiceImpl extends StandardService<Comment> implements Comm
 		entity.setReviewer(userRef);
 		// 评论总是有关联的，要么是与文章，要么是与评论
 		if (entity.getArticle() != null && entity.getArticle().getId() != null) {
-			Article a = articleRepository.findOne(entity.getArticle().getId());
+			Article a = articleRepository.find(entity.getArticle().getId());
 			if (a != null) {
 				if (a.getCanComment() != null && !a.getCanComment()) {
 					throw new NotAcceptableException(a.getTitle() + "关闭了评论");
@@ -91,7 +91,7 @@ public class CommentServiceImpl extends StandardService<Comment> implements Comm
 			}
 		}
 		if (entity.getComment() != null && entity.getComment().getId() != null) {
-			Comment targetComment = commentRepository.get(entity.getComment().getId());
+			Comment targetComment = commentRepository.find(entity.getComment().getId());
 			if (targetComment != null) {
 				if (targetComment.getCanComment() != null && !targetComment.getCanComment()) {
 					throw new NotAcceptableException("评论被关闭");
@@ -110,7 +110,7 @@ public class CommentServiceImpl extends StandardService<Comment> implements Comm
 	@Cacheable(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Comment get(Long id) {
-		return transientDetail(commentRepository.get(id));
+		return transientDetail(commentRepository.find(id));
 	}
 
 	@Override
@@ -170,7 +170,7 @@ public class CommentServiceImpl extends StandardService<Comment> implements Comm
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Comment update(Long id, Comment newEntity) {
-		Comment c = commentRepository.findOne(id);
+		Comment c = commentRepository.find(id);
 		if (c == null) {
 			return null;
 		}
@@ -183,7 +183,7 @@ public class CommentServiceImpl extends StandardService<Comment> implements Comm
 	@CacheEvict(value = CACHE_NAME, key = "#root.args[0]")
 	@Override
 	public void delete(Long id) {
-		Comment c = commentRepository.findOne(id);
+		Comment c = commentRepository.find(id);
 		if (c == null) {
 			return;
 		}
@@ -197,7 +197,7 @@ public class CommentServiceImpl extends StandardService<Comment> implements Comm
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Comment approve(long id, boolean approved) {
-		Comment c = commentRepository.findOne(id);
+		Comment c = commentRepository.find(id);
 		if (c == null) {
 			return null;
 		}
@@ -219,7 +219,7 @@ public class CommentServiceImpl extends StandardService<Comment> implements Comm
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Comment canComment(Long id, boolean canComment) {
-		Comment c = commentRepository.findOne(id);
+		Comment c = commentRepository.find(id);
 		if (c == null) {
 			return null;
 		}

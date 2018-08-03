@@ -1,10 +1,9 @@
 package com.github.emailtohl.integration.core.role;
 
-import com.github.emailtohl.integration.common.jpa.envers.AuditedRepository;
-import com.github.emailtohl.integration.core.role.Role;
+import com.github.emailtohl.lib.jpa.AuditedInterface;
 /**
  * Role的历史信息
  * @author HeLei
  */
-interface RoleAudit extends AuditedRepository<Role> {
+interface RoleAudit extends AuditedInterface<Role, Long> {
 }

@@ -4,16 +4,16 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import com.github.emailtohl.integration.common.jpa.fullTextSearch.AbstractSearchableRepository;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
+import com.github.emailtohl.lib.jpa.SearchRepository;
 
 /**
  * 数据访问层
+ * 
  * @author HeLei
  */
-class EmployeeRepositoryImpl extends AbstractSearchableRepository<Employee>
-		implements EmployeeRepositoryCustomization {
+class EmployeeRepositoryImpl extends SearchRepository<Employee, Long> implements EmployeeRepositoryCustomization {
 
 	@Override
 	public Employee create(Employee employee) {
@@ -23,7 +23,7 @@ class EmployeeRepositoryImpl extends AbstractSearchableRepository<Employee>
 		entityManager.persist(ref);
 		return employee;
 	}
-	
+
 	@Override
 	public Integer getMaxEmpNo() {
 		Integer result;

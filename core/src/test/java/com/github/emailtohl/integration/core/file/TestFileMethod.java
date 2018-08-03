@@ -1,6 +1,6 @@
 package com.github.emailtohl.integration.core.file;
 
-import static com.github.emailtohl.integration.common.ConstantPattern.SEPARATOR;
+import static com.github.emailtohl.lib.ConstantPattern.SEPARATOR;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;

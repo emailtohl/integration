@@ -16,10 +16,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.integration.common.exception.NotAcceptableException;
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.user.entities.Company;
+import com.github.emailtohl.lib.exception.NotAcceptableException;
+import com.github.emailtohl.lib.jpa.Paging;
 
 /**
  * 公司服务层实现
@@ -67,7 +67,7 @@ public class CompanyServiceImpl extends StandardService<Company> implements Comp
 	@Cacheable(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Company get(Long id) {
-		return transientDetail(companyRepository.findOne(id));
+		return transientDetail(companyRepository.findById(id).orElse(null));
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class CompanyServiceImpl extends StandardService<Company> implements Comp
 	@Override
 	public Company update(Long id, Company newEntity) {
 		validate(newEntity);
-		Company src = companyRepository.findOne(id);
+		Company src = companyRepository.findById(id).orElse(null);
 		if (src == null) {
 			return null;
 		}
@@ -127,7 +127,7 @@ public class CompanyServiceImpl extends StandardService<Company> implements Comp
 		Company targetParent = null;
 		if (newEntity.getParent() != null) {
 			if (newEntity.getParent().getId() != null) {
-				targetParent = companyRepository.findOne(newEntity.getParent().getId());
+				targetParent = companyRepository.findById(newEntity.getParent().getId()).orElse(null);
 			} else if (hasText(newEntity.getParent().getName())) {
 				targetParent = companyRepository.findByName(newEntity.getParent().getName());
 			}
@@ -145,7 +145,7 @@ public class CompanyServiceImpl extends StandardService<Company> implements Comp
 	@CacheEvict(value = CACHE_NAME, key = "#root.args[0]")
 	@Override
 	public void delete(Long id) {
-		Company src = companyRepository.findOne(id);
+		Company src = companyRepository.findById(id).orElse(null);
 		if (src == null) {
 			return;
 		}

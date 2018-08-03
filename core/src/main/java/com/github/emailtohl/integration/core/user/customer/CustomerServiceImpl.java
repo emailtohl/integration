@@ -24,9 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.integration.common.exception.InvalidDataException;
-import com.github.emailtohl.integration.common.exception.NotAcceptableException;
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.Constant;
@@ -38,6 +35,9 @@ import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Customer.Level;
 import com.github.emailtohl.integration.core.user.entities.CustomerRef;
 import com.github.emailtohl.integration.core.user.entities.LoginResult;
+import com.github.emailtohl.lib.exception.InvalidDataException;
+import com.github.emailtohl.lib.exception.NotAcceptableException;
+import com.github.emailtohl.lib.jpa.Paging;
 
 /**
  * 客户的服务接口
@@ -105,6 +105,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	 */
 	private ExampleMatcher identificationMatcher = ExampleMatcher.matching().withIgnoreCase()
 			.withMatcher("identification", GenericPropertyMatchers.exact());
+
 	@Override
 	public boolean identificationExist(String identification) {
 		Customer c = new Customer();
@@ -112,11 +113,11 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		Example<Customer> example = Example.of(c, identificationMatcher);
 		return customerRepository.exists(example);
 	}
-	
+
 	@Cacheable(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer get(Long id) {
-		Customer source = customerRepository.get(id);
+		Customer source = customerRepository.find(id);
 		return transientDetail(source);
 	}
 
@@ -134,12 +135,12 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 
 	@Override
 	public List<Customer> query(Customer params) {
-		List<Customer> ls;
-		if (params == null) {
-			ls = customerRepository.findAll();
-		} else {
-			ls = customerRepository.queryForList(params);
-		}
+		List<Customer> ls = customerRepository.queryForList(params);
+//		if (params == null) {
+//			ls = customerRepository.findAll();
+//		} else {
+//			ls = customerRepository.queryForList(params);
+//		}
 		return ls.stream().map(this::toTransient).collect(Collectors.toList());
 	}
 
@@ -147,7 +148,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	@Override
 	public Customer update(Long id, Customer newEntity) {
 		validate(newEntity);
-		Customer source = customerRepository.get(id);
+		Customer source = customerRepository.find(id);
 		if (source == null) {
 			return null;
 		}
@@ -184,7 +185,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	@CacheEvict(value = CACHE_NAME, key = "#root.args[0]")
 	@Override
 	public void delete(Long id) {
-		Customer source = customerRepository.get(id);
+		Customer source = customerRepository.find(id);
 		if (source == null) {
 			return;
 		}
@@ -195,21 +196,21 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 			r.getUsers().remove(source);
 			i.remove();
 		}
-		customerRepository.delete(id);
+		customerRepository.deleteById(id);
 	}
 
 	@Override
 	public Paging<Customer> search(String query, Pageable pageable) {
 		if (!hasText(query)) {
-			Page<Customer> p = customerRepository.queryForPage(null, pageable, null);
+			Page<Customer> p = customerRepository.queryForPage(null, pageable);
 			List<Customer> ls = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
-			return new Paging<>(ls, p.getTotalElements(), p.getNumber(), p.getSize());
+			return new Paging<>(ls, pageable, p.getSize());
 		}
 		Page<Customer> p = customerRepository.search(query, pageable);
 		List<Customer> ls = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
-		return new Paging<>(ls, p.getTotalElements(), p.getNumber(), p.getSize());
+		return new Paging<>(ls, pageable, p.getSize());
 	}
-	
+
 	@Override
 	public ExecResult login(String username, String password) {
 		if (!hasText(username) || !hasText(password)) {
@@ -251,7 +252,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer grandRoles(Long id, String... roleNames) {
-		Customer source = customerRepository.get(id);
+		Customer source = customerRepository.find(id);
 		if (source == null) {
 			return null;
 		}
@@ -275,7 +276,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer grandLevel(Long id, Level level) {
-		Customer source = customerRepository.get(id);
+		Customer source = customerRepository.find(id);
 		if (source == null) {
 			return null;
 		}
@@ -322,7 +323,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 
 	@Override
 	public ExecResult resetPassword(Long id) {
-		Customer source = customerRepository.get(id);
+		Customer source = customerRepository.find(id);
 		if (source == null) {
 			return new ExecResult(false, "没有此用户", null);
 		}
@@ -335,7 +336,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer changeCellPhone(Long id, String newCellPhone) {
-		Customer source = customerRepository.get(id);
+		Customer source = customerRepository.find(id);
 		if (source == null) {
 			return null;
 		}
@@ -347,7 +348,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer changeEmail(Long id, String newEmail) {
-		Customer source = customerRepository.get(id);
+		Customer source = customerRepository.find(id);
 		if (source == null) {
 			return null;
 		}
@@ -359,7 +360,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer enabled(Long id, boolean enabled) {
-		Customer source = customerRepository.get(id);
+		Customer source = customerRepository.find(id);
 		if (source == null) {
 			return null;
 		}
@@ -370,11 +371,11 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		}
 		return transientDetail(source);
 	}
-	
+
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer setPublicKey(Long id, String publicKey) {
-		Customer source = customerRepository.get(id);
+		Customer source = customerRepository.find(id);
 		if (source == null) {
 			return null;
 		}
@@ -387,7 +388,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	@Override
 	public Customer addCard(Long id, Card card) {
 		validate(card, Card.class);
-		Customer source = customerRepository.get(id);
+		Customer source = customerRepository.find(id);
 		if (source == null) {
 			return null;
 		}
@@ -395,12 +396,12 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		source.getCards().add(card);
 		return transientDetail(source);
 	}
-	
+
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer updateCards(Long id, Set<Card> cards) {
 		cards.forEach(c -> validate(c, Card.class));
-		Customer source = customerRepository.get(id);
+		Customer source = customerRepository.find(id);
 		if (source == null) {
 			return null;
 		}
@@ -413,7 +414,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Customer removeCard(Long id, Card card) {
-		Customer source = customerRepository.get(id);
+		Customer source = customerRepository.find(id);
 		if (source == null) {
 			return null;
 		}
@@ -450,7 +451,7 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 
 	@Override
 	public CustomerRef getRef(Long id) {
-		CustomerRef ref = customerRefRepository.findOne(id);
+		CustomerRef ref = customerRefRepository.findById(id).orElse(null);
 		if (ref == null) {
 			return null;
 		}
@@ -468,16 +469,14 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 	/**
 	 * 引用实体匹配器
 	 */
-	private ExampleMatcher refMatcher = ExampleMatcher.matching()
-			.withIgnoreNullValues()
-			.withIgnorePaths("icon", "customer")
-			.withMatcher("id", GenericPropertyMatchers.exact())
+	private ExampleMatcher refMatcher = ExampleMatcher.matching().withIgnoreNullValues()
+			.withIgnorePaths("icon", "customer").withMatcher("id", GenericPropertyMatchers.exact())
 			.withMatcher("name", GenericPropertyMatchers.caseSensitive())
 			.withMatcher("nickname", GenericPropertyMatchers.caseSensitive())
 			.withMatcher("email", GenericPropertyMatchers.caseSensitive())
 			.withMatcher("nickname", GenericPropertyMatchers.caseSensitive())
 			.withMatcher("cellPhone", GenericPropertyMatchers.caseSensitive());
-	
+
 	@Override
 	public Paging<CustomerRef> queryRef(CustomerRef params, Pageable pageable) {
 		Page<CustomerRef> page;
@@ -516,9 +515,10 @@ public class CustomerServiceImpl extends StandardService<Customer> implements Cu
 		copy.setIconSrc(ref.getIconSrc());
 		return copy;
 	}
-	
+
 	/**
 	 * 若是系统内置账号，则触发异常
+	 * 
 	 * @param e
 	 */
 	private void isIllegal(Customer c) {

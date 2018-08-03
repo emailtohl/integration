@@ -29,14 +29,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.emailtohl.integration.common.ConstantPattern;
-import com.github.emailtohl.integration.common.exception.NotFoundException;
-import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.user.customer.CustomerService;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.web.service.mail.EmailService;
+import com.github.emailtohl.lib.ConstantPattern;
+import com.github.emailtohl.lib.exception.NotFoundException;
+import com.github.emailtohl.lib.jpa.BaseEntity;
+import com.github.emailtohl.lib.jpa.Paging;
 
 /**
  * 客户信息控制层

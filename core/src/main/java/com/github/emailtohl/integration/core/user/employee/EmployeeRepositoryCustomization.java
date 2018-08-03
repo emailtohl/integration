@@ -1,9 +1,9 @@
 package com.github.emailtohl.integration.core.user.employee;
 
-import com.github.emailtohl.integration.common.jpa.fullTextSearch.SearchableRepository;
 import com.github.emailtohl.integration.core.user.entities.Employee;
+import com.github.emailtohl.lib.jpa.SearchInterface;
 
-interface EmployeeRepositoryCustomization extends SearchableRepository<Employee> {
+interface EmployeeRepositoryCustomization extends SearchInterface<Employee, Long> {
 	
 	/**
 	 * 创建一个平台账户实例，同时包括其引用

@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.web.service.flow.CommentInfo;
 import com.github.emailtohl.integration.web.service.flow.FlowData;
 import com.github.emailtohl.integration.web.service.flow.FlowService;
+import com.github.emailtohl.lib.jpa.BaseEntity;
+import com.github.emailtohl.lib.jpa.Paging;
 /**
  * 流程控制器
  * @author HeLei

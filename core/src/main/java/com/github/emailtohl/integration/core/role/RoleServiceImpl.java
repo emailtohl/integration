@@ -15,11 +15,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.integration.common.exception.NotAcceptableException;
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.CorePresetData;
 import com.github.emailtohl.integration.core.user.entities.User;
+import com.github.emailtohl.lib.exception.NotAcceptableException;
+import com.github.emailtohl.lib.jpa.Paging;
 /**
  * 角色管理服务的实现
  * @author HeLei
@@ -46,7 +46,7 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 		entity.getAuthorities().forEach(a -> {
 			Authority p = null;
 			if (a.getId() != null) {
-				p = authorityRepository.findOne(a.getId());
+				p = authorityRepository.findById(a.getId()).orElse(null);
 			} else if (hasText(a.getName())) {
 				p = authorityRepository.findByName(a.getName());
 			}
@@ -66,7 +66,7 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 	@Cacheable(value = CACHE_NAME_ROLE, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Role get(Long id) {
-		Role r = roleRepository.get(id);
+		Role r = roleRepository.find(id);
 		if (r == null) {
 			return null;
 		}
@@ -108,7 +108,7 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 	@CachePut(value = CACHE_NAME_ROLE, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Role update(Long id, Role newEntity) {
-		Role source = roleRepository.get(id);
+		Role source = roleRepository.find(id);
 		if (source == null) {
 			return null;
 		}
@@ -131,7 +131,7 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 		newEntity.getAuthorities().forEach(a -> {
 			Authority p = null;
 			if (a.getId() != null) {
-				p = authorityRepository.findOne(a.getId());
+				p = authorityRepository.findById(a.getId()).orElse(null);
 			} else if (hasText(a.getName())) {
 				p = authorityRepository.findByName(a.getName());
 			}
@@ -150,7 +150,7 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 				|| presetData.role_staff.getId().equals(id) || presetData.role_guest.getId().equals(id)) {
 			throw new NotAcceptableException("不能删除内置角色");
 		}
-		Role source = roleRepository.get(id);
+		Role source = roleRepository.find(id);
 		if (source == null) {
 			return;
 		}
@@ -165,7 +165,7 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 			a.getRoles().remove(source);
 			i.remove();
 		}
-		roleRepository.delete(id);
+		roleRepository.deleteById(id);
 	}
 
 	@Cacheable(value = CACHE_NAME_AUTHORITY)

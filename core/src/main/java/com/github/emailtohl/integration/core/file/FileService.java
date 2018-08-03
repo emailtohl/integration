@@ -1,8 +1,8 @@
 package com.github.emailtohl.integration.core.file;
 
-import static com.github.emailtohl.integration.common.ConstantPattern.LEGAL_FILENAME;
 import static com.github.emailtohl.integration.core.role.Authority.CONTENT;
 import static com.github.emailtohl.integration.core.role.Authority.RESOURCE;
+import static com.github.emailtohl.lib.ConstantPattern.LEGAL_FILENAME;
 
 import java.io.File;
 import java.io.InputStream;
@@ -14,8 +14,8 @@ import javax.validation.constraints.Pattern;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 
-import com.github.emailtohl.integration.common.utils.ZtreeNode;
 import com.github.emailtohl.integration.core.ExecResult;
+import com.github.emailtohl.integration.core.common.ZtreeNode;
 
 /**
  * 资源文件管理服务接口

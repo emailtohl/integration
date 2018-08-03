@@ -15,10 +15,9 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.github.emailtohl.integration.common.Constant;
-import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.UserRef;
+import com.github.emailtohl.lib.jpa.BaseEntity;
 
 /**
  * 文章实体
@@ -65,7 +64,7 @@ public class Article extends BaseEntity implements Comparable<Article> {
 	}
 	
 	@org.hibernate.envers.NotAudited
-	@org.hibernate.search.annotations.Field(boost = @org.hibernate.search.annotations.Boost(1.5F), store = org.hibernate.search.annotations.Store.YES)// 关键字加权因子
+	@org.hibernate.search.annotations.Field(store = org.hibernate.search.annotations.Store.YES)
 	public String getKeywords() {
 		return keywords;
 	}
@@ -74,7 +73,7 @@ public class Article extends BaseEntity implements Comparable<Article> {
 	}
 	
 	@org.hibernate.search.annotations.Field(store = org.hibernate.search.annotations.Store.NO)
-	@org.hibernate.annotations.Type(type = Constant.LOB_TEXT)
+	@org.hibernate.annotations.Type(type = "org.hibernate.type.TextType")
 	@Lob
 	public String getBody() {
 		return body;
@@ -83,8 +82,8 @@ public class Article extends BaseEntity implements Comparable<Article> {
 		this.body = body;
 	}
 	
-	@org.hibernate.search.annotations.Field(store = org.hibernate.search.annotations.Store.YES, boost = @org.hibernate.search.annotations.Boost(1.2f))
-	@org.hibernate.annotations.Type(type = Constant.LOB_TEXT)
+	@org.hibernate.search.annotations.Field(store = org.hibernate.search.annotations.Store.YES)
+	@org.hibernate.annotations.Type(type = "org.hibernate.type.TextType")
 	@Lob
 	public String getSummary() {
 		return summary;

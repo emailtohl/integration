@@ -25,7 +25,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.StringUtils;
 
-import com.github.emailtohl.integration.common.websocket.Configurator;
 import com.github.emailtohl.integration.core.auth.AuthenticationImpl;
 import com.github.emailtohl.integration.core.auth.UserDetailsImpl;
 import com.github.emailtohl.integration.core.config.CorePresetData;

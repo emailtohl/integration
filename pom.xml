@@ -19,7 +19,6 @@
 	</developers>
 
 	<modules>
-		<module>common</module>
 		<module>core</module>
 		<module>web</module>
 	</modules>
@@ -28,15 +27,16 @@
 		<project.version>1.0.0-RELEASE</project.version>
 		<project.name>integration</project.name>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<springframework.version>4.3.17.RELEASE</springframework.version>
-		<spring.security.version>4.2.6.RELEASE</spring.security.version>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<springframework.version>5.0.8.RELEASE</springframework.version>
+		<spring.security.version>5.0.7.RELEASE</spring.security.version>
 		<!-- 注意：Hibernate search与Hibernate和Lucene有版本兼容性，下列组合是兼容的：
 		Hibernate search 5.6.0，Hibernate 5.1.8.Final，Lucene 5.5.2 -->
-		<hibernate.version>5.1.8.Final</hibernate.version>
-		<hibernate.search>5.6.2.Final</hibernate.search>
+		<hibernate.version>5.3.1.Final</hibernate.version>
+		<hibernate.search>5.10.2.Final</hibernate.search>
 		<lucene.version>5.5.5</lucene.version>
 		<log4j.version>2.11.0</log4j.version>
-		<jackson.version>2.9.5</jackson.version>
+		<jackson.version>2.9.6</jackson.version>
 		<!-- 引入6.0.0版会导致JSP解析异常 -->
 		<activiti.version>5.22.0</activiti.version>
 	</properties>
@@ -251,11 +251,6 @@
 				<version>${springframework.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.springframework.integration</groupId>
-				<artifactId>spring-integration-mail</artifactId>
-				<version>${springframework.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>org.springframework.security</groupId>
 				<artifactId>spring-security-core</artifactId>
 				<version>${spring.security.version}</version>
@@ -283,7 +278,7 @@
 			<dependency>
 				<groupId>org.springframework.data</groupId>
 				<artifactId>spring-data-jpa</artifactId>
-				<version>1.11.12.RELEASE</version>
+				<version>2.0.9.RELEASE</version>
 				<exclusions>
 					<exclusion>
 						<groupId>org.slf4j</groupId>

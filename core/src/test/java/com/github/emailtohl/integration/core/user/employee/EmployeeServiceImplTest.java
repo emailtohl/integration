@@ -20,9 +20,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import com.github.emailtohl.integration.common.encryption.myrsa.KeyGenerator;
-import com.github.emailtohl.integration.common.encryption.myrsa.KeyPairs;
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.core.config.CorePresetData;
@@ -32,6 +29,9 @@ import com.github.emailtohl.integration.core.file.Image;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.Gender;
+import com.github.emailtohl.lib.encryption.myrsa.KeyGenerator;
+import com.github.emailtohl.lib.encryption.myrsa.KeyPairs;
+import com.github.emailtohl.lib.jpa.Paging;
 import com.google.gson.Gson;
 /**
  * 业务类测试
@@ -40,7 +40,7 @@ import com.google.gson.Gson;
 public class EmployeeServiceImplTest extends CoreTestEnvironment {
 	final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	ClassLoader cl = EmployeeServiceImplTest.class.getClassLoader();
-	Pageable pageable = new PageRequest(0, 20);
+	Pageable pageable = PageRequest.of(0, 20);
 	@Inject
 	EmployeeService employeeService;
 	@Inject

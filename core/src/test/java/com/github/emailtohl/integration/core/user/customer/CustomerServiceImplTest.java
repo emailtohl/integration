@@ -24,10 +24,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import com.github.emailtohl.integration.common.encryption.myrsa.KeyGenerator;
-import com.github.emailtohl.integration.common.encryption.myrsa.KeyPairs;
-import com.github.emailtohl.integration.common.exception.NotAcceptableException;
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.core.config.CorePresetData;
@@ -40,6 +36,10 @@ import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Customer.Level;
 import com.github.emailtohl.integration.core.user.entities.CustomerRef;
 import com.github.emailtohl.integration.core.user.entities.Gender;
+import com.github.emailtohl.lib.encryption.myrsa.KeyGenerator;
+import com.github.emailtohl.lib.encryption.myrsa.KeyPairs;
+import com.github.emailtohl.lib.exception.NotAcceptableException;
+import com.github.emailtohl.lib.jpa.Paging;
 import com.google.gson.Gson;
 /**
  * 业务类测试
@@ -48,7 +48,7 @@ import com.google.gson.Gson;
 public class CustomerServiceImplTest extends CoreTestEnvironment {
 	final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	ClassLoader cl = CustomerServiceImplTest.class.getClassLoader();
-	Pageable pageable = new PageRequest(0, 20);
+	Pageable pageable = PageRequest.of(0, 20);
 	@Inject
 	CustomerService customerService;
 	@Value("${" + Constant.PROP_CUSTOMER_DEFAULT_PASSWORD + "}")

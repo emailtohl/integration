@@ -49,11 +49,11 @@ import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
-import com.github.emailtohl.integration.common.encryption.myrsa.Encipher;
 import com.github.emailtohl.integration.core.auth.LoginEvent;
 import com.github.emailtohl.integration.core.config.CoreConfiguration;
 import com.github.emailtohl.integration.core.role.Authority;
 import com.github.emailtohl.integration.web.filter.UserPasswordEncryptionFilter;
+import com.github.emailtohl.lib.encryption.myrsa.Encipher;
 
 /**
  * Spring Security配置

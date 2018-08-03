@@ -16,11 +16,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
 
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestEnvironment;
 import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Department;
 import com.github.emailtohl.integration.core.user.entities.Employee;
+import com.github.emailtohl.lib.jpa.Paging;
 import com.google.gson.Gson;
 
 /**
@@ -35,7 +35,7 @@ public class DepartmentServiceImplTest extends CoreTestEnvironment {
 	EmployeeService employeeService;
 	@Inject
 	Gson gson;
-	Pageable pageable = new PageRequest(0, 20);
+	Pageable pageable = PageRequest.of(0, 20);
 	Long pid, sid1, sid2, empid1, empid2, empid3;
 
 	@Before

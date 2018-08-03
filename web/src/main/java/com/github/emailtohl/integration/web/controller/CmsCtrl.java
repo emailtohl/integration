@@ -36,10 +36,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.emailtohl.integration.common.exception.InvalidDataException;
-import com.github.emailtohl.integration.common.exception.NotFoundException;
-import com.github.emailtohl.integration.common.jpa.Paging;
-import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.web.service.cms.ArticleService;
 import com.github.emailtohl.integration.web.service.cms.CommentService;
 import com.github.emailtohl.integration.web.service.cms.TypeService;
@@ -47,6 +43,10 @@ import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Comment;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
 import com.github.emailtohl.integration.web.service.cms.entities.WebPage;
+import com.github.emailtohl.lib.exception.InvalidDataException;
+import com.github.emailtohl.lib.exception.NotFoundException;
+import com.github.emailtohl.lib.jpa.BaseEntity;
+import com.github.emailtohl.lib.jpa.Paging;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;

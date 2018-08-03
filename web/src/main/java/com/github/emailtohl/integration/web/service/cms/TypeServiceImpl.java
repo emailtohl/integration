@@ -16,11 +16,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.integration.common.exception.NotAcceptableException;
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.web.config.WebPresetData;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
+import com.github.emailtohl.lib.exception.NotAcceptableException;
+import com.github.emailtohl.lib.jpa.Paging;
 
 /**
  * 文章类型服务实现
@@ -77,7 +77,7 @@ public class TypeServiceImpl extends StandardService<Type> implements TypeServic
 	@Cacheable(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Type get(Long id) {
-		return transientDetail(typeRepository.findOne(id));
+		return transientDetail(typeRepository.findById(id).orElse(null));
 	}
 
 	@Override
@@ -124,7 +124,7 @@ public class TypeServiceImpl extends StandardService<Type> implements TypeServic
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Type update(Long id, Type newEntity) {
-		Type source = typeRepository.findOne(id);
+		Type source = typeRepository.findById(id).orElse(null);
 		if (source == null) {
 			return null;
 		}
@@ -136,7 +136,7 @@ public class TypeServiceImpl extends StandardService<Type> implements TypeServic
 		if (newEntity.getParent() != null) {
 			// 先将本type所有子类型的parent更改为本type的parent
 			if (newEntity.getParent().getId() != null) {
-				targetParent = typeRepository.findOne(newEntity.getParent().getId());
+				targetParent = typeRepository.findById(newEntity.getParent().getId()).orElse(null);
 			} else if (hasText(newEntity.getParent().getName())) {
 				targetParent = typeRepository.getByName(newEntity.getParent().getName());
 			}
@@ -154,12 +154,12 @@ public class TypeServiceImpl extends StandardService<Type> implements TypeServic
 	@CacheEvict(value = CACHE_NAME, key = "#root.args[0]")
 	@Override
 	public void delete(Long id) {
-		Type source = typeRepository.findOne(id);
+		Type source = typeRepository.findById(id).orElse(null);
 		if (source == null) {
 			return;
 		}
 		isIllegal(source);
-		Type unclassified = typeRepository.findOne(webPresetData.unclassified.getId());
+		Type unclassified = typeRepository.findById(webPresetData.unclassified.getId()).orElse(null);
 		source.getArticles().forEach(a -> {
 			a.setType(unclassified);
 		});

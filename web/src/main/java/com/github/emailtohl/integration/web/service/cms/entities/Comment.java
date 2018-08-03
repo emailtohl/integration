@@ -8,10 +8,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.github.emailtohl.integration.common.Constant;
-import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.UserRef;
+import com.github.emailtohl.lib.jpa.BaseEntity;
 
 /**
  * 评论实体类，评论可以是针对于文章的，也可以是针对于评论的
@@ -41,7 +40,7 @@ public class Comment extends BaseEntity implements Comparable<Comment> {
 	private Boolean canComment;
 	
 	@org.hibernate.search.annotations.Field
-	@org.hibernate.annotations.Type(type = Constant.LOB_TEXT)
+	@org.hibernate.annotations.Type(type = "org.hibernate.type.TextType")
 	@Lob
 	public String getContent() {
 		return content;

@@ -25,8 +25,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.integration.common.exception.NotAcceptableException;
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.StandardService;
 import com.github.emailtohl.integration.core.config.Constant;
@@ -38,6 +36,8 @@ import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.LoginResult;
 import com.github.emailtohl.integration.core.user.org.DepartmentRepository;
+import com.github.emailtohl.lib.exception.NotAcceptableException;
+import com.github.emailtohl.lib.jpa.Paging;
 
 /**
  * 平台账号服务层的实现
@@ -107,6 +107,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 			GenericPropertyMatchers.exact());
 	private ExampleMatcher cellPhoneMatcher = ExampleMatcher.matching().withMatcher("cellPhone",
 			GenericPropertyMatchers.exact());
+
 	@Override
 	public boolean exist(Object cellPhoneOrEmail) {
 		if (!(cellPhoneOrEmail instanceof String)) {
@@ -132,7 +133,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 	@Cacheable(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Employee get(Long id) {
-		Employee source = employeeRepository.get(id);
+		Employee source = employeeRepository.find(id);
 		return transientDetail(source);
 	}
 
@@ -152,7 +153,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 	@Override
 	public Employee update(Long id, Employee newEntity) {
 		validate(newEntity);
-		Employee source = employeeRepository.get(id);
+		Employee source = employeeRepository.find(id);
 		if (source == null) {
 			return null;
 		}
@@ -205,18 +206,18 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 			r.getUsers().remove(source);
 			i.remove();
 		}
-		employeeRepository.delete(id);
+		employeeRepository.deleteById(id);
 	}
-	
+
 	public Paging<Employee> search(String query, Pageable pageable) {
 		if (!hasText(query)) {
-			Page<Employee> p = employeeRepository.queryForPage(null, pageable, null);
+			Page<Employee> p = employeeRepository.queryForPage(null, pageable);
 			List<Employee> ls = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
-			return new Paging<>(ls, p.getTotalElements(), p.getNumber(), p.getSize());
+			return new Paging<>(ls, pageable, p.getSize());
 		}
 		Page<Employee> p = employeeRepository.search(query, pageable);
 		List<Employee> ls = p.getContent().stream().map(this::toTransient).collect(Collectors.toList());
-		return new Paging<>(ls, p.getTotalElements(), p.getNumber(), p.getSize());
+		return new Paging<>(ls, pageable, p.getSize());
 	}
 
 	@Override
@@ -255,16 +256,16 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		Employee source = employeeRepository.findByEmail(email);
 		return transientDetail(source);
 	}
-	
+
 	@Override
 	public List<Employee> findByName(String name) {
 		return employeeRepository.findByNameLike(name).stream().map(this::toTransient).collect(Collectors.toList());
 	}
-	
+
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Employee grandRoles(Long id, String... roleNames) {
-		Employee source = employeeRepository.get(id);
+		Employee source = employeeRepository.find(id);
 		if (source == null) {
 			return null;
 		}
@@ -302,7 +303,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 
 	@Override
 	public ExecResult resetPassword(Long id) {
-		Employee source = employeeRepository.get(id);
+		Employee source = employeeRepository.find(id);
 		if (source == null) {
 			return new ExecResult(false, "没有此用户", null);
 		}
@@ -311,11 +312,11 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		source.setLastChangeCredentials(new Date());
 		return new ExecResult(true, "", source);
 	}
-	
+
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Employee enabled(Long id, boolean enabled) {
-		Employee source = employeeRepository.get(id);
+		Employee source = employeeRepository.find(id);
 		if (source == null) {
 			return null;
 		}
@@ -326,11 +327,11 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		}
 		return transientDetail(source);
 	}
-	
+
 	@CachePut(value = CACHE_NAME, key = "#root.args[0]", condition = "#result != null")
 	@Override
 	public Employee setPublicKey(Long id, String publicKey) {
-		Employee source = employeeRepository.get(id);
+		Employee source = employeeRepository.find(id);
 		if (source == null) {
 			return null;
 		}
@@ -338,11 +339,12 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		source.setPublicKey(publicKey);
 		return transientDetail(source);
 	}
-	
+
 	@Value("${account.expire.month}")
 	Integer accountExpireMonth;
 	@Value("${credentials.expire.month}")
 	Integer credentialsExpireMonth;
+
 	/**
 	 * 若没有配置，则表示没有过期时间
 	 */
@@ -355,7 +357,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 			credentialsExpireMonth = Integer.MAX_VALUE;
 		}
 	}
-	
+
 	@Override
 	protected Employee toTransient(Employee source) {
 		if (source == null) {
@@ -365,7 +367,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		BeanUtils.copyProperties(source, target, "employeeRef", "password", "roles");
 		return target;
 	}
-	
+
 	@Override
 	protected Employee transientDetail(Employee source) {
 		if (source == null) {
@@ -383,7 +385,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 
 	@Override
 	public EmployeeRef getRef(Long id) {
-		EmployeeRef ref = employeeRefRepository.findOne(id);
+		EmployeeRef ref = employeeRefRepository.findById(id).orElse(null);
 		if (ref == null) {
 			return null;
 		}
@@ -402,17 +404,15 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 	/**
 	 * 引用实体匹配器
 	 */
-	private ExampleMatcher refMatcher = ExampleMatcher.matching()
-			.withIgnoreNullValues()
-			.withIgnorePaths("icon", "employee")
-			.withMatcher("id", GenericPropertyMatchers.exact())
+	private ExampleMatcher refMatcher = ExampleMatcher.matching().withIgnoreNullValues()
+			.withIgnorePaths("icon", "employee").withMatcher("id", GenericPropertyMatchers.exact())
 			.withMatcher("empNum", GenericPropertyMatchers.exact())
 			.withMatcher("name", GenericPropertyMatchers.caseSensitive())
 			.withMatcher("nickname", GenericPropertyMatchers.caseSensitive())
 			.withMatcher("email", GenericPropertyMatchers.caseSensitive())
 			.withMatcher("nickname", GenericPropertyMatchers.caseSensitive())
 			.withMatcher("cellPhone", GenericPropertyMatchers.caseSensitive());
-	
+
 	@Override
 	public Paging<EmployeeRef> queryRef(EmployeeRef params, Pageable pageable) {
 		Page<EmployeeRef> page;
@@ -437,7 +437,7 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		}
 		return ls.stream().map(this::toTransientRef).collect(Collectors.toList());
 	}
-	
+
 	private EmployeeRef toTransientRef(EmployeeRef ref) {
 		EmployeeRef copy = new EmployeeRef();
 		copy.setId(ref.getId());
@@ -449,50 +449,51 @@ public class EmployeeServiceImpl extends StandardService<Employee> implements Em
 		copy.setIconSrc(ref.getIconSrc());
 		return copy;
 	}
-	
+
 	@Override
 	public void accountStatus() {
 		final LocalDate today = LocalDate.now();
 		employeeRepository.findAll().stream()
-		.filter(u -> !u.getEmpNum().equals(Employee.NO1) && !u.getEmpNum().equals(Employee.NO_BOT))
-		// 最后登录时间的维护
-		.peek(u -> {
-			Date d = u.getLastLogin();
-			if (d == null) {
-				LOG.debug("lastLoginTime: null {} accountNonExpired : false", u.getId());
-				u.setAccountNonExpired(false);
-				return;
-			}
-			Instant instant = d.toInstant();
-			ZoneId zoneId = ZoneId.systemDefault();
-			LocalDate lastLogin = instant.atZone(zoneId).toLocalDate();
-			// 过期了
-			if (today.minusMonths(accountExpireMonth).isAfter(lastLogin)) {
-				LOG.debug("today: {} lastLogin: {} {} accountNonExpired : false", today, lastLogin, u.getId());
-				u.setAccountNonExpired(false);
-			}
-		})
-		// 密码过期的维护
-		.peek(u -> {
-			Date d = u.getLastChangeCredentials();
-			if (d == null) {
-				LOG.debug("lastChangeCredentials: null {} credentialsNonExpired : false", u.getId());
-				u.setCredentialsNonExpired(false);
-				return;
-			}
-			Instant instant = d.toInstant();
-			ZoneId zoneId = ZoneId.systemDefault();
-			LocalDate lastChangeCredentials = instant.atZone(zoneId).toLocalDate();
-			if (today.minusMonths(credentialsExpireMonth).isAfter(lastChangeCredentials)) {
-				LOG.debug("today: {} lastChangeCredentials: {}  {} credentialsNonExpired : false", today,
-						lastChangeCredentials, u.getId());
-				u.setCredentialsNonExpired(false);
-			}
-		});
+				.filter(u -> !u.getEmpNum().equals(Employee.NO1) && !u.getEmpNum().equals(Employee.NO_BOT))
+				// 最后登录时间的维护
+				.peek(u -> {
+					Date d = u.getLastLogin();
+					if (d == null) {
+						LOG.debug("lastLoginTime: null {} accountNonExpired : false", u.getId());
+						u.setAccountNonExpired(false);
+						return;
+					}
+					Instant instant = d.toInstant();
+					ZoneId zoneId = ZoneId.systemDefault();
+					LocalDate lastLogin = instant.atZone(zoneId).toLocalDate();
+					// 过期了
+					if (today.minusMonths(accountExpireMonth).isAfter(lastLogin)) {
+						LOG.debug("today: {} lastLogin: {} {} accountNonExpired : false", today, lastLogin, u.getId());
+						u.setAccountNonExpired(false);
+					}
+				})
+				// 密码过期的维护
+				.peek(u -> {
+					Date d = u.getLastChangeCredentials();
+					if (d == null) {
+						LOG.debug("lastChangeCredentials: null {} credentialsNonExpired : false", u.getId());
+						u.setCredentialsNonExpired(false);
+						return;
+					}
+					Instant instant = d.toInstant();
+					ZoneId zoneId = ZoneId.systemDefault();
+					LocalDate lastChangeCredentials = instant.atZone(zoneId).toLocalDate();
+					if (today.minusMonths(credentialsExpireMonth).isAfter(lastChangeCredentials)) {
+						LOG.debug("today: {} lastChangeCredentials: {}  {} credentialsNonExpired : false", today,
+								lastChangeCredentials, u.getId());
+						u.setCredentialsNonExpired(false);
+					}
+				});
 	}
-	
+
 	/**
 	 * 若是系统内置账号，则触发异常
+	 * 
 	 * @param e
 	 */
 	private void isIllegal(Employee e) {

@@ -15,9 +15,9 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.github.emailtohl.integration.common.jpa.entity.BaseEntity;
-import com.github.emailtohl.integration.common.jpa.entity.EnumBridgeCust;
 import com.github.emailtohl.integration.core.user.entities.User;
+import com.github.emailtohl.lib.jpa.BaseEntity;
+import com.github.emailtohl.lib.jpa.EnumBridgeCust;
 /**
  * 角色实体类
  * @author HeLei

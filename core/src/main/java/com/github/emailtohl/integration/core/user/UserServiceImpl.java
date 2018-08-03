@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.integration.common.jpa.Paging;
 import com.github.emailtohl.integration.core.config.Constant;
 import com.github.emailtohl.integration.core.user.customer.CustomerRefRepository;
 import com.github.emailtohl.integration.core.user.customer.CustomerRepository;
@@ -25,6 +24,7 @@ import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.User;
 import com.github.emailtohl.integration.core.user.entities.UserRef;
+import com.github.emailtohl.lib.jpa.Paging;
 
 /**
  * 统一查询功能
@@ -84,13 +84,13 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public User get(Long id) {
-		User source = userRepository.get(id);
+		User source = userRepository.find(id);
 		return transientDetail(source);
 	}
 
 	@Override
 	public UserRef getRef(Long id) {
-		UserRef ref = userRefRepository.findOne(id);
+		UserRef ref = userRefRepository.find(id);
 		return transientRef(ref);
 	}
 

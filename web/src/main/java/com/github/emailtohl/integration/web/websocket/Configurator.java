@@ -1,4 +1,4 @@
-package com.github.emailtohl.integration.common.websocket;
+package com.github.emailtohl.integration.web.websocket;
 
 import java.security.Principal;
 import java.util.Locale;

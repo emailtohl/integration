@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import com.github.emailtohl.integration.common.utils.BeanUtil;
 import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.file.FileService;
 /**
@@ -34,8 +33,10 @@ public class ResourceCtrlTest {
 		resources = new File(usrHome, "test");
 		Field fileServiceField = ResourceCtrl.class.getDeclaredField("fileService");
 		Field resourcesField = ResourceCtrl.class.getDeclaredField("resources");
-		BeanUtil.injectField(fileServiceField, ctrl, fileService);
-		BeanUtil.injectField(resourcesField, ctrl, resources);
+		fileServiceField.setAccessible(true);
+		fileServiceField.set(ctrl, fileService);
+		resourcesField.setAccessible(true);
+		resourcesField.set(ctrl, resources);
 		ctrl.init();
 	}
 

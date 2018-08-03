@@ -18,12 +18,12 @@ import org.junit.Test;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import com.github.emailtohl.integration.common.jpa.envers.Tuple;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestEnvironment;
 import com.github.emailtohl.integration.core.file.Image;
 import com.github.emailtohl.integration.core.user.entities.Address;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Gender;
+import com.github.emailtohl.lib.jpa.AuditedRepository.Tuple;
 import com.google.gson.Gson;
 /**
  * 业务类测试
@@ -32,7 +32,7 @@ import com.google.gson.Gson;
 public class CustomerAuditedServiceImplTest extends CoreTestEnvironment {
 	final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	ClassLoader cl = CustomerServiceImplTest.class.getClassLoader();
-	Pageable pageable = new PageRequest(0, 20);
+	Pageable pageable = PageRequest.of(0, 20);
 	@Inject
 	CustomerService customerService;
 	@Inject
@@ -94,7 +94,7 @@ public class CustomerAuditedServiceImplTest extends CoreTestEnvironment {
 	public void testGetCustomerAtRevision() {
 		List<Tuple<Customer>> ls = auditedService.getCustomerRevision(id);
 		System.out.println(gson.toJson(ls));
-		Integer revision = ls.get(0).getDefaultRevisionEntity().getId();
+		Integer revision = ls.get(0).defaultRevisionEntity.getId();
 		Customer e = auditedService.getCustomerAtRevision(id, revision);
 		assertNotNull(e);
 //		在Maven统一执行时有其他用例修改数据，所以届时得到的结果会不一致

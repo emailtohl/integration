@@ -14,7 +14,7 @@ import org.springframework.web.servlet.RequestToViewNameTranslator;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
@@ -31,7 +31,7 @@ import org.springframework.web.servlet.view.JstlView;
 @EnableSpringDataWebSupport
 @ComponentScan(basePackages = "com.github.emailtohl.integration.web", useDefaultFilters = false, includeFilters = @ComponentScan.Filter(Controller.class))
 @Import({ WebsocketConfiguration.class })
-public class WebConfiguration extends WebMvcConfigurerAdapter {
+public class WebConfiguration implements WebMvcConfigurer {
 	/**
 	 * ViewResolver根据模板名返回一个View接口，该接口的render(model, request, response)
 	 * 方法就是接受数据模型及Servlet的request和response对象，并结结合生成视图输出。

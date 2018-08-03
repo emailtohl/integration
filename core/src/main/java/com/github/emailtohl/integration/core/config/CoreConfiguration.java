@@ -46,7 +46,7 @@ import org.springframework.util.ErrorHandler;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
-import com.github.emailtohl.integration.common.lucene.FileSearch;
+import com.github.emailtohl.lib.lucene.FileSearch;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;

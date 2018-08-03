@@ -3,7 +3,7 @@ package com.github.emailtohl.integration.core.user.entities;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.Pattern;
 
-import com.github.emailtohl.integration.common.ConstantPattern;
+import com.github.emailtohl.lib.ConstantPattern;
 
 /**
  * 地址嵌入类

@@ -1,6 +1,6 @@
 package com.github.emailtohl.integration.core.file;
 
-import static com.github.emailtohl.integration.common.ConstantPattern.SEPARATOR;
+import static com.github.emailtohl.lib.ConstantPattern.SEPARATOR;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,11 +24,11 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.github.emailtohl.integration.common.ConstantPattern;
-import com.github.emailtohl.integration.common.lucene.FileSearch;
-import com.github.emailtohl.integration.common.utils.TreeUtil;
-import com.github.emailtohl.integration.common.utils.ZtreeNode;
 import com.github.emailtohl.integration.core.ExecResult;
+import com.github.emailtohl.integration.core.common.TreeUtil;
+import com.github.emailtohl.integration.core.common.ZtreeNode;
+import com.github.emailtohl.lib.ConstantPattern;
+import com.github.emailtohl.lib.lucene.FileSearch;
 
 /**
  * 管理文件的服务

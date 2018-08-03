@@ -1,8 +1,6 @@
 package com.github.emailtohl.integration.core.role;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -12,7 +10,7 @@ import org.hibernate.envers.DefaultRevisionEntity;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.integration.common.jpa.envers.Tuple;
+import com.github.emailtohl.lib.jpa.AuditedRepository.Tuple;
 /**
  * 审计角色的历史记录
  * @author HeLei
@@ -24,15 +22,9 @@ public class RoleAuditedServiceImpl implements RoleAuditedService {
 	
 	@Override
 	public List<Tuple<Role>> getRoleRevision(Long id) {
-		Map<String, Object> propertyNameValueMap = new HashMap<>();
-		propertyNameValueMap.put("id", id);
-		List<Tuple<Role>> ls = roleAudit.getAllRevisionInfo(propertyNameValueMap);
+		List<Tuple<Role>> ls = roleAudit.getRevisions(id);
 		return ls.stream().map(t -> {
-			Tuple<Role> n = new Tuple<Role>();
-			n.setDefaultRevisionEntity(transientRevisionEntity(t.getDefaultRevisionEntity()));
-			n.setRevisionType(t.getRevisionType());
-			n.setEntity(toTransient(t.getEntity()));
-			return n;
+			return new Tuple<Role>(t.entity, transientRevisionEntity(t.defaultRevisionEntity), t.revisionType);
 		}).collect(Collectors.toList());
 	}
 

@@ -18,14 +18,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import com.github.emailtohl.integration.common.jpa.jpaCriterionQuery.AbstractCriterionQueryRepository;
+import com.github.emailtohl.lib.jpa.QueryRepository;
 
 /**
  * 自定义接口的实现
  * 
  * @author HeLei
  */
-class RoleRepositoryImpl extends AbstractCriterionQueryRepository<Role> implements RoleRepositoryCustomization {
+class RoleRepositoryImpl extends QueryRepository<Role, Long> implements RoleRepositoryCustomization {
 	@PersistenceContext
 	EntityManager em;
 
@@ -39,7 +39,7 @@ class RoleRepositoryImpl extends AbstractCriterionQueryRepository<Role> implemen
 		Predicate[] predicates = getPredicates(roleName, authorityName, cb, r);
 
 		q = q.distinct(true).select(r).where(predicates).orderBy(toOrders(pageable.getSort(), r, cb));
-		List<Role> contents = em.createQuery(q).setFirstResult(pageable.getOffset())
+		List<Role> contents = em.createQuery(q).setFirstResult((int) pageable.getOffset())
 				.setMaxResults(pageable.getPageSize()).getResultList();
 
 		// 查询总条数

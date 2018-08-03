@@ -21,8 +21,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.emailtohl.integration.common.utils.ZtreeNode;
 import com.github.emailtohl.integration.core.ExecResult;
+import com.github.emailtohl.integration.core.common.ZtreeNode;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestData;
 import com.github.emailtohl.integration.core.coreTestConfig.CoreTestEnvironment;
 import com.google.gson.Gson;
