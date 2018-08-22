@@ -44,6 +44,12 @@ import freemarker.template.TemplateExceptionHandler;
 
 /**
  * 预置数据的配置
+ * 
+ * Bill，Jenny  市场
+ * Tom，Amy  财务
+ * Andy，Tony 外务
+ * Lily，Thomas 客户
+ * 
  * @author HeLei
  */
 @Configuration

@@ -125,7 +125,7 @@ class JpaConfiguration {
 		// hibernate.search.default.directory_provider默认是filesystem
 		// 设置hibernate.search.default.indexBase可指定索引目录
 		if (contains(DB_RAM_H2)) // 使用内存数据库一般是测试环境，可以使用内存来做索引的存储空间
-			properties.put("hibernate.search.default.directory_provider", "ram");
+			properties.put("hibernate.search.default.directory_provider", "local-heap");
 		else
 			properties.put("hibernate.search.default.indexBase", indexBase.getAbsolutePath());
 		emfb.setJpaPropertyMap(properties);

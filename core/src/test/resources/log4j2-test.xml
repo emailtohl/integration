@@ -39,8 +39,8 @@
 			<!-- <appender-ref ref="CoreTestFileAppender" /> -->
 		</logger>
 		<!-- 配置为TRACE，则可让hibernate打印sql -->
-		<logger name="org.hibernate.type.descriptor.sql" level="trace" />
-		<logger name="com.github.emailtohl.lib.jpa" level="debug" />
+		<!-- <logger name="org.hibernate.type.descriptor.sql" level="trace" />
+		<logger name="com.github.emailtohl.lib.jpa" level="debug" /> -->
 		
 	</loggers>
 </configuration>
