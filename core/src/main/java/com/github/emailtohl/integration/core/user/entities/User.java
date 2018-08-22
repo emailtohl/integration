@@ -42,7 +42,7 @@ import com.github.emailtohl.integration.core.user.UserType;
 import com.github.emailtohl.lib.ConstantPattern;
 import com.github.emailtohl.lib.exception.InnerDataStateException;
 import com.github.emailtohl.lib.jpa.BaseEntity;
-import com.github.emailtohl.lib.jpa.EnumBridgeCust;
+import com.github.emailtohl.lib.jpa.StringBridgeCustomization;
 /**
  * 用户实体类
  * javax校验的注解在field上，JPA约束的注解写在JavaBean属性上
@@ -239,7 +239,7 @@ public class User extends BaseEntity {
 		this.age = age;
 	}
 	
-	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = EnumBridgeCust.class))
+	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = StringBridgeCustomization.class))
 	// 枚举存入数据库默认为序号，这里指明将枚举名以字符串存入数据库
 	@Enumerated(EnumType.STRING)
 	public Gender getGender() {

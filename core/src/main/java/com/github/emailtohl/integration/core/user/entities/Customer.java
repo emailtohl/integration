@@ -20,7 +20,7 @@ import javax.validation.constraints.Pattern;
 
 import com.github.emailtohl.integration.core.file.Image;
 import com.github.emailtohl.lib.ConstantPattern;
-import com.github.emailtohl.lib.jpa.EnumBridgeCust;
+import com.github.emailtohl.lib.jpa.StringBridgeCustomization;
 
 /**
  * 客户，如顾客、商家、匿名访问者等等
@@ -86,7 +86,7 @@ public class Customer extends User {
 	 */
 	private Set<String> usernames = new HashSet<String>();
 	
-	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = EnumBridgeCust.class))
+	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = StringBridgeCustomization.class))
 	@Enumerated(EnumType.STRING)
 	public Level getLevel() {
 		return level;
@@ -130,7 +130,7 @@ public class Customer extends User {
 		this.cards = cards;
 	}
 
-	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = EnumBridgeCust.class))
+	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = StringBridgeCustomization.class))
 	public Classify getClassify() {
 		return classify;
 	}

@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.github.emailtohl.integration.core.user.entities.User;
 import com.github.emailtohl.lib.jpa.BaseEntity;
-import com.github.emailtohl.lib.jpa.EnumBridgeCust;
+import com.github.emailtohl.lib.jpa.StringBridgeCustomization;
 /**
  * 角色实体类
  * @author HeLei
@@ -67,7 +67,7 @@ public class Role extends BaseEntity {
 		this.description = description;
 	}
 	
-	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = EnumBridgeCust.class))
+	@org.hibernate.search.annotations.Field(bridge = @org.hibernate.search.annotations.FieldBridge(impl = StringBridgeCustomization.class))
 	// 枚举存入数据库默认为序号，这里指明将枚举名以字符串存入数据库
 	@Enumerated(EnumType.STRING)
 	@Column(name = "role_type")
