@@ -224,7 +224,7 @@ public class FileServiceImpl implements FileService {
 	public List<ZtreeNode> findFile(String query) {
 		List<ZtreeNode> nodes = TreeUtil.getZtreeNodeByFilesystem(Arrays.asList(resources.listFiles()));
 		if (StringUtils.hasText(query)) {
-			fileSearch.queryForFilePath(query).forEach(s -> {
+			fileSearch.searchForFilePath(query).forEach(s -> {
 				// fileSearch查出来的s是调用File的getCanonicalPath方法获取到的全路径
 				Matcher m = root_pattern.matcher(s);
 				if (m.find()) {
