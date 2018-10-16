@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.github.emailtohl.integration.core.common.SelfRef;
-import com.github.emailtohl.lib.jpa.EntityBase;
+import com.github.emailtohl.lib.jpa.BaseEntity;
 /**
  * 角色关联的授权
  * @author HeLei
@@ -23,7 +23,7 @@ import com.github.emailtohl.lib.jpa.EntityBase;
 @org.hibernate.annotations.BatchSize(size = 10)// 因n+1查询问题，盲猜优化，一次性加载size个代理
 @Entity
 @Table(name = "authority")
-public class Authority extends EntityBase implements SelfRef {
+public class Authority extends BaseEntity implements SelfRef {
 	private static final long serialVersionUID = 2353467451352218773L;
 	
 	/**

@@ -45,7 +45,7 @@ import com.github.emailtohl.integration.web.service.cms.entities.Type;
 import com.github.emailtohl.integration.web.service.cms.entities.WebPage;
 import com.github.emailtohl.lib.exception.InvalidDataException;
 import com.github.emailtohl.lib.exception.NotFoundException;
-import com.github.emailtohl.lib.jpa.EntityBase;
+import com.github.emailtohl.lib.jpa.BaseEntity;
 import com.github.emailtohl.lib.jpa.Paging;
 
 import freemarker.template.Configuration;
@@ -202,7 +202,7 @@ public class CmsCtrl {
 	 */
 	@RequestMapping(value = "cms/comments", method = GET)
 	public Paging<Comment> queryComments(@RequestParam(required = false, name = "query", defaultValue = "") String query, 
-			@PageableDefault(page = 0, size = 10, sort = {EntityBase.MODIFY_DATE_PROPERTY_NAME, "article.title"}, direction = Direction.DESC) Pageable pageable) {
+			@PageableDefault(page = 0, size = 10, sort = {BaseEntity.MODIFY_DATE_PROPERTY_NAME, "article.title"}, direction = Direction.DESC) Pageable pageable) {
 		return commentService.search(query, pageable);
 	}
 	
@@ -307,7 +307,7 @@ public class CmsCtrl {
 	 */
 	@RequestMapping(value = "cms/typePage", method = GET)
 	public Paging<Type> getTypePage(TypeForm form, @PageableDefault(page = 0, size = 10, sort = {
-			EntityBase.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
+			BaseEntity.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
 		Type t = new Type(form.getName(), form.getDescription(), null);
 		return typeService.query(t, pageable);
 	}

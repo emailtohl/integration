@@ -38,7 +38,7 @@ import com.github.emailtohl.integration.core.user.UserService;
 import com.github.emailtohl.lib.exception.ConflictException;
 import com.github.emailtohl.lib.exception.InvalidDataException;
 import com.github.emailtohl.lib.exception.NotFoundException;
-import com.github.emailtohl.lib.jpa.EntityBase;
+import com.github.emailtohl.lib.jpa.BaseEntity;
 import com.github.emailtohl.lib.jpa.Paging;
 
 /**
@@ -151,8 +151,8 @@ public abstract class RestCtrl<T> {
 
 	@RequestMapping(value = "page", method = GET)
 	abstract public Paging<T> query(T params,
-			@PageableDefault(page = 0, size = 10, sort = { EntityBase.ID_PROPERTY_NAME,
-					EntityBase.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable);
+			@PageableDefault(page = 0, size = 10, sort = { BaseEntity.ID_PROPERTY_NAME,
+					BaseEntity.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable);
 
 	@RequestMapping(method = GET)
 	abstract public List<T> query(T params);

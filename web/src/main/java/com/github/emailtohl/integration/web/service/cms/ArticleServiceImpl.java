@@ -32,7 +32,7 @@ import com.github.emailtohl.integration.web.service.cms.entities.Article;
 import com.github.emailtohl.integration.web.service.cms.entities.Comment;
 import com.github.emailtohl.integration.web.service.cms.entities.Type;
 import com.github.emailtohl.lib.exception.NotAcceptableException;
-import com.github.emailtohl.lib.jpa.EntityBase;
+import com.github.emailtohl.lib.jpa.BaseEntity;
 import com.github.emailtohl.lib.jpa.Paging;
 
 /**
@@ -281,7 +281,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 				.collect(Collectors.groupingBy(article -> article.getType()));
 	}
 
-	private Pageable zeroToHundred  = PageRequest.of(0, 100, Sort.Direction.DESC, EntityBase.MODIFY_DATE_PROPERTY_NAME);
+	private Pageable zeroToHundred  = PageRequest.of(0, 100, Sort.Direction.DESC, BaseEntity.MODIFY_DATE_PROPERTY_NAME);
 	@Override
 	public List<Article> recentArticles() {
 		return articleRepository.findAll(zeroToHundred).getContent()
