@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.UserRef;
-import com.github.emailtohl.lib.jpa.BaseEntity;
+import com.github.emailtohl.lib.jpa.EntityBase;
 
 /**
  * 评论实体类，评论可以是针对于文章的，也可以是针对于评论的
@@ -21,7 +21,7 @@ import com.github.emailtohl.lib.jpa.BaseEntity;
 @org.hibernate.annotations.BatchSize(size = 10)// 因n+1查询问题，盲猜优化，一次性加载size个代理
 @Entity
 @Table(name = "article_comment")
-public class Comment extends BaseEntity implements Comparable<Comment> {
+public class Comment extends EntityBase implements Comparable<Comment> {
 	private static final long serialVersionUID = 2074688008515735092L;
 	
 	@NotNull

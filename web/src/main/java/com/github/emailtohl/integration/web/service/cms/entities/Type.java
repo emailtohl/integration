@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.github.emailtohl.integration.core.common.SelfRef;
-import com.github.emailtohl.lib.jpa.BaseEntity;
+import com.github.emailtohl.lib.jpa.EntityBase;
 
 /**
  * 文章的分类
@@ -23,7 +23,7 @@ import com.github.emailtohl.lib.jpa.BaseEntity;
  */
 @Entity
 @Table(name = "article_type")
-public class Type extends BaseEntity implements SelfRef {
+public class Type extends EntityBase implements SelfRef {
 	private static final long serialVersionUID = -1103006931831197370L;
 	/**
 	 * 分类的名字
@@ -98,7 +98,7 @@ public class Type extends BaseEntity implements SelfRef {
 	 * row in the database when the "parent" row is deleted.
 	 */
 	@OneToMany(mappedBy = "type", orphanRemoval = false)
-	@OrderBy(BaseEntity.CREATE_DATE_PROPERTY_NAME)
+	@OrderBy(EntityBase.CREATE_DATE_PROPERTY_NAME)
 	public Set<Article> getArticles() {
 		return articles;
 	}

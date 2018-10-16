@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.github.emailtohl.integration.core.common.SelfRef;
-import com.github.emailtohl.lib.jpa.BaseEntity;
+import com.github.emailtohl.lib.jpa.EntityBase;
 
 /**
  * 部门实体
@@ -24,7 +24,7 @@ import com.github.emailtohl.lib.jpa.BaseEntity;
 @org.hibernate.envers.Audited
 @Entity
 @Table(name = "department")
-public class Department extends BaseEntity implements SelfRef {
+public class Department extends EntityBase implements SelfRef {
 	private static final long serialVersionUID = -4263959308837757530L;
 	private String name;
 	private String description;

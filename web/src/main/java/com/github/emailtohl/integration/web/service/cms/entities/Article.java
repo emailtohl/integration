@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.github.emailtohl.integration.core.user.entities.EmployeeRef;
 import com.github.emailtohl.integration.core.user.entities.UserRef;
-import com.github.emailtohl.lib.jpa.BaseEntity;
+import com.github.emailtohl.lib.jpa.EntityBase;
 
 /**
  * 文章实体
@@ -29,7 +29,7 @@ import com.github.emailtohl.lib.jpa.BaseEntity;
 @org.hibernate.search.annotations.Analyzer(impl = org.apache.lucene.analysis.standard.StandardAnalyzer.class)
 @Entity
 @Table(name = "article")
-public class Article extends BaseEntity implements Comparable<Article> {
+public class Article extends EntityBase implements Comparable<Article> {
 	private static final long serialVersionUID = -950419219310175184L;
 	@NotNull
 	private String title;
@@ -151,7 +151,7 @@ public class Article extends BaseEntity implements Comparable<Article> {
 	// 使用LazyCollectionOption.EXTRA，集合在调用size(),isEmpty(),contains()等操作时不会加载实例
 	@org.hibernate.annotations.LazyCollection(org.hibernate.annotations.LazyCollectionOption.EXTRA)
 	@org.hibernate.search.annotations.IndexedEmbedded(depth = 2)
-	@OrderBy(BaseEntity.CREATE_DATE_PROPERTY_NAME + " DESC")
+	@OrderBy(EntityBase.CREATE_DATE_PROPERTY_NAME + " DESC")
 	@OneToMany(mappedBy = "article")
 	public List<Comment> getComments() {
 		return comments;
