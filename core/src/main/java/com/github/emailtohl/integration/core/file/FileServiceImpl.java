@@ -28,7 +28,7 @@ import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.core.common.TreeUtil;
 import com.github.emailtohl.integration.core.common.ZtreeNode;
 import com.github.emailtohl.lib.ConstantPattern;
-import com.github.emailtohl.lib.lucene.FileSearch;
+import com.github.emailtohl.lib.lucene.TextFileSearch;
 
 /**
  * 管理文件的服务
@@ -50,7 +50,7 @@ public class FileServiceImpl implements FileService {
 	 * FileSearch用到两个文件路径，一个是被搜索的资源目录，另一个是Lucene的索引目录
 	 */
 	@Inject
-	FileSearch fileSearch;
+	TextFileSearch fileSearch;
 	private Pattern root_pattern;
 	
 	@PostConstruct

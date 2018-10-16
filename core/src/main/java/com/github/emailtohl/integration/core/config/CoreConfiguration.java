@@ -46,7 +46,7 @@ import org.springframework.util.ErrorHandler;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
-import com.github.emailtohl.lib.lucene.FileSearch;
+import com.github.emailtohl.lib.lucene.TextFileSearch;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
@@ -194,20 +194,20 @@ public class CoreConfiguration implements TransactionManagementConfigurer, Async
 	 * @throws IOException
 	 */
 	@Bean
-	public FileSearch fileSearch(@Named("indexBase") File indexBase) throws IOException {
+	public TextFileSearch fileSearch(@Named("indexBase") File indexBase) throws IOException {
 		if (contains(DB_RAM_H2)) { // 如果使用内存数据库，那么索引也设置在内存中
-			return new FileSearch(new RAMDirectory());
+			return new TextFileSearch(new RAMDirectory());
 		}
-		File indexDir = new File(indexBase, FileSearch.class.getName());
+		File indexDir = new File(indexBase, TextFileSearch.class.getName());
 		if (!indexDir.exists()) {
 			indexDir.mkdir();
 		}
-		FileSearch fileSearch = new FileSearch(indexDir.getAbsolutePath());
+		TextFileSearch fileSearch = new TextFileSearch(indexDir.getAbsolutePath());
 		return fileSearch;
 	}
 	
 	@Bean
-	public ApplicationListener<ContextClosedEvent> contextClosedListener(FileSearch fs) {
+	public ApplicationListener<ContextClosedEvent> contextClosedListener(TextFileSearch fs) {
 		// void onApplicationEvent(E event);
 		return event -> {
 			LOG.info("close context");
