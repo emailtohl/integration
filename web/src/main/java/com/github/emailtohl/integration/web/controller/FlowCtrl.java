@@ -24,7 +24,7 @@ import com.github.emailtohl.integration.core.ExecResult;
 import com.github.emailtohl.integration.web.service.flow.CommentInfo;
 import com.github.emailtohl.integration.web.service.flow.FlowData;
 import com.github.emailtohl.integration.web.service.flow.FlowService;
-import com.github.emailtohl.lib.jpa.BaseEntity;
+import com.github.emailtohl.lib.jpa.EntityBase;
 import com.github.emailtohl.lib.jpa.Paging;
 /**
  * 流程控制器
@@ -119,8 +119,8 @@ public class FlowCtrl {
 	 * @return
 	 */
 	@RequestMapping(value = "page", method = GET)
-	public Paging<FlowData> query(FlowData params, @PageableDefault(page = 0, size = 10, sort = { BaseEntity.ID_PROPERTY_NAME,
-			BaseEntity.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
+	public Paging<FlowData> query(FlowData params, @PageableDefault(page = 0, size = 10, sort = { EntityBase.ID_PROPERTY_NAME,
+			EntityBase.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
 		return flowService.query(params, pageable);
 	}
 

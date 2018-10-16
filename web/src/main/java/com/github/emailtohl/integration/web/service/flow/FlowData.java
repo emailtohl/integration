@@ -13,7 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.github.emailtohl.lib.jpa.BaseEntity;
+import com.github.emailtohl.lib.jpa.EntityBase;
 
 /**
  * 整个流程涉及的数据，既作为接收流程相关的表单数据，也作为显示层的数据承载对象
@@ -22,7 +22,7 @@ import com.github.emailtohl.lib.jpa.BaseEntity;
  */
 @Entity
 @Table(name = "flow_data")
-public class FlowData extends BaseEntity {
+public class FlowData extends EntityBase {
 	private static final long serialVersionUID = 6027660935630687413L;
 	// 关联Activiti的流程id
 	private String processInstanceId;

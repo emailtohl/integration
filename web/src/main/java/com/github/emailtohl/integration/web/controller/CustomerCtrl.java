@@ -35,7 +35,7 @@ import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.web.service.mail.EmailService;
 import com.github.emailtohl.lib.ConstantPattern;
 import com.github.emailtohl.lib.exception.NotFoundException;
-import com.github.emailtohl.lib.jpa.BaseEntity;
+import com.github.emailtohl.lib.jpa.EntityBase;
 import com.github.emailtohl.lib.jpa.Paging;
 
 /**
@@ -82,8 +82,8 @@ public class CustomerCtrl extends RestCtrl<Customer> {
 
 	@RequestMapping(value = "page", method = RequestMethod.GET)
 	public Paging<Customer> query(Customer params,
-			@PageableDefault(page = 0, size = 10, sort = { BaseEntity.ID_PROPERTY_NAME,
-					BaseEntity.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
+			@PageableDefault(page = 0, size = 10, sort = { EntityBase.ID_PROPERTY_NAME,
+					EntityBase.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
 		Paging<Customer> p = customerService.query(params, pageable);
 		p.getContent().stream().peek(this::filter);
 		return p;
@@ -111,8 +111,8 @@ public class CustomerCtrl extends RestCtrl<Customer> {
 
 	@RequestMapping(value = "search", method = RequestMethod.GET)
 	public Paging<Customer> search(@RequestParam(name = "query", required = false, defaultValue = "") String query,
-			@PageableDefault(page = 0, size = 10, sort = { BaseEntity.ID_PROPERTY_NAME,
-					BaseEntity.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
+			@PageableDefault(page = 0, size = 10, sort = { EntityBase.ID_PROPERTY_NAME,
+					EntityBase.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
 		Paging<Customer> p = customerService.search(query, pageable);
 		p.getContent().stream().peek(this::filter);
 		return p;

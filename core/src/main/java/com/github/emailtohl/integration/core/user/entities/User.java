@@ -41,7 +41,7 @@ import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.user.UserType;
 import com.github.emailtohl.lib.ConstantPattern;
 import com.github.emailtohl.lib.exception.InnerDataStateException;
-import com.github.emailtohl.lib.jpa.BaseEntity;
+import com.github.emailtohl.lib.jpa.EntityBase;
 import com.github.emailtohl.lib.jpa.StringBridgeCustomization;
 /**
  * 用户实体类
@@ -54,7 +54,7 @@ import com.github.emailtohl.lib.jpa.StringBridgeCustomization;
 @Table(name = "users")
 @Access(AccessType.PROPERTY) // 实际上这就是默认的配置，Hibernate实现会根据@Id所在地方进行判断
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class User extends BaseEntity {
+public class User extends EntityBase {
 	private static final long serialVersionUID = -2648409468140926726L;
 	protected String name;
 	protected String nickname;// 可存储第三方昵称

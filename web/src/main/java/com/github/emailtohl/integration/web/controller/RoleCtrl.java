@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.emailtohl.integration.core.role.Authority;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.role.RoleService;
-import com.github.emailtohl.lib.jpa.BaseEntity;
+import com.github.emailtohl.lib.jpa.EntityBase;
 import com.github.emailtohl.lib.jpa.Paging;
 /**
  * 角色管理的控制器
@@ -51,8 +51,8 @@ public class RoleCtrl extends RestCtrl<Role> {
 
 	@RequestMapping(value = "role/page", method = RequestMethod.GET)
 	public Paging<Role> query(Role params,
-			@PageableDefault(page = 0, size = 10, sort = { BaseEntity.ID_PROPERTY_NAME,
-					BaseEntity.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
+			@PageableDefault(page = 0, size = 10, sort = { EntityBase.ID_PROPERTY_NAME,
+					EntityBase.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
 		return roleService.query(params, pageable);
 	}
 

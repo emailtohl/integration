@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.github.emailtohl.integration.core.user.entities.User;
-import com.github.emailtohl.lib.jpa.BaseEntity;
+import com.github.emailtohl.lib.jpa.EntityBase;
 import com.github.emailtohl.lib.jpa.StringBridgeCustomization;
 /**
  * 角色实体类
@@ -25,7 +25,7 @@ import com.github.emailtohl.lib.jpa.StringBridgeCustomization;
 @org.hibernate.envers.Audited
 @Entity
 @Table(name = "role")
-public class Role extends BaseEntity {
+public class Role extends EntityBase {
 	private static final long serialVersionUID = 5715974372158270885L;
 	/**
 	 * 系统内置超级管理员
