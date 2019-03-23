@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.github.emailtohl.integration.core.user.entities.Customer;
-import com.github.emailtohl.lib.jpa.AuditedRepository.Tuple;
+import com.github.emailtohl.lib.jpa.AuditedRepository.Snapshoot;
 
 /**
  * 查询被审计的客户的历史记录
@@ -21,7 +21,7 @@ public interface CustomerAuditedService {
 	 * @param id 平台账号id
 	 * @return 元组列表，元组中包含版本详情，实体在该版本时的状态以及该版本的操作（增、改、删）
 	 */
-	List<Tuple<Customer>> getCustomerRevision(Long id);
+	List<Snapshoot<Customer>> getCustomerRevision(Long id);
 	
 	/**
 	 * 查询客户在某个修订版时的历史记录

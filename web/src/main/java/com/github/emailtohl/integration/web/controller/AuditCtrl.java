@@ -16,7 +16,7 @@ import com.github.emailtohl.integration.core.user.customer.CustomerAuditedServic
 import com.github.emailtohl.integration.core.user.employee.EmployeeAuditedService;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;
-import com.github.emailtohl.lib.jpa.AuditedRepository.Tuple;
+import com.github.emailtohl.lib.jpa.AuditedRepository.Snapshoot;
 import com.google.gson.Gson;
 /**
  * 查阅Hibernate Envers产生的审计记录
@@ -41,8 +41,8 @@ public class AuditCtrl {
 	 * @return 元组列表，元组中包含版本详情，实体在该版本时的状态以及该版本的操作（增、改、删）
 	 */
 	@RequestMapping(value = "role/{id}", method = RequestMethod.GET)
-	public List<Tuple<Role>> getRoleRevision(@PathVariable("id") Long id) {
-		List<Tuple<Role>> ls =  roleAuditedService.getRoleRevision(id);
+	public List<Snapshoot<Role>> getRoleRevision(@PathVariable("id") Long id) {
+		List<Snapshoot<Role>> ls =  roleAuditedService.getRoleRevision(id);
 		return ls;
 	}
 	
@@ -63,7 +63,7 @@ public class AuditCtrl {
 	 * @return 元组列表，元组中包含版本详情，实体在该版本时的状态以及该版本的操作（增、改、删）
 	 */
 	@RequestMapping(value = "customer/{id}", method = RequestMethod.GET)
-	public List<Tuple<Customer>> getCustomerRevision(@PathVariable("id") Long id) {
+	public List<Snapshoot<Customer>> getCustomerRevision(@PathVariable("id") Long id) {
 		return customerAuditedService.getCustomerRevision(id);
 	}
 	
@@ -84,7 +84,7 @@ public class AuditCtrl {
 	 * @return 元组列表，元组中包含版本详情，实体在该版本时的状态以及该版本的操作（增、改、删）
 	 */
 	@RequestMapping(value = "employee/{id}", method = RequestMethod.GET)
-	public List<Tuple<Employee>> getEmployeeRevision(@PathVariable("id") Long id) {
+	public List<Snapshoot<Employee>> getEmployeeRevision(@PathVariable("id") Long id) {
 		return employeeAuditedService.getEmployeeRevision(id);
 	}
 	
