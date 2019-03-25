@@ -170,8 +170,8 @@ public class CompanyServiceImpl extends StandardService<Company> implements Comp
 		tar.setId(src.getId());
 		tar.setName(src.getName());
 		tar.setDescription(src.getDescription());
-		tar.setCreateDate(src.getCreateDate());
-		tar.setModifyDate(src.getCreateDate());
+		tar.setCreationTime(src.getCreationTime());
+		tar.setModifyTime(src.getCreationTime());
 		return tar;
 	}
 
@@ -184,8 +184,8 @@ public class CompanyServiceImpl extends StandardService<Company> implements Comp
 		tar.setId(src.getId());
 		tar.setName(src.getName());
 		tar.setDescription(src.getDescription());
-		tar.setCreateDate(src.getCreateDate());
-		tar.setModifyDate(src.getModifyDate());
+		tar.setCreationTime(src.getCreationTime());
+		tar.setModifyTime(src.getModifyTime());
 		tar.setParent(transientDetail(src.getParent()));
 		return tar;
 	}

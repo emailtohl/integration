@@ -88,7 +88,7 @@
 				<h3 class="tm-gold-text">${article.title}</h3>
 				<p>
 					<img class="icon" src="${article.author.iconSrc!}"> <strong>${article.author.email}</strong>
-					<em>${article.createDate?string("yyyy-MM-dd HH:mm:ss")}</em>
+					<em>${article.creationTime?string("yyyy-MM-dd HH:mm:ss")}</em>
 				</p>
 				<div id="article-body">
 					${article.body}
@@ -111,7 +111,7 @@
 							<strong>匿名</strong>
 						</#if>
 						
-						  <em>${comment.createDate?string("yyyy-MM-dd HH:mm:ss")}</em>
+						  <em>${comment.creationTime?string("yyyy-MM-dd HH:mm:ss")}</em>
 					</p>
 					<p>${comment.content?html}</p>
 				</#list>

@@ -120,7 +120,7 @@ public class FlowCtrl {
 	 */
 	@RequestMapping(value = "page", method = GET)
 	public Paging<FlowData> query(FlowData params, @PageableDefault(page = 0, size = 10, sort = { EntityBase.ID_PROPERTY_NAME,
-			EntityBase.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
+			EntityBase.MODIFY_TIME_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
 		return flowService.query(params, pageable);
 	}
 

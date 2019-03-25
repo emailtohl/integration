@@ -281,7 +281,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 				.collect(Collectors.groupingBy(article -> article.getType()));
 	}
 
-	private Pageable zeroToHundred  = PageRequest.of(0, 100, Sort.Direction.DESC, EntityBase.MODIFY_DATE_PROPERTY_NAME);
+	private Pageable zeroToHundred  = PageRequest.of(0, 100, Sort.Direction.DESC, EntityBase.MODIFY_TIME_PROPERTY_NAME);
 	@Override
 	public List<Article> recentArticles() {
 		return articleRepository.findAll(zeroToHundred).getContent()
@@ -320,8 +320,8 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 			Type st = source.getType();
 			Type t = new Type();
 			t.setId(st.getId());
-			t.setCreateDate(st.getCreateDate());
-			t.setModifyDate(st.getModifyDate());
+			t.setCreationTime(st.getCreationTime());
+			t.setModifyTime(st.getModifyTime());
 			t.setName(st.getName());
 			t.setDescription(st.getDescription());
 			target.setType(t);
@@ -387,8 +387,8 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 			return null;
 		Type target = new Type();
 		target.setId(source.getId());
-		target.setCreateDate(source.getCreateDate());
-		target.setModifyDate(source.getModifyDate());
+		target.setCreationTime(source.getCreationTime());
+		target.setModifyTime(source.getModifyTime());
 		target.setName(source.getName());
 		target.setDescription(source.getDescription());
 		target.setParent(getType(source.getParent()));
@@ -407,8 +407,8 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 		return comments.stream().filter(c -> c.getApproved() == null || c.getApproved()).map(source -> {
 			Comment target = new Comment();
 			target.setId(source.getId());
-			target.setCreateDate(source.getCreateDate());
-			target.setModifyDate(source.getModifyDate());
+			target.setCreationTime(source.getCreationTime());
+			target.setModifyTime(source.getModifyTime());
 			target.setContent(source.getContent());
 			target.setReviewer(transientUserRef(source.getReviewer()));
 			target.setApprover(transientEmployeeRef(source.getApprover()));

@@ -83,7 +83,7 @@ public class CustomerCtrl extends RestCtrl<Customer> {
 	@RequestMapping(value = "page", method = RequestMethod.GET)
 	public Paging<Customer> query(Customer params,
 			@PageableDefault(page = 0, size = 10, sort = { EntityBase.ID_PROPERTY_NAME,
-					EntityBase.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
+					EntityBase.MODIFY_TIME_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
 		Paging<Customer> p = customerService.query(params, pageable);
 		p.getContent().stream().peek(this::filter);
 		return p;
@@ -112,7 +112,7 @@ public class CustomerCtrl extends RestCtrl<Customer> {
 	@RequestMapping(value = "search", method = RequestMethod.GET)
 	public Paging<Customer> search(@RequestParam(name = "query", required = false, defaultValue = "") String query,
 			@PageableDefault(page = 0, size = 10, sort = { EntityBase.ID_PROPERTY_NAME,
-					EntityBase.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
+					EntityBase.MODIFY_TIME_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
 		Paging<Customer> p = customerService.search(query, pageable);
 		p.getContent().stream().peek(this::filter);
 		return p;

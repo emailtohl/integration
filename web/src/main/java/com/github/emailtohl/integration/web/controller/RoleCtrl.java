@@ -52,7 +52,7 @@ public class RoleCtrl extends RestCtrl<Role> {
 	@RequestMapping(value = "role/page", method = RequestMethod.GET)
 	public Paging<Role> query(Role params,
 			@PageableDefault(page = 0, size = 10, sort = { EntityBase.ID_PROPERTY_NAME,
-					EntityBase.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
+					EntityBase.MODIFY_TIME_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
 		return roleService.query(params, pageable);
 	}
 

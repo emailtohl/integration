@@ -240,8 +240,8 @@ public class CommentServiceImpl extends StandardService<Comment> implements Comm
 		}
 		Comment target = new Comment();
 		target.setId(entity.getId());
-		target.setCreateDate(entity.getCreateDate());
-		target.setModifyDate(entity.getModifyDate());
+		target.setCreationTime(entity.getCreationTime());
+		target.setModifyTime(entity.getModifyTime());
 		target.setContent(entity.getContent());
 		target.setApproved(entity.getApproved());
 		target.setApprover(transientEmployeeRef(entity.getApprover()));
@@ -258,8 +258,8 @@ public class CommentServiceImpl extends StandardService<Comment> implements Comm
 		}
 		Comment target = new Comment();
 		target.setId(entity.getId());
-		target.setCreateDate(entity.getCreateDate());
-		target.setModifyDate(entity.getModifyDate());
+		target.setCreationTime(entity.getCreationTime());
+		target.setModifyTime(entity.getModifyTime());
 		target.setContent(entity.getContent());
 		target.setApproved(entity.getApproved());
 		target.setApprover(transientEmployeeRef(entity.getApprover()));
@@ -304,16 +304,16 @@ public class CommentServiceImpl extends StandardService<Comment> implements Comm
 		}
 		Article target = new Article(source.getTitle(), source.getKeywords(), source.getBody(), source.getSummary());
 		target.setId(source.getId());
-		target.setCreateDate(source.getCreateDate());
-		target.setModifyDate(source.getModifyDate());
+		target.setCreationTime(source.getCreationTime());
+		target.setModifyTime(source.getModifyTime());
 		target.setAuthor(transientUserRef(source.getAuthor()));
 		target.setApprover(transientEmployeeRef(source.getApprover()));
 		if (source.getType() != null) {
 			Type st = source.getType();
 			Type t = new Type();
 			t.setId(st.getId());
-			t.setCreateDate(st.getCreateDate());
-			t.setModifyDate(st.getModifyDate());
+			t.setCreationTime(st.getCreationTime());
+			t.setModifyTime(st.getModifyTime());
 			t.setName(st.getName());
 			t.setDescription(st.getDescription());
 			target.setType(t);
@@ -332,8 +332,8 @@ public class CommentServiceImpl extends StandardService<Comment> implements Comm
 		}
 		Article target = new Article(source.getTitle(), source.getKeywords(), null, null);
 		target.setId(source.getId());
-		target.setCreateDate(source.getCreateDate());
-		target.setModifyDate(source.getModifyDate());
+		target.setCreationTime(source.getCreationTime());
+		target.setModifyTime(source.getModifyTime());
 		return target;
 	}
 	
@@ -348,8 +348,8 @@ public class CommentServiceImpl extends StandardService<Comment> implements Comm
 		}
 		Comment target = new Comment();
 		target.setId(source.getId());
-		target.setCreateDate(source.getCreateDate());
-		target.setModifyDate(source.getModifyDate());
+		target.setCreationTime(source.getCreationTime());
+		target.setModifyTime(source.getModifyTime());
 		target.setContent(source.getContent());
 		target.setReviewer(transientUserRef(source.getReviewer()));
 		return target;

@@ -152,7 +152,7 @@ public abstract class RestCtrl<T> {
 	@RequestMapping(value = "page", method = GET)
 	abstract public Paging<T> query(T params,
 			@PageableDefault(page = 0, size = 10, sort = { EntityBase.ID_PROPERTY_NAME,
-					EntityBase.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable);
+					EntityBase.MODIFY_TIME_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable);
 
 	@RequestMapping(method = GET)
 	abstract public List<T> query(T params);

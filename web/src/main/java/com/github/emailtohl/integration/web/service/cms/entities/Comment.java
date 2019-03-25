@@ -108,7 +108,7 @@ public class Comment extends EntityBase implements Comparable<Comment> {
 
 	@Override
 	public int compareTo(Comment o) {
-		return getCreateDate().compareTo(o.getCreateDate());
+		return getCreationTime().compareTo(o.getCreationTime());
 	}
 
 	@Override

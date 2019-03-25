@@ -59,7 +59,7 @@ public class EmployeeCtrl extends RestCtrl<Employee> {
 	@RequestMapping(value = "page", method = RequestMethod.GET)
 	public Paging<Employee> query(Employee params,
 			@PageableDefault(page = 0, size = 10, sort = { EntityBase.ID_PROPERTY_NAME,
-					EntityBase.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
+					EntityBase.MODIFY_TIME_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
 		Paging<Employee> p = employeeService.query(params, pageable);
 		p.getContent().forEach(this::filter);
 		return p;
@@ -91,7 +91,7 @@ public class EmployeeCtrl extends RestCtrl<Employee> {
 	@RequestMapping(value = "search", method = RequestMethod.GET)
 	public Paging<Employee> search(@RequestParam(name = "query", required = false, defaultValue = "") String query,
 			@PageableDefault(page = 0, size = 10, sort = { EntityBase.ID_PROPERTY_NAME,
-					EntityBase.MODIFY_DATE_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
+					EntityBase.MODIFY_TIME_PROPERTY_NAME }, direction = Direction.DESC) Pageable pageable) {
 		Paging<Employee> p = employeeService.search(query, pageable);
 		p.getContent().forEach(this::filter);
 		return p;
