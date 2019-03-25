@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.github.emailtohl.integration.core.role.Role;
 import com.github.emailtohl.integration.core.user.entities.Department;
 import com.github.emailtohl.integration.core.user.entities.Employee;
-import com.github.emailtohl.lib.jpa.AuditedRepository.Snapshoot;
+import com.github.emailtohl.lib.jpa.AuditedRepository.RevTuple;
 
 /**
  * 审计平台账号的历史记录
@@ -27,11 +27,11 @@ public class EmployeeAuditedServiceImpl implements EmployeeAuditedService {
 	EmployeeAudit employeeAudit;
 
 	@Override
-	public List<Snapshoot<Employee>> getEmployeeRevision(Long id) {
-		List<Snapshoot<Employee>> ls = employeeAudit.getRevisions(id);
-		return ls.stream().map(ss -> {
-			return new Snapshoot<Employee>(toTransient(ss.entity), transientRevisionEntity(ss.defaultRevisionEntity),
-					ss.revisionType);
+	public List<RevTuple<Employee>> getEmployeeRevision(Long id) {
+		List<RevTuple<Employee>> ls = employeeAudit.getRevisions(id);
+		return ls.stream().map(rt -> {
+			return new RevTuple<Employee>(toTransient(rt.entity), transientRevisionEntity(rt.defaultRevisionEntity),
+					rt.revisionType);
 		}).collect(Collectors.toList());
 	}
 

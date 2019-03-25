@@ -31,7 +31,7 @@ import com.github.emailtohl.integration.core.user.employee.EmployeeAuditedServic
 import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;
-import com.github.emailtohl.lib.jpa.AuditedRepository.Snapshoot;
+import com.github.emailtohl.lib.jpa.AuditedRepository.RevTuple;
 /**
  * 在接口处声明了权限，对这些声明进行测试
  * @author HeLei
@@ -286,7 +286,7 @@ public class GlobalMethodSecurityTest {
 	@Test
 	public void testCustomerAuditedService() {
 		Customer baz = null;
-		List<Snapshoot<Customer>> ls = null;
+		List<RevTuple<Customer>> ls = null;
 		scm.clearContext();
 		try {
 			baz = customerAuditedService.getCustomerAtRevision(1L, 1);
@@ -324,7 +324,7 @@ public class GlobalMethodSecurityTest {
 	@Test
 	public void testEmployeeAuditedService() {
 		Employee bar = null;
-		List<Snapshoot<Employee>> ls = null;
+		List<RevTuple<Employee>> ls = null;
 		scm.clearContext();
 		try {
 			bar = employeeAuditedService.getEmployeeAtRevision(1L, 1);
@@ -362,7 +362,7 @@ public class GlobalMethodSecurityTest {
 	@Test
 	public void testRoleAuditedService() {
 		Role role = null;
-		List<Snapshoot<Role>> ls = null;
+		List<RevTuple<Role>> ls = null;
 		scm.clearContext();
 		try {
 			role = roleAuditedService.getRoleAtRevision(1L, 1);

@@ -23,7 +23,7 @@ import com.github.emailtohl.integration.core.file.Image;
 import com.github.emailtohl.integration.core.user.entities.Address;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Gender;
-import com.github.emailtohl.lib.jpa.AuditedRepository.Snapshoot;
+import com.github.emailtohl.lib.jpa.AuditedRepository.RevTuple;
 import com.google.gson.Gson;
 /**
  * 业务类测试
@@ -81,7 +81,7 @@ public class CustomerAuditedServiceImplTest extends CoreTestEnvironment {
 
 	@Test
 	public void testGetCustomerRevision() {
-		List<Snapshoot<Customer>> ls = auditedService.getCustomerRevision(id);
+		List<RevTuple<Customer>> ls = auditedService.getCustomerRevision(id);
 		System.out.println(gson.toJson(ls));
 		assertTrue(ls.size() >= 2);// 一个新增、一个修改
 //		在Maven统一执行时有其他用例修改数据，所以届时得到的结果会不一致
@@ -92,7 +92,7 @@ public class CustomerAuditedServiceImplTest extends CoreTestEnvironment {
 
 	@Test
 	public void testGetCustomerAtRevision() {
-		List<Snapshoot<Customer>> ls = auditedService.getCustomerRevision(id);
+		List<RevTuple<Customer>> ls = auditedService.getCustomerRevision(id);
 		System.out.println(gson.toJson(ls));
 		Integer revision = ls.get(0).defaultRevisionEntity.getId();
 		Customer e = auditedService.getCustomerAtRevision(id, revision);

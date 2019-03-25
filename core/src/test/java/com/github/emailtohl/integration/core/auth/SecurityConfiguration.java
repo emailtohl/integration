@@ -59,7 +59,7 @@ import com.github.emailtohl.integration.core.user.employee.EmployeeService;
 import com.github.emailtohl.integration.core.user.entities.Customer;
 import com.github.emailtohl.integration.core.user.entities.Employee;
 import com.github.emailtohl.integration.core.user.entities.User;
-import com.github.emailtohl.lib.jpa.AuditedRepository.Snapshoot;
+import com.github.emailtohl.lib.jpa.AuditedRepository.RevTuple;
 import com.github.emailtohl.lib.jpa.Paging;
 
 /**
@@ -348,7 +348,7 @@ class SecurityConfiguration {
 	public RoleAuditedService roleAuditedServiceMock(CorePresetData cpd, CoreTestData td) {
 		RoleAuditedService service = mock(RoleAuditedService.class);
 		when(service.getRoleAtRevision(anyLong(), any())).thenReturn(cpd.role_guest);
-		when(service.getRoleRevision(anyLong())).thenReturn(Arrays.asList(new Snapshoot<Role>(null, null, null)));
+		when(service.getRoleRevision(anyLong())).thenReturn(Arrays.asList(new RevTuple<Role>(null, null, null)));
 		return service;
 	}
 	
@@ -500,7 +500,7 @@ class SecurityConfiguration {
 	public CustomerAuditedService customerAuditedServiceMock(CoreTestData td) {
 		CustomerAuditedService service = mock(CustomerAuditedService.class);
 		when(service.getCustomerAtRevision(anyLong(), any())).thenReturn(td.baz);
-		when(service.getCustomerRevision(anyLong())).thenReturn(Arrays.asList(new Snapshoot<Customer>(null, null, null)));
+		when(service.getCustomerRevision(anyLong())).thenReturn(Arrays.asList(new RevTuple<Customer>(null, null, null)));
 		return service;
 	}
 	
@@ -508,7 +508,7 @@ class SecurityConfiguration {
 	public EmployeeAuditedService employeeAuditedServiceMock(CoreTestData td) {
 		EmployeeAuditedService service = mock(EmployeeAuditedService.class);
 		when(service.getEmployeeAtRevision(anyLong(), any())).thenReturn(td.bar);
-		when(service.getEmployeeRevision(anyLong())).thenReturn(Arrays.asList(new Snapshoot<Employee>(null, null, null)));
+		when(service.getEmployeeRevision(anyLong())).thenReturn(Arrays.asList(new RevTuple<Employee>(null, null, null)));
 		return service;
 	}
 }

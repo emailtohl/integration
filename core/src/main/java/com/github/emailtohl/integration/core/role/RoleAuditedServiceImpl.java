@@ -10,7 +10,7 @@ import org.hibernate.envers.DefaultRevisionEntity;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import com.github.emailtohl.lib.jpa.AuditedRepository.Snapshoot;
+import com.github.emailtohl.lib.jpa.AuditedRepository.RevTuple;
 /**
  * 审计角色的历史记录
  * @author HeLei
@@ -21,10 +21,10 @@ public class RoleAuditedServiceImpl implements RoleAuditedService {
 	@Inject RoleAudit roleAudit;
 	
 	@Override
-	public List<Snapshoot<Role>> getRoleRevision(Long id) {
-		List<Snapshoot<Role>> ls = roleAudit.getRevisions(id);
-		return ls.stream().map(ss -> {
-			return new Snapshoot<Role>(toTransient(ss.entity), transientRevisionEntity(ss.defaultRevisionEntity), ss.revisionType);
+	public List<RevTuple<Role>> getRoleRevision(Long id) {
+		List<RevTuple<Role>> ls = roleAudit.getRevisions(id);
+		return ls.stream().map(rt -> {
+			return new RevTuple<Role>(toTransient(rt.entity), transientRevisionEntity(rt.defaultRevisionEntity), rt.revisionType);
 		}).collect(Collectors.toList());
 	}
 

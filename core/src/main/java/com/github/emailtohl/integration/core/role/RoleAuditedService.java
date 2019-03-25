@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import com.github.emailtohl.lib.jpa.AuditedRepository.Snapshoot;
+import com.github.emailtohl.lib.jpa.AuditedRepository.RevTuple;
 
 /**
  * 审计角色的历史记录
@@ -19,7 +19,7 @@ public interface RoleAuditedService {
 	 * @param id 角色
 	 * @return 元组列表，元组中包含版本详情，实体在该版本时的状态以及该版本的操作（增、改、删）
 	 */
-	List<Snapshoot<Role>> getRoleRevision(Long id);
+	List<RevTuple<Role>> getRoleRevision(Long id);
 	
 	/**
 	 * 查询角色在某个修订版时的历史记录

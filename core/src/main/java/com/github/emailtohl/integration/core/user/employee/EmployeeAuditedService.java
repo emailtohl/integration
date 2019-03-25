@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.github.emailtohl.integration.core.user.entities.Employee;
-import com.github.emailtohl.lib.jpa.AuditedRepository.Snapshoot;
+import com.github.emailtohl.lib.jpa.AuditedRepository.RevTuple;
 /**
  * 查询被审计的平台账号的历史记录
  * @author HeLei
@@ -20,7 +20,7 @@ public interface EmployeeAuditedService {
 	 * @param id 平台账号id
 	 * @return 元组列表，元组中包含版本详情，实体在该版本时的状态以及该版本的操作（增、改、删）
 	 */
-	List<Snapshoot<Employee>> getEmployeeRevision(Long id);
+	List<RevTuple<Employee>> getEmployeeRevision(Long id);
 	
 	/**
 	 * 查询平台账号在某个修订版时的历史记录
