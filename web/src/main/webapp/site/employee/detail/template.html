@@ -19,7 +19,7 @@
 	        	<div class="col-md-2">
 			        <img style="height: 90px;width: 90px;" ng-src="{{ctrl.detail.image && ctrl.detail.image.src}}" class="img-circle" alt="User Image">
 			        <a class="users-list-name" href="#">{{ctrl.detail.email}}</a>
-			        <span class="users-list-date">{{ctrl.detail.creationTime | date}}</span>
+			        <span class="users-list-date">{{ctrl.detail.createTime | date}}</span>
 	        	</div>
 	        	<div class="col-md-4">
 	        		<div class="form-group">
@@ -59,7 +59,7 @@
                </tr>
                <tr>
                    <td>创建时间</td>
-                   <td>{{ctrl.detail.creationTime}}</td>
+                   <td>{{ctrl.detail.createTime}}</td>
                    <td>最后登录</td>
                    <td>{{ctrl.detail.lastLogin}}</td>
                </tr>

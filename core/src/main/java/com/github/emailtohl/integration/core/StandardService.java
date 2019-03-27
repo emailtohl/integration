@@ -119,7 +119,7 @@ public abstract class StandardService<E extends Serializable> {
 	/**
 	 * 手动校验对象是否符合约束条件
 	 * @param entity
-	 * @return
+	 * @throws NotAcceptableException 校验不通过
 	 */
 	public void validate(E entity) {
 		Set<ConstraintViolation<E>> violations = validator.validate(entity);
@@ -132,7 +132,7 @@ public abstract class StandardService<E extends Serializable> {
 	/**
 	 * 手动校验对象是否符合约束条件
 	 * @param entity
-	 * @return
+	 * @throws NotAcceptableException 校验不通过
 	 */
 	public <T> void validate(T obj, Class<T> clz) {
 		Set<ConstraintViolation<T>> violations = validator.validate(obj);
@@ -154,7 +154,7 @@ public abstract class StandardService<E extends Serializable> {
 	/**
 	 * 判断字符串是否存在
 	 * @param text
-	 * @return
+	 * @return 是否空字符串
 	 */
 	public boolean hasText(String text) {
 		return text != null && !text.isEmpty();

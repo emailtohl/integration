@@ -32,7 +32,7 @@ public class UserDetailsImpl implements UserDetails {
 	private String username = "anonymous";
 	private Long id;
 	private String realName;
-	protected Date creationTime;
+	protected Date createTime;
 	protected Date modifyTime;
 	private UserType userType;
 	private String nickname;
@@ -54,7 +54,7 @@ public class UserDetailsImpl implements UserDetails {
 		}
 		this.id = u.getId();
 		this.realName = u.getName();
-		this.creationTime = u.getCreationTime();
+		this.createTime = u.getCreateTime();
 		this.modifyTime = u.getModifyTime();
 		this.nickname = u.getNickname();
 		this.cellPhone = u.getCellPhone();
@@ -128,11 +128,11 @@ public class UserDetailsImpl implements UserDetails {
 	}
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-	public Date getCreationTime() {
-		return creationTime;
+	public Date getCreateTime() {
+		return createTime;
 	}
-	public void setCreationTime(Date creationTime) {
-		this.creationTime = creationTime;
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

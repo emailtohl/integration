@@ -98,7 +98,7 @@ public class Type extends EntityBase implements SelfRef {
 	 * row in the database when the "parent" row is deleted.
 	 */
 	@OneToMany(mappedBy = "type", orphanRemoval = false)
-	@OrderBy(EntityBase.CREATION_TIME_PROPERTY_NAME)
+	@OrderBy(EntityBase.CREATE_TIME_PROPERTY_NAME)
 	public Set<Article> getArticles() {
 		return articles;
 	}

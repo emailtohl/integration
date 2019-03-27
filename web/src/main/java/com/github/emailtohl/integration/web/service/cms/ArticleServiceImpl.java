@@ -320,7 +320,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 			Type st = source.getType();
 			Type t = new Type();
 			t.setId(st.getId());
-			t.setCreationTime(st.getCreationTime());
+			t.setCreateTime(st.getCreateTime());
 			t.setModifyTime(st.getModifyTime());
 			t.setName(st.getName());
 			t.setDescription(st.getDescription());
@@ -387,7 +387,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 			return null;
 		Type target = new Type();
 		target.setId(source.getId());
-		target.setCreationTime(source.getCreationTime());
+		target.setCreateTime(source.getCreateTime());
 		target.setModifyTime(source.getModifyTime());
 		target.setName(source.getName());
 		target.setDescription(source.getDescription());
@@ -407,7 +407,7 @@ public class ArticleServiceImpl extends StandardService<Article> implements Arti
 		return comments.stream().filter(c -> c.getApproved() == null || c.getApproved()).map(source -> {
 			Comment target = new Comment();
 			target.setId(source.getId());
-			target.setCreationTime(source.getCreationTime());
+			target.setCreateTime(source.getCreateTime());
 			target.setModifyTime(source.getModifyTime());
 			target.setContent(source.getContent());
 			target.setReviewer(transientUserRef(source.getReviewer()));

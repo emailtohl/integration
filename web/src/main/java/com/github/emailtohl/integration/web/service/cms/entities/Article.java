@@ -151,7 +151,7 @@ public class Article extends EntityBase implements Comparable<Article> {
 	// 使用LazyCollectionOption.EXTRA，集合在调用size(),isEmpty(),contains()等操作时不会加载实例
 	@org.hibernate.annotations.LazyCollection(org.hibernate.annotations.LazyCollectionOption.EXTRA)
 	@org.hibernate.search.annotations.IndexedEmbedded(depth = 2)
-	@OrderBy(EntityBase.CREATION_TIME_PROPERTY_NAME + " DESC")
+	@OrderBy(EntityBase.CREATE_TIME_PROPERTY_NAME + " DESC")
 	@OneToMany(mappedBy = "article")
 	public List<Comment> getComments() {
 		return comments;
@@ -173,9 +173,9 @@ public class Article extends EntityBase implements Comparable<Article> {
 	@Override
 	public int compareTo(Article o) {
 		int r = 0;
-		if (getCreationTime() != null && o.getCreationTime() != null)
+		if (getCreateTime() != null && o.getCreateTime() != null)
 			// 时间越大越靠前（返回负数）
-			r = o.getCreationTime().compareTo(getCreationTime());
+			r = o.getCreateTime().compareTo(getCreateTime());
 		return r;
 	}
 	

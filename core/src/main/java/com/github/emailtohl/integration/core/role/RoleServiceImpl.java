@@ -189,7 +189,7 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 		target.setName(source.getName());
 		target.setRoleType(source.getRoleType());
 		target.setDescription(source.getDescription());
-		target.setCreationTime(source.getCreationTime());
+		target.setCreateTime(source.getCreateTime());
 		target.setModifyTime(source.getModifyTime());
 		return target;
 	}
@@ -204,7 +204,7 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 		target.setName(source.getName());
 		target.setRoleType(source.getRoleType());
 		target.setDescription(source.getDescription());
-		target.setCreationTime(source.getCreationTime());
+		target.setCreateTime(source.getCreateTime());
 		target.setModifyTime(source.getModifyTime());
 		Set<Authority> authorities = source.getAuthorities().stream()
 				.map(this::transientAuthorityDetail).collect(Collectors.toSet());
@@ -220,7 +220,7 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 		tar.setId(src.getId());
 		tar.setName(src.getName());
 		tar.setDescription(src.getDescription());
-		tar.setCreationTime(src.getCreationTime());
+		tar.setCreateTime(src.getCreateTime());
 		tar.setModifyTime(src.getModifyTime());
 		return tar;
 	}
@@ -233,7 +233,7 @@ public class RoleServiceImpl extends StandardService<Role> implements RoleServic
 		tar.setId(src.getId());
 		tar.setName(src.getName());
 		tar.setDescription(src.getDescription());
-		tar.setCreationTime(src.getCreationTime());
+		tar.setCreateTime(src.getCreateTime());
 		tar.setModifyTime(src.getModifyTime());
 		tar.setParent(transientAuthorityDetail(src.getParent()));
 		return tar;

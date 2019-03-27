@@ -46,7 +46,7 @@ public class MybatisTest extends WebTestEnvironment {
 	public void testTransactionCallback() {
 		Department d = new Department();
 		d.setName("test");
-		d.setCreationTime(new Date());
+		d.setCreateTime(new Date());
 		d.setModifyTime(new Date());
 		d.setResponsiblePerson("test person");
 		Long id = mybatisTestService.insert(d);

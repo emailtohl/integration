@@ -176,7 +176,7 @@ public class TypeServiceImpl extends StandardService<Type> implements TypeServic
 		Type tar = new Type(entity.getName(), entity.getDescription(), null);
 		tar.setId(entity.getId());
 		tar.setArticlesNum(entity.getArticlesNum());
-		tar.setCreationTime(entity.getCreationTime());
+		tar.setCreateTime(entity.getCreateTime());
 		tar.setModifyTime(entity.getModifyTime());
 		if (entity.getParent() != null) {
 			Type parent = new Type(entity.getParent().getName(), entity.getParent().getDescription(), null);
@@ -194,7 +194,7 @@ public class TypeServiceImpl extends StandardService<Type> implements TypeServic
 		Type tar = new Type(entity.getName(), entity.getDescription(), transientDetail(entity.getParent()));
 		tar.setId(entity.getId());
 		tar.setArticlesNum(tar.getArticles().size());
-		tar.setCreationTime(entity.getCreationTime());
+		tar.setCreateTime(entity.getCreateTime());
 		tar.setModifyTime(entity.getModifyTime());
 		if (entity.getParent() != null) {
 			Type parent = new Type(entity.getParent().getName(), entity.getParent().getDescription(), null);

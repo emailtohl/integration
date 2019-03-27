@@ -189,8 +189,8 @@ public class DepartmentServiceImpl extends StandardService<Department> implement
 		tar.setId(src.getId());
 		tar.setName(src.getName());
 		tar.setDescription(src.getDescription());
-		tar.setCreationTime(src.getCreationTime());
-		tar.setModifyTime(src.getCreationTime());
+		tar.setCreateTime(src.getCreateTime());
+		tar.setModifyTime(src.getCreateTime());
 		return tar;
 	}
 	
@@ -203,8 +203,8 @@ public class DepartmentServiceImpl extends StandardService<Department> implement
 		tar.setId(src.getId());
 		tar.setName(src.getName());
 		tar.setDescription(src.getDescription());
-		tar.setCreationTime(src.getCreationTime());
-		tar.setModifyTime(src.getCreationTime());
+		tar.setCreateTime(src.getCreateTime());
+		tar.setModifyTime(src.getCreateTime());
 		tar.setCompany(companyService.transientCompanyDetail(src.getCompany()));
 		tar.setParent(transientDetail(src.getParent()));
 		return tar;
