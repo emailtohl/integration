@@ -118,8 +118,8 @@ public abstract class StandardService<E extends Serializable> {
 	
 	/**
 	 * 手动校验对象是否符合约束条件
-	 * @param entity
-	 * @throws NotAcceptableException 校验不通过
+	 * @param entity 被校验的实体对象
+	 * @throws 若不符合则抛出自定义NotAcceptableException异常
 	 */
 	public void validate(E entity) {
 		Set<ConstraintViolation<E>> violations = validator.validate(entity);
@@ -131,8 +131,9 @@ public abstract class StandardService<E extends Serializable> {
 	
 	/**
 	 * 手动校验对象是否符合约束条件
-	 * @param entity
-	 * @throws NotAcceptableException 校验不通过
+	 * @param obj 被校验的对象
+	 * @param clz 被校验的对象的类型
+	 * @throws 若不符合则抛出自定义NotAcceptableException异常
 	 */
 	public <T> void validate(T obj, Class<T> clz) {
 		Set<ConstraintViolation<T>> violations = validator.validate(obj);
@@ -142,19 +143,30 @@ public abstract class StandardService<E extends Serializable> {
 		}
 	}
 	
+	/**
+	 * Hash加密密码
+	 * @param password 明文密码
+	 * @return 被Hash加密过的密文密码
+	 */
 	public String hashpw(String password) {
 		String salt = BCrypt.gensalt(HASHING_ROUNDS, new SecureRandom());
 		return BCrypt.hashpw(password, salt);
 	}
 	
+	/**
+	 * 检查明文密码是否与被加密过的密码是否一致
+	 * @param plaintext 明文密码
+	 * @param hashed 被加密后的密文密码
+	 * @return 校验结果
+	 */
 	public boolean checkpw(String plaintext, String hashed) {
 		return BCrypt.checkpw(plaintext, hashed);
 	}
 	
 	/**
 	 * 判断字符串是否存在
-	 * @param text
-	 * @return 是否空字符串
+	 * @param text 字符串
+	 * @return 是否为空的结果
 	 */
 	public boolean hasText(String text) {
 		return text != null && !text.isEmpty();

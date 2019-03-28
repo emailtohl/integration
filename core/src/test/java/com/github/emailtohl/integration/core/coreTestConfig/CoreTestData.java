@@ -22,13 +22,13 @@ import com.github.emailtohl.integration.core.user.entities.Gender;
  * @author HeLei
  */
 public class CoreTestData {
-	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	public final Employee foo = new Employee();
 	public final Employee bar = new Employee();
 	public final Customer baz = new Customer();
 	public final Customer qux = new Customer();
 
 	public CoreTestData() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		CorePresetData cpd = new CorePresetData();
 		cpd.role_manager.getUsers().add(foo);
 		cpd.role_staff.getUsers().add(bar);

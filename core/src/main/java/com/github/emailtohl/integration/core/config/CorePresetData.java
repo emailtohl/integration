@@ -46,8 +46,6 @@ import com.github.emailtohl.integration.core.user.entities.Gender;
 public class CorePresetData implements Serializable {
 	private static final long serialVersionUID = -8413305539138714050L;
 
-	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-	
 	public final Authority
 			auth_org = new Authority(ORG, "管理组织信息的权限", null),
 			auth_role = new Authority(ROLE, "管理角色的权限", null),
@@ -176,6 +174,7 @@ public class CorePresetData implements Serializable {
 		user_emailtohl.setClassify(Classify.COOPERATE);
 		user_emailtohl.getRoles().addAll(Arrays.asList(role_admin, role_guest));
 		try (InputStream is = cl.getResourceAsStream("img/icon-head-emailtohl.png")) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			user_emailtohl.setBirthday(sdf.parse("1982-02-12"));
 			icon = new byte[is.available()];
 			is.read(icon);

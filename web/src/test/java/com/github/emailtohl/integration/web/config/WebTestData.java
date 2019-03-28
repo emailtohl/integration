@@ -23,7 +23,6 @@ import com.github.emailtohl.integration.core.user.entities.Gender;
  * @author HeLei
  */
 public class WebTestData {
-	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	private final String DEFAULT_PASSWORD = "123456";
 	public final CorePresetData pd;
 	public final Employee foo = new Employee();
@@ -37,6 +36,7 @@ public class WebTestData {
 	}
 
 	private void set() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		pd.role_manager.getUsers().add(foo);
 		pd.role_staff.getUsers().add(bar);
 		pd.role_guest.getUsers().addAll(Arrays.asList(baz, qux));
